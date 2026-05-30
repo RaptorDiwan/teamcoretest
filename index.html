@@ -6150,18 +6150,63 @@ function qrDownloadExcel(){
     {name:'Tab4_Percentage', data:t4}
   ];
 
-  tabs.forEach(function(tab, i){
+  // Show sheet selector popup instead of downloading all
+  var existing = document.getElementById('qr-sheet-picker');
+  if(existing) existing.remove();
+
+  var picker = document.createElement('div');
+  picker.id='qr-sheet-picker';
+  picker.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9999;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:16px;padding:1.4rem 1.8rem;min-width:300px;box-shadow:0 20px 60px rgba(0,0,0,.5);';
+  // Build picker using DOM to avoid quote nesting issues
+  var ph=document.createElement('div');
+  ph.style.cssText='font-size:.9rem;font-weight:700;color:var(--text-primary);margin-bottom:1rem;';
+  ph.textContent='Select sheets to download';
+  picker.appendChild(ph);
+  tabs.forEach(function(tab,i){
+    var lbl=document.createElement('label');
+    lbl.style.cssText='display:flex;align-items:center;gap:.6rem;padding:.4rem 0;cursor:pointer;font-size:.83rem;color:var(--text-primary);';
+    var cb=document.createElement('input'); cb.type='checkbox'; cb.checked=true; cb.id='qr-cb-'+i;
+    cb.style.cssText='accent-color:var(--gold);width:15px;height:15px;';
+    lbl.appendChild(cb);
+    lbl.appendChild(document.createTextNode(tab.name.replace(/_/g,' ')));
+    picker.appendChild(lbl);
+  });
+  var btnRow=document.createElement('div'); btnRow.style.cssText='display:flex;gap:.6rem;margin-top:1rem;';
+  var dlBtn=document.createElement('button');
+  dlBtn.style.cssText='background:var(--gold);border:none;border-radius:8px;color:#fff;padding:.5rem 1.2rem;font-size:.82rem;font-weight:700;cursor:pointer;';
+  dlBtn.textContent='Download'; dlBtn.onclick=qrDownloadSelected;
+  var cxBtn=document.createElement('button');
+  cxBtn.style.cssText='background:rgba(255,255,255,.07);border:1px solid var(--navy-border);border-radius:8px;color:var(--text-muted);padding:.5rem 1rem;font-size:.82rem;cursor:pointer;';
+  cxBtn.textContent='Cancel'; cxBtn.onclick=function(){ picker.remove(); };
+  btnRow.appendChild(dlBtn); btnRow.appendChild(cxBtn);
+  picker.appendChild(btnRow);
+  // Store tab data for download
+  window._qrTabsData = tabs;
+  window._qrMLabel = mLabel;
+  document.body.appendChild(picker);
+}
+
+function qrDownloadSelected(){
+  var tabs = window._qrTabsData || [];
+  var tabNames = tabs.map(function(t){return t.name;});
+  var mLabel = window._qrMLabel || 'Quiz';
+  var count = 0;
+  tabNames.forEach(function(name, i){
+    var cb = document.getElementById('qr-cb-'+i);
+    if(!cb || !cb.checked) return;
+    var tab = tabs.find(function(t){return t.name===name;});
+    if(!tab) return;
     setTimeout(function(){
       var csv = tab.data.map(function(row){
         return row.map(function(v){ return '"'+String(v||'').replace(/"/g,'""')+'"'; }).join(',');
       }).join('\n');
       var blob = new Blob([csv],{type:'text/csv'});
-      var a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = mLabel+'_QuizReport_'+tab.name+'.csv';
-      a.click();
-    }, i*400);
+      var a = document.createElement('a'); a.href=URL.createObjectURL(blob);
+      a.download = mLabel+'_QuizReport_'+name+'.csv'; a.click();
+    }, count*400);
+    count++;
   });
+  document.getElementById('qr-sheet-picker').remove();
 }
 
 function resetQuizBuilder(){
@@ -6225,32 +6270,150 @@ async function loadQuizBuilderList(){
   var list=document.getElementById('qb-list');
   if(!list)return;
   try{
-    var rows=await sbQuery('quizzes','select=id,question,type,date,open_time,close_time,max_attempts,review_enabled&order=date.desc,open_time.desc');
+    var rows=await sbQuery('quizzes','select=id,question,type,date,open_time,close_time,max_attempts,review_enabled,correct_answer,enabled&order=date.desc,open_time.desc');
     if(!rows||!rows.length){list.innerHTML='<div style="color:var(--text-dim);padding:1rem;font-size:.875rem;">No quizzes yet. Create one above.</div>';return;}
-    list.innerHTML=rows.map(function(q){
+    list.innerHTML='';
+    rows.forEach(function(q){
       var status=qaGetStatus(q.open_time,q.close_time);
       var statusLabels={upcoming:'Upcoming',open:'Open Now',closed:'Closed'};
-      var isEssay = q.type==='essay';
-      return '<div class="qa-item" id="qbi-'+q.id+'">'+
-        '<div class="qa-item-left">'+
-          '<div class="qa-item-title">'+q.question.slice(0,80)+(q.question.length>80?'...':'')+'</div>'+
-          '<div class="qa-item-meta">'+
-            '<span>'+q.type.toUpperCase()+'</span>'+
-            '<span>'+qaFmtDateTime(q.open_time)+' &#8594; '+qaFmtDateTime(q.close_time)+'</span>'+
-            '<span>Max '+q.max_attempts+' attempt(s)</span>'+
-          '</div>'+
-        '</div>'+
-        '<div style="display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">'+
-          '<span class="qa-status-pill '+status+'">'+statusLabels[status]+'</span>'+
-          (isEssay?'<button class="qa-toggle-btn" onclick="qbToggleEssayReview(\''+q.id+'\')" id="qbr-btn-'+q.id+'">&#128065; Review Answers</button>':'')+
-          '<button class="qa-toggle-btn'+(q.review_enabled?' on':'')+'" onclick="toggleQuizReview(\''+q.id+'\','+q.review_enabled+')" title="Toggle review mode">&#128065; Review '+(q.review_enabled?'ON':'OFF')+'</button>'+
-          '<button class="qa-del-btn" onclick="deleteQuiz(\''+q.id+'\')">Delete</button>'+
-        '</div>'+
-        // Essay review panel — hidden by default
-        (isEssay?'<div id="qbr-panel-'+q.id+'" style="display:none;width:100%;margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;"></div>':'')+
-      '</div>';
-    }).join('');
+      var isEssay=q.type==='essay';
+      var isEnabled=q.enabled!==false;
+      var item=document.createElement('div');
+      item.className='qa-item'; item.id='qbi-'+q.id;
+      if(!isEnabled) item.style.cssText='opacity:.55;border-color:rgba(255,255,255,.08);';
+
+      // Left side
+      var left=document.createElement('div'); left.className='qa-item-left';
+      var titleRow=document.createElement('div'); titleRow.style.cssText='display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem;';
+      if(!isEnabled){var badge=document.createElement('span');badge.style.cssText='font-size:.68rem;font-weight:700;background:rgba(239,73,60,.15);color:#ef493c;padding:1px 7px;border-radius:10px;';badge.textContent='DISABLED';titleRow.appendChild(badge);}
+      var title=document.createElement('div'); title.className='qa-item-title'; title.style.margin='0';
+      title.textContent=q.question.slice(0,80)+(q.question.length>80?'...':'');
+      titleRow.appendChild(title); left.appendChild(titleRow);
+      var meta=document.createElement('div'); meta.className='qa-item-meta';
+      meta.innerHTML='<span>'+q.type.toUpperCase()+'</span><span>'+qaFmtDateTime(q.open_time)+' &#8594; '+qaFmtDateTime(q.close_time)+'</span><span>Max '+q.max_attempts+' attempt(s)</span>';
+      left.appendChild(meta); item.appendChild(left);
+
+      // Right side buttons
+      var right=document.createElement('div'); right.style.cssText='display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;';
+      var pill=document.createElement('span'); pill.className='qa-status-pill '+status; pill.textContent=statusLabels[status];
+      right.appendChild(pill);
+
+      // Edit button
+      var editBtn=document.createElement('button'); editBtn.className='qa-toggle-btn'; editBtn.innerHTML='&#9998; Edit';
+      editBtn.onclick=(function(id){ return function(){ qbEditQuiz(this,id); }; })(q.id);
+      right.appendChild(editBtn);
+
+      // Enable/Disable button
+      var enBtn=document.createElement('button'); enBtn.className='qa-toggle-btn'+(isEnabled?' on':'');
+      enBtn.innerHTML=isEnabled?'&#9989; Enabled':'&#10060; Disabled';
+      enBtn.onclick=(function(id,en){ return function(){ qbToggleEnabled(id,en); }; })(q.id,isEnabled);
+      right.appendChild(enBtn);
+
+      // Essay review
+      if(isEssay){
+        var revBtn=document.createElement('button'); revBtn.className='qa-toggle-btn'; revBtn.id='qbr-btn-'+q.id; revBtn.innerHTML='&#128065; Review Answers';
+        revBtn.onclick=(function(id){ return function(){ qbToggleEssayReview(id); }; })(q.id);
+        right.appendChild(revBtn);
+      }
+
+      // Review toggle
+      var rtBtn=document.createElement('button'); rtBtn.className='qa-toggle-btn'+(q.review_enabled?' on':'');
+      rtBtn.innerHTML='&#128065; Review '+(q.review_enabled?'ON':'OFF'); rtBtn.title='Toggle review mode';
+      rtBtn.onclick=(function(id,rv){ return function(){ toggleQuizReview(id,rv); }; })(q.id,q.review_enabled);
+      right.appendChild(rtBtn);
+
+      // Delete
+      var delBtn=document.createElement('button'); delBtn.className='qa-del-btn'; delBtn.textContent='Delete';
+      delBtn.onclick=(function(id){ return function(){ deleteQuiz(id); }; })(q.id);
+      right.appendChild(delBtn);
+
+      item.appendChild(right);
+
+      // Edit panel
+      var editPanel=document.createElement('div'); editPanel.id='qb-edit-'+q.id; editPanel.style.cssText='display:none;width:100%;margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;';
+      item.appendChild(editPanel);
+
+      // Essay review panel
+      if(isEssay){
+        var essayPanel=document.createElement('div'); essayPanel.id='qbr-panel-'+q.id; essayPanel.style.cssText='display:none;width:100%;margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;';
+        item.appendChild(essayPanel);
+      }
+
+      list.appendChild(item);
+    });
   }catch(e){list.innerHTML='<div style="color:var(--accent-red);padding:1rem;font-size:.875rem;">Error loading quizzes: '+e.message+'</div>';}
+}
+
+// ── Edit quiz inline ──
+async function qbEditQuiz(btn, quizId){
+  var panel = document.getElementById('qb-edit-'+quizId);
+  if(!panel) return;
+  if(panel.style.display==='block'){ panel.style.display='none'; return; }
+  var rows = await sbQuery('quizzes','id=eq.'+quizId+'&select=id,question,type,date,open_time,close_time,max_attempts,correct_answer');
+  if(!rows||!rows.length) return;
+  var q = rows[0];
+  var d = qaISOtoLocalDate(q.open_time)||q.date;
+  var ot = qaISOtoLocalTime(q.open_time);
+  var ct = qaISOtoLocalTime(q.close_time);
+  // Build edit form using DOM
+  panel.innerHTML='';
+  var wrap=document.createElement('div'); wrap.style.cssText='display:flex;flex-direction:column;gap:.6rem;max-width:600px;';
+  var hdr=document.createElement('div'); hdr.style.cssText='font-size:.78rem;font-weight:700;color:var(--text-muted);'; hdr.textContent='EDIT QUIZ'; wrap.appendChild(hdr);
+  var ta=document.createElement('textarea'); ta.id='qe-q-'+quizId; ta.value=q.question;
+  ta.style.cssText='width:100%;background:var(--navy-deep,#0d1627);border:1px solid var(--navy-border);border-radius:8px;padding:.6rem .8rem;color:var(--text-primary);font-family:DM Sans,sans-serif;font-size:.85rem;resize:vertical;min-height:70px;';
+  wrap.appendChild(ta);
+  var row=document.createElement('div'); row.style.cssText='display:flex;gap:.6rem;flex-wrap:wrap;';
+  function mkInput(id,type,val,label,flex){
+    var div=document.createElement('div'); div.style.cssText='flex:'+flex+';';
+    var lbl=document.createElement('label'); lbl.style.cssText='font-size:.72rem;color:var(--text-muted);display:block;'; lbl.textContent=label; div.appendChild(lbl);
+    var inp=document.createElement('input'); inp.type=type; inp.id=id; inp.value=val||'';
+    inp.style.cssText='width:100%;background:var(--navy-deep,#0d1627);border:1px solid var(--navy-border);border-radius:7px;padding:.4rem .7rem;color:var(--text-primary);font-size:.8rem;box-sizing:border-box;';
+    div.appendChild(inp); return div;
+  }
+  row.appendChild(mkInput('qe-d-'+quizId,'date',d,'Date','0 0 140px'));
+  row.appendChild(mkInput('qe-ot-'+quizId,'time',ot,'Opens','0 0 110px'));
+  row.appendChild(mkInput('qe-ct-'+quizId,'time',ct,'Closes','0 0 110px'));
+  row.appendChild(mkInput('qe-ca-'+quizId,'text',q.correct_answer||'','Correct Answer (blank = essay)','1 1 140px'));
+  wrap.appendChild(row);
+  var btns=document.createElement('div'); btns.style.cssText='display:flex;gap:.5rem;align-items:center;';
+  var sv=document.createElement('button'); sv.className='qa-toggle-btn on'; sv.textContent='Save';
+  sv.onclick=(function(id){return function(){qbSaveEdit(id);};})(quizId); btns.appendChild(sv);
+  var cx=document.createElement('button'); cx.className='qa-toggle-btn'; cx.textContent='Cancel';
+  cx.onclick=(function(id){return function(){document.getElementById('qb-edit-'+id).style.display='none';};})(quizId); btns.appendChild(cx);
+  var msg=document.createElement('span'); msg.id='qe-msg-'+quizId; msg.style.cssText='font-size:.78rem;color:var(--accent-green);'; btns.appendChild(msg);
+  wrap.appendChild(btns);
+  panel.appendChild(wrap);
+  panel.style.display='block';
+}
+
+async function qbSaveEdit(quizId){
+  var q = document.getElementById('qe-q-'+quizId).value.trim();
+  var d = document.getElementById('qe-d-'+quizId).value;
+  var ot = document.getElementById('qe-ot-'+quizId).value;
+  var ct = document.getElementById('qe-ct-'+quizId).value;
+  var ca = document.getElementById('qe-ca-'+quizId).value.trim();
+  var msg = document.getElementById('qe-msg-'+quizId);
+  if(!q||!d||!ot||!ct){ if(msg){msg.textContent='Fill all fields.';msg.style.color='#ef493c';} return; }
+  if(msg) msg.textContent='Saving...';
+  try{
+    await sbUpdate('quizzes','id',quizId,{
+      question:q, date:d,
+      open_time:qaDateTimeToISO(d,ot),
+      close_time:qaDateTimeToISO(d,ct),
+      correct_answer:ca||null
+    });
+    if(msg){msg.textContent='Saved!';msg.style.color='var(--accent-green)';}
+    setTimeout(function(){ document.getElementById('qb-edit-'+quizId).style.display='none'; loadQuizAdmin(); },800);
+  }catch(e){ if(msg){msg.textContent='Error: '+e.message;msg.style.color='#ef493c';} }
+}
+
+// ── Enable / Disable quiz ──
+async function qbToggleEnabled(quizId, currentlyEnabled){
+  try{
+    var newVal = !currentlyEnabled;
+    await sbUpdate('quizzes','id',quizId,{enabled:newVal});
+    loadQuizAdmin();
+  }catch(e){ alert('Could not update quiz: '+e.message); }
 }
 
 async function qbToggleEssayReview(quizId){
@@ -6346,7 +6509,7 @@ async function loadAgentQuiz(){
   content.innerHTML='<div class="quiz-lock-screen"><div class="quiz-lock-icon">&#8987;</div><div class="quiz-lock-title">Loading quiz...</div></div>';
   try{
     var today=todayStr();
-    var rows=await sbQuery('quizzes','date=eq.'+today+'&order=open_time.asc&limit=1');
+    var rows=await sbQuery('quizzes','date=eq.'+today+'&enabled=neq.false&order=open_time.asc&limit=1');
     if(!rows||!rows.length){
       content.innerHTML='<div class="quiz-lock-screen"><div class="quiz-lock-icon">&#128218;</div><div class="quiz-lock-title">No Quiz Today</div><div class="quiz-lock-sub">Check back later. Your admin hasn\'t scheduled a quiz for today.</div></div>';
       return;
