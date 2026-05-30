@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>K7 Support Knowledge Base</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f0f4f8;--bg2:#ffffff;--bg3:#e8edf3;--border:#e2e8f0;--border2:#cbd5e1;--text:#1e293b;--text2:#64748b;--text3:#94a3b8;--accent:#2563eb;--accent-light:#eff6ff;--accent-border:#bfdbfe;--accent2:#1d4ed8;--green:#059669;--green-bg:#ecfdf5;--amber:#d97706;--amber-bg:#fffbeb;--red:#dc2626;--red-bg:#fef2f2;--tag-activation:#7c3aed;--tag-updates:#059669;--tag-scanning:#d97706;--tag-connectivity:#2563eb;--tag-installation:#db2777;--radius:10px;--radius-lg:14px;--shadow:0 1px 3px rgba(0,0,0,0.07);--shadow-md:0 4px 16px rgba(0,0,0,0.08);}
+[data-theme="dark"]{--bg:#0d1117;--bg2:#161b22;--bg3:#1c2128;--border:#30363d;--border2:#3d444d;--text:#e6edf3;--text2:#8b949e;--text3:#6e7681;--accent:#58a6ff;--accent-light:#131f35;--accent-border:#1f4068;--accent2:#79c0ff;--green:#3fb950;--green-bg:#122118;--amber:#d29922;--amber-bg:#272012;--red:#f85149;--red-bg:#2d1517;--shadow:0 1px 3px rgba(0,0,0,0.3);--shadow-md:0 4px 16px rgba(0,0,0,0.4);}
+code{background:var(--bg3)!important;border-color:var(--border)!important;color:var(--text2)!important;}
+[data-theme="dark"] .search-input{background:var(--bg2);color:var(--text);border-color:var(--border);}
+[data-theme="dark"] .search-input::placeholder{color:var(--text3);}
+[data-theme="dark"] .hero{background:linear-gradient(135deg,#0d1b2a 0%,#0f2339 40%,#112d48 70%,#1a3a5c 100%);}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;min-height:100vh;display:flex;flex-direction:column;}
+.header{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 2rem;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);}
+.header-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;gap:1rem;height:56px;}
+.logo{display:flex;align-items:center;gap:10px;cursor:pointer;}
+.logo-text-wrap{display:flex;align-items:center;gap:3px;}
+.logo-k7{font-size:17px;font-weight:800;color:var(--accent);letter-spacing:-0.5px;font-family:'Inter',sans-serif;}
+.logo-sec{font-size:17px;font-weight:600;color:var(--text);letter-spacing:-0.3px;}
+.hero-logo-text{display:flex;align-items:center;gap:4px;justify-content:center;}
+.hlk{font-size:28px;font-weight:800;color:#fff;letter-spacing:-1px;}
+.hls{font-size:28px;font-weight:400;color:rgba(255,255,255,0.8);letter-spacing:-0.5px;}
+.logo-divider{width:1px;height:20px;background:var(--border2);}
+.logo-label{font-size:13px;font-weight:600;color:var(--text2);}
+.header-nav{margin-left:auto;display:flex;gap:6px;align-items:center;}
+.nav-btn{background:none;border:1px solid var(--border);color:var(--text2);padding:5px 14px;border-radius:8px;font-size:13px;cursor:pointer;font-family:inherit;font-weight:500;transition:all 0.15s;}
+.nav-btn:hover,.nav-btn.active{background:var(--accent-light);border-color:var(--accent-border);color:var(--accent);}
+.nav-request{background:var(--accent)!important;color:white!important;border-color:var(--accent)!important;}
+.nav-request:hover{background:var(--accent2)!important;}
+#home-view{flex:1;}
+.hero{position:relative;overflow:hidden;padding:7rem 2rem 6rem;text-align:center;background:linear-gradient(135deg,#1e3a8a 0%,#1d4ed8 40%,#2563eb 70%,#3b82f6 100%);}
+.hero-bg-circles{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.hero-bg-circles span{position:absolute;border-radius:50%;background:rgba(255,255,255,0.05);}
+.hero-bg-circles span:nth-child(1){width:400px;height:400px;top:-150px;right:-80px;}
+.hero-bg-circles span:nth-child(2){width:250px;height:250px;bottom:-100px;left:-60px;}
+.hero-bg-circles span:nth-child(3){width:150px;height:150px;top:40px;left:20%;background:rgba(255,255,255,0.04);}
+.hero-content{position:relative;z-index:1;}
+.hero-logo-wrap{margin-bottom:1.6rem;}
+.hero-logo-img{height:38px;width:auto;filter:brightness(0) invert(1);opacity:0.95;}
+.hero-sub{color:rgba(255,255,255,0.7);font-size:14px;font-weight:400;letter-spacing:0.5px;margin-bottom:2rem;}
+.search-wrap{width:100%;max-width:560px;margin:0 auto;position:relative;}
+.search-input{width:100%;background:#fff;border:2px solid transparent;border-radius:50px;padding:16px 52px 16px 24px;font-size:15px;color:var(--text);font-family:inherit;outline:none;transition:all 0.2s;box-shadow:0 4px 24px rgba(0,0,0,0.15);}
+.search-input:focus{border-color:#93c5fd;box-shadow:0 4px 24px rgba(0,0,0,0.15),0 0 0 4px rgba(147,197,253,0.25);}
+.search-input::placeholder{color:var(--text3);}
+.search-clear{position:absolute;right:18px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text3);cursor:pointer;font-size:15px;display:none;padding:4px;}
+.hero-btns{display:flex;gap:10px;justify-content:center;margin-top:1.4rem;}
+.hero-btn-outline{background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.3);color:rgba(255,255,255,0.9);padding:8px 20px;border-radius:50px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;transition:all 0.18s;backdrop-filter:blur(4px);}
+.hero-btn-outline:hover{background:rgba(255,255,255,0.22);color:#fff;border-color:rgba(255,255,255,0.5);}
+
+.content{max-width:1100px;margin:0 auto;padding:1.5rem 2rem 4rem;flex:1;}
+.results-count{font-size:13px;color:var(--text2);margin-bottom:1rem;font-weight:500;}
+.cat-section-title{font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:0.7px;margin-bottom:0.8rem;}
+.categories{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1.5rem;}
+.cat-pill{background:var(--bg2);border:1px solid var(--border);padding:7px 16px;border-radius:20px;font-size:13px;color:var(--text2);cursor:pointer;transition:all 0.15s;display:flex;align-items:center;gap:7px;font-weight:500;box-shadow:var(--shadow);}
+.cat-pill .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.cat-pill:hover{border-color:var(--border2);color:var(--text);}
+.cat-pill.active{border-color:var(--accent-border);color:var(--accent);background:var(--accent-light);}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:0.8rem;margin-top:2rem;}
+.section-label{font-size:11px;font-weight:700;letter-spacing:0.6px;text-transform:uppercase;color:var(--text3);}
+.section-line{flex:1;height:1px;background:var(--border);}
+.article-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;}
+.article-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.2rem;cursor:pointer;transition:all 0.18s;display:block;box-shadow:var(--shadow);}
+.article-card:hover{border-color:var(--accent-border);box-shadow:var(--shadow-md);transform:translateY(-2px);}
+.article-cat{font-size:11px;font-weight:600;letter-spacing:0.4px;text-transform:uppercase;margin-bottom:5px;display:flex;align-items:center;gap:5px;}
+.article-title{font-size:13.5px;font-weight:500;color:var(--text);line-height:1.5;}
+.article-preview{font-size:12px;color:var(--text2);margin-top:5px;line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.no-results{text-align:center;padding:4rem 1rem;color:var(--text3);}
+.highlight{background:rgba(37,99,235,0.12);color:var(--accent);border-radius:3px;padding:0 2px;}
+#detail-view{display:none;}
+.detail-content-wrap{max-width:1100px;margin:0 auto;padding:1.5rem 2rem 4rem;}
+.detail-back{display:inline-flex;align-items:center;gap:7px;color:var(--text2);font-size:13px;cursor:pointer;margin-bottom:1.4rem;background:none;border:none;font-family:inherit;padding:0;transition:color 0.15s;font-weight:500;}
+.detail-back:hover{color:var(--accent);}
+.detail-grid{display:grid;grid-template-columns:1fr;gap:1.4rem;}
+.detail-main{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.8rem;box-shadow:var(--shadow);}
+.detail-cat{font-size:11px;font-weight:600;letter-spacing:0.4px;text-transform:uppercase;margin-bottom:0.7rem;display:flex;align-items:center;gap:6px;}
+.detail-title{font-size:1.3rem;font-weight:600;letter-spacing:-0.3px;color:var(--text);margin-bottom:0.4rem;line-height:1.4;}
+.detail-meta{font-size:11px;color:var(--text3);margin-bottom:1.4rem;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.detail-meta span{display:inline-flex;align-items:center;gap:4px;background:var(--bg3);padding:3px 8px;border-radius:6px;}
+.detail-divider{border:none;border-top:1px solid var(--border);margin:1.2rem 0;}
+.steps-list{list-style:none;counter-reset:step;}
+.steps-list li{counter-increment:step;display:flex;gap:12px;margin-bottom:0.9rem;align-items:flex-start;}
+.steps-list li::before{content:counter(step);min-width:24px;height:24px;background:var(--accent-light);border:1px solid var(--accent-border);color:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:2px;font-family:'JetBrains Mono',monospace;}
+.steps-list li p{font-size:14px;line-height:1.7;color:var(--text);}
+.steps-list li p a{color:var(--accent);text-decoration:none;font-weight:500;}
+code{background:#fef3c7;border:1px solid #fde68a;padding:1px 6px;border-radius:5px;font-family:'JetBrains Mono',monospace;font-size:12px;color:#92400e;}
+.info-box{border-radius:var(--radius);padding:0.9rem 1rem;margin:1rem 0;}
+.info-box.amber{background:var(--amber-bg);border:1px solid #fde68a;}
+.info-box.red{background:var(--red-bg);border:1px solid #fecaca;}
+.info-box.green{background:var(--green-bg);border:1px solid #a7f3d0;}
+.info-box .info-title{font-size:11px;font-weight:700;margin-bottom:4px;text-transform:uppercase;letter-spacing:0.5px;}
+.info-box.amber .info-title{color:var(--amber);}
+.info-box.red .info-title{color:var(--red);}
+.info-box.green .info-title{color:var(--green);}
+.info-box p{font-size:13px;color:var(--text2);line-height:1.6;}
+.escalate-box{background:var(--bg3);border:1px solid var(--border);border-radius:var(--radius);padding:1rem;margin-top:1.2rem;}
+.escalate-box h4{font-size:11px;font-weight:700;color:var(--text2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:0.7rem;}
+.escalate-fields{display:grid;grid-template-columns:1fr 1fr;gap:6px;}
+.escalate-field{background:var(--bg2);border:1px solid var(--border);border-radius:6px;padding:5px 10px;font-size:12px;color:var(--text2);font-weight:500;}
+.sub-heading{font-size:12px;font-weight:700;color:var(--text);margin:1.1rem 0 0.5rem;padding:0.5rem 0.7rem;background:var(--accent-light);border-left:3px solid var(--accent);border-radius:0 6px 6px 0;text-transform:uppercase;letter-spacing:0.4px;}
+.notes-panel{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;box-shadow:var(--shadow);margin-top:1.5rem;}
+.notes-header{padding:0.9rem 1.1rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--bg3);}
+.notes-header h3{font-size:13px;font-weight:600;color:var(--text);display:flex;align-items:center;gap:7px;}
+.notes-badge{background:var(--accent);color:white;font-size:10px;font-weight:700;padding:2px 7px;border-radius:10px;min-width:20px;text-align:center;}
+.notes-list{max-height:none;overflow-y:visible;}
+.note-item{padding:0.85rem 1rem;border-bottom:1px solid var(--border);animation:noteIn 0.25s ease;}
+@keyframes noteIn{from{opacity:0;transform:translateY(-6px);}to{opacity:1;transform:translateY(0);}}
+.note-item:last-child{border-bottom:none;}
+.note-meta{display:flex;align-items:center;gap:7px;margin-bottom:4px;}
+.note-avatar{width:24px;height:24px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:white;flex-shrink:0;}
+.note-author{font-size:12px;font-weight:600;color:var(--text);}
+.note-time{font-size:11px;color:var(--text3);margin-left:auto;}
+.note-text{font-size:13px;color:var(--text2);line-height:1.6;}
+.note-solved-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--green);background:var(--green-bg);border:1px solid #a7f3d0;padding:2px 8px;border-radius:10px;margin-top:5px;font-weight:600;}
+.empty-notes{padding:1.8rem 1rem;text-align:center;color:var(--text3);font-size:13px;line-height:1.8;}
+.notes-loading{padding:1.2rem;text-align:center;color:var(--text3);font-size:12px;}
+/* FACEBOOK-STYLE COMMENTS */
+.comments-section{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.5rem 1.8rem;box-shadow:var(--shadow);margin-top:1.2rem;}
+.comments-header{font-size:15px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;margin-bottom:1.4rem;padding-bottom:1rem;border-bottom:1px solid var(--border);}
+.comment-compose{display:flex;gap:12px;margin-bottom:1.5rem;}
+.comment-compose-avatar{width:38px;height:38px;border-radius:50%;background:var(--accent);color:white;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;margin-top:2px;}
+.comment-compose-body{flex:1;display:flex;flex-direction:column;gap:8px;}
+.comment-name-input{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:9px 13px;font-size:13px;font-weight:600;color:var(--text);font-family:inherit;outline:none;transition:border-color 0.2s;}
+.comment-name-input:focus{border-color:var(--accent);}
+.comment-name-input::placeholder{color:var(--text3);font-weight:400;}
+.comment-textarea{width:100%;background:var(--bg2);border:1.5px solid var(--border);border-radius:10px;padding:10px 13px;font-size:13.5px;color:var(--text);font-family:inherit;resize:vertical;min-height:80px;line-height:1.6;outline:none;transition:border-color 0.2s;}
+.comment-textarea:focus{border-color:var(--accent);}
+.comment-textarea::placeholder{color:var(--text3);}
+.comment-compose-footer{display:flex;align-items:center;justify-content:space-between;margin-top:4px;padding-top:8px;border-top:1px solid var(--border);}
+.note-solved-check{display:flex;align-items:center;gap:7px;cursor:pointer;}
+.note-solved-check input{accent-color:var(--green);width:13px;height:13px;}
+.note-solved-check span{font-size:12px;color:var(--text2);font-weight:500;}
+.comment-submit-btn{background:var(--accent);color:white;border:none;border-radius:20px;padding:7px 18px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;display:flex;align-items:center;gap:6px;transition:background 0.15s;}
+.comment-submit-btn:hover{background:var(--accent2);}
+.comment-submit-btn:disabled{opacity:0.6;cursor:not-allowed;}
+/* NOTE ITEMS */
+.note-item{display:flex;gap:12px;padding:1rem 0;border-bottom:1px solid var(--border);}
+.note-item:last-child{border-bottom:none;}
+.note-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:white;flex-shrink:0;}
+.note-body{flex:1;}
+.note-bubble{background:var(--bg3);border-radius:0 12px 12px 12px;padding:10px 14px;}
+.note-author{font-size:13px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.note-text{font-size:13.5px;color:var(--text);line-height:1.6;}
+.note-meta-row{display:flex;align-items:center;gap:10px;margin-top:5px;}
+.note-time{font-size:11px;color:var(--text3);}
+.note-solved-badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;color:var(--green);background:var(--green-bg);border:1px solid #a7f3d0;padding:2px 8px;border-radius:10px;font-weight:600;}
+.empty-notes{padding:2rem;text-align:center;color:var(--text3);font-size:13px;line-height:1.8;}
+.notes-loading{padding:1.5rem;text-align:center;color:var(--text3);font-size:13px;}
+#request-view{display:none;flex:1;}
+.request-wrap{max-width:620px;margin:0 auto;padding:3rem 2rem 4rem;}
+.request-header{margin-bottom:2rem;}
+.request-header h2{font-size:1.5rem;font-weight:700;color:var(--text);letter-spacing:-0.4px;margin-bottom:0.4rem;}
+.request-header p{font-size:14px;color:var(--text2);line-height:1.6;}
+.request-form{background:var(--bg2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.8rem;box-shadow:var(--shadow);}
+.form-group{margin-bottom:1.2rem;}
+.form-label{display:block;font-size:12px;font-weight:700;color:var(--text2);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.4px;}
+.form-input{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:9px;padding:10px 13px;font-size:14px;color:var(--text);font-family:inherit;outline:none;transition:all 0.2s;}
+.form-input:focus{border-color:var(--accent);background:var(--bg2);box-shadow:0 0 0 3px rgba(37,99,235,0.08);}
+.form-input::placeholder{color:var(--text3);}
+.form-textarea{min-height:110px;resize:vertical;line-height:1.6;}
+.form-select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:36px;cursor:pointer;}
+.form-submit{background:var(--accent);color:white;border:none;border-radius:9px;padding:11px 24px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;transition:all 0.15s;display:flex;align-items:center;gap:8px;}
+.form-submit:hover{background:var(--accent2);transform:translateY(-1px);}
+.form-submit:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+.success-msg{display:none;background:var(--green-bg);border:1px solid #a7f3d0;border-radius:var(--radius);padding:1rem 1.1rem;margin-top:1rem;}
+.success-msg p{font-size:13px;color:var(--green);font-weight:500;}
+#articles-view{display:none;flex:1;}
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:1rem 2rem;margin-top:auto;}
+.footer-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0.5rem;}
+.footer-credit{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:5px;}
+.footer-credit strong{color:var(--accent);font-weight:700;}
+.footer-meta{font-size:11px;color:var(--text3);}
+.search-dropdown{position:absolute;top:calc(100% + 8px);left:0;right:0;background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.18);overflow:hidden;display:none;z-index:200;max-height:380px;overflow-y:auto;}
+.search-dropdown.open{display:block;}
+.dropdown-item{display:flex;align-items:center;gap:12px;padding:12px 18px;cursor:pointer;transition:background 0.12s;border-bottom:1px solid #f1f5f9;}
+.dropdown-item:last-child{border-bottom:none;}
+.dropdown-item:hover,.dropdown-item.active{background:#eff6ff;}
+.dropdown-cat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dropdown-title{font-size:13.5px;color:#1e293b;font-weight:500;flex:1;line-height:1.4;}
+.dropdown-cat-label{font-size:11px;color:#94a3b8;font-weight:500;white-space:nowrap;}
+.dropdown-empty{padding:1.2rem 1.2rem;text-align:center;color:#94a3b8;font-size:13px;}
+.dropdown-header{padding:8px 18px 4px;font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:0.6px;}
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px;}
+@media(max-width:768px){.comments-section{padding:1.2rem;}.notes-panel{position:static;}.hero h1{font-size:1.8rem;}.article-grid{grid-template-columns:1fr;}.escalate-fields{grid-template-columns:1fr;}.footer-inner{justify-content:center;}.stats-inner{gap:1rem;}}
+
+  /* ── Back to K7TeamCore bar ── */
+  .kb-back-bar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+    background: rgba(7,13,45,.96); backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(255,255,255,.1);
+    display: flex; align-items: center; gap: .75rem;
+    padding: .55rem 1.2rem; height: 42px;
+  }
+  .kb-back-btn {
+    display: inline-flex; align-items: center; gap: .45rem;
+    padding: .28rem .85rem; border-radius: 20px;
+    background: rgba(239,73,60,.15); border: 1px solid rgba(239,73,60,.35);
+    color: #FF6658; font-family: 'DM Sans', sans-serif;
+    font-size: .75rem; font-weight: 700; cursor: pointer;
+    transition: all .18s; text-decoration: none;
+  }
+  .kb-back-btn:hover { background: rgba(239,73,60,.25); color: #FF8880; }
+  .kb-back-btn svg { width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 2.5; }
+  .kb-back-title { font-size: .78rem; font-weight: 600; color: rgba(255,255,255,.5); font-family: 'DM Sans', sans-serif; }
+  .kb-back-title span { color: rgba(255,255,255,.8); }
+  /* Push page content down to avoid overlap */
+  body { padding-top: 42px; }
+
+  </style>
+</head>
+<body>
+
+<div class="kb-back-bar">
+  <button class="kb-back-btn" onclick="window.close()">
+    <svg viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    Back to K7TeamCore
+  </button>
+  <span class="kb-back-title">K7<span>Security</span> Knowledge Base</span>
+</div>
+
+<header class="header">
+<div class="header-inner">
+<div class="logo" onclick="showHome()">
+<div class="logo-text-wrap"><span class="logo-k7">K7</span><span class="logo-sec">Security</span></div>
+<div class="logo-divider"></div>
+<span class="logo-label">Support Team KB</span>
+</div>
+<nav class="header-nav">
+<button class="nav-btn" id="nav-articles" onclick="showArticles()">All Articles</button>
+<button class="nav-btn" id="kb-theme-btn" onclick="kbToggleTheme()" title="Toggle dark mode" style="padding:5px 10px;font-size:15px;">🌙</button>
+<button class="nav-btn nav-request" onclick="showRequest()">Request KB</button>
+</nav>
+</div>
+</header>
+
+<div id="home-view">
+<div class="hero">
+<div class="hero-bg-circles"><span></span><span></span><span></span></div>
+<div class="hero-content">
+<div class="hero-logo-wrap">
+<div class="hero-logo-text"><span class="hlk">K7</span><span class="hls">Security</span></div>
+</div>
+<p class="hero-sub">Support Team Knowledge Base</p>
+<div class="search-wrap" id="searchWrap">
+<input class="search-input" id="searchInput" type="text" placeholder="Search issues, error codes, keywords..." oninput="handleSearch(this.value)" onkeydown="handleSearchKey(event)" autocomplete="off"/>
+<button class="search-clear" id="searchClear" onclick="clearSearch()">&#10005;</button>
+<div class="search-dropdown" id="searchDropdown"></div>
+</div>
+<div class="hero-btns">
+<button class="hero-btn-outline" onclick="showArticles()">All Articles</button>
+<button class="hero-btn-outline" onclick="showRequest()">Missing KB? Request here</button>
+</div>
+</div>
+</div>
+
+<div class="content" id="homeResults" style="display:none">
+<div id="resultsInfo" class="results-count"></div>
+<div id="articleListHome"></div>
+</div>
+</div>
+
+<div id="articles-view">
+<div class="content">
+<div class="cat-section-title" style="margin-top:0.5rem">Browse by category</div>
+<div class="categories" id="catPills">
+<div class="cat-pill active" onclick="filterCat('all',this)"><span class="dot" style="background:var(--text3)"></span>All</div>
+<div class="cat-pill" onclick="filterCat('Activation',this)"><span class="dot" style="background:var(--tag-activation)"></span>Activation</div>
+<div class="cat-pill" onclick="filterCat('Updates',this)"><span class="dot" style="background:var(--tag-updates)"></span>Updates</div>
+<div class="cat-pill" onclick="filterCat('Scanning',this)"><span class="dot" style="background:var(--tag-scanning)"></span>Scanning &amp; Config</div>
+<div class="cat-pill" onclick="filterCat('Connectivity',this)"><span class="dot" style="background:var(--tag-connectivity)"></span>Connectivity</div>
+<div class="cat-pill" onclick="filterCat('Installation',this)"><span class="dot" style="background:var(--tag-installation)"></span>Installation</div>
+</div>
+<div id="articleListAll"></div>
+</div>
+</div>
+
+<div id="detail-view">
+<div class="detail-content-wrap">
+<button class="detail-back" onclick="goBack()"><svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Back</button>
+<div class="detail-grid">
+<div class="detail-main" id="detailContent"></div>
+</div>
+
+<!-- COMMENTS SECTION -->
+<div class="comments-section">
+  <div class="comments-header">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    Agent Notes
+    <span class="notes-badge" id="notesBadge">0</span>
+  </div>
+
+  <!-- ADD NOTE BOX -->
+  <div class="comment-compose">
+    <div class="comment-compose-avatar" id="composeAvatar">?</div>
+    <div class="comment-compose-body">
+      <input class="comment-name-input" id="noteAgent" placeholder="Your name" oninput="updateAvatar(this.value)"/>
+      <textarea class="comment-textarea" id="noteText" placeholder="Share a step you tried, a fix that worked, or anything useful for the team..."></textarea>
+      <div class="comment-compose-footer">
+        <label class="note-solved-check">
+          <input type="checkbox" id="noteSolved"/>
+          <span>&#10003; This step solved the issue</span>
+        </label>
+        <button class="comment-submit-btn" id="noteSubmitBtn" onclick="submitNote()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+          Post Note
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- NOTES LIST -->
+  <div id="notesList"><div class="notes-loading">Loading notes...</div></div>
+</div>
+</div>
+</div>
+
+<div id="request-view">
+<div class="request-wrap">
+<div class="request-header">
+<h2>&#128269; Missing a KB article?</h2>
+<p>Can't find a solution for an issue you're handling? Submit a request below and Diwan will add it to the KB.</p>
+</div>
+<div class="request-form">
+<div class="form-group"><label class="form-label">Your Name</label><input class="form-input" id="reqName" placeholder="Enter your name"/></div>
+<div class="form-group"><label class="form-label">Category</label><select class="form-input form-select" id="reqCategory"><option value="">Select a category</option><option>Activation</option><option>Updates</option><option>Scanning &amp; Config</option><option>Connectivity</option><option>Installation</option><option>Other</option></select></div>
+<div class="form-group"><label class="form-label">Issue Title</label><input class="form-input" id="reqTitle" placeholder="e.g. Error 1234 during activation"/></div>
+<div class="form-group"><label class="form-label">Describe the Issue</label><textarea class="form-input form-textarea" id="reqDesc" placeholder="What steps did you already try? What is the customer experiencing?"></textarea></div>
+<button class="form-submit" id="reqSubmitBtn" onclick="submitRequest()"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Submit Request</button>
+<div class="success-msg" id="successMsg"><p>&#10003; Request submitted! Diwan will review and add the article soon.</p></div>
+</div>
+</div>
+</div>
+
+<footer>
+<div class="footer-inner">
+<div class="footer-credit">Designed &amp; Prepared with &#9829; by <strong>Diwan</strong> &nbsp;&middot;&nbsp; K7 Support Team</div>
+<div class="footer-meta">K7 Computing &middot; Internal Use Only</div>
+</div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+emailjs.init('aHyC0d7vVexOoEb1c');
+const{createClient}=supabase;
+const sb=createClient('https://qfvuotodjjqvhppefawo.supabase.co','sb_publishable_LrXXfuOmLdGBkPRlYvmgqw_Mf8GasyQ');
+
+const CAT_COLORS={'Activation':'var(--tag-activation)','Updates':'var(--tag-updates)','Scanning':'var(--tag-scanning)','Connectivity':'var(--tag-connectivity)','Installation':'var(--tag-installation)'};
+
+const ARTICLES=[
+{id:'act-001',cat:'Activation',title:'Critical error: send or server error during activation',tags:['send error','server error','activation fail','proxy','internet','bsnl'],preview:'Cannot reach activation servers. Check internet, proxy settings and ISP.',steps:['Check for an active internet connection.','Check installation type — if CD, make sure user is installing with the latest setup file (LSF).','If LSF, check if connecting via a proxy server.','If proxy: ask customer to use a direct connection or allow K7 URLs in the proxy server.','If no proxy: reset IE using <code>inetcpl.cpl</code> then Advanced then Reset. Remove proxy from K7 Application and retry.','If still failing: check ISP. If BSNL, office internet, or railways — ask them to use personal internet or a different ISP.','If still same issue: collect info below and escalate.'],escalate:['Installation Type','ISP Name','Diag Report','Tried different ISP?','Internet type (Home/Office)']},
+{id:'act-002',cat:'Activation',title:'Activation button is not responding',tags:['activation button','not responding','sym','symsrv','proxy','office','firewall'],preview:'Button click does nothing. Check symsrv.dll, OS version, proxy, and internet type.',steps:['Check for sym file at <code>C:\\Program Files\\Common Files\\System</code> — look for <code>symsrv.dll</code>.','If symsrv.dll is present: escalate the case.','If not present: check OS. For XP/Vista ensure service pack is updated and K7 is installed with latest setup file.','For OS other than XP/Vista: reset IE using <code>inetcpl.cpl</code>.','Remove proxy from K7 if any.','If office network: firewall may be blocking activation URL. Try with personal connection.','If still same issue: collect info below and escalate.'],escalate:['Installation Type','ISP Name','Diag Report','Tried different ISP?','Internet type (Home/Office)']},
+{id:'act-003',cat:'Activation',title:'Activation failed — error 5023, 404, 303',tags:['5023','404','303','activation failed','error code','proxy','bsnl','act'],preview:'Numeric error codes during activation. Usually proxy, ISP block, or outdated setup.',steps:['Check for an active internet connection.','Verify installation type — if CD, switch to LSF.','Check if connecting via proxy. If yes, use direct connection or whitelist K7 URLs.','If no proxy: reset IE and remove proxy from K7, then retry.','If issue persists: check ISP — if BSNL, ACT, office, or railways, ask to use personal internet.','If still same issue: escalate with required info.'],escalate:['Installation Type','ISP Name','Diag Report','Tried different ISP?','Internet type (Home/Office)']},
+{id:'act-004',cat:'Activation',title:'Activation failed — secured Wi-Fi required (Total Security Plus)',tags:['wifi','secured','password','hotspot','total security plus','airport','hotel'],preview:'K7 Total Security Plus will not activate on open (unsecured) Wi-Fi networks.',steps:['This issue occurs only with K7 Total Security Plus. Verify product name first.','Message appears because Wi-Fi is unprotected (no password). Ask user to enable Wi-Fi password.','If open public wifi (airport, railways, hotel): ask user to use personal internet to activate.','If user does not know how to enable Wi-Fi password: refer to <a href="https://rb.gy/hvr24b" target="_blank">this guide</a>.','Alternatively, suggest USB tethering instead of Wi-Fi.']},
+{id:'act-005',cat:'Activation',title:'Activation window shows blank',tags:['blank','activation window','sym','proxy','firewall','lsf'],preview:'Activation window opens but shows nothing. Check sym, reset IE, check ISP firewall.',steps:['Check for <code>symsrv.dll</code> at <code>C:\\Program Files\\Common Files\\System</code> — if present, proceed with sym procedure.','If not present: reset IE and remove proxy entry from K7, then retry.','If same issue: confirm ISP has no block or firewall.','If proxy/firewall present: use personal connection or whitelist K7 URLs.','If still same issue: ensure LSF installation and escalate.']},
+{id:'act-006',cat:'Activation',title:'Internet connection not present (during activation)',tags:['internet connection not present','sym','proxy','ie','xp','sp2','ie6','firewall'],preview:'Multiple possible causes: sym virus, IE issue, proxy, XP SP2, or old setup file.',sections:[{heading:'Check Sym File First',steps:['Check <code>symsrv.dll</code> at <code>C:\\Program Files\\Common Files\\System</code>. If present, follow sym solution process.']},{heading:'IE Issue',steps:['Reset IE: Run then <code>inetcpl.cpl</code> then Advanced then Reset then enable Delete personal settings then Reset. Allow K7 system monitor pop-ups when prompted.']},{heading:'Proxy in K7 or IE',steps:['Open K7 then Updates then Configure Updates then uncheck Access Internet Through Proxy Server. Remove proxy details.']},{heading:'Old Setup File',steps:['Verify installation type is LSF (downloaded from website). Old CDs may not support HTTPS activation.']},{heading:'XP SP2 / IE 6 Issue',steps:['If Windows XP SP2 or IE 6: install with latest build. For XP SP3 with IE 6: upgrade IE to version 8 (free). Suggest upgrading OS as XP is outdated.']},{heading:'Internet / Office Firewall',steps:['If office network has web filtering, ask to use different internet or provide K7 URLs for firewall whitelist.']}]},
+{id:'act-007',cat:'Activation',title:'Invalid email ID — incorrect format',tags:['invalid email','email format','@'],preview:'User entered email in wrong format like support@gmail@com or support.gmail.com',steps:['This error occurs if email is entered with wrong format.','Example invalid: <code>support@gmail@com</code> or <code>support.gmail.com</code>','Correct format: <code>customermailid@gmail.com</code> — ask user to re-enter correctly.']},
+{id:'act-008',cat:'Activation',title:'License exceeded — customer using all 3 users (formatted PC)',tags:['license exceeded','multi user','3 users','formatted','deactivate','my account'],preview:'User formatted one PC without deactivating first. Server sees it as a 4th device.',steps:['Open <a href="https://www.k7computing.com/accounts/signinLtd" target="_blank">K7 My Account</a> and log in.','Click the blue arrow next to the serial number.','Select Manage under Protection.','Select Deactivate and choose the PC that was recently reinstalled.','Once Deactivation Successfully shows, close My Account.','Try activating again — should now work.']},
+{id:'act-009',cat:'Activation',title:'License exceeded — key sold to different customers',tags:['license exceeded','sold','different customers','dealer','multi user'],preview:'Key activated on multiple unrelated devices. Handle with caution — do not reset.',steps:['Check if user has access to the registered email ID.','If YES: follow deactivation steps via <a href="https://www.k7computing.com/accounts/signin" target="_blank">K7 My Account</a>.','If NO: ask user to contact the same dealer from where product was purchased.','Do NOT reset the key — it will affect other users. Check with floor manager first.']},
+{id:'act-010',cat:'Activation',title:'Need activation code — offline activation',tags:['activation code','offline','offline activation','system id','no internet'],preview:'Customer needs to activate without internet. Generate code via K7 offline portal.',steps:['Open K7 Security then click Activation then proceed until Activation Fail – Internet Connection not present.','Click "Click here to activate offline" to get the System ID.','On a device with internet, visit <a href="http://register.k7computing.com/OfflineActivation/" target="_blank">K7 Offline Activation</a>.','Enter Serial Key and System ID then click Submit to get Activation Code.','Enter this code in the offline activation screen on the original PC.'],infoBox:{type:'amber',title:'Important',text:'We do not generate activation codes from our end. Always send the website link for the customer to generate it.'}},
+{id:'act-011',cat:'Activation',title:'Serial number incorrect — mistyped or misspelled',tags:['serial number','incorrect','mistype','O vs 0','B vs 8','invalid key'],preview:'User may have confused O/0 or B/8. Verify key in portal before escalating.',steps:['User may be confusing characters like O and 0, or 8 and B. Ask them to check carefully.','Validate the key in the serial key portal.','If invalid and key received via email from seller: ask user to contact seller to verify.','If user has physical serial key slip: ask customer to send scan/photo to <a href="mailto:support@k7computing.com">support@k7computing.com</a>.']},
+{id:'act-012',cat:'Activation',title:'Serial number already activated with different email — customer misspelled',tags:['different email','misspelled','email mismatch','reset'],preview:'Minor typo in email during activation. Reset policy depends on user count and mistake severity.',steps:['If single-user key with minor typo (e.g. gmail vs gamil): you can proceed with reset.','If multi-user key: do NOT reset without confirmation. Inform customer all 3 users must re-activate. Get written confirmation before proceeding.','If email is completely different: check with floor manager before resetting.']},
+{id:'act-013',cat:'Activation',title:'Serial number activated with different email — customer trying different mail',tags:['different email','trying another email','forgot email','invoice'],preview:'Customer does not remember the original email. Need invoice and serial key copy.',steps:['If user does not know the registered email: request invoice and serial key slip scan copy via email to <a href="mailto:support@k7computing.com">support@k7computing.com</a>.','Inform customer they are using a different email — if they remember the original, use that instead.','Do not share registered email to customer without consulting floor manager.']},
+{id:'act-014',cat:'Activation',title:'Serial number activated with different email — dealer sold to 3 customers',tags:['dealer','sold to multiple','3 customers','multi user'],preview:'Dealer sold same multi-user key to multiple customers. Do not reset. Redirect to dealer.',steps:['If customer confirms bought only 1 user but key is multi-user and all devices activated: do NOT reset.','Redirect customer to same dealer from where they purchased.','Ask dealer to provide email ID or re-activate.','Note: resetting may deactivate other 2 users. Check with floor manager if in doubt.']},
+{id:'act-015',cat:'Activation',title:'Serial number incorrect — IP address issue (out of India detection)',tags:['ip address','out of india','bsnl','isp','serial incorrect'],preview:'K7 detects customer as outside India due to ISP-assigned foreign IP.',steps:['K7 products from market/resellers can only be used within India. (Do NOT share this with customer.)','Customer may be flagged as out-of-India due to ISP assigning a foreign IP address.','Ask user to try activation with a different ISP.','If customer refuses: get the IP address and send mail to Mr. Faridha to whitelist the IP.']},
+{id:'act-016',cat:'Activation',title:'Serial number incorrect — wrong product',tags:['wrong product','serial key','total security','internet security'],preview:'Serial key is valid but for a different K7 product variant.',steps:['Collect serial key and verify in portal.','K7 serial keys work only with the matching product — Total Security key will not work with Total Security Plus or Internet Security.','Check serial key and provide the correct setup file download link via email.']},
+{id:'act-017',cat:'Activation',title:'Serial number incorrect — customer is outside India',tags:['outside india','international','flipkart','amazon','offshore'],preview:'Indian market keys cannot be activated outside India per K7 policy.',steps:['K7 products from Indian market/resellers cannot be used outside India.','If dealer selling outside India: ask them to sign up or email support to get an international key.','If customer bought from Indian e-commerce (Flipkart/Amazon.in): ask to contact seller.','If Indian user temporarily abroad in emergency: check with floor manager before proceeding.']},
+{id:'act-018',cat:'Activation',title:'Single user license exceeded',tags:['single user','exceeds','limit','deactivate','my account'],preview:'Single user key hitting limit. Deactivate old device via My Account portal.',steps:['Open <a href="http://register.k7computing.com/subscriptions/MyAccount.asp" target="_blank">K7 My Account</a> and log in.','Click the blue arrow next to serial number.','Select Manage under Protection.','Select Deactivate and choose the relevant user/PC.','Once Deactivation Successfully shows, try activating again.']},
+{id:'act-019',cat:'Activation',title:'How to activate product without internet (offline)',tags:['offline activation','no internet','system id','activation code'],preview:'Step-by-step offline activation procedure for customers without internet access.',steps:['Try online activation first if any internet is available.','Inform customer: after offline activation, only offline updates will work.','Open K7 then click Activation then proceed until Activation Fail – Internet Connection not present.','Click "Click here to activate offline" to get the System ID.','On an internet-connected device, visit <a href="http://register.k7computing.com/OfflineActivation/" target="_blank">K7 Offline Activation page</a>.','Enter Serial Key and System ID then Submit then note the Activation Code.','Enter the Activation Code on the original PC.']},
+{id:'act-020',cat:'Activation',title:'Activation error 130 — proxy settings issue',tags:['activation error 130','proxy','configure update','access internet through proxy server'],preview:'Activation error 130 is often caused by proxy settings in K7. Disable proxy access in Configure Updates and retry activation.',steps:['Open the K7 product and click Update.','Choose Configure update.','Uncheck Access Internet through proxy server.','Click OK and try activation again.']},
+{id:'upd-001',cat:'Updates',title:'Error copying new updated files',tags:['error copying','update files','avdefs','safe mode','bytefence'],preview:'Update fails while copying files. Check restart, 3rd party AV, and AVDefs folder.',steps:['Check if system has restarted recently (2-3 days). If not, restart via Run then <code>shutdown /r /t 00</code>.','Check for 3rd party free antivirus (Bytefence, Seguro etc.). Remove them and retry.','Try to access <code>%programfiles%\\K7 Computing\\K7TSecurity\\AVDefs</code>.','If AVDefs folder is inaccessible: rename it in safe mode and create a new AVDefs folder.','If same issue: get diag tool and escalate.']},
+{id:'upd-002',cat:'Updates',title:'Cab file downloaded is corrupted',tags:['cab file','corrupted','date and time','sha1','bsnl'],preview:'Downloaded update files are invalid. Check system date/time and run SHA1 tool.',steps:['Check system date and time — ensure they are correct.','Run SHA1 tool and then attempt update.','If still same: reinstall if running older version.','Check for firewall — if present, ask to allow K7 update URLs.','If no firewall and ISP is BSNL: try with different internet.','If same on different ISP: escalate.']},
+{id:'upd-003',cat:'Updates',title:'Customer wants offline updater',tags:['offline updater','offline update','free tools','download'],preview:'Provide link to download K7 Offline Updater from official free tools page.',steps:['Direct customer to: <a href="https://k7computing.com/in/free_tools" target="_blank">https://k7computing.com/in/free_tools</a>.','Ask them to download K7 Offline Updater from the page.']},
+{id:'upd-004',cat:'Updates',title:'How to update the K7 product',tags:['how to update','update steps','run update now'],preview:'Basic update procedure for K7 product.',steps:['Connect to the internet.','Open K7 product then click Update then click Run update now.']},
+{id:'upd-005',cat:'Updates',title:'Last error 7 — BSNL blockage',tags:['last error 7','bsnl','isp block','firewall','update url'],preview:'BSNL or firewall is blocking K7 update download URLs.',steps:['Confirm user cannot access K7 update URLs in IE browser.','Check for firewall. If no firewall, contact ISP with URLs to whitelist:','<code>updates.k7computing.com</code>, <code>prdupdates.k7computing.com</code>, <code>bitcast-b.bitgravity.com/k7</code> — file types: .dat, .dsm, .cab','Ask ISP/network engineer/sysadmin to allow these URLs.','Meanwhile, use a different internet connection to update.']},
+{id:'upd-006',cat:'Updates',title:'No Internet connection — last error 12029',tags:['12029','no internet','proxy','ie reset','proxy fix tool'],preview:'Error 12029 during updates. Usually proxy misconfiguration in IE or K7.',steps:['Check active internet by opening any website in IE. Ensure IE version is 8 or above.','Check proxy in IE: Tools then Internet Options then Connections then LAN Settings then uncheck Proxy server (<code>inetcpl.cpl</code>).','Remove proxy from K7: Open K7 then Updates then Configure Updates then remove proxy details.','Download and run: <a href="https://apps.k7computing.com/Tools/dl/free-tools/K7Updt_PrxyEnble_Fix.zip" target="_blank">K7Updt_PrxyEnble_Fix.zip</a>.','Reset IE: Tools then Internet Options then Advanced then Reset.','If still same issue: escalate.']},
+{id:'upd-007',cat:'Updates',title:'Not enough memory to proceed with update',tags:['not enough memory','ram','cabinet.dll','low memory'],preview:'Insufficient RAM or corrupted cabinet.dll causing update failure.',steps:['Ensure K7 is installed with latest setup file (LSF).','Verify at least 512 MB RAM is free.','If RAM is available but same issue: replace <code>cabinet.dll</code> under <code>C:\\Windows\\SysWOW64</code>.','If same issue: get diag tool and escalate.']},
+{id:'upd-008',cat:'Updates',title:'Offline updater shows "not a valid Win32 application"',tags:['win32','offline updater','digital signature','incomplete download'],preview:'Downloaded offline updater is incomplete due to connection drop.',steps:['This occurs when download is incomplete (slow internet or frequent disconnection).','Ask user to download again using a stable connection.','Do NOT suggest specific download managers as many may carry viruses.']},
+{id:'upd-009',cat:'Updates',title:'One or more components required for update is not running',tags:['component not running','lsf','sym','win 7','libdfp'],preview:'Update component missing. Check installation type, sym status, and libdfp.dll.',steps:['Ensure installation type is LSF (not CD). Check sym as per OS (Win 7).','Ensure K7 is properly installed and all settings are visible.','Download and replace <code>libdfp.dll</code> in <code>C:\\Windows\\System32</code> and <code>C:\\Windows\\SysWow64</code>.','Restart machine after replacing and verify.','If same issue: may be due to ELAM — escalate.']},
+{id:'upd-010',cat:'Updates',title:'One or more downloaded files are corrupted',tags:['corrupted download','downloads folder','safe mode'],preview:'K7 update downloads folder has corrupt files. Clear in safe mode and retry.',steps:['Verify <code>C:\\Program Files\\K7 Computing\\K7TSecurity\\Updates\\Downloads</code> is accessible.','If accessible: delete all files inside Downloads folder from safe mode (do not delete the folder itself).','Restart in normal mode and update K7.','If Downloads folder is inaccessible: rename old folder and create a new Downloads folder.','Restart in normal mode and try updating again.','If still same issue: escalate.']},
+{id:'upd-011',cat:'Updates',title:'Reboot pending — "Click here to reboot now" after restart',tags:['reboot pending','registry','rebootpending','temp'],preview:'Reboot pending message persists even after restarting. Fix via registry edit.',steps:['Confirm user has already restarted. Clear temp and %temp% folders first.','Open Registry: <code>HKEY_LOCAL_MACHINE\\SOFTWARE\\WOW6432Node\\K7 Computing\\K7TotalSecurity\\CommonInfo\\Updates</code>.','Find <code>RebootPending</code> — change value from 1 to 0.','Issue should be resolved.']},
+{id:'upd-012',cat:'Updates',title:'No Internet connection — last error 0',tags:['last error 0','slow internet','firewall','office network'],preview:'Error 0 during update. Caused by slow internet or firewall/proxy block.',steps:['Ask user to use offline update and retry online after 2-3 hours.','If same issue: ask user not to use office network. Try different internet.','If update works on different internet: firewall is the cause — provide K7 URLs to whitelist.','If still same issue: escalate.']},
+{id:'upd-013',cat:'Updates',title:'No Internet connection — last error 12007',tags:['last error 12007','proxy','ie reset'],preview:'Error 12007 during updates. Similar to 12029 — proxy misconfiguration.',steps:['Open K7 then Updates then Configure Updates then uncheck Access Internet Through Proxy Server.','Check proxy in IE: Tools then Internet Options then Connections then LAN Settings.','If using proxy: configure correctly in both IE and K7.','Download and run <a href="https://apps.k7computing.com/Tools/dl/free-tools/K7Updt_PrxyEnble_Fix.zip" target="_blank">K7Updt_PrxyEnble_Fix.zip</a>.','Reset IE: Tools then Internet Options then Advanced then Reset.','If still same issue: escalate.']},
+{id:'upd-014',cat:'Updates',title:'Update failed — error 5023, 404, 303',tags:['5023','404','303','update failed','proxy','serial key'],preview:'Numeric error codes during update. Follow proxy cleanup steps and verify serial key.',steps:['Open K7 then Updates then Configure Updates then uncheck Access Internet Through Proxy Server.','Check proxy in IE: Tools then Internet Options then Connections then LAN Settings.','If using proxy: configure correctly in both IE and K7.','Download and run <a href="https://apps.k7computing.com/Tools/dl/free-tools/K7Updt_PrxyEnble_Fix.zip" target="_blank">K7Updt_PrxyEnble_Fix.zip</a>.','Reset IE: Tools then Internet Options then Advanced then Reset.','If same issue: collect serial key and check in serial key DB. Escalate with escalation engineer.']},
+{id:'upd-015',cat:'Updates',title:'Update data file found to be expired on verification',tags:['expired','verification','data file','reinstall'],preview:'Update verification detects expired data files. Reinstall with latest build.',steps:['Reinstall K7 with the latest setup file (LSF) to resolve this issue.']},
+{id:'scn-001',cat:'Scanning',title:'Auto scan not working on external devices',tags:['auto scan','external device','usb','pendrive'],preview:'Auto scan on device connect not working. Feature only available in certain products.',steps:['Check if product is K7 Internet Security Essential — auto scan on external devices is NOT available in this product.','If any other product: Open K7 then Settings then Device Control then enable Scan as soon as device connected.']},
+{id:'scn-002',cat:'Scanning',title:'Data locker blocking files',tags:['data locker','blocked','excel','word','trusted list'],preview:'Data locker blocks 3rd party apps from modifying protected files.',steps:['Open K7 then Settings then Antivirus and Spyware then Data Locker then click Blocked history.','Add required process to Trusted List (e.g. <code>Excel.exe</code>, <code>Word.exe</code>, <code>Outlook.exe</code>).','Note: No 3rd party application can modify files in protected directories except Windows processes.']},
+{id:'scn-003',cat:'Scanning',title:'K7 detecting URLs falsely (false positive)',tags:['false positive','url blocked','false detection','l2'],preview:'K7 is blocking a legitimate URL. Collect report and escalate to L2.',steps:['Collect the blocked URL report and a screenshot of the K7 detection screen.','Escalate the case to L2 engineer to report the false positive.']},
+{id:'scn-004',cat:'Scanning',title:'How to exclude a file from scanning',tags:['exclude','exclusion','whitelist','sentry','real time scanning'],preview:'Add file or folder to K7 exclusion list to prevent it from being scanned.',steps:['Right-click K7 icon in system tray then click Disable Product Protection.','Install your application.','Open K7 then Settings then Antivirus and Antispyware then Sentry then click "Click here to manage exclusions".','Click Add Entry then choose Add File or Add Folder.','Enable checkmark on Exclude from Real Time Scanning and Offline Scanning.'],infoBox:{type:'amber',title:'Warning',text:'Exclusions are at the customer\'s own risk. Do not recommend excluding files/folders unless necessary.'}},
+{id:'scn-005',cat:'Scanning',title:'How to schedule automatic scan',tags:['schedule scan','automatic scan','hard disk scan'],preview:'Set up a recurring scheduled scan for all hard disks.',steps:['Open K7 then Scan then Schedule Scan.','Enter a task name and select scan type as per user preference.','Click Schedule then set the preferred time then Apply and Close.']},
+{id:'scn-006',cat:'Scanning',title:'How to restore files from quarantine',tags:['quarantine','restore','quarantine manager'],preview:'Restore a file K7 has quarantined back to its original location.',steps:['Open K7 then Reports then Quarantine Manager.','Select the file then click Restore.','Confirm warning then click Yes. File returns to original location.']},
+{id:'scn-007',cat:'Scanning',title:'Webcam being blocked by K7',tags:['webcam','camera','privacy protection','blocked'],preview:'K7 Privacy Protection is blocking webcam access for an application.',steps:['Open K7 then Details then Settings under Privacy Protection.','Check if any application entry is blocked — click Edit and enable it.','If same issue after allowing: restart PC and verify.','If K7 is confirmed to be blocking after restart: escalate to L2.']},
+{id:'scn-008',cat:'Scanning',title:'Vulnerability scan query',tags:['vulnerability scan','outdated apps'],preview:'Explaining vulnerability scan results and recommended actions.',steps:['Vulnerability scan checks if all installed applications are up to date.','Outdated applications are vulnerable to viruses and security threats.','Ask customer to download and install the latest version of any detected outdated applications.']},
+{id:'scn-009',cat:'Scanning',title:'Unable to create a temp file',tags:['temp file','temp variable','environment variable'],preview:'TEMP environment variable missing. Need to recreate it in system properties.',steps:['Check for sym (<code>symsrv.dll</code>) — if present, escalate. If not present, proceed.','Right-click My Computer then Properties then Advanced Settings then Environment Variables (<code>sysdm.cpl</code>).','Create TEMP variable: <code>%USERPROFILE%\\AppData\\Local\\Temp</code>','Create TMP variable with same value.','Restart the computer.','If same issue: right-click <code>C:\\Windows\\Temp</code> then provide Everyone full access.']},
+{id:'scn-010',cat:'Scanning',title:'Unable to vaccinate external drive',tags:['vaccinate','write protected','pendrive'],preview:'Vaccination fails on write-protected pen drives.',steps:['Vaccination may fail if pen drive is write protected.','Verify by trying to manually create or delete a folder on the pen drive.','If write protected: nothing can be done — vaccination requires write access.']},
+{id:'scn-011',cat:'Scanning',title:'Unable to access USB device — Access Denied',tags:['usb access denied','device control','usb disabled'],preview:'USB access denied because Device Control has disabled USB devices.',steps:['This occurs when USB is disabled under Device Control.','Open K7 then Settings then Device Control then choose Enable USB on this device then Apply.']},
+{id:'scn-012',cat:'Scanning',title:'Unable to allow or block websites using Web Filtering',tags:['web filtering','block website','twp','lsf'],preview:'Web filtering not working. Check configuration, TWP process, and LSF installation.',steps:['Ensure web filtering is configured correctly. Refer to: <a href="https://support.k7computing.com/index.php?/solutions/view-article/K7-Total-Security-Web-filtering" target="_blank">Web Filtering guide</a>.','Verify the TWP process is running.','Ensure K7 is installed with LSF.','If all correct but issue persists: escalate.']},
+{id:'scn-013',cat:'Scanning',title:'Protection status shows risk',tags:['protection status','risk','reinstall'],preview:'K7 protection status shows at-risk. Check installation and try reinstall.',steps:['Check installation type (CD or LSF).','Verify K7 is updated.','If everything is turned off: reinstall K7 and check.','If same issue after reinstall: escalate.']},
+{id:'scn-014',cat:'Scanning',title:'Unable to start rootkit scan error',tags:['rootkit scan','rootkit error'],preview:'Rootkit scan fails to start. Reinstall K7 to fix.',steps:['Reinstall the K7 product to resolve the rootkit scan error.']},
+{id:'scn-015',cat:'Scanning',title:'Protection status risk — Intrusion Detection',tags:['intrusion detection','ids','protection status'],preview:'Intrusion Detection showing risk status. Escalate or reinstall.',steps:['Escalate the case to L2.','Note: Reinstallation may also fix the error.']},
+{id:'scn-016',cat:'Scanning',title:'Shortcut virus issue',tags:['shortcut','virus','complete scan'],preview:'Possible shortcut virus detected. Run complete scan and restart.',steps:['Check date of last complete scan and last update date.','Run complete scan, restart PC, and verify.','If same issue: escalate with diag report.']},
+{id:'scn-017',cat:'Scanning',title:'PC running very slow after K7 installation',tags:['slow pc','performance','ram','network scan'],preview:'System slowness may or may not be caused by K7. Diagnose before blaming K7.',steps:['If PC is generally slow: check RAM. If less than 800 MB free, advise upgrade.','If issue started only after K7 installation: disable Scan files on Network and check if speed improves.','Basic suggestions: clear temp and %temp%, disable startup programs, run complete scan.','Disable K7 temporarily and verify — if speed improves, it is K7-related.','If confirmed K7-related or malware suspected: escalate.'],infoBox:{type:'amber',title:'Note',text:'Do not run disinfection tools or kill processes proactively.'}},
+{id:'scn-018',cat:'Scanning',title:'K7AVScan.exe — Driver not ready error',tags:['k7avscan','driver not ready','floppy disk','device manager'],preview:'Floppy disk driver causing scan error. Disable floppy disk drive in Device Manager.',steps:['Press Win + R then type <code>compmgmt.msc</code> then Enter then open Device Manager.','Right-click Floppy disk drives then click Disable.','Close the window and retry scan.']},
+{id:'scn-019',cat:'Scanning',title:'K7 Mobile Security reports pre-installed apps as Trojan — false positive',tags:['trojan','false positive','pre-installed app','mobile security','ignore list','report'],preview:'Pre-installed mobile apps detected as Trojan. Send the Mobile Security report so lab can verify and release a cleanup update.',steps:['Open K7 Mobile Security on the device.','Tap Scan and then ignore the detected pre-installed apps.','Open the ignore list and select the app that was detected.','Use the report option to send the detection report to K7 support.','Inform the customer that the lab will verify and release the next update to clean the app.']},
+{id:'scn-020',cat:'Scanning',title:'Android app hanging or crashing — mobile troubleshooting',tags:['mobile hanging','app crash','android','force stop','clear cache','system update'],preview:'Apps that freeze, crash, or won’t open on Android may be fixed by restart, updates, or clearing cache and app data.',steps:['Restart the device by pressing the power button for about 30 seconds until it restarts.','Check for system updates: open Settings, scroll to About phone or About tablet, then tap System updates and follow on-screen steps.','Check app updates in Google Play Store: tap Menu, then My apps & games; update the problem app or tap Update all.','If the problem persists, force stop the app: open Settings, tap Apps, select the app, and tap Force stop.','Clear the app cache: open Settings, tap Apps or Application manager, select the app, tap Storage, then tap Clear cache.','If needed, clear all app data: open Settings, tap Apps or Application manager, select the app, tap Storage, then tap Clear data. Note: this will erase app data.','If the issue is with a Google system app, another downloaded app may be causing it.']},
+{id:'scn-021',cat:'Scanning',title:'Unable to view data on external device — hidden files fix',tags:['hidden data','external device','pen drive','attrib','dir/ah'],preview:'External device files may be hidden by attributes. Use command prompt to remove hidden/system flags and view the data.',steps:['Open Start, type Run, then enter CMD and press Enter.','At the command prompt, switch to the drive letter of the external device (for example, type J: and press Enter).','Run the command <code>attrib -h -r -s -a /s /d</code> to remove hidden, read-only, system, and archive attributes recursively.','To verify the data, run <code>dir /ah</code> and press Enter to view hidden files.','Confirm whether the data is now visible on the device.']} ,
+{id:'con-001',cat:'Connectivity',title:'Unable to share network (network sharing blocked)',tags:['network sharing','firewall','work network','secpol'],preview:'K7 Firewall blocking network sharing. Configure firewall to Work Network mode.',steps:['Disable K7 Firewall and check if sharing works.','If yes: Open K7 then Settings then Firewall then Connections then select Work Network then Apply.','If still not working: Open K7 then Settings then Real-Time Scanning then disable Scan files on Network.','If issue persists: Run then <code>Secpol.msc</code> then Network Connections then Unidentified Network then set to Private then Apply.']},
+{id:'con-002',cat:'Connectivity',title:'Unable to use VPN client',tags:['vpn','twp','deep network monitor','vpn conflict'],preview:'K7 TWP process conflicts with VPN clients as both act as virtual adapters.',steps:['K7 TWP process works as a VPN — only one VPN can run at a time.','Open K7 then General Settings then uncheck Enable Deep Network Monitor.','Restart PC and verify — VPN should now work.']},
+{id:'con-003',cat:'Connectivity',title:'Unable to open websites',tags:['cannot open website','browser','deep network monitor','winsock reset'],preview:'Websites not loading. Check if all browsers affected or only one.',steps:['Check if issue occurs in all browsers or only a specific one.','If only one browser: solution is under Firewall then Application Control for that browser.','If all browsers: Open K7 then Settings then General Settings then uncheck Enable Deep Network Monitor.','Run Command Prompt as Administrator then <code>netsh winsock reset</code> then Enter.','Restart PC then re-enable Enable Deep Network Monitor.','If same issue: escalate.']},
+{id:'con-004',cat:'Connectivity',title:'Unable to access internet in Chrome/Firefox after K7 install',tags:['chrome','firefox','browser','firewall','application control'],preview:'Specific browser blocked by K7 Firewall Application Control after installation.',steps:['Open K7 then Firewall then Application Control then find Google Chrome then click Edit.','Ensure setting is Program has unrestricted access to the internet.','If setting is correct: Open K7 then Settings then General Settings then click Load Install Settings then OK.','Restart system. If still same issue: escalate.']},
+{id:'con-005',cat:'Connectivity',title:'Incoming/outgoing packets being blocked alerts',tags:['packets blocked','firewall alert','incoming','outgoing'],preview:'K7 showing packet block alerts. Disable alerts or run scan to check for virus.',steps:['Open K7 then Settings then Firewall then General then select Do not display any alert.','Restart system and check.','If same issue: try Load Install Settings and restart.','If still same: run complete scan in safe mode to rule out virus.']},
+{id:'con-006',cat:'Connectivity',title:'Unable to access application after K7 installation',tags:['application blocked','firewall','application control'],preview:'Application stops working after K7 install. Check firewall application rules.',steps:['Disable K7 for 5 minutes. If application works: check K7 Firewall then Applications list.','Open K7 then Settings then Firewall then Applications — check if the app is blocked.','If blocked: click Edit then select Program has unrestricted access to the internet.','If all apps have full access but still blocked: collect diag tool and escalate.','Also try: Open K7 then Settings then Sentry then uncheck Scan files on Network.']},
+{id:'con-007',cat:'Connectivity',title:'Certificate error — K7 TWP related',tags:['certificate error','ssl','twp','deep network monitor','https'],preview:'Certificate errors caused by K7 TWP process intercepting HTTPS traffic.',steps:['Open K7 then Settings then General Settings then uncheck Enable Deep Network Monitor.','Run Command Prompt as Administrator then <code>netsh winsock reset</code> then Enter.','Restart PC then re-enable Enable Deep Network Monitor. Issue should be resolved.']},
+{id:'con-008',cat:'Connectivity',title:'Unable to open K7 Firewall — closes automatically',tags:['firewall closes','load install settings'],preview:'K7 Firewall settings window closes immediately. Reset to install settings.',steps:['Open K7 then General Settings then click Load Install Settings then OK.','Restart PC to resolve the issue.']},
+{id:'ins-001',cat:'Installation',title:'Application error 0x000005C after installing K7',tags:['0x000005c','application error','avast','conflicting av','bytefence'],preview:'Error caused by multiple antivirus programs installed simultaneously.',steps:['This error is caused by having multiple AV products on the same PC.','Check if Avast or other AV is present. Disable K7 using system tray icon then uninstall Avast and reboot.','If unable to disable K7: boot into safe mode then uninstall all other AV (Bytefence, Avast Free etc.).','Restart in normal mode and verify.','Also check for <code>symsrv.dll</code> at <code>C:\\Program Files\\Common Files\\System</code>.']},
+{id:'ins-002',cat:'Installation',title:'Installation hangs or freezes',tags:['installation hangs','setup freeze','sym','removal tool','temp'],preview:'Setup gets stuck. Check sym, clear temp, run removal tool, and retry.',steps:['Check for <code>symsrv.dll</code> at <code>C:\\Program Files\\Common Files\\System</code> — if present, escalate.','Verify digital signature of setup file if using online setup.','Delete the file named "program" from <code>C:\\</code> if present.','Run K7 Removal Tool: <a href="https://apps.k7computing.com/Tools/dl/free-tools/K7RT.exe" target="_blank">K7RT.exe</a> and restart.','Clear temp: Run then <code>temp</code> and <code>%temp%</code> then delete all files.','If still same issue: escalate.']},
+{id:'ins-003',cat:'Installation',title:'JSCRIPT.dll or ATL.dll is missing during installation',tags:['jscript.dll','atl.dll','missing dll','registry'],preview:'DLL files missing causing installation failure. Apply registry files as fix.',steps:['Download and run all registry files one by one: <a href="https://drive.google.com/open?id=1XRD7SwtDZ1FsHXm0zLj_1odnmo4qSkvU" target="_blank">Registry Fix Files</a>.','After running all registry files, proceed with K7 installation.']},
+{id:'ins-004',cat:'Installation',title:'Unable to uninstall — forgot administrator password',tags:['uninstall','admin password','forgot password','removal tool'],preview:'K7 cannot be removed without admin password. Use removal tool with serial key.',steps:['K7 cannot be removed without the admin password.','Get the serial key and verify it — then provide K7 Removal Tool (K7RT).','If user does not know the serial key: run diag tool to retrieve it then proceed.']},
+{id:'ins-005',cat:'Installation',title:'Installation fails — other antivirus conflict',tags:['antivirus conflict','other av','avast','removal tool'],preview:'Another AV product is preventing K7 installation.',steps:['Remove other antivirus: Start then Control Panel then Programs then uninstall.','If difficulty removing: use the removal tool specific to that antivirus.','If no other AV but getting false alarm: ensure customer is using latest setup file (LSF).','If using CD or old build: download latest version and install.','If still same issue: escalate.']},
+{id:'ins-006',cat:'Installation',title:'K7 icon missing from system tray and desktop',tags:['icon missing','system tray','desktop shortcut','k7tsecurity.exe'],preview:'K7 icon not showing in tray or desktop after installation.',steps:['Check if <code>K7TSecurity.exe</code> is running. If not: run from <code>C:\\Program Files (x86)\\K7 Computing\\K7TSecurity\\K7TSecurity.exe</code>.','For desktop shortcut: navigate to <code>C:\\ProgramData\\Microsoft\\Windows\\Start Menu\\Programs\\K7TotalSecurity</code>.']},
+{id:'ins-007',cat:'Installation',title:'Unsupported build — old version installed',tags:['unsupported build','old version','outdated','latest build'],preview:'Old version of K7 is not supported. Download and install the latest build.',steps:['Download the latest K7 setup file from the official website and install it.']}
+];
+
+let currentFilter='all',currentArticleId=null,previousView='home';
+
+function getCatColor(cat){return CAT_COLORS[cat]||'var(--text3)';}
+function getInitials(name){return(name||'?').trim().split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);}
+function timeAgo(ts){const d=new Date(ts),m=Math.floor((Date.now()-d)/60000);if(m<1)return'just now';if(m<60)return m+'m ago';const h=Math.floor(m/60);if(h<24)return h+'h ago';return Math.floor(h/24)+'d ago';}
+function highlight(text,q){if(!q)return text;return text.replace(new RegExp('('+q.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<span class="highlight">$1</span>');}
+
+function renderList(articles,containerId,query){
+  const el=document.getElementById(containerId);
+  if(!articles.length){el.innerHTML='<div class="no-results"><p>No results found</p><small>Try different keywords or browse by category</small></div>';return;}
+  const grouped={};
+  articles.forEach(a=>{if(!grouped[a.cat])grouped[a.cat]=[];grouped[a.cat].push(a);});
+  let html='';
+  ['Activation','Updates','Scanning','Connectivity','Installation'].forEach(cat=>{
+    if(!grouped[cat])return;
+    html+=`<div class="section-header"><span class="section-label">${cat}</span><div class="section-line"></div></div><div class="article-grid">`;
+    grouped[cat].forEach(a=>{
+      html+=`<div class="article-card" onclick="openArticle('${a.id}')">
+        <div class="article-cat"><span style="width:8px;height:8px;border-radius:50%;background:${getCatColor(a.cat)};display:inline-block;flex-shrink:0"></span>${a.cat}</div>
+        <div class="article-title">${query?highlight(a.title,query):a.title}</div>
+        <div class="article-preview">${a.preview}</div>
+      </div>`;
+    });
+    html+='</div>';
+  });
+  el.innerHTML=html;
+}
+
+function getSearchResults(val){
+  const q=val.toLowerCase();
+  return ARTICLES.filter(a=>a.title.toLowerCase().includes(q)||a.preview.toLowerCase().includes(q)||a.tags.some(t=>t.toLowerCase().includes(q))||(a.steps&&a.steps.some(s=>s.toLowerCase().includes(q))));
+}
+
+function handleSearch(val){
+  const clear=document.getElementById('searchClear');
+  const dd=document.getElementById('searchDropdown');
+  clear.style.display=val?'block':'none';
+  if(!val.trim()){dd.classList.remove('open');dd.innerHTML='';document.getElementById('homeResults').style.display='none';return;}
+  const results=getSearchResults(val);
+  if(!results.length){
+    dd.innerHTML='<div class="dropdown-empty">No results found for "'+val+'"</div>';
+    dd.classList.add('open');
+    document.getElementById('homeResults').style.display='none';
+    return;
+  }
+  dd.innerHTML='<div class="dropdown-header">'+results.length+' result'+(results.length!==1?'s':'')+' — press Enter to see all</div>'+
+    results.slice(0,8).map((a,i)=>`<div class="dropdown-item" onclick="openArticle('${a.id}')" data-idx="${i}">
+      <span class="dropdown-cat-dot" style="background:${getCatColor(a.cat)}"></span>
+      <span class="dropdown-title">${a.title}</span>
+      <span class="dropdown-cat-label">${a.cat}</span>
+    </div>`).join('');
+  dd.classList.add('open');
+  document.getElementById('homeResults').style.display='none';
+}
+
+function handleSearchKey(e){
+  if(e.key==='Enter'){
+    const val=document.getElementById('searchInput').value.trim();
+    if(!val)return;
+    document.getElementById('searchDropdown').classList.remove('open');
+    const results=getSearchResults(val);
+    const info=document.getElementById('resultsInfo');
+    info.textContent=results.length+' result'+(results.length!==1?'s':'')+' for "'+val+'"';
+    document.getElementById('homeResults').style.display='block';
+    renderList(results,'articleListHome',val);
+  }
+  if(e.key==='Escape'){document.getElementById('searchDropdown').classList.remove('open');}
+}
+
+function quickSearch(term){document.getElementById('searchInput').value=term;handleSearch(term);}
+function clearSearch(){
+  document.getElementById('searchInput').value='';
+  document.getElementById('searchClear').style.display='none';
+  document.getElementById('searchDropdown').classList.remove('open');
+  document.getElementById('homeResults').style.display='none';
+}
+
+// Close dropdown when clicking outside
+document.addEventListener('click',function(e){
+  if(!document.getElementById('searchWrap').contains(e.target)){
+    document.getElementById('searchDropdown').classList.remove('open');
+  }
+});
+
+function filterCat(cat,el){
+  document.querySelectorAll('.cat-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  currentFilter=cat;
+  renderList(cat==='all'?ARTICLES:ARTICLES.filter(a=>a.cat===cat),'articleListAll','');
+}
+
+function setView(view){
+  ['home-view','articles-view','detail-view','request-view'].forEach(id=>document.getElementById(id).style.display='none');
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  if(view==='home'){document.getElementById('home-view').style.display='block';}
+  else if(view==='articles'){document.getElementById('articles-view').style.display='block';document.getElementById('nav-articles').classList.add('active');}
+  else if(view==='request'){document.getElementById('request-view').style.display='block';}
+  else if(view==='detail'){document.getElementById('detail-view').style.display='block';}
+  window.scrollTo(0,0);
+}
+function updateAvatar(val){
+  const av=document.getElementById('composeAvatar');
+  if(av)av.textContent=val.trim()?getInitials(val):'?';
+}
+function showHome(){setView('home');}
+function showArticles(){renderList(ARTICLES,'articleListAll','');setView('articles');}
+function showRequest(){setView('request');}
+
+function openArticle(id){
+  const a=ARTICLES.find(x=>x.id===id);
+  if(!a)return;
+  previousView=document.getElementById('articles-view').style.display==='block'?'articles':'home';
+  currentArticleId=id;
+  let stepsHtml='';
+  if(a.sections){a.sections.forEach(s=>{stepsHtml+=`<div class="sub-heading">${s.heading}</div><ul class="steps-list">${s.steps.map(st=>`<li><p>${st}</p></li>`).join('')}</ul>`;});}
+  else if(a.steps){stepsHtml='<ul class="steps-list">'+a.steps.map(s=>`<li><p>${s}</p></li>`).join('')+'</ul>';}
+  const infoHtml=a.infoBox?`<div class="info-box ${a.infoBox.type}"><div class="info-title">${a.infoBox.title}</div><p>${a.infoBox.text}</p></div>`:'';
+  const escHtml=a.escalate?`<div class="escalate-box"><h4>&#128203; Info to collect before escalating</h4><div class="escalate-fields">${a.escalate.map(f=>`<div class="escalate-field">${f}</div>`).join('')}</div></div>`:'';
+  document.getElementById('detailContent').innerHTML=`
+    <div class="detail-cat"><span style="width:9px;height:9px;border-radius:50%;background:${getCatColor(a.cat)};display:inline-block"></span>${a.cat}</div>
+    <div class="detail-title">${a.title}</div>
+    <div class="detail-meta"><span>ID: ${a.id.toUpperCase()}</span><span>${a.tags.slice(0,3).join(', ')}</span></div>
+    <hr class="detail-divider">${stepsHtml}${infoHtml}${escHtml}`;
+  setView('detail');
+  loadNotes(id);
+}
+function goBack(){previousView==='articles'?showArticles():showHome();}
+
+async function loadNotes(articleId){
+  document.getElementById('notesList').innerHTML='<div class="notes-loading">Loading notes...</div>';
+  try{
+    const{data,error}=await sb.from('notes').select('*').eq('article_id',articleId).order('created_at',{ascending:false});
+    if(error)throw error;
+    renderNotes(data||[]);
+  }catch(e){
+    document.getElementById('notesList').innerHTML='<div class="empty-notes">Could not load notes.<br>Check Supabase connection.</div>';
+  }
+}
+
+function renderNotes(notes){
+  document.getElementById('notesBadge').textContent=notes.length;
+  document.getElementById('notesList').innerHTML=notes.length
+    ?notes.map(n=>`<div class="note-item">
+        <div class="note-avatar">${getInitials(n.agent_name)}</div>
+        <div class="note-body">
+          <div class="note-bubble">
+            <div class="note-author">${n.agent_name}</div>
+            <div class="note-text">${n.note_text}</div>
+          </div>
+          <div class="note-meta-row">
+            <span class="note-time">${timeAgo(n.created_at)}</span>
+            ${n.solved?'<span class="note-solved-badge">&#10003; Solved the issue</span>':''}
+          </div>
+        </div>
+      </div>`).join('')
+    :'<div class="empty-notes">No agent notes yet.<br>Be the first to share a tip! &#128073;</div>';
+}
+
+async function submitNote(){
+  const agent=document.getElementById('noteAgent').value.trim();
+  const text=document.getElementById('noteText').value.trim();
+  const solved=document.getElementById('noteSolved').checked;
+  if(!agent||!text){alert('Please enter your name and note.');return;}
+  const article=ARTICLES.find(a=>a.id===currentArticleId);
+  const btn=document.getElementById('noteSubmitBtn');
+  btn.disabled=true;btn.innerHTML='Posting...';
+  try{
+    const{error}=await sb.from('notes').insert({article_id:currentArticleId,article_title:article?article.title:'',agent_name:agent,note_text:text,solved:solved});
+    if(error)throw error;
+    try{
+      await emailjs.send('service_i4qp00s','template_mqiwadb',{from_name:agent,article_title:article?article.title:currentArticleId,message:text,solved:solved?'Yes — solved the issue':'No',to_email:'diwanchowthry@k7computing.com'});
+    }catch(mailErr){console.warn('Email failed but note was saved',mailErr);}
+    document.getElementById('noteText').value='';
+    document.getElementById('noteSolved').checked=false;
+    await loadNotes(currentArticleId);
+  }catch(e){
+    alert('Could not post note. Please try again. Error: '+e.message);
+  }
+  btn.disabled=false;btn.innerHTML='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Post Note';
+}
+
+async function submitRequest(){
+  const name=document.getElementById('reqName').value.trim();
+  const cat=document.getElementById('reqCategory').value;
+  const title=document.getElementById('reqTitle').value.trim();
+  const desc=document.getElementById('reqDesc').value.trim();
+  if(!name||!title||!desc){alert('Please fill in your name, issue title, and description.');return;}
+  const btn=document.getElementById('reqSubmitBtn');
+  btn.disabled=true;btn.textContent='Sending...';
+  try{
+    await emailjs.send('service_i4qp00s','template_mqiwadb',{from_name:name,article_title:'MISSING KB REQUEST: '+title,message:'Category: '+(cat||'Not specified')+'\n\n'+desc,solved:'N/A — Missing KB request',to_email:'diwanchowthry@k7computing.com'});
+    document.getElementById('successMsg').style.display='block';
+    document.getElementById('reqName').value='';document.getElementById('reqCategory').value='';document.getElementById('reqTitle').value='';document.getElementById('reqDesc').value='';
+  }catch(e){
+    alert('Could not send. Please contact Diwan directly at diwanchowthry@k7computing.com');
+  }
+  btn.disabled=false;btn.textContent='Submit Request';
+}
+
+showHome();
+
+// ── Dark mode ──
+function kbToggleTheme(){
+  var isDark=document.documentElement.getAttribute('data-theme')==='dark';
+  var next=isDark?'light':'dark';
+  document.documentElement.setAttribute('data-theme',next);
+  localStorage.setItem('kb_theme',next);
+  document.getElementById('kb-theme-btn').textContent=next==='dark'?'☀️':'🌙';
+}
+(function(){
+  var saved=localStorage.getItem('kb_theme');
+  // Also sync with parent portal theme if open inside iframe or same session
+  if(!saved){saved=localStorage.getItem('theme')||'light';}
+  if(saved==='dark'){
+    document.documentElement.setAttribute('data-theme','dark');
+    var btn=document.getElementById('kb-theme-btn');
+    if(btn)btn.textContent='☀️';
+  }
+})();
+
+// ── KB Bridge — expose ARTICLES to parent window for Orange Cat ──
+(function(){
+  try{
+    window._kbArticles=ARTICLES;
+    // Also expose to parent if opened as popup
+    if(window.opener&&!window.opener.closed){
+      window.opener._kbArticles=ARTICLES;
+    }
+    // Expose to parent frame
+    if(window.parent&&window.parent!==window){
+      window.parent._kbArticles=ARTICLES;
+    }
+  }catch(e){}
+})();
+</script>
+</body>
+</html>
