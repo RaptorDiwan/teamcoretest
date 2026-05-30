@@ -11434,6 +11434,7 @@ function pplCloseLightbox(){
 //  window.* functions (catTestAI etc) can access them
 // ═══════════════════════════════════════════════════
 window.CAT_OPENROUTER_KEY = 'YOUR_KEY_HERE';
+window.CAT_ENABLED_KEY = 'cat_global_enabled';
 window.CAT_SYSTEM = 'You are Orange Cat, a witty K7 Security support assistant with a fun cat personality. Always call users Boss. Use cat emojis naturally. Keep replies concise and helpful. K7 fixes: Error 12029/12007 - go to K7 Updates, Configure Updates, remove proxy settings, Apply and OK. Activation offline - use K7 website offline activation with Request Code. Clean install - use K7 Removal Tool then reinstall. High CPU - exclude folders from scan. Firewall blocking - add K7 executables to Windows Firewall exceptions. After 5+ questions be playfully tired and mention needing milk. When issue solved say Done Boss.';
 </script>
 
@@ -13699,9 +13700,9 @@ async function cdCatToggle(enabled){
   if(msg){ msg.style.display='block'; msg.textContent='Saving…'; msg.style.color='var(--text-muted)'; }
   try{
     var val = enabled ? 'true' : 'false';
-    var ex = await sbQuery('settings','key=eq.'+CAT_ENABLED_KEY+'&select=key');
-    if(ex&&ex.length){ await sbUpdate('settings','key',CAT_ENABLED_KEY,{value:val}); }
-    else { await sbInsert('settings',{key:CAT_ENABLED_KEY,value:val}); }
+    var ex = await sbQuery('settings','key=eq.cat_global_enabled&select=key');
+    if(ex&&ex.length){ await sbUpdate('settings','key','cat_global_enabled',{value:val}); }
+    else { await sbInsert('settings',{key:'cat_global_enabled',value:val}); }
     if(st){ st.textContent = enabled ? '✅ ON' : '🔴 OFF'; st.style.color = enabled ? '#2ec56f' : '#ef493c'; }
     var catw = document.getElementById('catw');
     if(catw){ catw.style.display = enabled ? '' : 'none'; if(!enabled&&typeof catClose==='function') catClose(); }
@@ -13763,9 +13764,10 @@ async function cdLoadAgents(){
     }
     // Celebration agent dropdown
     if(sel){
-      sel.innerHTML = users.filter(function(u){return u.role!=='syslevel';}).map(function(u){
-        return '<option value="'+u.id+'" data-name="'+esc(u.name)+'">'+esc(u.name)+'</option>';
-      }).join('');
+      sel.innerHTML = '<option value="all" data-name="the Team">🌟 All Agents (Everyone)</option>' +
+        users.filter(function(u){return u.role!=='syslevel';}).map(function(u){
+          return '<option value="'+u.id+'" data-name="'+esc(u.name)+'">'+esc(u.name)+'</option>';
+        }).join('');
       cdCelTypeChange(); // pre-fill message
     }
   }catch(e){}
@@ -13872,7 +13874,7 @@ async function cdPostAnnouncement(){
   if(!text){ if(msg){msg.style.display='block';msg.textContent='Please type an announcement.';msg.style.color='#ef493c';} return; }
   if(msg){ msg.style.display='block'; msg.textContent='Posting…'; msg.style.color='var(--text-muted)'; }
   try{
-    await sbInsert('announcements',{ content:text, pinned:pin, created_by:currentUser.id, created_by_name:currentUser.name, created_at:new Date().toISOString() });
+    await sbInsert('announcements',{ text:text, pinned:pin, posted_by:currentUser.name, created_at:new Date().toISOString() });
     document.getElementById('cd-ann-input').value='';
     document.getElementById('cd-ann-pin').checked=false;
     if(msg){ msg.textContent='✅ Posted!'; msg.style.color='#2ec56f'; setTimeout(function(){msg.style.display='none';},2000); }
@@ -13884,16 +13886,16 @@ async function cdLoadAnnouncements(){
   var list = document.getElementById('cd-ann-list');
   if(!list) return;
   try{
-    var rows = await sbQuery('announcements','select=id,content,pinned,created_by_name,created_at&order=pinned.desc,created_at.desc&limit=10');
+    var rows = await sbQuery('announcements','select=id,text,pinned,posted_by,created_at&order=pinned.desc,created_at.desc&limit=10');
     if(!rows||!rows.length){ list.innerHTML='<div style="color:var(--text-dim);font-size:.8rem;padding:.5rem 0;">No announcements yet.</div>'; return; }
     list.innerHTML='';
     rows.forEach(function(a){
       var row=document.createElement('div'); row.style.cssText='display:flex;align-items:flex-start;gap:.6rem;padding:.6rem 0;border-bottom:1px solid var(--navy-border);';
       if(a.pinned){var pin=document.createElement('span');pin.style.cssText='font-size:.7rem;background:rgba(239,73,60,.15);color:#ef493c;padding:1px 6px;border-radius:10px;flex-shrink:0;margin-top:2px;';pin.textContent='PIN';row.appendChild(pin);}
       var body=document.createElement('div'); body.style.cssText='flex:1;font-size:.82rem;color:var(--text-primary);';
-      body.textContent=a.content;
+      body.textContent=a.text||'';
       var meta=document.createElement('div'); meta.style.cssText='font-size:.7rem;color:var(--text-dim);margin-top:2px;';
-      meta.textContent=(a.created_by_name||'Admin')+' · '+new Date(a.created_at).toLocaleDateString();
+      meta.textContent=(a.posted_by||'Admin')+' · '+new Date(a.created_at).toLocaleDateString();
       body.appendChild(meta); row.appendChild(body);
       var del=document.createElement('button'); del.style.cssText='background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:.85rem;padding:0 4px;'; del.title='Delete'; del.textContent='🗑';
       del.onclick=(function(id){return function(){cdDeleteAnnouncement(id);};})(a.id);
