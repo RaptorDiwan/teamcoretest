@@ -6403,7 +6403,7 @@ async function qbSaveEdit(quizId){
       correct_answer:ca||null
     });
     if(msg){msg.textContent='Saved!';msg.style.color='var(--accent-green)';}
-    setTimeout(function(){ document.getElementById('qb-edit-'+quizId).style.display='none'; loadQuizAdmin(); },800);
+    setTimeout(function(){ document.getElementById('qb-edit-'+quizId).style.display='none'; loadQuizBuilderList(); },800);
   }catch(e){ if(msg){msg.textContent='Error: '+e.message;msg.style.color='#ef493c';} }
 }
 
@@ -6412,7 +6412,7 @@ async function qbToggleEnabled(quizId, currentlyEnabled){
   try{
     var newVal = !currentlyEnabled;
     await sbUpdate('quizzes','id',quizId,{enabled:newVal});
-    loadQuizAdmin();
+    loadQuizBuilderList();
   }catch(e){ alert('Could not update quiz: '+e.message); }
 }
 
@@ -6594,7 +6594,7 @@ async function renderAgentQuiz(){
       }).join('')+
     '</div>';
   } else {
-    choicesHtml='<textarea class="quiz-essay" id="quiz-essay-input" placeholder="Type your answer here..." oninput="_quizAnswer=this.value"></textarea>';
+    choicesHtml='<textarea class="quiz-essay" id="quiz-essay-input" placeholder="Type your answer here..." oninput="_quizAnswer=this.value.trim();var b=document.getElementById(\'quiz-submit-btn\');if(b)b.disabled=!this.value.trim();"></textarea>';
   }
 
   content.innerHTML='<div class="quiz-card">'+
