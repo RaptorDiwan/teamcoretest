@@ -3271,11 +3271,29 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
         <div style="margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--navy-border);">
           <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem;">
             <div>
-              <h2 class="um-title" style="margin-bottom:.2rem;">🐱 Orange Cat AI Settings</h2>
-              <p class="um-sub" style="margin:0;">Connect the support cat to an AI provider (Gemini, ChatGPT, or Claude).</p>
+              <h2 class="um-title" style="margin-bottom:.2rem;">🐱 Orange Cat AI</h2>
+              <p class="um-sub" style="margin:0;">Enable or disable the cat for all agents, and configure AI provider.</p>
             </div>
             <button class="um-add-btn" onclick="catOpenSettings()" style="white-space:nowrap;">⚙️ Configure AI Brain</button>
           </div>
+
+          <!-- ON/OFF Toggle — clearly visible -->
+          <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.2rem;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius);margin-bottom:.75rem;flex-wrap:wrap;gap:.75rem;">
+            <div>
+              <div style="font-size:.88rem;font-weight:700;color:var(--text-primary);margin-bottom:3px;">Orange Cat — Show / Hide for all agents</div>
+              <div style="font-size:.76rem;color:var(--text-muted);">Turn OFF to hide the cat completely. Agents won't see it until you turn it back ON.</div>
+            </div>
+            <div style="display:flex;align-items:center;gap:.9rem;flex-shrink:0;">
+              <span id="cat-toggle-status" style="font-size:.82rem;color:var(--text-muted);">Loading…</span>
+              <label class="cat-toggle-wrap" title="Toggle Orange Cat for all agents">
+                <input type="checkbox" id="cat-global-toggle" onchange="catGlobalToggle(this.checked)"/>
+                <span class="cat-toggle-slider"></span>
+              </label>
+              <button class="um-cancel-btn" onclick="catToggleRefresh()" style="padding:.35rem .8rem;font-size:.75rem;">↻ Refresh</button>
+            </div>
+          </div>
+          <div id="cat-toggle-msg" style="font-size:.78rem;color:var(--accent-green);margin-bottom:.75rem;display:none;padding:.4rem .6rem;"></div>
+
           <div id="cat-ai-status-card" style="padding:1rem 1.2rem;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius);font-size:.83rem;color:var(--text-muted);">
             Loading AI status…
           </div>
@@ -3328,7 +3346,7 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
           </div>
 
           <!-- ── TAB: ATTENDANCE ── -->
-          <div id="xc-pane-a" class="xc-panel active">
+          <div id="xc-panel-attendance" class="xc-panel active">
             <div class="xc-card">
               <div class="xc-card-title">Section A</div>
               <p class="xc-card-sub">Select a record to update.</p>
@@ -3350,7 +3368,7 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
           </div>
 
           <!-- ── TAB: BREAKS ── -->
-          <div id="xc-pane-b" class="xc-panel">
+          <div id="xc-panel-breaks" class="xc-panel">
             <div class="xc-card">
               <div class="xc-card-title">Section B</div>
               <p class="xc-card-sub">Select a record to update.</p>
@@ -3372,7 +3390,7 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
           </div>
 
           <!-- ── TAB: BREAK LIMITS ── -->
-          <div id="xc-pane-c" class="xc-panel">
+          <div id="xc-panel-limits" class="xc-panel">
             <div class="xc-card">
               <div class="xc-card-title">Section C</div>
               <p class="xc-card-sub">Update configuration values.</p>
@@ -3426,7 +3444,7 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
           </div>
 
           <!-- ── TAB: USER CONFIG ── -->
-          <div id="xc-pane-d" class="xc-panel">
+          <div id="xc-panel-users-adv" class="xc-panel">
             <div class="xc-card">
               <div class="xc-card-title">Section D</div>
               <p class="xc-card-sub">Manage user records.</p>
@@ -4021,6 +4039,8 @@ async function toggleGamingFeature(enabled){
 
 
 async function loadUsersPage(){
+  // Load cat toggle status when manage users page opens
+  setTimeout(catToggleRefresh, 300);
   if(!isAdminUser())return;
   var listEl=document.getElementById('um-user-list');
   listEl.innerHTML='<div style="color:var(--text-dim);font-size:0.875rem;padding:1rem;text-align:center;">Loading...</div>';
@@ -4053,11 +4073,17 @@ async function loadUsersPage(){
 async function tsToggleUser(userId,enabled){
   try{
     await sbUpdate('users','id',userId,{timesheet_enabled:enabled});
-    // Reflect immediately for currently-logged-in user
+    // Reflect immediately for currently-logged-in user (any role)
     if(currentUser && currentUser.id === userId){
       currentUser.timesheetEnabled = enabled;
+      // For admin/TL — override the canSeeTs logic by directly toggling sidebar
+      var tsItem = document.getElementById('sidebar-ts');
+      if(tsItem){
+        // Admin always keeps it visible — but if they explicitly disable their own, hide it
+        var shouldShow = isAdminUser() ? true : enabled;
+        tsItem.style.display = shouldShow ? 'flex' : 'none';
+      }
       updateAdminVisibility();
-      // If turning off and currently on timesheet page, redirect to dashboard
       if(!enabled){
         var tsPage = document.getElementById('page-timesheet');
         if(tsPage && tsPage.classList.contains('active')){
