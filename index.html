@@ -1767,6 +1767,29 @@ body.dark .ts-input { background:#111827;border-color:#2D3748;color:#F1F5F9; }
     .ppl-edit-grid{grid-template-columns:1fr;}
     .ppl-info-grid{grid-template-columns:1fr;}
   }
+  /* ── Control Deck ── */
+  .cd-wrap{max-width:820px;margin:0 auto;padding:2rem 1.5rem;display:flex;flex-direction:column;gap:1.2rem;}
+  .cd-header{margin-bottom:.5rem;}
+  .cd-title{font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--text-primary);}
+  .cd-sub{font-size:.8rem;color:var(--text-muted);margin-top:3px;}
+  .cd-card{background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius);padding:1.2rem 1.4rem;}
+  .cd-card-header{display:flex;align-items:flex-start;gap:.9rem;}
+  .cd-card-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;flex-shrink:0;}
+  .cd-card-title{font-size:.9rem;font-weight:700;color:var(--text-primary);}
+  .cd-card-sub{font-size:.75rem;color:var(--text-muted);margin-top:2px;}
+  .cd-label{display:block;font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.06em;margin-bottom:4px;}
+  .cd-input{width:100%;background:var(--navy-deep,#0d1627);border:1px solid var(--navy-border);border-radius:8px;padding:.5rem .8rem;color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:.83rem;outline:none;box-sizing:border-box;transition:border-color .18s;}
+  .cd-input:focus{border-color:var(--gold-dim,rgba(239,73,60,.4));}
+  .cd-btn{background:var(--gold);border:none;border-radius:8px;color:#fff;padding:.5rem 1.2rem;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:opacity .18s;white-space:nowrap;}
+  .cd-btn:hover{opacity:.88;}
+  .cd-btn-sec{background:rgba(255,255,255,.06);border:1px solid var(--navy-border);border-radius:8px;color:var(--text-muted);padding:.45rem 1rem;font-family:'DM Sans',sans-serif;font-size:.8rem;cursor:pointer;transition:all .15s;}
+  .cd-btn-sec:hover{background:rgba(255,255,255,.1);color:var(--text-primary);}
+  .cd-btn-danger{background:rgba(239,73,60,.15);border:1px solid rgba(239,73,60,.3);border-radius:8px;color:#ef493c;padding:.45rem 1rem;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
+  .cd-btn-danger:hover{background:rgba(239,73,60,.25);}
+  .cd-msg{font-size:.78rem;color:var(--accent-green);}
+  .cd-agent-row{display:flex;align-items:center;justify-content:space-between;padding:.4rem .6rem;background:var(--navy-hover,rgba(255,255,255,.03));border-radius:6px;}
+  .cd-agent-name{font-size:.82rem;color:var(--text-primary);}
+
   /* Cat global toggle switch */
   .cat-toggle-wrap{position:relative;display:inline-block;width:44px;height:24px;flex-shrink:0;}
   .cat-toggle-wrap input{opacity:0;width:0;height:0;}
@@ -2105,37 +2128,6 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
   .tb-bm-sep { height: 1px; background: rgba(255,255,255,.08); margin: .35rem .25rem; }
 
   /* ── BREAK SUGGESTION POPUP ── */
-  .break-suggest-popup {
-    position: fixed; inset: 0; z-index: 99999;
-    display: none; align-items: center; justify-content: center;
-    background: rgba(7,13,45,.55); backdrop-filter: blur(6px);
-  }
-  .break-suggest-popup.show { display: flex !important; animation: bspFadeIn .25s ease; }
-  @keyframes bspFadeIn { from { opacity:0; } to { opacity:1; } }
-  .bsp-card {
-    background: #0E1432; border: 1px solid rgba(255,255,255,.18);
-    border-radius: 20px; padding: 2rem 2.2rem;
-    width: 340px; max-width: 90vw;
-    box-shadow: 0 24px 80px rgba(0,0,0,.6);
-    animation: bspSlideUp .3s cubic-bezier(.34,1.56,.64,1);
-    text-align: center;
-  }
-  @keyframes bspSlideUp { from { opacity:0; transform:translateY(24px) scale(.96); } to { opacity:1; transform:translateY(0) scale(1); } }
-  @keyframes fadeSlideUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-  .bsp-emoji { font-size: 1.4rem; margin-bottom: .4rem; }
-  .bsp-title { font-size: .85rem; font-weight: 700; color: #fff; margin-bottom: .2rem; }
-  .bsp-sub   { font-size: .74rem; color: rgba(255,255,255,.5); margin-bottom: .8rem; line-height: 1.5; }
-  .bsp-btns  { display: flex; gap: .5rem; }
-  .bsp-take  { flex: 1; padding: .38rem .5rem; background: var(--gold); color: #fff;
-    border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif;
-    font-size: .75rem; font-weight: 700; cursor: pointer; transition: background .15s; }
-  .bsp-take:hover { background: #d94438; }
-  .bsp-later { flex: 1; padding: .38rem .5rem; background: rgba(255,255,255,.09);
-    color: rgba(255,255,255,.7); border: 1px solid rgba(255,255,255,.14);
-    border-radius: 8px; font-family: 'DM Sans', sans-serif;
-    font-size: .75rem; font-weight: 600; cursor: pointer; transition: background .15s; }
-  .bsp-later:hover { background: rgba(255,255,255,.15); }
-
   
   /* ── ABOUT PAGE ── */
   .about-wrap { width: 100%; }
@@ -2425,17 +2417,6 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
       </div>
 
       <!-- Break suggestion popup — centre modal -->
-      <div class="break-suggest-popup" id="break-suggest-popup" onclick="if(event.target===this)tbSuggestLater()">
-        <div class="bsp-card">
-          <div class="bsp-emoji">⏰</div>
-          <div class="bsp-title">Time for a break?</div>
-          <div class="bsp-sub">You've been working for a while. A short break helps you stay sharp!</div>
-          <div class="bsp-btns">
-            <button class="bsp-take" onclick="tbSuggestTake()">☕ Take Break</button>
-            <button class="bsp-later" onclick="tbSuggestLater()">Later</button>
-          </div>
-        </div>
-      </div>
       <!-- Dark mode toggle -->
       <button class="topbar-msg-btn" id="topbar-msg-btn" onclick="showPage('messages',document.getElementById('sidebar-messages'))" title="Messages" style="display:none;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
@@ -2540,9 +2521,9 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
         Messages
         <span id="sidebar-msg-badge" style="display:none;position:absolute;top:6px;right:10px;background:#E24B4A;color:#fff;font-size:.58rem;font-weight:700;min-width:16px;height:16px;border-radius:20px;display:none;align-items:center;justify-content:center;padding:0 3px;">0</span>
       </div>
-      <div class="sidebar-item admin-only" onclick="showPage('announcements', this)">
-        <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-        Announcements
+      <div class="sidebar-item admin-only" id="sidebar-controldeck" onclick="showPage('controldeck', this)">
+        <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><circle cx="17.5" cy="17.5" r="3.5"/></svg>
+        Control Deck
       </div>
       <div class="sidebar-item" onclick="showPage('reports', this)">
         <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -3300,6 +3281,153 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
         </div>
       </div>
 
+      <!-- ══ CONTROL DECK PAGE ══ -->
+      <div class="page" id="page-controldeck">
+        <div class="cd-wrap">
+
+          <!-- Header -->
+          <div class="cd-header">
+            <div>
+              <h2 class="cd-title">⚙️ Control Deck</h2>
+              <p class="cd-sub">Manage team features, celebrations and announcements.</p>
+            </div>
+          </div>
+
+          <!-- ── Section 1: Orange Cat AI ── -->
+          <div class="cd-card">
+            <div class="cd-card-header">
+              <span class="cd-card-icon" style="background:rgba(255,122,47,.12);">🐱</span>
+              <div>
+                <div class="cd-card-title">Orange Cat AI</div>
+                <div class="cd-card-sub">Show or hide the Cat assistant for all agents</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:.8rem;margin-left:auto;">
+                <span id="cd-cat-status" style="font-size:.8rem;color:var(--text-muted);">Loading…</span>
+                <label class="cat-toggle-wrap"><input type="checkbox" id="cd-cat-toggle" onchange="cdCatToggle(this.checked)"/><span class="cat-toggle-slider"></span></label>
+              </div>
+            </div>
+            <div style="margin-top:.8rem;">
+              <button class="cd-btn-sec" onclick="catOpenSettings()">⚙️ Configure AI Brain</button>
+            </div>
+            <div id="cd-cat-msg" class="cd-msg" style="display:none;"></div>
+          </div>
+
+          <!-- ── Section 2: Timesheet ── -->
+          <div class="cd-card">
+            <div class="cd-card-header">
+              <span class="cd-card-icon" style="background:rgba(76,118,168,.12);">📋</span>
+              <div>
+                <div class="cd-card-title">Timesheet</div>
+                <div class="cd-card-sub">Global switch overrides all per-agent settings</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:.8rem;margin-left:auto;">
+                <span id="cd-ts-status" style="font-size:.8rem;color:var(--text-muted);">Loading…</span>
+                <label class="cat-toggle-wrap"><input type="checkbox" id="cd-ts-toggle" onchange="cdTsGlobalToggle(this.checked)"/><span class="cat-toggle-slider"></span></label>
+              </div>
+            </div>
+            <div id="cd-ts-msg" class="cd-msg" style="display:none;"></div>
+            <!-- Per-agent list -->
+            <div style="margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;">
+              <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-bottom:.6rem;">PER AGENT ACCESS</div>
+              <div id="cd-ts-agents" style="display:flex;flex-direction:column;gap:.35rem;">
+                <div style="color:var(--text-dim);font-size:.8rem;">Loading agents…</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Section 3: What's New / Grand Opening ── -->
+          <div class="cd-card">
+            <div class="cd-card-header">
+              <span class="cd-card-icon" style="background:rgba(46,197,111,.12);">🎊</span>
+              <div>
+                <div class="cd-card-title">What's New Banner</div>
+                <div class="cd-card-sub">The grand opening fireworks shown to new users on first login</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:.8rem;margin-left:auto;">
+                <span id="cd-wo-status" style="font-size:.8rem;color:var(--text-muted);">-</span>
+                <button class="cd-btn" onclick="cdWoReset()" title="Reset so all agents see it again on next login">↺ Re-launch for All</button>
+              </div>
+            </div>
+            <div id="cd-wo-msg" class="cd-msg" style="display:none;"></div>
+          </div>
+
+          <!-- ── Section 4: Celebrations ── -->
+          <div class="cd-card">
+            <div class="cd-card-header">
+              <span class="cd-card-icon" style="background:rgba(239,73,60,.12);">🎉</span>
+              <div>
+                <div class="cd-card-title">Celebrations</div>
+                <div class="cd-card-sub">Launch a celebration with fireworks for the whole team</div>
+              </div>
+            </div>
+
+            <!-- Active celebration status -->
+            <div id="cd-cel-active" style="display:none;margin-top:.8rem;padding:.8rem 1rem;background:rgba(46,197,111,.08);border:1px solid rgba(46,197,111,.2);border-radius:var(--radius);">
+              <div style="display:flex;align-items:center;justify-content:space-between;gap:.8rem;">
+                <div>
+                  <div style="font-size:.82rem;font-weight:700;color:#2ec56f;">🟢 Celebration Active</div>
+                  <div id="cd-cel-active-text" style="font-size:.78rem;color:var(--text-muted);margin-top:2px;"></div>
+                </div>
+                <button class="cd-btn-danger" onclick="cdCelStop()">■ Stop</button>
+              </div>
+            </div>
+
+            <!-- Launch form -->
+            <div style="margin-top:.9rem;display:flex;flex-direction:column;gap:.7rem;">
+              <div style="display:flex;gap:.6rem;flex-wrap:wrap;">
+                <div style="flex:1;min-width:160px;">
+                  <label class="cd-label">Celebration Type</label>
+                  <select id="cd-cel-type" class="cd-input" onchange="cdCelTypeChange()">
+                    <option value="birthday">🎂 Birthday</option>
+                    <option value="anniversary">🏆 Work Anniversary</option>
+                    <option value="performer">🥇 Top Performer</option>
+                    <option value="quiz">🎯 Quiz Winner</option>
+                    <option value="custom">🎉 Custom</option>
+                  </select>
+                </div>
+                <div style="flex:1;min-width:160px;">
+                  <label class="cd-label">Agent / Person</label>
+                  <select id="cd-cel-agent" class="cd-input"></select>
+                </div>
+              </div>
+              <div>
+                <label class="cd-label">Message (shown on celebration popup)</label>
+                <textarea id="cd-cel-msg-input" class="cd-input" rows="2" style="resize:none;" placeholder="Happy Birthday [Name]! 🎂"></textarea>
+              </div>
+              <div style="display:flex;gap:.6rem;align-items:center;">
+                <button class="cd-btn" onclick="cdCelLaunch()">🚀 Launch Celebration</button>
+                <span id="cd-cel-msg" class="cd-msg" style="display:inline;"></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── Section 5: Announcements ── -->
+          <div class="cd-card">
+            <div class="cd-card-header">
+              <span class="cd-card-icon" style="background:rgba(76,118,168,.12);">📢</span>
+              <div>
+                <div class="cd-card-title">Announcements</div>
+                <div class="cd-card-sub">Post notices that appear on every agent dashboard</div>
+              </div>
+            </div>
+            <div style="margin-top:.9rem;display:flex;flex-direction:column;gap:.7rem;">
+              <textarea class="cd-input" id="cd-ann-input" rows="3" style="resize:vertical;" placeholder="Type your announcement here..."></textarea>
+              <div style="display:flex;align-items:center;gap:1rem;flex-wrap:wrap;">
+                <button class="cd-btn" onclick="cdPostAnnouncement()">📢 Post to All Agents</button>
+                <label style="display:flex;align-items:center;gap:.4rem;font-size:.8rem;color:var(--text-muted);cursor:pointer;">
+                  <input type="checkbox" id="cd-ann-pin" style="accent-color:var(--gold);"/> Pin to top
+                </label>
+              </div>
+              <div id="cd-ann-msg" class="cd-msg" style="display:none;"></div>
+            </div>
+            <div style="margin-top:1rem;border-top:1px solid var(--navy-border);padding-top:.9rem;" id="cd-ann-list">
+              <div style="color:var(--text-dim);font-size:.8rem;">Loading announcements…</div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
       <!-- ANNOUNCEMENTS PAGE -->
       <div class="page" id="page-announcements">
         <div class="ann-page">
@@ -3742,8 +3870,6 @@ function doLogout(){
   document.getElementById('login-view').classList.add('active');
   var bb=document.getElementById('break-bar');if(bb)bb.style.display='none';
   var tbw=document.getElementById('tb-break-wrap');if(tbw)tbw.style.display='none';
-  tbStopSuggestTimer();
-  var bsp=document.getElementById('break-suggest-popup');if(bsp)bsp.classList.remove('show');
   var ab=document.getElementById('attendance-badge');if(ab)ab.style.display='none';
   document.getElementById('username').value='';
   document.getElementById('password').value='';
@@ -3759,11 +3885,18 @@ function enterDashboard(){
     if(typeof catShowWidget==='function') catShowWidget();
   }, 500);
   // Grand Opening — fires only once per user, ever
-  setTimeout(function(){
-    var key='k7tc_grand_open_v1';
-    if(!localStorage.getItem(key)){
-      localStorage.setItem(key,'1');
-      if(typeof showGrandOpening==='function') showGrandOpening();
+  setTimeout(async function(){
+    // Check DB for whats_new_key — allows admin to re-launch for all
+    try{
+      var rows = typeof sbQuery==='function' ? await sbQuery('settings','key=eq.whats_new_key&select=value') : [];
+      var dbKey = (rows&&rows.length) ? rows[0].value : 'k7tc_grand_open_v1';
+      if(!localStorage.getItem(dbKey)){
+        localStorage.setItem(dbKey,'1');
+        if(typeof showGrandOpening==='function') showGrandOpening();
+      }
+    }catch(e){
+      var key='k7tc_grand_open_v1';
+      if(!localStorage.getItem(key)){ localStorage.setItem(key,'1'); if(typeof showGrandOpening==='function') showGrandOpening(); }
     }
   }, 1200);
 // sys level
@@ -3928,6 +4061,7 @@ function showPage(id,elem){
   if(id==='moments') setTimeout(function(){_mLoadTab(_mActiveTab);},60);
   if(id==='quiz') loadAgentQuiz();
   if(id==='announcements') loadAnnouncementsAdmin();
+  if(id==='controldeck'){ cdLoadAll(); }
   if(id==='assessment') loadAgentAssessment();
   if(id==='quiz-admin') loadQuizBuilderList();
   if(id==='assessment-admin') loadAssessmentBuilderList();
@@ -3937,7 +4071,7 @@ function showPage(id,elem){
 }
 
 function isAdminUser(){return currentUser&&(currentUser.role==='admin'||currentUser.role==='tl'||currentUser.role==='syslevel');}
-function isAdminPage(id){return['quiz-admin','assessment-admin','users','sysconfig'].indexOf(id)>-1;}
+function isAdminPage(id){return['quiz-admin','assessment-admin','users','sysconfig','controldeck'].indexOf(id)>-1;}
 function updateAdminVisibility(){
   var show=isAdminUser();
   document.querySelectorAll('.admin-only').forEach(function(el){
@@ -4542,7 +4676,7 @@ async function loadRosterSummary(){
     try{
       var monthNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
       var curMonth=monthNames[new Date().getMonth()];
-      var settings = await sbQuery('settings','key=like.roster_url%&select=key,value');
+      var settings = await sbQuery('settings','key=ilike.roster_url*&select=key,value');
       if(settings && settings.length){
         // Try current month first
         var monthRow = settings.find(function(r){ return r.key==='roster_url_'+curMonth.toLowerCase(); });
@@ -4970,6 +5104,8 @@ async function recordLogin(){
 
 // ── Heartbeat — updates last_seen every 10 min ──
 var _heartbeatInterval = null;
+
+
 function startHeartbeat(){
   stopHeartbeat();
   heartbeatPing(); // immediate first ping
@@ -5026,6 +5162,10 @@ async function checkLiveSettings(){
         }
       }
     }
+    // 3. Check for active celebration
+    await checkCelebration();
+    // 4. Check timesheet global toggle
+    await checkTsGlobal();
   }catch(e){ /* silent — don't disrupt UX */ }
 }
 async function heartbeatPing(){
@@ -5061,8 +5201,6 @@ function showAttendanceBadge(loginTime){
   if(bar) bar.style.display='none';
   // Start settings poll (cat toggle + timesheet toggle live sync)
   startSettingsPoll();
-  // Start break suggestion timer
-  tbStartSuggestTimer();
   // Start clock
   startLoginClock(loginTime);
   // Restore any active breaks (instead of resetting — handles refresh/new tab/new device)
@@ -7178,7 +7316,7 @@ function renderWhosActive(users,att,onBreakSet){
     // Myself gets a toggle button
     var toggleBtn='';
     if(isMyself(u)){
-      var isCurrentlyOffline=isOffline;
+      var isCurrentlyOffline=manualOffline;
       toggleBtn='<button onclick="togglePresence(\''+u.id+'\',\''+( isCurrentlyOffline?'auto':'offline')+'\')" style="margin-left:.5rem;padding:.15rem .55rem;font-size:.62rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:20px;cursor:pointer;color:var(--text-muted);font-family:\'DM Sans\',sans-serif;" title="'+(isCurrentlyOffline?'Go online':'Go offline')+'">'+(isCurrentlyOffline?'Go Online':'Go Offline')+'</button>';
     }
 
@@ -7190,7 +7328,7 @@ function renderWhosActive(users,att,onBreakSet){
         '<span class="wa-status '+sc+'">'+sl+'</span>'+
         toggleBtn+
       '</div>',
-      order:isOffline?3:isBreak?1:isLoggedIn?0:2
+      order:manualOffline?3:isBreak?1:isOnline?0:2
     };
   });
 
@@ -13065,7 +13203,7 @@ function _catShowWidgetInner(){
     try{
       // Find and trigger the active roster URL load
       if(typeof sbQuery==='function'&&!getRosterRows()){
-        sbQuery('settings','key=like.roster_url%&select=key,value').then(function(rows){
+        sbQuery('settings','key=ilike.roster_url*&select=key,value').then(function(rows){
           if(!rows||!rows.length)return;
           // Find current month's URL
           var now=new Date();
@@ -13527,6 +13665,341 @@ function closeGrandOpening(){
   modal.style.transform='translate(-50%,-50%) scale(0)';
   ov.style.opacity='0'; ov.style.transition='opacity .4s';
   setTimeout(function(){ov.style.display='none'; ov.style.opacity='';},450);
+}
+</script>
+
+
+<script>
+// ═══════════════════════════════════════════════════════
+//  CONTROL DECK
+// ═══════════════════════════════════════════════════════
+var CD_CEL_KEY = 'active_celebration';
+var CD_TS_GLOBAL_KEY = 'ts_global_enabled';
+
+// ── Load all sections on open ──
+async function cdLoadAll(){
+  cdLoadCat();
+  cdLoadTs();
+  cdLoadCelStatus();
+  cdLoadAnnouncements();
+  cdLoadAgents();
+}
+
+// ── Orange Cat ──
+async function cdLoadCat(){
+  var enabled = await catLoadGlobalState();
+  var chk = document.getElementById('cd-cat-toggle');
+  var st  = document.getElementById('cd-cat-status');
+  if(chk) chk.checked = enabled;
+  if(st){ st.textContent = enabled ? '✅ ON' : '🔴 OFF'; st.style.color = enabled ? '#2ec56f' : '#ef493c'; }
+}
+async function cdCatToggle(enabled){
+  var msg = document.getElementById('cd-cat-msg');
+  var st  = document.getElementById('cd-cat-status');
+  if(msg){ msg.style.display='block'; msg.textContent='Saving…'; msg.style.color='var(--text-muted)'; }
+  try{
+    var val = enabled ? 'true' : 'false';
+    var ex = await sbQuery('settings','key=eq.'+CAT_ENABLED_KEY+'&select=key');
+    if(ex&&ex.length){ await sbUpdate('settings','key',CAT_ENABLED_KEY,{value:val}); }
+    else { await sbInsert('settings',{key:CAT_ENABLED_KEY,value:val}); }
+    if(st){ st.textContent = enabled ? '✅ ON' : '🔴 OFF'; st.style.color = enabled ? '#2ec56f' : '#ef493c'; }
+    var catw = document.getElementById('catw');
+    if(catw){ catw.style.display = enabled ? '' : 'none'; if(!enabled&&typeof catClose==='function') catClose(); }
+    if(msg){ msg.textContent = enabled ? 'Cat enabled for all agents!' : 'Cat hidden for all agents!'; setTimeout(function(){ msg.style.display='none'; },2500); }
+  }catch(e){ if(msg){ msg.textContent='Error: '+e.message; msg.style.color='#ef493c'; } }
+}
+
+// ── Timesheet Global ──
+async function cdLoadTs(){
+  try{
+    var rows = await sbQuery('settings','key=eq.'+CD_TS_GLOBAL_KEY+'&select=value');
+    var enabled = true;
+    if(rows&&rows.length) enabled = rows[0].value !== 'false';
+    var chk = document.getElementById('cd-ts-toggle');
+    var st  = document.getElementById('cd-ts-status');
+    if(chk) chk.checked = enabled;
+    if(st){ st.textContent = enabled ? '✅ ON' : '🔴 OFF'; st.style.color = enabled ? '#2ec56f' : '#ef493c'; }
+  }catch(e){}
+}
+async function cdTsGlobalToggle(enabled){
+  var msg = document.getElementById('cd-ts-msg');
+  var st  = document.getElementById('cd-ts-status');
+  if(msg){ msg.style.display='block'; msg.textContent='Saving…'; msg.style.color='var(--text-muted)'; }
+  try{
+    var val = enabled ? 'true' : 'false';
+    var ex = await sbQuery('settings','key=eq.'+CD_TS_GLOBAL_KEY+'&select=key');
+    if(ex&&ex.length){ await sbUpdate('settings','key',CD_TS_GLOBAL_KEY,{value:val}); }
+    else{ await sbInsert('settings',{key:CD_TS_GLOBAL_KEY,value:val}); }
+    if(st){ st.textContent = enabled ? '✅ ON' : '🔴 OFF'; st.style.color = enabled ? '#2ec56f' : '#ef493c'; }
+    if(msg){ msg.textContent = enabled ? 'Timesheet enabled globally.' : 'Timesheet hidden for all agents.'; setTimeout(function(){ msg.style.display='none'; },2500); }
+    // Apply immediately for this session
+    var tsItem = document.getElementById('sidebar-ts');
+    if(tsItem&&!isAdminUser()) tsItem.style.display = enabled ? 'flex' : 'none';
+  }catch(e){ if(msg){ msg.textContent='Error: '+e.message; msg.style.color='#ef493c'; } }
+}
+
+// ── Load agents for ts per-agent and celebration ──
+async function cdLoadAgents(){
+  try{
+    var users = await sbQuery('users','select=id,name,timesheet_enabled&order=name.asc');
+    var wrap = document.getElementById('cd-ts-agents');
+    var sel  = document.getElementById('cd-cel-agent');
+    if(!users||!users.length) return;
+    // TS per-agent list
+    if(wrap){
+      wrap.innerHTML='';
+      users.filter(function(u){return u.role!=='syslevel';}).forEach(function(u){
+        var on=u.timesheet_enabled?true:false;
+        var row=document.createElement('div'); row.className='cd-agent-row'; row.id='cd-ts-row-'+u.id;
+        var nm=document.createElement('span'); nm.className='cd-agent-name'; nm.textContent=u.name;
+        var lbl=document.createElement('label'); lbl.className='cat-toggle-wrap'; lbl.style.transform='scale(.85)'; lbl.title='Toggle timesheet for '+u.name;
+        var cb=document.createElement('input'); cb.type='checkbox'; cb.checked=on;
+        cb.onchange=(function(id){return function(){cdTsAgentToggle(id,this.checked);};})(u.id);
+        var sl=document.createElement('span'); sl.className='cat-toggle-slider';
+        lbl.appendChild(cb); lbl.appendChild(sl);
+        row.appendChild(nm); row.appendChild(lbl);
+        wrap.appendChild(row);
+      });
+    }
+    // Celebration agent dropdown
+    if(sel){
+      sel.innerHTML = users.filter(function(u){return u.role!=='syslevel';}).map(function(u){
+        return '<option value="'+u.id+'" data-name="'+esc(u.name)+'">'+esc(u.name)+'</option>';
+      }).join('');
+      cdCelTypeChange(); // pre-fill message
+    }
+  }catch(e){}
+}
+async function cdTsAgentToggle(userId, enabled){
+  try{
+    await sbUpdate('users','id',userId,{timesheet_enabled:enabled});
+    if(currentUser&&currentUser.id===userId){ currentUser.timesheetEnabled=enabled; updateAdminVisibility(); }
+  }catch(e){ alert('Could not update: '+e.message); }
+}
+
+// ── What's New reset ──
+async function cdWoReset(){
+  var msg = document.getElementById('cd-wo-msg');
+  if(msg){ msg.style.display='block'; msg.textContent='Resetting…'; msg.style.color='var(--text-muted)'; }
+  try{
+    // Write a new launch key to settings — agents check localStorage against this
+    var newKey = 'k7tc_grand_open_v2_'+Date.now();
+    var ex = await sbQuery('settings','key=eq.whats_new_key&select=key');
+    if(ex&&ex.length){ await sbUpdate('settings','key','whats_new_key',{value:newKey}); }
+    else{ await sbInsert('settings',{key:'whats_new_key',value:newKey}); }
+    if(msg){ msg.textContent="✅ Reset! All agents will see What's New on next login."; msg.style.color='#2ec56f'; setTimeout(function(){msg.style.display='none';},3000); }
+  }catch(e){ if(msg){ msg.textContent='Error: '+e.message; msg.style.color='#ef493c'; } }
+}
+
+// ── Celebrations ──
+var CEL_TEMPLATES = {
+  birthday:    function(n){ return 'Happy Birthday '+n+'! Wishing you an amazing day from the whole K7 Support team! 🎂🎉'; },
+  anniversary: function(n){ return 'Happy Work Anniversary '+n+'! Thank you for being an incredible part of the team! 🏆🎊'; },
+  performer:   function(n){ return 'Congratulations '+n+'! You are our Top Performer this month! Outstanding work! 🥇🌟'; },
+  quiz:        function(n){ return 'Congratulations '+n+'! You are our Quiz Champion! Knowledge is power! 🎯🏆'; },
+  custom:      function(n){ return ''; }
+};
+var CEL_COLORS = {
+  birthday:    ['#ff69b4','#ff1493','#ffd700','#ffffff','#ffb6c1'],
+  anniversary: ['#4c76a8','#1e90ff','#ffd700','#c0c0c0','#87ceeb'],
+  performer:   ['#ffd700','#ff8c00','#ff6347','#ffe4b5','#ffffff'],
+  quiz:        ['#8b5cf6','#4c76a8','#ffd700','#00bfff','#ffffff'],
+  custom:      ['#ef493c','#ffaa50','#4c76a8','#2ec56f','#ffffff']
+};
+var CEL_ICONS = { birthday:'🎂', anniversary:'🏆', performer:'🥇', quiz:'🎯', custom:'🎉' };
+
+function cdCelTypeChange(){
+  var type = document.getElementById('cd-cel-type').value;
+  var agentSel = document.getElementById('cd-cel-agent');
+  var msgIn = document.getElementById('cd-cel-msg-input');
+  if(!agentSel||!msgIn) return;
+  var opt = agentSel.options[agentSel.selectedIndex];
+  var name = opt ? (opt.dataset.name||opt.textContent) : '';
+  if(type!=='custom') msgIn.value = CEL_TEMPLATES[type] ? CEL_TEMPLATES[type](name) : '';
+}
+
+async function cdCelLaunch(){
+  var type    = document.getElementById('cd-cel-type').value;
+  var agentSel= document.getElementById('cd-cel-agent');
+  var msg     = document.getElementById('cd-cel-msg-input').value.trim();
+  var feedEl  = document.getElementById('cd-cel-msg');
+  var opt = agentSel ? agentSel.options[agentSel.selectedIndex] : null;
+  var name = opt ? (opt.dataset.name||opt.textContent) : '';
+  if(!msg){ if(feedEl){feedEl.textContent='Please enter a message.';feedEl.style.color='#ef493c';} return; }
+  if(feedEl){ feedEl.textContent='Launching…'; feedEl.style.color='var(--text-muted)'; }
+  var data = { active:true, type:type, name:name, message:msg, launched_at:new Date().toISOString(), colors:CEL_COLORS[type]||CEL_COLORS.custom, icon:CEL_ICONS[type]||'🎉' };
+  try{
+    var ex = await sbQuery('settings','key=eq.'+CD_CEL_KEY+'&select=key');
+    if(ex&&ex.length){ await sbUpdate('settings','key',CD_CEL_KEY,{value:JSON.stringify(data)}); }
+    else{ await sbInsert('settings',{key:CD_CEL_KEY,value:JSON.stringify(data)}); }
+    if(feedEl){ feedEl.textContent='🎉 Launched!'; feedEl.style.color='#2ec56f'; setTimeout(function(){feedEl.textContent='';},3000); }
+    cdLoadCelStatus();
+    // Also show locally for admin
+    showCelebration(data);
+  }catch(e){ if(feedEl){ feedEl.textContent='Error: '+e.message; feedEl.style.color='#ef493c'; } }
+}
+
+async function cdCelStop(){
+  try{
+    var ex = await sbQuery('settings','key=eq.'+CD_CEL_KEY+'&select=key');
+    if(ex&&ex.length){ await sbUpdate('settings','key',CD_CEL_KEY,{value:JSON.stringify({active:false})}); }
+    closeCelebration();
+    cdLoadCelStatus();
+  }catch(e){ alert('Error: '+e.message); }
+}
+
+async function cdLoadCelStatus(){
+  try{
+    var rows = await sbQuery('settings','key=eq.'+CD_CEL_KEY+'&select=value');
+    var activeEl = document.getElementById('cd-cel-active');
+    var textEl   = document.getElementById('cd-cel-active-text');
+    if(!rows||!rows.length||!activeEl){return;}
+    var data = JSON.parse(rows[0].value);
+    if(data&&data.active){
+      activeEl.style.display='block';
+      if(textEl) textEl.textContent = (data.icon||'🎉')+' '+data.message;
+    } else {
+      activeEl.style.display='none';
+    }
+  }catch(e){}
+}
+
+// ── Announcements (moved here) ──
+async function cdPostAnnouncement(){
+  var text = (document.getElementById('cd-ann-input').value||'').trim();
+  var pin  = document.getElementById('cd-ann-pin').checked;
+  var msg  = document.getElementById('cd-ann-msg');
+  if(!text){ if(msg){msg.style.display='block';msg.textContent='Please type an announcement.';msg.style.color='#ef493c';} return; }
+  if(msg){ msg.style.display='block'; msg.textContent='Posting…'; msg.style.color='var(--text-muted)'; }
+  try{
+    await sbInsert('announcements',{ content:text, pinned:pin, created_by:currentUser.id, created_by_name:currentUser.name, created_at:new Date().toISOString() });
+    document.getElementById('cd-ann-input').value='';
+    document.getElementById('cd-ann-pin').checked=false;
+    if(msg){ msg.textContent='✅ Posted!'; msg.style.color='#2ec56f'; setTimeout(function(){msg.style.display='none';},2000); }
+    cdLoadAnnouncements();
+  }catch(e){ if(msg){ msg.textContent='Error: '+e.message; msg.style.color='#ef493c'; } }
+}
+
+async function cdLoadAnnouncements(){
+  var list = document.getElementById('cd-ann-list');
+  if(!list) return;
+  try{
+    var rows = await sbQuery('announcements','select=id,content,pinned,created_by_name,created_at&order=pinned.desc,created_at.desc&limit=10');
+    if(!rows||!rows.length){ list.innerHTML='<div style="color:var(--text-dim);font-size:.8rem;padding:.5rem 0;">No announcements yet.</div>'; return; }
+    list.innerHTML='';
+    rows.forEach(function(a){
+      var row=document.createElement('div'); row.style.cssText='display:flex;align-items:flex-start;gap:.6rem;padding:.6rem 0;border-bottom:1px solid var(--navy-border);';
+      if(a.pinned){var pin=document.createElement('span');pin.style.cssText='font-size:.7rem;background:rgba(239,73,60,.15);color:#ef493c;padding:1px 6px;border-radius:10px;flex-shrink:0;margin-top:2px;';pin.textContent='PIN';row.appendChild(pin);}
+      var body=document.createElement('div'); body.style.cssText='flex:1;font-size:.82rem;color:var(--text-primary);';
+      body.textContent=a.content;
+      var meta=document.createElement('div'); meta.style.cssText='font-size:.7rem;color:var(--text-dim);margin-top:2px;';
+      meta.textContent=(a.created_by_name||'Admin')+' · '+new Date(a.created_at).toLocaleDateString();
+      body.appendChild(meta); row.appendChild(body);
+      var del=document.createElement('button'); del.style.cssText='background:none;border:none;color:var(--text-dim);cursor:pointer;font-size:.85rem;padding:0 4px;'; del.title='Delete'; del.textContent='🗑';
+      del.onclick=(function(id){return function(){cdDeleteAnnouncement(id);};})(a.id);
+      row.appendChild(del); list.appendChild(row);
+    });
+  }catch(e){ list.innerHTML='<div style="color:var(--text-dim);font-size:.8rem;">Could not load announcements.</div>'; }
+}
+
+async function cdDeleteAnnouncement(id){
+  if(!confirm('Delete this announcement?')) return;
+  try{ await sbDelete('announcements','id',id); cdLoadAnnouncements(); }catch(e){ alert('Error: '+e.message); }
+}
+
+// ── Celebration display (shown to agents) ──
+function showCelebration(data){
+  if(!data||!data.active) return;
+  // Don't show if already dismissed this launch
+  var seenKey = 'cel_seen_'+data.launched_at;
+  if(sessionStorage.getItem(seenKey)) return;
+
+  var ov = document.getElementById('grand-overlay');
+  var modal = document.getElementById('grand-modal');
+  var canvas = document.getElementById('grand-canvas');
+  if(!ov||!modal||!canvas) return;
+
+  // Update modal content
+  modal.innerHTML =
+    '<div style="font-size:3rem;margin-bottom:.5rem;">'+data.icon+'</div>'+
+    '<div style="font-family:Cormorant Garamond,serif;font-size:1.7rem;font-weight:700;color:#fff;margin-bottom:.6rem;line-height:1.3;">'+esc(data.message)+'</div>'+
+    '<div style="font-size:.78rem;color:rgba(255,255,255,.4);margin-bottom:1.6rem;">From the K7 Support Team 🧡</div>'+
+    '<button id="cel-dismiss-btn" style="background:linear-gradient(135deg,#ef493c,#d03020);border:none;border-radius:12px;color:#fff;font-family:DM Sans,sans-serif;font-size:.9rem;font-weight:700;padding:.8rem 2.5rem;cursor:pointer;box-shadow:0 4px 20px rgba(239,73,60,.4);">Yay! 🎉</button>';
+
+  document.getElementById('cel-dismiss-btn').onclick = function(){
+    sessionStorage.setItem(seenKey, '1');
+    closeCelebration();
+  };
+
+  // Custom firework colours
+  var cols = data.colors || ['#ef493c','#ffaa50','#4c76a8','#2ec56f','#ffffff'];
+  ov.style.display='block';
+  ov.style.opacity='1';
+  ov.style.transition='';
+  modal.style.transform='translate(-50%,-50%) scale(1)';
+
+  // Fireworks with custom colours
+  canvas.width=window.innerWidth; canvas.height=window.innerHeight;
+  var ctx=canvas.getContext('2d');
+  var pts=[];
+  function burst(x,y){
+    for(var i=0;i<90;i++){
+      var a=Math.random()*Math.PI*2, sp=2+Math.random()*7;
+      pts.push({x:x,y:y,vx:Math.cos(a)*sp,vy:Math.sin(a)*sp-1.5,al:1,col:cols[Math.floor(Math.random()*cols.length)],sz:1.5+Math.random()*3,g:0.1+Math.random()*0.1});
+    }
+  }
+  var shots=[200,500,900,1300,1800,2400,3100,4000,5000];
+  shots.forEach(function(t){ setTimeout(function(){ if(ov.style.display!=='none') burst(80+Math.random()*(window.innerWidth-160),40+Math.random()*(window.innerHeight*0.55)); },t); });
+  burst(window.innerWidth*0.3,window.innerHeight*0.35);
+  setTimeout(function(){ burst(window.innerWidth*0.7,window.innerHeight*0.25); },250);
+  function draw(){
+    if(ov.style.display==='none'){ctx.clearRect(0,0,canvas.width,canvas.height);return;}
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    for(var i=pts.length-1;i>=0;i--){
+      var p=pts[i]; p.x+=p.vx; p.y+=p.vy; p.vy+=p.g; p.vx*=0.98; p.al-=0.013;
+      if(p.al<=0){pts.splice(i,1);continue;}
+      ctx.save(); ctx.globalAlpha=p.al;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.sz,0,Math.PI*2); ctx.fillStyle=p.col; ctx.fill();
+      ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p.x-p.vx*2.5,p.y-p.vy*2.5);
+      ctx.strokeStyle=p.col; ctx.lineWidth=p.sz*0.6; ctx.stroke(); ctx.restore();
+    }
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+function closeCelebration(){
+  var ov=document.getElementById('grand-overlay');
+  var modal=document.getElementById('grand-modal');
+  if(!ov)return;
+  if(modal) modal.style.transform='translate(-50%,-50%) scale(0)';
+  ov.style.opacity='0'; ov.style.transition='opacity .4s';
+  setTimeout(function(){ ov.style.display='none'; ov.style.opacity=''; },450);
+}
+
+// ── Check for active celebration in settings poll ──
+async function checkCelebration(){
+  try{
+    var rows = await sbQuery('settings','key=eq.'+CD_CEL_KEY+'&select=value');
+    if(!rows||!rows.length) return;
+    var data = JSON.parse(rows[0].value);
+    if(data&&data.active) showCelebration(data);
+    else closeCelebration();
+  }catch(e){}
+}
+
+// ── Check ts global in settings poll ──
+async function checkTsGlobal(){
+  try{
+    var rows = await sbQuery('settings','key=eq.'+CD_TS_GLOBAL_KEY+'&select=value');
+    if(!rows||!rows.length) return;
+    var globalOn = rows[0].value !== 'false';
+    var tsItem = document.getElementById('sidebar-ts');
+    if(tsItem){
+      if(!globalOn){ tsItem.style.display='none'; }
+      else { var canSee=isAdminUser()||(currentUser&&currentUser.timesheetEnabled); tsItem.style.display=canSee?'flex':'none'; }
+    }
+  }catch(e){}
 }
 </script>
 
