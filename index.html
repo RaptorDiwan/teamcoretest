@@ -5521,21 +5521,39 @@ function exportReportCSV(){
   } else {
     // Group by date+agent for Excel-style export
     headers = ['Date','Username','Breakfast','Lunch','Beverage','Short Break','Total Break Time','Exceeded Limits'];
+    // Group by date+agent — SUM durations if same break type taken multiple times
     var byDateAgent = {};
     _reportData.forEach(function(b){
       var key=b.date+'__'+b.user_name;
-      if(!byDateAgent[key]) byDateAgent[key]={date:b.date,name:b.user_name,breakfast:null,lunch:null,beverage:null,shortbreak:null};
-      byDateAgent[key][b.break_type]=b;
+      if(!byDateAgent[key]) byDateAgent[key]={
+        date:b.date, name:b.user_name,
+        breakfast:{secs:0,over:false}, lunch:{secs:0,over:false},
+        beverage:{secs:0,over:false}, shortbreak:{secs:0,over:false}
+      };
+      var bt=b.break_type;
+      if(byDateAgent[key][bt]!==undefined){
+        byDateAgent[key][bt].secs += (b.duration_seconds||0);
+        // Over-limit: true if total exceeds limit for that type
+        byDateAgent[key][bt].over = byDateAgent[key][bt].secs > (BREAK_LIMITS[bt]||0)*60;
+      }
     });
     rows = Object.values(byDateAgent).sort(function(a,b){return a.date.localeCompare(b.date)||a.name.localeCompare(b.name);}).map(function(ag){
       var bf=ag.breakfast,lu=ag.lunch,bv=ag.beverage,sb=ag.shortbreak;
-      var total=(bf?bf.duration_seconds:0)+(lu?lu.duration_seconds:0)+(bv?bv.duration_seconds:0)+(sb?sb.duration_seconds:0);
+      var total=bf.secs+lu.secs+bv.secs+sb.secs;
       var exc=[];
-      if(bf&&bf.over_limit)exc.push('Breakfast');
-      if(lu&&lu.over_limit)exc.push('Lunch');
-      if(bv&&bv.over_limit)exc.push('Beverage');
-      if(sb&&sb.over_limit)exc.push('Short Break');
-      return [ag.date,ag.name,bf?fmtDurMin(bf.duration_seconds):'-',lu?fmtDurMin(lu.duration_seconds):'-',bv?fmtDurMin(bv.duration_seconds):'-',sb?fmtDurMin(sb.duration_seconds):'-',fmtDurMin(total),exc.length?exc.join(', '):'-'];
+      if(bf.over)exc.push('Breakfast');
+      if(lu.over)exc.push('Lunch');
+      if(bv.over)exc.push('Beverage');
+      if(sb.over)exc.push('Short Break');
+      return [
+        ag.date, ag.name,
+        bf.secs>0?fmtDurMin(bf.secs):'-',
+        lu.secs>0?fmtDurMin(lu.secs):'-',
+        bv.secs>0?fmtDurMin(bv.secs):'-',
+        sb.secs>0?fmtDurMin(sb.secs):'-',
+        total>0?fmtDurMin(total):'-',
+        exc.length?exc.join(', '):'-'
+      ];
     });
   }
   var csv=[headers.join(',')].concat(rows.map(function(r){return r.map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(',');})).join('\n');
