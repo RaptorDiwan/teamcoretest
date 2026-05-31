@@ -3014,7 +3014,7 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
           <div class="reports-filters">
             <div class="field-group"><label>From Date</label><input type="date" id="report-from"/></div>
             <div class="field-group"><label>To Date</label><input type="date" id="report-to"/></div>
-            <div class="field-group"><label>Agent</label><select id="report-agent"><option value="">All Agents</option></select></div>
+            <div class="field-group admin-only" id="report-agent-wrap"><label>Agent</label><select id="report-agent"><option value="">All Agents</option></select></div>
             <div class="field-group"><label>Report Type</label><select id="report-type"><option value="attendance">Login / Logout</option><option value="breaks">Break Tracker</option></select></div>
             <button class="reports-fetch-btn" onclick="loadReport()">&#128269; Pull Report</button>
             <button class="export-btn" onclick="exportReportCSV()">&#8681; Export CSV</button>
@@ -5361,7 +5361,10 @@ var _reportData = [];
 async function loadReport(){
   var from = document.getElementById('report-from').value;
   var to = document.getElementById('report-to').value;
-  var agent = document.getElementById('report-agent').value;
+  // Agents can only see their own data — admin can see all
+  var agent = isAdminUser()
+    ? document.getElementById('report-agent').value
+    : (currentUser ? currentUser.id : '');
   var type = document.getElementById('report-type').value;
   var output = document.getElementById('report-output');
 
@@ -5564,6 +5567,10 @@ function exportReportCSV(){
 
 async function loadReportAgents(){
   try {
+    // Only admins see the agent selector — agents auto-filter to themselves
+    var wrap = document.getElementById('report-agent-wrap');
+    if(wrap) wrap.style.display = isAdminUser() ? '' : 'none';
+    if(!isAdminUser()) return; // agents don't need dropdown
     var users = await sbQuery('users','select=id,name&order=name.asc');
     var sel = document.getElementById('report-agent');
     if(!sel||!users) return;
@@ -13706,11 +13713,25 @@ async function cdLoadAll(){
 
 // ── Orange Cat ──
 async function cdLoadCat(){
-  var enabled = await catLoadGlobalState();
   var chk = document.getElementById('cd-cat-toggle');
   var st  = document.getElementById('cd-cat-status');
-  if(chk) chk.checked = enabled;
-  if(st){ st.textContent = enabled ? '✅ ON' : '🔴 OFF'; st.style.color = enabled ? '#2ec56f' : '#ef493c'; }
+  // Show interim state immediately
+  if(st){ st.textContent = '…'; st.style.color = 'var(--text-muted)'; }
+  try{
+    var rows = await sbQuery('settings','key=eq.cat_global_enabled&select=value');
+    // If no row exists yet — cat is ON by default, create the row
+    var enabled = true;
+    if(rows && rows.length){
+      enabled = rows[0].value !== 'false';
+    } else {
+      // First time — insert default ON
+      await sbInsert('settings',{key:'cat_global_enabled',value:'true'}).catch(function(){});
+    }
+    if(chk) chk.checked = enabled;
+    if(st){ st.textContent = enabled ? '✅ ON' : '🔴 OFF'; st.style.color = enabled ? '#2ec56f' : '#ef493c'; }
+  }catch(e){
+    if(st){ st.textContent = 'Error loading'; st.style.color = '#ef493c'; }
+  }
 }
 async function cdCatToggle(enabled){
   var msg = document.getElementById('cd-cat-msg');
