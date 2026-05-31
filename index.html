@@ -1778,12 +1778,12 @@ body.dark .ts-input { background:#111827;border-color:#2D3748;color:#F1F5F9; }
   .cd-card-title{font-size:.9rem;font-weight:700;color:var(--text-primary);}
   .cd-card-sub{font-size:.75rem;color:var(--text-muted);margin-top:2px;}
   .cd-label{display:block;font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.06em;margin-bottom:4px;}
-  .cd-input{width:100%;background:var(--navy-deep,#0d1627);border:1px solid var(--navy-border);border-radius:8px;padding:.5rem .8rem;color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:.83rem;outline:none;box-sizing:border-box;transition:border-color .18s;}
+  .cd-input{width:100%;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:8px;padding:.5rem .8rem;color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:.83rem;outline:none;box-sizing:border-box;transition:border-color .18s;}
   .cd-input:focus{border-color:var(--gold-dim,rgba(239,73,60,.4));}
   .cd-btn{background:var(--gold);border:none;border-radius:8px;color:#fff;padding:.5rem 1.2rem;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:opacity .18s;white-space:nowrap;}
   .cd-btn:hover{opacity:.88;}
-  .cd-btn-sec{background:rgba(255,255,255,.06);border:1px solid var(--navy-border);border-radius:8px;color:var(--text-muted);padding:.45rem 1rem;font-family:'DM Sans',sans-serif;font-size:.8rem;cursor:pointer;transition:all .15s;}
-  .cd-btn-sec:hover{background:rgba(255,255,255,.1);color:var(--text-primary);}
+  .cd-btn-sec{background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:8px;color:var(--text-muted);padding:.45rem 1rem;font-family:'DM Sans',sans-serif;font-size:.8rem;cursor:pointer;transition:all .15s;}
+  .cd-btn-sec:hover{background:var(--navy-mid);color:var(--text-primary);}
   .cd-btn-danger{background:rgba(239,73,60,.15);border:1px solid rgba(239,73,60,.3);border-radius:8px;color:#ef493c;padding:.45rem 1rem;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:all .15s;white-space:nowrap;}
   .cd-btn-danger:hover{background:rgba(239,73,60,.25);}
   .cd-msg{font-size:.78rem;color:var(--accent-green);}
@@ -7415,7 +7415,7 @@ async function loadLiveDashboard(){
     animateCount('stat-val-total',total);
 
     var today=todayStr();
-    var att=await sbQuery('attendance','date=eq.'+today+'&select=user_id,login_time,logout_time&order=login_time.asc');
+    var att=await sbQuery('attendance','date=eq.'+today+'&select=user_id,login_time,logout_time,last_seen&order=login_time.asc');
 
     // DEDUPLICATE — one entry per user (latest login)
     var attMap={};
@@ -7474,23 +7474,15 @@ function renderWhosActive(users,att,onBreakSet){
       var lastSeenMs = Date.now() - new Date(attRec.last_seen).getTime();
       isRecentlySeen = lastSeenMs < 12*60*1000;
     }
-    var manualOffline = u.presence==='offline';
-    // Online = active work session + recent heartbeat (or no last_seen yet = just started)
     // Online = active work session + recent heartbeat only
-    var isOnline = hasActiveSession && !manualOffline && isRecentlySeen;
+    var isOnline = hasActiveSession && isRecentlySeen;
     var sc, sl;
-    if(manualOffline){sc='out';sl='Offline';}
-    else if(isBreak && isOnline){sc='onbreak';sl='On Break';}
+    if(isBreak && isOnline){sc='onbreak';sl='On Break';}
     else if(isOnline){sc='active';sl='Active';}
     else if(hasActiveSession && !isRecentlySeen && attRec.last_seen){sc='out';sl='Away';}
     else{sc='out';sl='Not In';}
 
-    // Myself gets a toggle button
     var toggleBtn='';
-    if(isMyself(u)){
-      var isCurrentlyOffline=manualOffline;
-      toggleBtn='<button onclick="togglePresence(\''+u.id+'\',\''+( isCurrentlyOffline?'auto':'offline')+'\')" style="margin-left:.5rem;padding:.15rem .55rem;font-size:.62rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:20px;cursor:pointer;color:var(--text-muted);font-family:\'DM Sans\',sans-serif;" title="'+(isCurrentlyOffline?'Go online':'Go offline')+'">'+(isCurrentlyOffline?'Go Online':'Go Offline')+'</button>';
-    }
 
     var bg=chatColor?chatColor(u.name):'#EF493C';
     return {
@@ -7500,7 +7492,7 @@ function renderWhosActive(users,att,onBreakSet){
         '<span class="wa-status '+sc+'">'+sl+'</span>'+
         toggleBtn+
       '</div>',
-      order:manualOffline?3:isBreak?1:isOnline?0:2
+      order:isBreak?1:isOnline?0:2
     };
   });
 
