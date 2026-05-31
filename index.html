@@ -14424,7 +14424,7 @@ async function vhLoadAgents(){
       var callBtn = wtOn
         ? (isBusy
             ? '<span style="font-size:.75rem;color:var(--text-dim);">Busy</span>'
-            : '<button onclick="vhCallAgent(''+u.id+'',''+esc(u.name)+'')" style="padding:.35rem .9rem;background:var(--gold);color:#fff;border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:700;cursor:pointer;">📞 Call</button>')
+            : '<button class="vh-call-btn" data-id="'+u.id+'" data-name="'+esc(u.name)+'" style="padding:.35rem .9rem;background:var(--gold);color:#fff;border:none;border-radius:6px;font-family:DM Sans,sans-serif;font-size:.76rem;font-weight:700;cursor:pointer;">📞 Call</button>')
         : '<span style="font-size:.75rem;color:var(--text-dim);">Unavailable</span>';
       return '<div style="display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:var(--radius-sm);opacity:'+(wtOn?'1':'.6')+';">'+
         '<div style="width:32px;height:32px;border-radius:50%;background:#4c76a8;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:#fff;flex-shrink:0;">'+ini+'</div>'+
@@ -14648,11 +14648,11 @@ async function vhLoadRooms(){
           '<div style="font-size:.72rem;color:var(--text-dim);margin-top:2px;">'+members.length+' member'+(members.length!==1?'s':'')+' · by '+esc(r.created_by)+'</div>'+
         '</div>'+
         (inRoom
-          ? '<span style="font-size:.72rem;color:#2ec56f;font-weight:700;">● You're In</span>'
+          ? '<span style="font-size:.72rem;color:#2ec56f;font-weight:700;">● You\'re In</span>'
           : (VH.currentCall.peerId || VH.currentRoom
               ? '<span style="font-size:.75rem;color:var(--text-dim);">Busy</span>'
-              : '<button onclick="vhJoinRoom(''+r.id+'',''+esc(r.name)+'')" style="padding:.35rem .9rem;background:var(--gold);color:#fff;border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:700;cursor:pointer;">Join</button>'))+
-        (isAdminUser()||r.created_by===currentUser.name ? '<button onclick="vhDeleteRoom(''+r.id+'')" style="margin-left:.4rem;padding:.3rem .7rem;background:rgba(239,73,60,.1);color:#ef493c;border:1px solid rgba(239,73,60,.25);border-radius:6px;font-size:.72rem;cursor:pointer;">🗑</button>' : '')+
+              : '<button class="vh-join-btn" data-id="'+r.id+'" data-name="'+esc(r.name)+'" style="padding:.35rem .9rem;background:var(--gold);color:#fff;border:none;border-radius:6px;font-family:DM Sans,sans-serif;font-size:.76rem;font-weight:700;cursor:pointer;">Join</button>'))+
+        (isAdminUser()||r.created_by===currentUser.name ? '<button class="vh-del-room-btn" data-id="'+r.id+'" style="margin-left:.4rem;padding:.3rem .7rem;background:rgba(239,73,60,.1);color:#ef493c;border:1px solid rgba(239,73,60,.25);border-radius:6px;font-size:.72rem;cursor:pointer;">🗑</button>' : '')+
       '</div>';
     }).join('');
   }catch(e){ list.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;">Could not load rooms.</div>'; }
@@ -14850,7 +14850,7 @@ async function cdLoadVHAgents(){
       var on = !!wtMap[u.id];
       return '<div style="display:flex;align-items:center;gap:.75rem;padding:.55rem .75rem;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius-sm);">'+
         '<div style="flex:1;font-size:.82rem;font-weight:600;color:var(--text-primary);">'+esc(u.name)+'<span style="font-size:.7rem;color:var(--text-dim);margin-left:.4rem;">('+u.role+')</span></div>'+
-        '<label class="cat-toggle-wrap"><input type="checkbox" '+(on?'checked':'')+' onchange="cdVHAgentToggle(''+u.id+'',''+esc(u.name)+'',this.checked)"/><span class="cat-toggle-slider"></span></label>'+
+        '<label class="cat-toggle-wrap"><input type="checkbox" class="vh-agent-tog" data-uid="'+u.id+'" data-uname="'+esc(u.name)+'" '+(on?'checked':'')+'/><span class="cat-toggle-slider"></span></label>'+
       '</div>';
     }).join('');
     var statusEl = document.getElementById('cd-vh-status');
@@ -14945,8 +14945,8 @@ async function aboutRenderList(type){
       '</div>'+
       (isAdmin ?
         '<div style="display:flex;gap:.3rem;flex-shrink:0;margin-left:.5rem;">'+
-          '<button onclick="aboutEditItem(''+type+'','+idx+')" title="Edit" style="background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:.8rem;padding:0 2px;opacity:.6;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.6">✏️</button>'+
-          '<button onclick="aboutDeleteItem(''+type+'','+idx+')" title="Delete" style="background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:.8rem;padding:0 2px;opacity:.6;" onmouseover="this.style.opacity=1" onmouseout="this.style.opacity=.6">🗑</button>'+
+          '<button class="about-edit-btn" data-type="'+type+'" data-idx="'+idx+'" title="Edit" style="background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:.8rem;padding:0 2px;opacity:.6;">✏️</button>'+
+          '<button class="about-del-btn" data-type="'+type+'" data-idx="'+idx+'" title="Delete" style="background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:.8rem;padding:0 2px;opacity:.6;">🗑</button>'+
         '</div>'
       : '')+
     '</div>';
@@ -14967,9 +14967,9 @@ function aboutEditItem(type, idx){
   editor.id = editorId;
   editor.style.cssText='display:flex;gap:.4rem;flex:1;align-items:center;';
   editor.innerHTML =
-    '<input type="text" value="'+current.replace(/"/g,'&quot;')+'" style="flex:1;padding:.3rem .6rem;border:1px solid var(--navy-border);border-radius:6px;background:var(--navy-hover);color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:.8rem;outline:none;" id="about-inp-'+type+'-'+idx+'"/>'+
-    '<button onclick="aboutSaveItem(''+type+'','+idx+')" style="padding:.28rem .7rem;background:var(--gold);color:#fff;border:none;border-radius:5px;font-family:'DM Sans',sans-serif;font-size:.74rem;font-weight:700;cursor:pointer;">Save</button>'+
-    '<button onclick="aboutCancelEdit(''+type+'','+idx+')" style="padding:.28rem .7rem;background:transparent;border:1px solid var(--navy-border);border-radius:5px;font-family:'DM Sans',sans-serif;font-size:.74rem;cursor:pointer;color:var(--text-muted);">✕</button>';
+    '<input type="text" value="'+current.replace(/"/g,'&quot;')+'" style="flex:1;padding:.3rem .6rem;border:1px solid var(--navy-border);border-radius:6px;background:var(--navy-hover);color:var(--text-primary);font-family:DM Sans,sans-serif;font-size:.8rem;outline:none;" id="about-inp-'+type+'-'+idx+'"/>'+
+    '<button class="about-save-btn" data-type="'+type+'" data-idx="'+idx+'" style="padding:.28rem .7rem;background:var(--gold);color:#fff;border:none;border-radius:5px;font-family:DM Sans,sans-serif;font-size:.74rem;font-weight:700;cursor:pointer;">Save</button>'+
+    '<button class="about-cancel-btn" data-type="'+type+'" data-idx="'+idx+'" style="padding:.28rem .7rem;background:transparent;border:1px solid var(--navy-border);border-radius:5px;font-family:DM Sans,sans-serif;font-size:.74rem;cursor:pointer;color:var(--text-muted);">✕</button>';
   textEl.parentNode.insertBefore(editor, textEl.nextSibling);
   var inp = document.getElementById('about-inp-'+type+'-'+idx);
   if(inp){ inp.focus(); inp.select();
@@ -15060,6 +15060,39 @@ async function checkVHGlobal(){
     }
   }catch(e){}
 }
+
+
+// ── Event delegation for VH + About dynamic buttons ──
+document.addEventListener('click', function(e){
+  // Walkie talkie call button
+  var callBtn = e.target.closest('.vh-call-btn');
+  if(callBtn){ vhCallAgent(callBtn.dataset.id, callBtn.dataset.name); return; }
+  // Room join button
+  var joinBtn = e.target.closest('.vh-join-btn');
+  if(joinBtn){ vhJoinRoom(joinBtn.dataset.id, joinBtn.dataset.name); return; }
+  // Room delete button
+  var delBtn = e.target.closest('.vh-del-room-btn');
+  if(delBtn){ vhDeleteRoom(delBtn.dataset.id); return; }
+  // About edit button
+  var editBtn = e.target.closest('.about-edit-btn');
+  if(editBtn){ aboutEditItem(editBtn.dataset.type, parseInt(editBtn.dataset.idx)); return; }
+  // About delete button
+  var aDelBtn = e.target.closest('.about-del-btn');
+  if(aDelBtn){ aboutDeleteItem(aDelBtn.dataset.type, parseInt(aDelBtn.dataset.idx)); return; }
+  // About save button
+  var saveBtn = e.target.closest('.about-save-btn');
+  if(saveBtn){ aboutSaveItem(saveBtn.dataset.type, parseInt(saveBtn.dataset.idx)); return; }
+  // About cancel button
+  var cancelBtn = e.target.closest('.about-cancel-btn');
+  if(cancelBtn){ aboutCancelEdit(cancelBtn.dataset.type, parseInt(cancelBtn.dataset.idx)); return; }
+});
+
+// Event delegation for VH agent toggles in control deck
+document.addEventListener('change', function(e){
+  if(e.target.classList.contains('vh-agent-tog')){
+    cdVHAgentToggle(e.target.dataset.uid, e.target.dataset.uname, e.target.checked);
+  }
+});
 
 // ── Check ts global in settings poll ──
 async function checkTsGlobal(){
