@@ -2597,14 +2597,6 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
         Assessment Builder
       </div>
 
-      <div class="sidebar-item" onclick="showPage('reports', this)">
-        <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M4 19V5a2 2 0 012-2h9l5 5v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/>
-          <path d="M14 3v6h6M8 17v-4M12 17v-7M16 17v-2"/>
-        </svg>
-        Reports
-      </div>
-
       <div class="sidebar-item admin-only" onclick="showPage('users', this)">
         <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/>
@@ -3014,7 +3006,11 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
           <div class="reports-filters">
             <div class="field-group"><label>From Date</label><input type="date" id="report-from"/></div>
             <div class="field-group"><label>To Date</label><input type="date" id="report-to"/></div>
-            <div class="field-group admin-only" id="report-agent-wrap"><label>Agent</label><select id="report-agent"><option value="">All Agents</option></select></div>
+            <div class="field-group" id="report-agent-wrap" style="display:none;"><label>Agent</label>
+              <select id="report-agent">
+                <option value="">All Agents</option>
+              </select>
+            </div>
             <div class="field-group"><label>Report Type</label><select id="report-type"><option value="attendance">Login / Logout</option><option value="breaks">Break Tracker</option></select></div>
             <button class="reports-fetch-btn" onclick="loadReport()">&#128269; Pull Report</button>
             <button class="export-btn" onclick="exportReportCSV()">&#8681; Export CSV</button>
@@ -5571,15 +5567,27 @@ function exportReportCSV(){
 
 async function loadReportAgents(){
   try {
-    // Only admins see the agent selector — agents auto-filter to themselves
     var wrap = document.getElementById('report-agent-wrap');
-    if(wrap) wrap.style.display = isAdminUser() ? '' : 'none';
-    if(!isAdminUser()) return; // agents don't need dropdown
+    var sel  = document.getElementById('report-agent');
+    if(!wrap || !sel) return;
+    if(!isAdminUser()){
+      // Agents — hide dropdown, auto-filter to self
+      wrap.style.display = 'none';
+      return;
+    }
+    // Admin — show dropdown with all agents
+    wrap.style.display = '';
+    // Clear existing options except first
+    while(sel.options.length > 1) sel.remove(1);
     var users = await sbQuery('users','select=id,name&order=name.asc');
-    var sel = document.getElementById('report-agent');
-    if(!sel||!users) return;
-    users.forEach(function(u){ var o=document.createElement('option'); o.value=u.id; o.textContent=u.name; sel.appendChild(o); });
-  } catch(e){}
+    if(!users) return;
+    users.filter(function(u){ return u.role !== 'syslevel'; }).forEach(function(u){
+      var o = document.createElement('option');
+      o.value = u.id;
+      o.textContent = u.name;
+      sel.appendChild(o);
+    });
+  } catch(e){ console.warn('loadReportAgents failed:',e); }
 }
 
 // ═══════════════════════════════════════════════════════════
