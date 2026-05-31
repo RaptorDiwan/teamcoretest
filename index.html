@@ -3869,7 +3869,7 @@ function doLogout(){
   document.getElementById('dashboard-view').classList.remove('active');
   document.getElementById('login-view').classList.add('active');
   var bb=document.getElementById('break-bar');if(bb)bb.style.display='none';
-  var tbw=document.getElementById('tb-break-wrap');if(tbw)tbw.style.display='none';
+  var tbw=document.getElementById('tb-break-wrap');if(tbw)tbw.style.display='none'; // shown only after Start Work
   var ab=document.getElementById('attendance-badge');if(ab)ab.style.display='none';
   document.getElementById('username').value='';
   document.getElementById('password').value='';
@@ -5078,27 +5078,26 @@ async function toggleBreak(type){
 
 // Record login attendance
 async function recordLogin(){
+  // NO auto-insert — attendance only created when agent manually clicks Start Work
+  // This just restores UI if they already started work today
   try {
     var today = todayStr();
-    // Check if already logged today
-    var existing = await sbQuery('attendance', 'user_id=eq.'+currentUser.id+'&date=eq.'+today+'&select=id,login_time');
-    if(existing && existing.length > 0){
+    var existing = await sbQuery('attendance', 'user_id=eq.'+currentUser.id+'&date=eq.'+today+'&login_time=not.is.null&select=id,login_time,logout_time&order=login_time.desc&limit=1');
+    if(existing && existing.length > 0 && !existing[0].logout_time){
+      // Active session found — restore work clock state
       _todayAttendance = existing[0];
+      _wclockAttendance = existing[0];
+      _wclockInTime = existing[0].login_time;
+      setWclockUI('active');
+      startWclockTick();
       showAttendanceBadge(existing[0].login_time);
-      return;
+    } else {
+      // No active session — show idle state
+      setWclockUI('idle');
     }
-    var loginTime = new Date().toISOString();
-    var rows = await sbInsert('attendance', {
-      user_id: currentUser.id,
-      user_name: currentUser.name,
-      date: today,
-      login_time: loginTime,
-      logout_time: null
-    });
-    if(rows && rows.length) _todayAttendance = rows[0];
-    showAttendanceBadge(loginTime);
-  } catch(e){ console.warn('Attendance login failed:', e.message); }
-  // Start heartbeat after login recorded
+  } catch(e){ console.warn('Session restore failed:', e.message); }
+  // Start polls regardless
+  startSettingsPoll();
   startHeartbeat();
 }
 
@@ -5177,33 +5176,32 @@ async function heartbeatPing(){
 
 // Record logout time
 async function recordLogout(){
+  // Portal logout — just update last_seen, do NOT set logout_time
+  // logout_time is only set by End Work button (workClockOut)
   stopHeartbeat();
   stopSettingsPoll();
   if(!_todayAttendance) return;
   try {
     await sbUpdate('attendance','id',_todayAttendance.id,{
-      logout_time: new Date().toISOString(),
       last_seen: new Date().toISOString()
     });
-  } catch(e){ console.warn('Attendance logout failed:', e.message); }
+  } catch(e){ console.warn('Session update failed:', e.message); }
 }
 
 function showAttendanceBadge(loginTime){
   var badge = document.getElementById('attendance-badge');
   var timeEl = document.getElementById('attendance-login-time');
   if(badge){ badge.style.display='flex'; }
-  if(timeEl){ timeEl.textContent = 'In since ' + fmtTime(loginTime); }
-  // Show topbar break dropdown instead of bottom bar
+  if(timeEl){ timeEl.textContent = 'Working since ' + fmtTime(loginTime); }
+  // Show topbar break dropdown only when work is active
   var tbw = document.getElementById('tb-break-wrap');
   if(tbw) tbw.style.display = 'block';
   // Keep bottom bar hidden
   var bar = document.getElementById('break-bar');
   if(bar) bar.style.display='none';
-  // Start settings poll (cat toggle + timesheet toggle live sync)
-  startSettingsPoll();
   // Start clock
   startLoginClock(loginTime);
-  // Restore any active breaks (instead of resetting — handles refresh/new tab/new device)
+  // Restore any active breaks
   restoreBreakState();
   // beforeunload — attempt to mark offline when tab closes
   window.addEventListener('beforeunload', function(){
@@ -7328,20 +7326,22 @@ function renderWhosActive(users,att,onBreakSet){
     var ini=(u.name||'?').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
     var isBreak=onBreakSet.has(u.name);
     var attRec=attMap[u.id];
-    var isLoggedIn=attRec&&!attRec.logout_time;
-    // Check last_seen — if > 12 min ago, treat as offline even if logged in
-    var isRecentlySeen=false;
-    if(attRec&&attRec.last_seen){
-      var lastSeenMs=Date.now()-new Date(attRec.last_seen).getTime();
-      isRecentlySeen = lastSeenMs < 12*60*1000; // within 12 minutes
+    // Active = has login_time today AND no logout_time (work session open)
+    var hasActiveSession = attRec && attRec.login_time && !attRec.logout_time;
+    // Check last_seen heartbeat — if > 12 min ago, show as Away
+    var isRecentlySeen = false;
+    if(attRec && attRec.last_seen){
+      var lastSeenMs = Date.now() - new Date(attRec.last_seen).getTime();
+      isRecentlySeen = lastSeenMs < 12*60*1000;
     }
-    var manualOffline=u.presence==='offline';
-    var isOnline = isLoggedIn && (isRecentlySeen || !attRec.last_seen) && !manualOffline;
-    var sc,sl;
+    var manualOffline = u.presence==='offline';
+    // Online = active work session + recent heartbeat (or no last_seen yet = just started)
+    var isOnline = hasActiveSession && !manualOffline && (isRecentlySeen || !attRec.last_seen);
+    var sc, sl;
     if(manualOffline){sc='out';sl='Offline';}
-    else if(isBreak&&isOnline){sc='onbreak';sl='On Break';}
+    else if(isBreak && isOnline){sc='onbreak';sl='On Break';}
     else if(isOnline){sc='active';sl='Active';}
-    else if(isLoggedIn&&!isRecentlySeen&&attRec.last_seen){sc='out';sl='Away';}
+    else if(hasActiveSession && !isRecentlySeen && attRec.last_seen){sc='out';sl='Away';}
     else{sc='out';sl='Not In';}
 
     // Myself gets a toggle button
@@ -7581,7 +7581,10 @@ async function workClockIn(){
       login_time: loginTime,
       logout_time: null
     });
-    if(rows && rows.length) _wclockAttendance = rows[0];
+    if(rows && rows.length){
+      _wclockAttendance = rows[0];
+      _todayAttendance = rows[0]; // heartbeat needs this
+    }
     _wclockInTime = loginTime;
     // Persist clock-in time to localStorage so it survives page refresh
     localStorage.setItem('tc_clockin_'+currentUser.id, JSON.stringify({
@@ -7591,10 +7594,11 @@ async function workClockIn(){
     }));
     setWclockUI('active');
     startWclockTick();
-    var badge = document.getElementById('attendance-badge');
-    var timeEl = document.getElementById('attendance-login-time');
-    if(badge) badge.style.display = 'flex';
-    if(timeEl) timeEl.textContent = 'Working since ' + fmtClockTime(loginTime);
+    showAttendanceBadge(loginTime);
+    restoreBreakState();
+    // Show break button now that work has started
+    var tbw = document.getElementById('tb-break-wrap');
+    if(tbw) tbw.style.display = 'block';
   } catch(e){
     alert('Clock-in failed: ' + e.message);
     if(startBtn){ startBtn.disabled = false; startBtn.textContent = 'Start Work'; }
@@ -7608,8 +7612,10 @@ async function workClockOut(){
   if(endBtn){ endBtn.disabled = true; endBtn.textContent = '...'; }
   try{
     var logoutTime = new Date().toISOString();
-    await sbUpdate('attendance', 'id', _wclockAttendance.id, {logout_time: logoutTime});
+    await sbUpdate('attendance', 'id', _wclockAttendance.id, {logout_time: logoutTime, last_seen: logoutTime});
     if(_wclockInterval) clearInterval(_wclockInterval);
+    _todayAttendance = null; // clear so heartbeat stops pinging
+    stopHeartbeat();
     // Calculate total
     var diff = Math.floor((new Date(logoutTime) - new Date(_wclockInTime)) / 1000);
     var h = Math.floor(diff/3600), m = Math.floor((diff%3600)/60), s = diff%60;
