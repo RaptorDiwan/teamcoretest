@@ -2485,6 +2485,11 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
 
       <div class="sidebar-section">Team</div>
 
+      <div class="sidebar-item" id="sidebar-voicehub" onclick="showPage('voicehub', this)">
+        <span class="s-icon">🎙️</span>
+        <span>Voice Hub</span>
+      </div>
+
       <div class="sidebar-item" onclick="showPage('roster', this)">
         <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/>
@@ -3277,6 +3282,87 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
         </div>
       </div>
 
+      <!-- ══ VOICE HUB PAGE ══ -->
+      <div class="page" id="page-voicehub" style="padding:2rem 2.5rem;overflow-y:auto;">
+        <div style="max-width:860px;margin:0 auto;">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:.75rem;">
+            <div>
+              <h2 style="font-family:'Cormorant Garamond',serif;font-size:1.6rem;font-weight:700;color:var(--text-primary);margin:0;">🎙️ Voice Hub</h2>
+              <p style="font-size:.82rem;color:var(--text-muted);margin:.25rem 0 0;">Walkie-talkie calls & group voice rooms</p>
+            </div>
+            <div id="vh-my-status-wrap" style="display:flex;align-items:center;gap:.75rem;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:30px;padding:.4rem .5rem .4rem 1rem;">
+              <span style="font-size:.78rem;font-weight:600;color:var(--text-muted);">My Walkie Talkie</span>
+              <label class="cat-toggle-wrap"><input type="checkbox" id="vh-my-wt-toggle" onchange="vhToggleMyWT(this.checked)"/><span class="cat-toggle-slider"></span></label>
+              <span id="vh-my-wt-label" style="font-size:.74rem;color:var(--text-dim);">OFF</span>
+            </div>
+          </div>
+          <div style="display:flex;gap:.5rem;margin-bottom:1.2rem;">
+            <button class="xc-tab active" id="vh-tab-wt" onclick="vhSwitchTab('wt')">📻 Walkie Talkie</button>
+            <button class="xc-tab" id="vh-tab-rooms" onclick="vhSwitchTab('rooms')">👥 Group Rooms</button>
+          </div>
+          <div id="vh-panel-wt">
+            <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.1em;margin-bottom:.7rem;">AVAILABLE AGENTS</div>
+            <div id="vh-agents-list" style="display:flex;flex-direction:column;gap:.5rem;">
+              <div style="color:var(--text-dim);font-size:.82rem;padding:.5rem 0;">Loading…</div>
+            </div>
+          </div>
+          <div id="vh-panel-rooms" style="display:none;">
+            <div style="display:flex;gap:.6rem;margin-bottom:1rem;align-items:center;">
+              <input id="vh-room-name-input" class="xc-input" placeholder="Room name…" style="max-width:240px;" onkeydown="if(event.key==='Enter')vhCreateRoom()"/>
+              <button class="xc-btn" onclick="vhCreateRoom()">+ Create Room</button>
+            </div>
+            <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.1em;margin-bottom:.7rem;">ACTIVE ROOMS</div>
+            <div id="vh-rooms-list" style="display:flex;flex-direction:column;gap:.5rem;">
+              <div style="color:var(--text-dim);font-size:.82rem;padding:.5rem 0;">Loading…</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Incoming call overlay -->
+      <div id="vh-call-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.55);z-index:9900;align-items:center;justify-content:center;">
+        <div style="background:var(--navy-card);border:1px solid var(--navy-border);border-radius:20px;padding:2rem 2.5rem;text-align:center;width:300px;box-shadow:0 20px 60px rgba(0,0,0,.3);">
+          <div style="font-size:2.5rem;margin-bottom:.5rem;">📻</div>
+          <div style="font-size:1rem;font-weight:700;color:var(--text-primary);margin-bottom:.25rem;" id="vh-caller-name">Someone</div>
+          <div style="font-size:.78rem;color:var(--text-muted);margin-bottom:1.5rem;">is calling you…</div>
+          <div style="display:flex;gap:.75rem;justify-content:center;">
+            <button onclick="vhAcceptCall()" style="background:#2ec56f;color:#fff;border:none;border-radius:50%;width:52px;height:52px;font-size:1.3rem;cursor:pointer;">✅</button>
+            <button onclick="vhRejectCall()" style="background:#ef493c;color:#fff;border:none;border-radius:50%;width:52px;height:52px;font-size:1.3rem;cursor:pointer;">❌</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Active 1-to-1 call widget -->
+      <div id="vh-active-call" style="display:none;position:fixed;bottom:90px;right:24px;z-index:9800;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:16px;padding:1rem 1.2rem;box-shadow:0 8px 32px rgba(0,0,0,.2);min-width:220px;">
+        <div style="display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem;">
+          <div style="width:8px;height:8px;border-radius:50%;background:#2ec56f;"></div>
+          <span style="font-size:.8rem;font-weight:700;color:var(--text-primary);" id="vh-call-with-name">Call</span>
+          <span style="font-size:.72rem;color:var(--text-dim);" id="vh-call-timer">0:00</span>
+        </div>
+        <button id="vh-mute-btn" onclick="vhToggleMute()"
+          style="width:100%;padding:.65rem;background:rgba(46,197,111,.15);border:2px solid rgba(46,197,111,.4);border-radius:10px;color:#2ec56f;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .15s;">
+          🎙 Mic On — Click to Mute
+        </button>
+        <button onclick="vhEndCall()" style="width:100%;margin-top:.6rem;padding:.45rem;background:rgba(239,73,60,.1);border:1px solid rgba(239,73,60,.25);border-radius:8px;color:#ef493c;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:600;cursor:pointer;">End Call</button>
+      </div>
+
+      <!-- Active group room widget -->
+      <div id="vh-room-widget" style="display:none;position:fixed;bottom:90px;right:24px;z-index:9800;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:16px;padding:1rem 1.2rem;box-shadow:0 8px 32px rgba(0,0,0,.2);min-width:240px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+          <div>
+            <div style="font-size:.8rem;font-weight:700;color:var(--text-primary);" id="vh-room-widget-name">Room</div>
+            <div style="font-size:.7rem;color:var(--text-dim);" id="vh-room-widget-members">0 members</div>
+          </div>
+          <span style="font-size:.7rem;font-weight:700;color:#2ec56f;background:rgba(46,197,111,.1);padding:2px 8px;border-radius:20px;">LIVE</span>
+        </div>
+        <div id="vh-room-speakers" style="display:flex;flex-wrap:wrap;gap:.35rem;margin-bottom:.75rem;min-height:28px;"></div>
+        <button id="vh-room-mute-btn" onclick="vhRoomToggleMute()"
+          style="width:100%;padding:.55rem;background:rgba(76,118,168,.15);border:2px solid var(--navy-border);border-radius:10px;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:700;cursor:pointer;transition:all .15s;">
+          🎙 Muted — Click to Speak
+        </button>
+        <button onclick="vhLeaveRoom()" style="width:100%;margin-top:.6rem;padding:.45rem;background:rgba(239,73,60,.1);border:1px solid rgba(239,73,60,.25);border-radius:8px;color:#ef493c;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:600;cursor:pointer;">Leave Room</button>
+      </div>
+
       <!-- ══ CONTROL DECK PAGE ══ -->
       <div class="page" id="page-controldeck">
         <div class="cd-wrap">
@@ -3326,6 +3412,27 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
             <div style="margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;">
               <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-bottom:.6rem;">PER AGENT ACCESS</div>
               <div id="cd-ts-agents" style="display:flex;flex-direction:column;gap:.35rem;">
+                <div style="color:var(--text-dim);font-size:.8rem;">Loading agents…</div>
+              </div>
+            </div>
+          </div>
+
+
+          <!-- ── Section: Voice Hub ── -->
+          <div class="cd-card">
+            <div class="cd-card-header">
+              <span class="cd-card-icon" style="background:rgba(76,118,168,.12);">🎙️</span>
+              <div>
+                <div class="cd-card-title">Voice Hub</div>
+                <div class="cd-card-sub">Control walkie-talkie access per agent</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:.8rem;margin-left:auto;">
+                <span id="cd-vh-status" style="font-size:.8rem;color:var(--text-muted);">-</span>
+              </div>
+            </div>
+            <div style="margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;">
+              <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-bottom:.6rem;">PER AGENT — WALKIE TALKIE ACCESS</div>
+              <div id="cd-vh-agents" style="display:flex;flex-direction:column;gap:.35rem;">
                 <div style="color:var(--text-dim);font-size:.8rem;">Loading agents…</div>
               </div>
             </div>
@@ -4057,7 +4164,8 @@ function showPage(id,elem){
   if(id==='moments') setTimeout(function(){_mLoadTab(_mActiveTab);},60);
   if(id==='quiz') loadAgentQuiz();
   if(id==='announcements') loadAnnouncementsAdmin();
-  if(id==='controldeck'){ cdLoadAll(); }
+  if(id==='controldeck'){ cdLoadAll(); cdLoadVHAgents(); }
+  if(id==='voicehub'){ vhPageInit(); }
   if(id==='assessment') loadAgentAssessment();
   if(id==='quiz-admin') loadQuizBuilderList();
   if(id==='assessment-admin') loadAssessmentBuilderList();
@@ -5095,6 +5203,7 @@ async function recordLogin(){
   // Start polls regardless
   startSettingsPoll();
   startHeartbeat();
+  vhStartSignalPoll();
 }
 
 // ── Heartbeat — updates last_seen every 10 min ──
@@ -5176,6 +5285,7 @@ async function recordLogout(){
   // logout_time is only set by End Work button (workClockOut)
   stopHeartbeat();
   stopSettingsPoll();
+  vhStopSignalPoll();
   if(!_todayAttendance) return;
   try {
     await sbUpdate('attendance','id',_todayAttendance.id,{
@@ -14048,6 +14158,648 @@ async function checkCelebration(){
     else closeCelebration();
   }catch(e){}
 }
+
+
+// ════════════════════════════════════════════════════════
+//  VOICE HUB — Walkie Talkie + Group Rooms (WebRTC)
+// ════════════════════════════════════════════════════════
+var VH = {
+  // State
+  wtEnabled: false,          // this user's WT toggle
+  peers: {},                 // peerId -> RTCPeerConnection
+  localStream: null,         // mic stream
+  currentCall: {             // active 1-to-1 call
+    peerId: null,
+    peerName: null,
+    isInitiator: false,
+    timerInterval: null,
+    startTime: null
+  },
+  currentRoom: null,         // active group room id
+  roomMuted: true,
+  pollInterval: null,
+  signalPollInterval: null,
+  roomPollInterval: null,
+  speakingIntervals: {},
+
+  // Supabase signaling table: voice_signals
+  // Columns: id, from_id, from_name, to_id, to_room, type, payload, created_at
+  // voice_wt_status table: user_id, user_name, wt_on, updated_at
+  // voice_rooms table: id, name, created_by, created_at, members (jsonb)
+
+  STUN: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] }
+};
+
+// ── Audio beeps ──
+function vhBeep(type){
+  try{
+    var ctx = new (window.AudioContext||window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    if(type==='call'){ o.frequency.value=880; g.gain.setValueAtTime(.3,ctx.currentTime); o.start(); o.stop(ctx.currentTime+.18); }
+    else if(type==='end'){ o.frequency.value=440; g.gain.setValueAtTime(.2,ctx.currentTime); o.start(); o.stop(ctx.currentTime+.25); }
+    else if(type==='ptt'){ o.frequency.value=1200; g.gain.setValueAtTime(.15,ctx.currentTime); o.start(); o.stop(ctx.currentTime+.08); }
+    else if(type==='incoming'){ 
+      o.frequency.value=660; g.gain.setValueAtTime(.3,ctx.currentTime);
+      o.start(); o.stop(ctx.currentTime+.12);
+      setTimeout(function(){
+        try{var c2=new (window.AudioContext||window.webkitAudioContext)();var o2=c2.createOscillator();var g2=c2.createGain();o2.connect(g2);g2.connect(c2.destination);o2.frequency.value=880;g2.gain.setValueAtTime(.3,c2.currentTime);o2.start();o2.stop(c2.currentTime+.12);}catch(e){}
+      },200);
+    }
+  }catch(e){}
+}
+
+// ── Supabase signal helpers ──
+async function vhSendSignal(toId, toRoom, type, payload){
+  if(!currentUser) return;
+  try{
+    await sbInsert('voice_signals',{
+      from_id: currentUser.id,
+      from_name: currentUser.name,
+      to_id: toId||null,
+      to_room: toRoom||null,
+      type: type,
+      payload: JSON.stringify(payload||{}),
+      created_at: new Date().toISOString()
+    });
+  }catch(e){ console.warn('VH signal send failed',e); }
+}
+
+async function vhPollSignals(){
+  if(!currentUser) return;
+  try{
+    var since = new Date(Date.now()-8000).toISOString();
+    var rows = await sbQuery('voice_signals',
+      'created_at=gt.'+encodeURIComponent(since)+
+      '&or=(to_id.eq.'+currentUser.id+',to_room.eq.'+(VH.currentRoom||'__none__')+')'+
+      '&order=created_at.asc&limit=30'
+    );
+    if(!rows||!rows.length) return;
+    for(var i=0;i<rows.length;i++){
+      var sig = rows[i];
+      if(sig.from_id === currentUser.id) continue; // skip own signals
+      await vhHandleSignal(sig);
+    }
+  }catch(e){}
+}
+
+async function vhHandleSignal(sig){
+  var payload = {};
+  try{ payload = JSON.parse(sig.payload||'{}'); }catch(e){}
+  var from = sig.from_id;
+  var fromName = sig.from_name;
+
+  switch(sig.type){
+    case 'call_invite':
+      // Incoming 1-to-1 call
+      if(VH.currentCall.peerId || VH.currentRoom) return; // busy
+      vhShowIncomingCall(from, fromName);
+      break;
+    case 'call_accept':
+      if(VH.currentCall.peerId === from) vhOnCallAccepted(from);
+      break;
+    case 'call_reject':
+      if(VH.currentCall.peerId === from) vhOnCallRejected();
+      break;
+    case 'call_end':
+      if(VH.currentCall.peerId === from) vhCleanupCall(true);
+      break;
+    case 'offer':
+      if(VH.currentCall.peerId === from || (sig.to_room && sig.to_room === VH.currentRoom))
+        await vhHandleOffer(from, fromName, payload, !!sig.to_room);
+      break;
+    case 'answer':
+      if(VH.currentCall.peerId === from || (sig.to_room && sig.to_room === VH.currentRoom))
+        await vhHandleAnswer(from, payload);
+      break;
+    case 'ice':
+      await vhHandleICE(from, payload);
+      break;
+    case 'room_join':
+      if(VH.currentRoom && sig.to_room === VH.currentRoom) vhRenderRoomWidget();
+      break;
+    case 'room_leave':
+      if(VH.currentRoom && sig.to_room === VH.currentRoom){
+        // close peer
+        if(VH.peers[from]){ VH.peers[from].close(); delete VH.peers[from]; }
+        vhRenderRoomWidget();
+      }
+      break;
+
+  }
+}
+
+// ── Get mic ──
+async function vhGetMic(){
+  if(VH.localStream) return VH.localStream;
+  try{
+    VH.localStream = await navigator.mediaDevices.getUserMedia({audio:true,video:false});
+    return VH.localStream;
+  }catch(e){
+    alert('Microphone access denied. Please allow mic access for Voice Hub.');
+    return null;
+  }
+}
+
+// ── Page: load & tab switch ──
+function vhSwitchTab(tab){
+  document.getElementById('vh-panel-wt').style.display = tab==='wt'?'block':'none';
+  document.getElementById('vh-panel-rooms').style.display = tab==='rooms'?'block':'none';
+  document.getElementById('vh-tab-wt').classList.toggle('active', tab==='wt');
+  document.getElementById('vh-tab-rooms').classList.toggle('active', tab==='rooms');
+  if(tab==='wt') vhLoadAgents();
+  if(tab==='rooms') vhLoadRooms();
+}
+
+async function vhPageInit(){
+  // Load my WT status
+  try{
+    var rows = await sbQuery('voice_wt_status','user_id=eq.'+currentUser.id+'&select=wt_on');
+    var on = rows && rows.length && rows[0].wt_on;
+    VH.wtEnabled = !!on;
+    var tog = document.getElementById('vh-my-wt-toggle');
+    var lbl = document.getElementById('vh-my-wt-label');
+    if(tog) tog.checked = VH.wtEnabled;
+    if(lbl) lbl.textContent = VH.wtEnabled ? 'ON' : 'OFF';
+  }catch(e){}
+  vhLoadAgents();
+  vhStartSignalPoll();
+}
+
+async function vhToggleMyWT(on){
+  VH.wtEnabled = on;
+  var lbl = document.getElementById('vh-my-wt-label');
+  if(lbl) lbl.textContent = on ? 'ON' : 'OFF';
+  try{
+    var ex = await sbQuery('voice_wt_status','user_id=eq.'+currentUser.id+'&select=user_id');
+    if(ex && ex.length){
+      await sbUpdate('voice_wt_status','user_id',currentUser.id,{wt_on:on,updated_at:new Date().toISOString()});
+    } else {
+      await sbInsert('voice_wt_status',{user_id:currentUser.id,user_name:currentUser.name,wt_on:on,updated_at:new Date().toISOString()});
+    }
+  }catch(e){ console.warn('VH WT toggle save failed',e); }
+  vhLoadAgents();
+}
+
+async function vhLoadAgents(){
+  var list = document.getElementById('vh-agents-list');
+  if(!list) return;
+  try{
+    var rows = await sbQuery('voice_wt_status','wt_on=eq.true&select=user_id,user_name&order=user_name.asc');
+    rows = (rows||[]).filter(function(r){ return r.user_id !== currentUser.id; });
+    if(!rows.length){
+      list.innerHTML = '<div style="color:var(--text-dim);font-size:.82rem;padding:.5rem 0;">No agents have walkie talkie ON right now.</div>';
+      return;
+    }
+    list.innerHTML = rows.map(function(r){
+      var ini = (r.user_name||'?').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+      var isBusy = VH.currentCall.peerId && VH.currentCall.peerId !== r.user_id;
+      return '<div style="display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:var(--radius-sm);">'+
+        '<div style="width:32px;height:32px;border-radius:50%;background:#4c76a8;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:#fff;flex-shrink:0;">'+ini+'</div>'+
+        '<div style="flex:1;font-size:.84rem;font-weight:600;color:var(--text-primary);">'+esc(r.user_name)+'</div>'+
+        '<span style="font-size:.7rem;background:rgba(46,197,111,.12);color:#2ec56f;padding:2px 8px;border-radius:20px;margin-right:.4rem;">WT ON</span>'+
+        (isBusy ? '<span style="font-size:.75rem;color:var(--text-dim);">Busy</span>' :
+        '<button onclick="vhCallAgent(''+r.user_id+'',''+esc(r.user_name)+'')" style="padding:.35rem .9rem;background:var(--gold);color:#fff;border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:700;cursor:pointer;">📞 Call</button>')+
+      '</div>';
+    }).join('');
+  }catch(e){ list.innerHTML = '<div style="color:var(--text-dim);font-size:.82rem;">Could not load agents.</div>'; }
+}
+
+// ── 1-to-1 Call Flow ──
+async function vhCallAgent(peerId, peerName){
+  if(VH.currentCall.peerId){ alert('Already in a call.'); return; }
+  VH.currentCall.peerId = peerId;
+  VH.currentCall.peerName = peerName;
+  VH.currentCall.isInitiator = true;
+  vhBeep('call');
+  await vhSendSignal(peerId, null, 'call_invite', {});
+  // Show active call widget in "calling" state
+  var w = document.getElementById('vh-active-call');
+  var nameEl = document.getElementById('vh-call-with-name');
+  if(nameEl) nameEl.textContent = 'Calling ' + peerName + '…';
+  if(w) w.style.display = 'block';
+
+}
+
+function vhShowIncomingCall(fromId, fromName){
+  vhBeep('incoming');
+  VH.currentCall.peerId = fromId;
+  VH.currentCall.peerName = fromName;
+  VH.currentCall.isInitiator = false;
+  var overlay = document.getElementById('vh-call-overlay');
+  var callerEl = document.getElementById('vh-caller-name');
+  if(callerEl) callerEl.textContent = fromName;
+  if(overlay){ overlay.style.display = 'flex'; }
+}
+
+async function vhAcceptCall(){
+  var overlay = document.getElementById('vh-call-overlay');
+  if(overlay) overlay.style.display = 'none';
+  var peerId = VH.currentCall.peerId;
+  var peerName = VH.currentCall.peerName;
+  await vhSendSignal(peerId, null, 'call_accept', {});
+  await vhStartWebRTC(peerId, false);
+  vhShowActiveCall(peerName);
+  vhBeep('call');
+}
+
+async function vhRejectCall(){
+  var overlay = document.getElementById('vh-call-overlay');
+  if(overlay) overlay.style.display = 'none';
+  await vhSendSignal(VH.currentCall.peerId, null, 'call_reject', {});
+  VH.currentCall.peerId = null;
+  VH.currentCall.peerName = null;
+}
+
+async function vhOnCallAccepted(peerId){
+  await vhStartWebRTC(peerId, true);
+  vhShowActiveCall(VH.currentCall.peerName);
+}
+
+function vhOnCallRejected(){
+  var w = document.getElementById('vh-active-call');
+  if(w) w.style.display = 'none';
+  VH.currentCall.peerId = null;
+  VH.currentCall.peerName = null;
+  vhBeep('end');
+  alert('Call was declined.');
+}
+
+function vhShowActiveCall(peerName){
+  var w = document.getElementById('vh-active-call');
+  var nameEl = document.getElementById('vh-call-with-name');
+  var timerEl = document.getElementById('vh-call-timer');
+  if(nameEl) nameEl.textContent = peerName;
+  if(w) w.style.display = 'block';
+  _vhMuted = false;
+  if(VH.localStream) VH.localStream.getAudioTracks().forEach(function(t){ t.enabled=true; });
+  var muteBtn = document.getElementById('vh-mute-btn');
+  if(muteBtn){ muteBtn.style.background='rgba(46,197,111,.15)'; muteBtn.style.borderColor='rgba(46,197,111,.4)'; muteBtn.style.color='#2ec56f'; muteBtn.textContent='🎙 Mic On — Click to Mute'; }
+  VH.currentCall.startTime = Date.now();
+  VH.currentCall.timerInterval = setInterval(function(){
+    if(!timerEl) return;
+    var s = Math.floor((Date.now()-VH.currentCall.startTime)/1000);
+    timerEl.textContent = Math.floor(s/60)+':'+(s%60<10?'0':'')+s%60;
+  }, 1000);
+}
+
+async function vhEndCall(){
+  if(VH.currentCall.peerId){
+    await vhSendSignal(VH.currentCall.peerId, null, 'call_end', {});
+  }
+  vhCleanupCall(false);
+}
+
+function vhCleanupCall(remote){
+  if(!remote) vhBeep('end');
+  else vhBeep('end');
+  clearInterval(VH.currentCall.timerInterval);
+  // Close peer connection
+  var pc = VH.peers[VH.currentCall.peerId];
+  if(pc){ pc.close(); delete VH.peers[VH.currentCall.peerId]; }
+  // Stop local stream tracks used for call
+  if(VH.localStream && !VH.currentRoom){
+    VH.localStream.getTracks().forEach(function(t){ t.stop(); });
+    VH.localStream = null;
+  }
+  VH.currentCall = {peerId:null,peerName:null,isInitiator:false,timerInterval:null,startTime:null};
+  var w = document.getElementById('vh-active-call');
+  if(w) w.style.display = 'none';
+  var overlay = document.getElementById('vh-call-overlay');
+  if(overlay) overlay.style.display = 'none';
+}
+
+// ── Mute toggle (full duplex) ──
+var _vhMuted = false;
+function vhToggleMute(){
+  _vhMuted = !_vhMuted;
+  if(VH.localStream) VH.localStream.getAudioTracks().forEach(function(t){ t.enabled=!_vhMuted; });
+  var btn = document.getElementById('vh-mute-btn');
+  if(_vhMuted){
+    if(btn){ btn.style.background='rgba(239,73,60,.15)'; btn.style.borderColor='rgba(239,73,60,.4)'; btn.style.color='#ef493c'; btn.textContent='🔇 Muted — Click to Unmute'; }
+  } else {
+    if(btn){ btn.style.background='rgba(46,197,111,.15)'; btn.style.borderColor='rgba(46,197,111,.4)'; btn.style.color='#2ec56f'; btn.textContent='🎙 Mic On — Click to Mute'; }
+  }
+}
+
+// ── WebRTC peer connection ──
+async function vhStartWebRTC(peerId, isInitiator){
+  var stream = await vhGetMic();
+  if(!stream) return;
+  var pc = new RTCPeerConnection(VH.STUN);
+  VH.peers[peerId] = pc;
+
+  stream.getTracks().forEach(function(t){ pc.addTrack(t, stream); });
+
+  pc.ontrack = function(e){
+    var audio = new Audio();
+    audio.srcObject = e.streams[0];
+    audio.autoplay = true;
+    document.body.appendChild(audio);
+  };
+
+  pc.onicecandidate = function(e){
+    if(e.candidate){
+      vhSendSignal(peerId, null, 'ice', {candidate: e.candidate});
+    }
+  };
+
+  if(isInitiator){
+    var offer = await pc.createOffer({offerToReceiveAudio:true});
+    await pc.setLocalDescription(offer);
+    await vhSendSignal(peerId, null, 'offer', {sdp: pc.localDescription});
+  }
+}
+
+async function vhHandleOffer(fromId, fromName, payload, isRoom){
+  var toId = isRoom ? null : fromId;
+  var toRoom = isRoom ? VH.currentRoom : null;
+
+  var pc = VH.peers[fromId];
+  if(!pc){
+    var stream = await vhGetMic();
+    if(!stream) return;
+    stream.getAudioTracks().forEach(function(t){ t.enabled = isRoom ? !VH.roomMuted : false; });
+    pc = new RTCPeerConnection(VH.STUN);
+    VH.peers[fromId] = pc;
+    stream.getTracks().forEach(function(t){ pc.addTrack(t, stream); });
+    pc.ontrack = function(e){
+      var audio = new Audio();
+      audio.srcObject = e.streams[0];
+      audio.autoplay = true;
+      document.body.appendChild(audio);
+      if(isRoom) vhMarkSpeaking(fromId, fromName, e.streams[0]);
+    };
+    pc.onicecandidate = function(e){
+      if(e.candidate) vhSendSignal(toId, toRoom, 'ice', {candidate: e.candidate, for: fromId});
+    };
+  }
+  await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp));
+  var answer = await pc.createAnswer();
+  await pc.setLocalDescription(answer);
+  await vhSendSignal(toId, toRoom, 'answer', {sdp: pc.localDescription, for: fromId});
+}
+
+async function vhHandleAnswer(fromId, payload){
+  var pc = VH.peers[fromId];
+  if(pc && pc.signalingState !== 'stable'){
+    await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp));
+  }
+}
+
+async function vhHandleICE(fromId, payload){
+  var pc = VH.peers[payload.for||fromId] || VH.peers[fromId];
+  if(pc && payload.candidate){
+    try{ await pc.addIceCandidate(new RTCIceCandidate(payload.candidate)); }catch(e){}
+  }
+}
+
+// ── Group Rooms ──
+async function vhLoadRooms(){
+  var list = document.getElementById('vh-rooms-list');
+  if(!list) return;
+  try{
+    var rows = await sbQuery('voice_rooms','select=id,name,created_by,members&order=created_at.desc&limit=20');
+    if(!rows||!rows.length){
+      list.innerHTML = '<div style="color:var(--text-dim);font-size:.82rem;padding:.5rem 0;">No active rooms. Create one above.</div>';
+      return;
+    }
+    list.innerHTML = rows.map(function(r){
+      var members = [];
+      try{ members = JSON.parse(r.members||'[]'); }catch(e){}
+      var inRoom = VH.currentRoom === r.id;
+      return '<div style="display:flex;align-items:center;gap:.75rem;padding:.75rem 1rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:var(--radius-sm);">'+
+        '<div style="flex:1;">'+
+          '<div style="font-size:.84rem;font-weight:700;color:var(--text-primary);">'+esc(r.name)+'</div>'+
+          '<div style="font-size:.72rem;color:var(--text-dim);margin-top:2px;">'+members.length+' member'+(members.length!==1?'s':'')+' · by '+esc(r.created_by)+'</div>'+
+        '</div>'+
+        (inRoom
+          ? '<span style="font-size:.72rem;color:#2ec56f;font-weight:700;">● You're In</span>'
+          : (VH.currentCall.peerId || VH.currentRoom
+              ? '<span style="font-size:.75rem;color:var(--text-dim);">Busy</span>'
+              : '<button onclick="vhJoinRoom(''+r.id+'',''+esc(r.name)+'')" style="padding:.35rem .9rem;background:var(--gold);color:#fff;border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:.76rem;font-weight:700;cursor:pointer;">Join</button>'))+
+        (isAdminUser()||r.created_by===currentUser.name ? '<button onclick="vhDeleteRoom(''+r.id+'')" style="margin-left:.4rem;padding:.3rem .7rem;background:rgba(239,73,60,.1);color:#ef493c;border:1px solid rgba(239,73,60,.25);border-radius:6px;font-size:.72rem;cursor:pointer;">🗑</button>' : '')+
+      '</div>';
+    }).join('');
+  }catch(e){ list.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;">Could not load rooms.</div>'; }
+}
+
+async function vhCreateRoom(){
+  var inp = document.getElementById('vh-room-name-input');
+  var name = (inp&&inp.value||'').trim();
+  if(!name){ alert('Please enter a room name.'); return; }
+  try{
+    var row = await sbInsert('voice_rooms',{
+      name: name,
+      created_by: currentUser.name,
+      members: JSON.stringify([{id:currentUser.id,name:currentUser.name}]),
+      created_at: new Date().toISOString()
+    });
+    if(inp) inp.value='';
+    vhLoadRooms();
+    // Auto-join
+    if(row&&row.length) vhJoinRoom(row[0].id, name);
+  }catch(e){ alert('Could not create room: '+e.message); }
+}
+
+async function vhJoinRoom(roomId, roomName){
+  if(VH.currentCall.peerId){ alert('End your current call first.'); return; }
+  if(VH.currentRoom) await vhLeaveRoom();
+  VH.currentRoom = roomId;
+  VH.roomMuted = true;
+  // Get mic
+  var stream = await vhGetMic();
+  if(!stream){ VH.currentRoom=null; return; }
+  stream.getAudioTracks().forEach(function(t){ t.enabled=false; });
+  // Update members in DB
+  try{
+    var rows = await sbQuery('voice_rooms','id=eq.'+roomId+'&select=members');
+    var members = [];
+    if(rows&&rows.length) try{ members=JSON.parse(rows[0].members||'[]'); }catch(e){}
+    if(!members.find(function(m){return m.id===currentUser.id;})){
+      members.push({id:currentUser.id,name:currentUser.name});
+      await sbUpdate('voice_rooms','id',roomId,{members:JSON.stringify(members)});
+    }
+  }catch(e){}
+  // Signal others in room
+  await vhSendSignal(null, roomId, 'room_join', {name:currentUser.name});
+  // Show widget
+  vhRenderRoomWidget(roomName);
+  vhBeep('call');
+  // Connect to existing members
+  try{
+    var rows2 = await sbQuery('voice_rooms','id=eq.'+roomId+'&select=members');
+    var members2 = [];
+    if(rows2&&rows2.length) try{ members2=JSON.parse(rows2[0].members||'[]'); }catch(e){}
+    for(var i=0;i<members2.length;i++){
+      var m = members2[i];
+      if(m.id===currentUser.id) continue;
+      await vhStartRoomWebRTC(m.id, roomId);
+    }
+  }catch(e){}
+  vhLoadRooms();
+  // Start room poll
+  VH.roomPollInterval = setInterval(vhLoadRooms, 5000);
+}
+
+async function vhStartRoomWebRTC(peerId, roomId){
+  var stream = VH.localStream;
+  if(!stream) return;
+  var pc = new RTCPeerConnection(VH.STUN);
+  VH.peers[peerId] = pc;
+  stream.getTracks().forEach(function(t){ pc.addTrack(t, stream); });
+  pc.ontrack = function(e){
+    var audio = new Audio();
+    audio.srcObject = e.streams[0];
+    audio.autoplay = true;
+    document.body.appendChild(audio);
+  };
+  pc.onicecandidate = function(e){
+    if(e.candidate) vhSendSignal(null, roomId, 'ice', {candidate:e.candidate, for:peerId});
+  };
+  var offer = await pc.createOffer({offerToReceiveAudio:true});
+  await pc.setLocalDescription(offer);
+  await vhSendSignal(null, roomId, 'offer', {sdp:pc.localDescription, for:peerId});
+}
+
+async function vhLeaveRoom(){
+  if(!VH.currentRoom) return;
+  clearInterval(VH.roomPollInterval);
+  await vhSendSignal(null, VH.currentRoom, 'room_leave', {});
+  // Update members in DB
+  try{
+    var rows = await sbQuery('voice_rooms','id=eq.'+VH.currentRoom+'&select=members');
+    var members = [];
+    if(rows&&rows.length) try{ members=JSON.parse(rows[0].members||'[]'); }catch(e){}
+    members = members.filter(function(m){ return m.id!==currentUser.id; });
+    await sbUpdate('voice_rooms','id',VH.currentRoom,{members:JSON.stringify(members)});
+  }catch(e){}
+  // Close all peer connections
+  Object.keys(VH.peers).forEach(function(pid){
+    if(VH.peers[pid]){ VH.peers[pid].close(); delete VH.peers[pid]; }
+  });
+  if(VH.localStream && !VH.currentCall.peerId){
+    VH.localStream.getTracks().forEach(function(t){ t.stop(); });
+    VH.localStream = null;
+  }
+  VH.currentRoom = null;
+  VH.roomMuted = true;
+  document.getElementById('vh-room-widget').style.display = 'none';
+  vhBeep('end');
+  vhLoadRooms();
+}
+
+async function vhDeleteRoom(roomId){
+  if(!confirm('Delete this room?')) return;
+  try{
+    await fetch(SUPABASE_URL+'/rest/v1/voice_rooms?id=eq.'+roomId,{method:'DELETE',headers:sbHeaders()});
+    if(VH.currentRoom===roomId) await vhLeaveRoom();
+    vhLoadRooms();
+  }catch(e){ alert('Error: '+e.message); }
+}
+
+function vhRenderRoomWidget(roomName){
+  var w = document.getElementById('vh-room-widget');
+  var nameEl = document.getElementById('vh-room-widget-name');
+  var membersEl = document.getElementById('vh-room-widget-members');
+  if(roomName && nameEl) nameEl.textContent = roomName;
+  if(w) w.style.display = 'block';
+  // Refresh member count from DB
+  if(VH.currentRoom){
+    sbQuery('voice_rooms','id=eq.'+VH.currentRoom+'&select=members').then(function(rows){
+      var members = [];
+      if(rows&&rows.length) try{ members=JSON.parse(rows[0].members||'[]'); }catch(e){}
+      if(membersEl) membersEl.textContent = members.length+' member'+(members.length!==1?'s':'');
+    }).catch(function(){});
+  }
+}
+
+function vhRoomToggleMute(){
+  VH.roomMuted = !VH.roomMuted;
+  if(VH.localStream) VH.localStream.getAudioTracks().forEach(function(t){ t.enabled=!VH.roomMuted; });
+  var btn = document.getElementById('vh-room-mute-btn');
+  if(VH.roomMuted){
+    if(btn){ btn.style.background='rgba(76,118,168,.15)'; btn.style.borderColor='var(--navy-border)'; btn.style.color='var(--text-muted)'; btn.textContent='🎙 Muted — Click to Speak'; }
+  } else {
+    if(btn){ btn.style.background='rgba(239,73,60,.2)'; btn.style.borderColor='#ef493c'; btn.style.color='#ef493c'; btn.textContent='🔴 Speaking — Click to Mute'; }
+  }
+}
+
+function vhMarkSpeaking(userId, userName, stream){
+  // Simple speaking detection via AudioContext analyser
+  try{
+    var ctx = new (window.AudioContext||window.webkitAudioContext)();
+    var src = ctx.createMediaStreamSource(stream);
+    var analyser = ctx.createAnalyser();
+    src.connect(analyser);
+    var data = new Uint8Array(analyser.fftSize);
+    VH.speakingIntervals[userId] = setInterval(function(){
+      analyser.getByteTimeDomainData(data);
+      var vol = data.reduce(function(s,v){return s+Math.abs(v-128);},0)/data.length;
+      var spkEl = document.getElementById('vh-spk-'+userId);
+      if(spkEl) spkEl.style.background = vol>5 ? '#ef493c' : '#4c76a8';
+    },200);
+    // Add speaker pill
+    var speakers = document.getElementById('vh-room-speakers');
+    if(speakers && !document.getElementById('vh-spk-'+userId)){
+      var pill = document.createElement('div');
+      pill.id = 'vh-spk-'+userId;
+      pill.title = userName;
+      var ini = (userName||'?').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+      pill.style.cssText='width:28px;height:28px;border-radius:50%;background:#4c76a8;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;color:#fff;transition:background .2s;';
+      pill.textContent=ini;
+      speakers.appendChild(pill);
+    }
+  }catch(e){}
+}
+
+// ── Signal polling ──
+function vhStartSignalPoll(){
+  if(VH.signalPollInterval) return;
+  VH.signalPollInterval = setInterval(vhPollSignals, 2000);
+}
+function vhStopSignalPoll(){
+  clearInterval(VH.signalPollInterval);
+  VH.signalPollInterval = null;
+}
+
+// ── Control Deck: per-agent WT access ──
+async function cdLoadVHAgents(){
+  var list = document.getElementById('cd-vh-agents');
+  if(!list) return;
+  try{
+    var users = await sbQuery('users','role=neq.syslevel&select=id,name,role&order=name.asc');
+    var wtRows = await sbQuery('voice_wt_status','select=user_id,wt_on');
+    var wtMap = {};
+    (wtRows||[]).forEach(function(r){ wtMap[r.user_id]=r.wt_on; });
+    list.innerHTML = (users||[]).map(function(u){
+      var on = !!wtMap[u.id];
+      return '<div style="display:flex;align-items:center;gap:.75rem;padding:.55rem .75rem;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius-sm);">'+
+        '<div style="flex:1;font-size:.82rem;font-weight:600;color:var(--text-primary);">'+esc(u.name)+'<span style="font-size:.7rem;color:var(--text-dim);margin-left:.4rem;">('+u.role+')</span></div>'+
+        '<label class="cat-toggle-wrap"><input type="checkbox" '+(on?'checked':'')+' onchange="cdVHAgentToggle(''+u.id+'',''+esc(u.name)+'',this.checked)"/><span class="cat-toggle-slider"></span></label>'+
+      '</div>';
+    }).join('');
+    var statusEl = document.getElementById('cd-vh-status');
+    var onCount = Object.values(wtMap).filter(Boolean).length;
+    if(statusEl) statusEl.textContent = onCount+' agent'+(onCount!==1?'s':'')+' active';
+  }catch(e){ list.innerHTML='<div style="color:var(--text-dim);font-size:.8rem;">Could not load.</div>'; }
+}
+
+async function cdVHAgentToggle(userId, userName, on){
+  try{
+    var ex = await sbQuery('voice_wt_status','user_id=eq.'+userId+'&select=user_id');
+    if(ex&&ex.length){
+      await sbUpdate('voice_wt_status','user_id',userId,{wt_on:on,updated_at:new Date().toISOString()});
+    } else {
+      await sbInsert('voice_wt_status',{user_id:userId,user_name:userName,wt_on:on,updated_at:new Date().toISOString()});
+    }
+    cdLoadVHAgents();
+  }catch(e){ alert('Error: '+e.message); }
+}
+
+// ── Hook into page show ──
+var _origShowPage = typeof showPage === 'function' ? showPage : null;
 
 // ── Check ts global in settings poll ──
 async function checkTsGlobal(){
