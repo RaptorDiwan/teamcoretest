@@ -5417,8 +5417,16 @@ function renderBreakReport(breaks, from, to){
   var byDate = {};
   breaks.forEach(function(b){
     if(!byDate[b.date]) byDate[b.date] = {};
-    if(!byDate[b.date][b.user_name]) byDate[b.date][b.user_name] = {};
-    byDate[b.date][b.user_name][b.break_type] = b;
+    var nm = b.user_name || 'Unknown';
+    if(!byDate[b.date][nm]) byDate[b.date][nm] = {
+      breakfast:{secs:0,over:false}, lunch:{secs:0,over:false},
+      beverage:{secs:0,over:false}, shortbreak:{secs:0,over:false}
+    };
+    var bt = b.break_type;
+    if(byDate[b.date][nm][bt] !== undefined){
+      byDate[b.date][nm][bt].secs += (b.duration_seconds||0);
+      byDate[b.date][nm][bt].over = byDate[b.date][nm][bt].secs > (BREAK_LIMITS[bt]||0)*60;
+    }
   });
 
   var dates = Object.keys(byDate).sort();
@@ -5444,23 +5452,21 @@ function renderBreakReport(breaks, from, to){
 
     agents.forEach(function(name){
       var ag = agentMap[name];
-      var bf = ag['breakfast'], lu = ag['lunch'], bv = ag['beverage'], sb = ag['shortbreak'];
-      var totalSec = (bf?bf.duration_seconds:0)+(lu?lu.duration_seconds:0)+(bv?bv.duration_seconds:0)+(sb?sb.duration_seconds:0);
+      var bf=ag.breakfast, lu=ag.lunch, bv=ag.beverage, sb=ag.shortbreak;
+      var totalSec = bf.secs+lu.secs+bv.secs+sb.secs;
       var exceeded = [];
-      if(bf && bf.over_limit) exceeded.push('Breakfast');
-      if(lu && lu.over_limit) exceeded.push('Lunch');
-      if(bv && bv.over_limit) exceeded.push('Beverage');
-      if(sb && sb.over_limit) exceeded.push('Short Break');
-
-      var cellStyle = function(b){ return b && b.over_limit ? ' style="background:rgba(232,150,75,0.35);font-weight:600;"' : ''; };
-
+      if(bf.over) exceeded.push('Breakfast');
+      if(lu.over) exceeded.push('Lunch');
+      if(bv.over) exceeded.push('Beverage');
+      if(sb.over) exceeded.push('Short Break');
+      var os = function(b){ return b.over?' style="background:rgba(232,150,75,0.35);font-weight:600;"':''; };
       html += '<tr>' +
         '<td style="font-weight:500;">'+name+'</td>' +
-        '<td'+cellStyle(bf)+'>'+( bf?fmtDurMin(bf.duration_seconds):'-')+'</td>' +
-        '<td'+cellStyle(lu)+'>'+( lu?fmtDurMin(lu.duration_seconds):'-')+'</td>' +
-        '<td'+cellStyle(bv)+'>'+( bv?fmtDurMin(bv.duration_seconds):'-')+'</td>' +
-        '<td'+cellStyle(sb)+'>'+( sb?fmtDurMin(sb.duration_seconds):'-')+'</td>' +
-        '<td style="font-weight:600;">'+fmtDurMin(totalSec)+'</td>' +
+        '<td'+os(bf)+'>'+(bf.secs>0?fmtDurMin(bf.secs):'-')+'</td>' +
+        '<td'+os(lu)+'>'+(lu.secs>0?fmtDurMin(lu.secs):'-')+'</td>' +
+        '<td'+os(bv)+'>'+(bv.secs>0?fmtDurMin(bv.secs):'-')+'</td>' +
+        '<td'+os(sb)+'>'+(sb.secs>0?fmtDurMin(sb.secs):'-')+'</td>' +
+        '<td style="font-weight:600;">'+(totalSec>0?fmtDurMin(totalSec):'-')+'</td>' +
         '<td style="color:'+(exceeded.length?'var(--accent-red)':'var(--text-dim)')+';">'+(exceeded.length?exceeded.join(', '):'-')+'</td>' +
         '</tr>';
     });
@@ -5496,7 +5502,7 @@ function renderAttendanceReport(rows){
       }
       var stillIn = r.login_time && !r.logout_time;
       html += '<tr>'+
-        '<td style="font-weight:500;">'+r.user_name+'</td>'+
+        '<td style="font-weight:500;">'+(r.user_name||currentUser.name||'Agent')+'</td>'+
         '<td>'+fmtTime(r.login_time)+'</td>'+
         '<td>'+(stillIn?'<span style="color:var(--gold);font-weight:500;">Still in</span>':fmtTime(r.logout_time))+'</td>'+
         '<td style="font-weight:600;">'+dur+'</td>'+
