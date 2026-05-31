@@ -3294,6 +3294,25 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
               <span id="vh-my-wt-label" style="font-size:.74rem;color:var(--text-dim);">OFF</span>
             </div>
           </div>
+          <!-- Setup warning — shown if tables missing -->
+          <div id="vh-setup-warn" style="display:none;margin-bottom:1rem;padding:.85rem 1rem;background:rgba(239,73,60,.08);border:1px solid rgba(239,73,60,.25);border-radius:var(--radius-sm);">
+            <div style="font-size:.82rem;font-weight:700;color:#ef493c;margin-bottom:.4rem;">⚠️ Database setup required</div>
+            <div style="font-size:.76rem;color:var(--text-muted);line-height:1.6;">Run this SQL in your Supabase SQL editor to enable calling:</div>
+            <pre style="font-size:.7rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:6px;padding:.6rem .8rem;margin:.5rem 0 0;overflow-x:auto;color:var(--text-primary);line-height:1.5;">CREATE TABLE IF NOT EXISTS voice_signals (
+  id bigserial PRIMARY KEY, from_id text, from_name text,
+  to_id text, to_room text, type text, payload text,
+  created_at timestamptz DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS voice_wt_status (
+  user_id text PRIMARY KEY, user_name text,
+  wt_on boolean DEFAULT false, updated_at timestamptz DEFAULT now()
+);
+CREATE TABLE IF NOT EXISTS voice_rooms (
+  id bigserial PRIMARY KEY, name text, created_by text,
+  members text DEFAULT '[]', created_at timestamptz DEFAULT now()
+);</pre>
+          </div>
+
           <div style="display:flex;gap:.5rem;margin-bottom:1.2rem;">
             <button class="xc-tab active" id="vh-tab-wt" onclick="vhSwitchTab('wt')">📻 Walkie Talkie</button>
             <button class="xc-tab" id="vh-tab-rooms" onclick="vhSwitchTab('rooms')">👥 Group Rooms</button>
@@ -7457,7 +7476,8 @@ function renderWhosActive(users,att,onBreakSet){
     }
     var manualOffline = u.presence==='offline';
     // Online = active work session + recent heartbeat (or no last_seen yet = just started)
-    var isOnline = hasActiveSession && !manualOffline && (isRecentlySeen || !attRec.last_seen);
+    // Online = active work session + recent heartbeat only
+    var isOnline = hasActiveSession && !manualOffline && isRecentlySeen;
     var sc, sl;
     if(manualOffline){sc='out';sl='Offline';}
     else if(isBreak && isOnline){sc='onbreak';sl='On Break';}
@@ -14229,22 +14249,39 @@ async function vhSendSignal(toId, toRoom, type, payload){
   }catch(e){ console.warn('VH signal send failed',e); }
 }
 
+var _vhProcessedSignals = new Set();
+var _vhTableExists = null; // null=unknown, true/false
+
 async function vhPollSignals(){
   if(!currentUser) return;
+  if(_vhTableExists === false) return; // table confirmed missing, stop polling
   try{
-    var since = new Date(Date.now()-8000).toISOString();
+    var since = new Date(Date.now()-9000).toISOString();
+    // PostgREST OR filter: to_id matches me OR to_room matches current room
+    var roomFilter = VH.currentRoom ? ',to_room.eq.'+VH.currentRoom : '';
     var rows = await sbQuery('voice_signals',
       'created_at=gt.'+encodeURIComponent(since)+
-      '&or=(to_id.eq.'+currentUser.id+',to_room.eq.'+(VH.currentRoom||'__none__')+')'+
-      '&order=created_at.asc&limit=30'
+      '&or=(to_id.eq.'+currentUser.id+roomFilter+')'+
+      '&order=created_at.asc&limit=40&select=id,from_id,from_name,to_id,to_room,type,payload,created_at'
     );
+    _vhTableExists = true;
     if(!rows||!rows.length) return;
     for(var i=0;i<rows.length;i++){
       var sig = rows[i];
-      if(sig.from_id === currentUser.id) continue; // skip own signals
+      if(sig.from_id === currentUser.id) continue; // skip own
+      if(_vhProcessedSignals.has(sig.id)) continue; // dedupe
+      _vhProcessedSignals.add(sig.id);
+      // Keep set small
+      if(_vhProcessedSignals.size > 200) _vhProcessedSignals.clear();
       await vhHandleSignal(sig);
     }
-  }catch(e){}
+  }catch(e){
+    // If table doesn't exist (404/400), mark and stop spamming
+    if(e.message && (e.message.includes('does not exist') || e.message.includes('relation') || e.message.includes('404'))){
+      _vhTableExists = false;
+      console.warn('Voice Hub: voice_signals table missing. Run the SQL setup.');
+    }
+  }
 }
 
 async function vhHandleSignal(sig){
@@ -14328,6 +14365,17 @@ async function vhPageInit(){
   if(lbl) lbl.textContent = VH.wtEnabled ? 'ON' : 'OFF';
   vhLoadAgents();
   vhStartSignalPoll();
+  // Check if tables exist — show setup warning if not
+  setTimeout(async function(){
+    var warn = document.getElementById('vh-setup-warn');
+    if(!warn) return;
+    try{
+      await sbQuery('voice_signals','limit=1&select=id');
+      warn.style.display='none'; // tables exist
+    }catch(e){
+      warn.style.display='block'; // show SQL instructions
+    }
+  }, 1500);
 }
 
 async function vhToggleMyWT(on){
