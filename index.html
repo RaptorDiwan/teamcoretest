@@ -1461,21 +1461,21 @@
   @media (max-width: 768px) {
 
     /* ── TOPBAR ── */
-    .topbar { padding: 0 1rem; height: 54px; }
-    .topbar-brand { font-size: 1.2rem; }
-    .topbar-right { gap: .6rem; }
-    .agent-badge { padding: .28rem .6rem .28rem .28rem; gap: .4rem; }
+    .topbar { padding: 0 .75rem; height: 54px; }
+    .topbar-brand { font-size: 1.1rem; }
+    .topbar-right { gap: .4rem; }
+    .agent-badge { padding: .28rem .5rem .28rem .28rem; gap: .3rem; }
     .agent-name { display: none; }
-    .logout-btn { padding: .32rem .7rem; font-size: .75rem; }
-    .dark-toggle { font-size: .95rem; padding: .3rem; }
-    .work-clock-wrap { gap: .4rem; }
-    .work-clock-time { font-size: .72rem; }
-    .wclock-btn { padding: .3rem .65rem; font-size: .72rem; }
+    .logout-btn { padding: .28rem .6rem; font-size: .72rem; }
+    .dark-toggle { width: 32px; height: 32px; font-size: .9rem; }
+    .work-clock-wrap { gap: .3rem; padding: .25rem .3rem .25rem .6rem; }
+    .work-clock-time { font-size: .68rem; min-width: 36px; }
+    .wclock-btn { padding: .25rem .55rem; font-size: .68rem; }
 
     /* ── LAYOUT ── */
     .dash-body { flex-direction: column; min-height: calc(100vh - 54px); }
     .sidebar { display: none; }
-    .main-content { padding: 1rem 1rem 7rem 1rem; }
+    .main-content { padding: 1rem .85rem 7rem .85rem; }
 
     /* ── BOTTOM NAV ── */
     .mobile-bottom-nav { display: flex !important; }
@@ -1491,13 +1491,14 @@
     .break-toast { left: 1rem; right: 1rem; transform: none; bottom: 130px; min-width: unset; max-width: unset; }
 
     /* ── HOME ── */
-    .home-greeting h1 { font-size: 1.6rem; }
-    .home-greeting { margin-bottom: 1.5rem; }
-    .live-stats-row { grid-template-columns: repeat(2,1fr); gap: .75rem; margin-bottom: 1.25rem; }
-    .live-stat-card { padding: .9rem 1rem; }
-    .live-stat-val { font-size: 1.6rem; }
-    .live-stat-icon { width: 36px; height: 36px; }
-    .whos-active-panel { margin-top: 1rem; }
+    .home-greeting h1 { font-size: 1.4rem; }
+    .home-greeting { margin-bottom: 1.2rem; }
+    .live-stats-row { grid-template-columns: repeat(2,1fr); gap: .6rem; margin-bottom: 1rem; }
+    .live-stat-card { padding: .75rem .85rem; }
+    .live-stat-val { font-size: 1.5rem; }
+    .live-stat-icon { width: 32px; height: 32px; }
+    .whos-active-panel { margin-top: .75rem; }
+    .home-two-col { grid-template-columns: 1fr !important; gap: 1rem; }
     .hm-card { padding: .75rem .9rem; }
     .attendance-badge { font-size: .65rem; padding: .25rem .6rem; }
 
@@ -1509,14 +1510,90 @@
     /* ── ROSTER ── */
     .roster-controls { flex-direction: column; align-items: stretch; }
     .roster-search { width: 100%; }
+    .roster-table { font-size: .72rem; }
+    .roster-table th, .roster-table td { padding: .4rem .5rem; }
+
+    /* ── QUIZ / ASSESSMENT ── */
+    .quiz-option { padding: .65rem .9rem; font-size: .85rem; }
+    .quiz-essay { font-size: .85rem; }
+    .qa-form-grid { grid-template-columns: 1fr; }
+
+    /* ── PEOPLE ── */
+    .ppl-grid { grid-template-columns: 1fr 1fr; gap: .75rem; }
+    .ppl-card { padding: 1rem .85rem; }
+    .ppl-info-grid { grid-template-columns: 1fr; }
+    .ppl-edit-grid { grid-template-columns: 1fr; }
+
+    /* ── MESSAGES / CHAT ── */
+    .msg-conv-list { font-size: .82rem; }
+    #page-messages { padding: 0 !important; }
+    #chat-panel { width: 100vw !important; right: 0 !important; left: 0 !important; border-radius: 16px 16px 0 0 !important; bottom: 56px !important; max-height: 72vh !important; }
+
+    /* ── TIMESHEET ── */
+    .ts-entry { flex-wrap: wrap; gap: .4rem; }
+    .ts-entry-meta { flex-wrap: wrap; }
+
+    /* ── CONTROL DECK ── */
+    .cd-wrap { padding: 1rem .85rem; gap: .85rem; }
+    .cd-card { padding: .9rem 1rem; }
+    .cd-card-header { flex-wrap: wrap; gap: .6rem; }
+
+    /* ── ABOUT / VOICE HUB ── */
+    #page-about { padding: 1.2rem .85rem !important; gap: 1rem !important; }
+    #page-voicehub { padding: 1.2rem .85rem !important; }
+
+    /* ── REMINDERS ── */
+    .rem-root { flex-direction: column; height: auto; min-height: calc(100vh - 120px); overflow: visible; }
+    .rem-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--navy-border); flex-direction: row; flex-wrap: wrap; padding: .5rem .6rem; gap: .35rem; min-height: unset; }
+    .rem-sidebar-item { padding: .35rem .65rem; border-radius: 20px; font-size: .78rem; }
+    .rem-sidebar-icon { display: none; }
+    .rem-sidebar-count { display: none; }
+    .rem-content { flex: 1; overflow-y: auto; padding: .75rem; }
+
+    /* ── CASE TRACKER ── */
+    .ct-stats-row { grid-template-columns: repeat(2,1fr); }
+    .ct-dash-grid { grid-template-columns: 1fr; }
+    .ct-leave-grid { grid-template-columns: 1fr; }
+    .ct-vert-grid { grid-template-columns: 1fr; }
+    .ct-table-wrap { overflow-x: auto; }
+    .ct-agent-row { flex-wrap: wrap; gap: .4rem; }
+
+    /* ── XC ROWS ── */
+    .xc-row { grid-template-columns: 1fr 1fr; gap: .5rem; }
+    .xc-card { padding: .9rem; }
 
     /* ── MODALS — slide up from bottom ── */
     #stat-modal { max-width: 100% !important; margin: 0 !important; border-radius: var(--radius) var(--radius) 0 0 !important; position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; max-height: 75vh !important; }
     #stat-modal-overlay { align-items: flex-end !important; }
+    .lightbox-box { flex-direction: column; }
+    .lightbox-info { width: 100%; max-height: 40vh; }
 
-    /* ── FORMS ── */
+    /* ── VOICE HUB CALL WIDGETS ── */
+    #vh-active-call { bottom: 66px; right: 8px; left: 8px; min-width: unset; }
+    #vh-room-widget { bottom: 66px; right: 8px; left: 8px; min-width: unset; }
+    #vh-call-overlay > div { width: 90vw; padding: 1.5rem; }
+
+    /* ── FORMS / INPUTS ── */
     .field-group input, .field-group select, .field-group textarea { width: 100%; box-sizing: border-box; }
     .login-card { padding: 2rem 1.25rem; margin: 1rem; }
+    input, select, textarea { font-size: 16px !important; }
+
+    /* ── TOUCH HELPERS ── */
+    button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+    .xc-btn, .cd-btn, .xc-btn-sm { min-height: 40px; }
+    a { -webkit-tap-highlight-color: transparent; }
+  }
+
+  /* ── Extra small phones (< 400px) ── */
+  @media (max-width: 400px) {
+    .topbar-brand { font-size: .95rem; }
+    .work-clock-wrap { display: none; }
+    .live-stats-row { grid-template-columns: 1fr 1fr; gap: .5rem; }
+    .ppl-grid { grid-template-columns: 1fr; }
+    .live-stat-val { font-size: 1.3rem; }
+    .main-content { padding: .75rem .65rem 7rem .65rem; }
+    .cd-wrap { padding: .75rem .6rem; }
+    .cd-card { padding: .75rem .85rem; }
   }
 
   /* Hide bottom nav on desktop — shown only via media query above */
@@ -4196,6 +4273,13 @@ function showPage(id,elem){
 
 function isAdminUser(){return currentUser&&(currentUser.role==='admin'||currentUser.role==='tl'||currentUser.role==='syslevel');}
 function isAdminPage(id){return['quiz-admin','assessment-admin','users','sysconfig','controldeck'].indexOf(id)>-1;}
+function syncMobMsgBadge(count){
+  var b = document.getElementById('mob-msg-badge');
+  if(!b) return;
+  if(count > 0){ b.style.display='flex'; b.textContent=count; }
+  else { b.style.display='none'; }
+}
+
 function updateAdminVisibility(){
   var show=isAdminUser();
   document.querySelectorAll('.admin-only').forEach(function(el){
@@ -4212,6 +4296,8 @@ function updateAdminVisibility(){
     var canSeeTs=isAdminUser()||(currentUser&&currentUser.timesheetEnabled);
     tsItem.style.display=canSeeTs?'flex':'none';
   }
+  var mobTsItem=document.getElementById('mob-ts-item');
+  if(mobTsItem){ mobTsItem.style.display=canSeeTs?'flex':'none'; }
 }
 function openSimulation(){window.open('simulation.html','_blank');}
 function setGreetingAndDate(){
@@ -8037,7 +8123,7 @@ function mobNav(page, btn){
   if(btn) btn.classList.add('active');
   else {
     // Try to match by page
-    var map = { home:'mob-nav-home', roster:'mob-nav-roster', quiz:'mob-nav-quiz', reports:'mob-nav-reports' };
+    var map = { home:'mob-nav-home', messages:'mob-nav-messages', voicehub:'mob-nav-voicehub', roster:'mob-nav-roster', quiz:'mob-nav-quiz', reports:'mob-nav-reports', people:'mob-nav-people', casetracker:'mob-nav-cases', reminders:'mob-nav-reminders' };
     if(map[page]){ var el = document.getElementById(map[page]); if(el) el.classList.add('active'); }
   }
 }
@@ -10105,25 +10191,26 @@ window.addEventListener('DOMContentLoaded',function(){ setTimeout(function(){ CT
 
 
   <!-- MOBILE BOTTOM NAV — hidden on desktop via CSS -->
-  <nav class="mobile-bottom-nav" id="mobile-bottom-nav" style="position:fixed;bottom:0;left:0;right:0;background:rgba(19,23,49,0.98);backdrop-filter:blur(12px);border-top:1px solid var(--navy-border);z-index:300;height:56px;">
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav" style="position:fixed;bottom:0;left:0;right:0;background:var(--navy-card);backdrop-filter:blur(16px);border-top:1px solid var(--navy-border);z-index:300;height:56px;display:none;">
     <button class="mob-nav-item active" id="mob-nav-home" onclick="mobNav('home',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
       Home
+    </button>
+    <button class="mob-nav-item" id="mob-nav-messages" onclick="mobNav('messages',this)" style="position:relative;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+      <span id="mob-msg-badge" style="display:none;position:absolute;top:4px;right:12px;background:#ef493c;color:#fff;font-size:.5rem;font-weight:700;min-width:14px;height:14px;border-radius:20px;align-items:center;justify-content:center;padding:0 3px;">0</span>
+      Chats
+    </button>
+    <button class="mob-nav-item" id="mob-nav-voicehub" onclick="mobNav('voicehub',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>
+      Voice
     </button>
     <button class="mob-nav-item" id="mob-nav-roster" onclick="mobNav('roster',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
       Roster
     </button>
-    <button class="mob-nav-item" id="mob-nav-quiz" onclick="mobNav('quiz',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4"/></svg>
-      Quiz
-    </button>
-    <button class="mob-nav-item" id="mob-nav-reports" onclick="mobNav('reports',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5a2 2 0 012-2h9l5 5v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M14 3v6h6M8 17v-4M12 17v-7M16 17v-2"/></svg>
-      Reports
-    </button>
     <button class="mob-nav-item" id="mob-nav-more" onclick="toggleMobMore(this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
       More
     </button>
   </nav>
@@ -10131,27 +10218,47 @@ window.addEventListener('DOMContentLoaded',function(){ setTimeout(function(){ CT
   <!-- MOBILE MORE PANEL -->
   <div class="mob-nav-more-panel" id="mob-more-panel">
     <div class="mob-nav-section-label">Pages</div>
-    <div class="mob-nav-more-item" onclick="mobNav('kb',null);closeMobMore()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
-      Knowledge Base
+    <div class="mob-nav-more-item" onclick="mobNav('people',null);closeMobMore()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
+      People
+    </div>
+    <div class="mob-nav-more-item" onclick="mobNav('quiz',null);closeMobMore()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
+      Quiz
     </div>
     <div class="mob-nav-more-item" onclick="mobNav('assessment',null);closeMobMore()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
       Assessment
     </div>
+    <div class="mob-nav-more-item" onclick="mobNav('reports',null);closeMobMore()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5a2 2 0 012-2h9l5 5v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M14 3v6h6M8 17v-4M12 17v-7M16 17v-2"/></svg>
+      Reports
+    </div>
     <div class="mob-nav-more-item" onclick="mobNav('moments',null);closeMobMore()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
       Moments
     </div>
-    <div class="mob-nav-more-item" onclick="mobNav('announcements',null);closeMobMore()">
+    <div class="mob-nav-more-item" onclick="mobNav('casetracker',null);closeMobMore()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
+      Cases
+    </div>
+    <div class="mob-nav-more-item" onclick="mobNav('reminders',null);closeMobMore()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-      Announcements
+      Reminders
+    </div>
+    <div class="mob-nav-more-item" onclick="mobNav('about',null);closeMobMore()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      About
     </div>
     <div class="mob-nav-more-item" onclick="mobNav('changepass',null);closeMobMore()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
       Change Password
     </div>
     <div class="mob-nav-section-label admin-only">Admin</div>
+    <div class="mob-nav-more-item admin-only" onclick="mobNav('controldeck',null);closeMobMore()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M2 12h2M20 12h2M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41"/></svg>
+      Control Deck
+    </div>
     <div class="mob-nav-more-item admin-only" onclick="mobNav('users',null);closeMobMore()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
       Manage Users
@@ -10159,6 +10266,14 @@ window.addEventListener('DOMContentLoaded',function(){ setTimeout(function(){ CT
     <div class="mob-nav-more-item admin-only" onclick="mobNav('quiz-admin',null);closeMobMore()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
       Quiz Builder
+    </div>
+    <div class="mob-nav-more-item admin-only" onclick="mobNav('assessment-admin',null);closeMobMore()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><circle cx="12" cy="12" r="10"/></svg>
+      Assessment Builder
+    </div>
+    <div class="mob-nav-more-item admin-only" onclick="mobNav('timesheet',null);closeMobMore()" id="mob-ts-item" style="display:none;">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+      Timesheet
     </div>
   </div>
 
