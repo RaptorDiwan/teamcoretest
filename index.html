@@ -1867,16 +1867,227 @@ body.dark .ts-input { background:#111827;border-color:#2D3748;color:#F1F5F9; }
   .rem-date-input:focus{border-color:var(--gold-dim,rgba(239,73,60,.35));}
 
 /* ═══════════════════════════════════════
-     CHAT SYSTEM — Messenger Redesign
+     CHAT SYSTEM — Facebook Bottom Dock
   ═══════════════════════════════════════ */
-  .chat-bubble{display:none!important;}
-  .chat-bubble:hover{transform:scale(1.08);}
-  .chat-bubble svg{width:24px;height:24px;stroke:#fff;fill:none;stroke-width:2;}
-  .chat-unread-badge{position:absolute;top:-2px;right:-2px;background:#E24B4A;color:#fff;font-size:.6rem;font-weight:700;min-width:18px;height:18px;border-radius:20px;display:flex;align-items:center;justify-content:center;padding:0 4px;border:2px solid var(--navy-card);}
 
-  .chat-panel{display:none!important;}
-  .chat-panel.open{display:flex;animation:chatSlideUp .28s cubic-bezier(0.16, 1, 0.3, 1);}
-  @keyframes chatSlideUp{from{opacity:0;transform:translateY(24px) scale(0.96)}to{opacity:1;transform:translateY(0) scale(1)}}
+  /* Bottom dock container */
+  #chat-dock{
+    position:fixed; bottom:0; right:16px; z-index:8500;
+    display:flex; align-items:flex-end; gap:8px;
+    pointer-events:none;
+  }
+  #chat-dock.dock-hidden{ display:none; }
+
+  /* Contacts list popup (opens above the icon) */
+  #chat-contacts-popup{
+    width:300px; height:400px;
+    background:var(--navy-card); border:1px solid var(--navy-border);
+    border-radius:12px 12px 0 0;
+    box-shadow:0 -4px 24px rgba(7,13,45,.2);
+    display:flex; flex-direction:column; overflow:hidden;
+    pointer-events:all;
+    animation:dockSlideUp .22s ease;
+  }
+  #chat-contacts-popup.dock-hidden{ display:none; }
+  .dock-contacts-header{
+    padding:.75rem 1rem; background:var(--navy-card);
+    border-bottom:1px solid var(--navy-border);
+    display:flex; align-items:center; justify-content:space-between;
+    flex-shrink:0;
+  }
+  .dock-contacts-title{ font-size:.95rem; font-weight:700; color:var(--text-primary); }
+  .dock-contacts-search{
+    margin:.5rem .75rem; padding:.4rem .75rem;
+    background:var(--navy-hover); border:1px solid var(--navy-border);
+    border-radius:20px; font-size:.8rem; color:var(--text-primary);
+    outline:none; font-family:'DM Sans',sans-serif; width:calc(100% - 1.5rem);
+    box-sizing:border-box;
+  }
+  .dock-contacts-list{ flex:1; overflow-y:auto; padding:.25rem 0; }
+  .dock-contacts-list::-webkit-scrollbar{width:3px;}
+  .dock-contacts-list::-webkit-scrollbar-thumb{background:var(--navy-border);border-radius:3px;}
+  .dock-contact-item{
+    display:flex; align-items:center; gap:.65rem;
+    padding:.6rem 1rem; cursor:pointer; transition:background .12s;
+  }
+  .dock-contact-item:hover{ background:var(--navy-hover); }
+  .dock-contact-av{
+    width:34px; height:34px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:.58rem; font-weight:700; color:#fff; overflow:hidden;
+  }
+  .dock-contact-av img{ width:100%; height:100%; object-fit:cover; }
+  .dock-contact-name{ font-size:.84rem; font-weight:500; color:var(--text-primary); flex:1; }
+  .dock-contact-badge{
+    min-width:18px; height:18px; padding:0 5px;
+    background:var(--gold); border-radius:20px;
+    font-size:.62rem; font-weight:700; color:#fff;
+    display:flex; align-items:center; justify-content:center;
+  }
+
+  /* Each open chat window */
+  .dock-chat-window{
+    width:300px; background:var(--navy-card);
+    border:1px solid var(--navy-border);
+    border-radius:12px 12px 0 0;
+    box-shadow:0 -4px 24px rgba(7,13,45,.18);
+    display:flex; flex-direction:column; overflow:hidden;
+    pointer-events:all;
+    transition:height .2s ease;
+  }
+  .dock-chat-window.minimised{ height:44px !important; }
+  .dock-chat-titlebar{
+    height:44px; min-height:44px;
+    padding:0 .75rem; cursor:pointer;
+    display:flex; align-items:center; gap:.5rem;
+    background:var(--navy-card); flex-shrink:0;
+    border-bottom:1px solid var(--navy-border);
+    user-select:none;
+  }
+  .dock-chat-titlebar:hover{ background:var(--navy-hover); }
+  .dock-chat-title-av{
+    width:28px; height:28px; border-radius:50%; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    font-size:.55rem; font-weight:700; color:#fff; overflow:hidden;
+  }
+  .dock-chat-title-av img{ width:100%; height:100%; object-fit:cover; }
+  .dock-chat-title-name{
+    flex:1; font-size:.82rem; font-weight:600; color:var(--text-primary);
+    white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  }
+  .dock-chat-title-unread{
+    min-width:16px; height:16px; padding:0 4px;
+    background:var(--gold); border-radius:20px;
+    font-size:.6rem; font-weight:700; color:#fff;
+    display:none; align-items:center; justify-content:center;
+  }
+  .dock-win-btn{
+    background:none; border:none; cursor:pointer;
+    color:var(--text-dim); font-size:.85rem; padding:2px 5px;
+    border-radius:4px; line-height:1; flex-shrink:0;
+    transition:all .12s;
+  }
+  .dock-win-btn:hover{ background:var(--navy-hover); color:var(--text-primary); }
+  .dock-chat-body{ flex:1; display:flex; flex-direction:column; overflow:hidden; }
+
+  /* Messages area inside dock window */
+  .dock-messages{
+    flex:1; overflow-y:auto; padding:.6rem .75rem;
+    display:flex; flex-direction:column; gap:3px;
+    scroll-behavior:smooth;
+    background:var(--navy);
+  }
+  .dock-messages::-webkit-scrollbar{width:3px;}
+  .dock-messages::-webkit-scrollbar-thumb{background:var(--navy-border);border-radius:3px;}
+
+  /* Input row */
+  .dock-input-row{
+    padding:.4rem .5rem; border-top:1px solid var(--navy-border);
+    display:flex; align-items:flex-end; gap:.3rem;
+    background:var(--navy-card); flex-shrink:0;
+  }
+  .dock-input{
+    flex:1; padding:.35rem .6rem;
+    background:var(--navy-hover); border:1px solid var(--navy-border);
+    border-radius:18px; font-size:.8rem; color:var(--text-primary);
+    outline:none; resize:none; max-height:60px;
+    font-family:'DM Sans',sans-serif;
+    transition:border-color .15s;
+  }
+  .dock-input:focus{ border-color:var(--gold-dim); }
+  .dock-send-btn{
+    width:30px; height:30px; border-radius:50%; background:var(--gold);
+    border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; transition:all .15s;
+  }
+  .dock-send-btn:hover{ background:var(--gold-light); transform:scale(1.08); }
+  .dock-send-btn svg{ width:13px; height:13px; stroke:#fff; fill:none; stroke-width:2.5; }
+  .dock-emoji-btn{
+    background:none; border:none; cursor:pointer;
+    font-size:1rem; padding:.2rem; opacity:.7; flex-shrink:0;
+  }
+  .dock-emoji-btn:hover{ opacity:1; }
+
+  /* Dock chat icon (shows contacts or restore) */
+  #chat-dock-icon{
+    width:48px; height:48px; border-radius:50%;
+    background:linear-gradient(135deg,var(--gold-dim),var(--gold));
+    border:none; cursor:pointer;
+    display:none; align-items:center; justify-content:center;
+    box-shadow:0 4px 14px rgba(239,73,60,.35);
+    pointer-events:all; flex-shrink:0;
+    position:relative; margin-bottom:8px;
+    transition:transform .2s, box-shadow .2s;
+  }
+  #chat-dock-icon.visible{ display:flex; }
+  body.logged-in #chat-dock-icon{ display:flex; }
+  #chat-dock-icon:hover{ transform:scale(1.08); box-shadow:0 6px 20px rgba(239,73,60,.5); }
+  #chat-dock-icon.bounce{ animation:dockBounce .5s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes dockBounce{0%{transform:scale(1)}40%{transform:scale(1.2)}70%{transform:scale(.92)}100%{transform:scale(1)}}
+  @keyframes dockSlideUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+  #chat-dock-icon svg{ width:22px; height:22px; stroke:#fff; fill:none; stroke-width:2; }
+  #chat-dock-unread{
+    position:absolute; top:-2px; right:-2px;
+    min-width:17px; height:17px; padding:0 4px;
+    background:#E24B4A; color:#fff; font-size:.58rem; font-weight:700;
+    border-radius:20px; display:none; align-items:center; justify-content:center;
+    border:2px solid var(--navy-card);
+  }
+
+  /* Restore button when dock is hidden */
+  #chat-restore-btn{
+    position:fixed; bottom:16px; right:16px; z-index:8500;
+    width:38px; height:38px; border-radius:50%;
+    background:var(--navy-card); border:1px solid var(--navy-border);
+    cursor:pointer; display:none; align-items:center; justify-content:center;
+    box-shadow:0 2px 8px rgba(7,13,45,.15); font-size:1rem;
+    pointer-events:all; transition:all .15s; color:var(--text-muted);
+  }
+  #chat-restore-btn.visible{ display:flex; }
+  #chat-restore-btn:hover{ background:var(--navy-hover); color:var(--gold); }
+
+  /* Toast notification */
+  .chat-toast{
+    position:fixed; bottom:60px; right:80px; z-index:10000;
+    background:var(--navy-card); border:1px solid var(--navy-border);
+    border-radius:12px; padding:.6rem .9rem; max-width:260px;
+    box-shadow:0 8px 24px rgba(7,13,45,.2);
+    display:flex; align-items:flex-start; gap:.6rem;
+    animation:dockSlideUp .25s ease; cursor:pointer;
+  }
+  .chat-toast-av{ width:32px; height:32px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:.6rem; font-weight:700; color:#fff; flex-shrink:0; }
+  .chat-toast-name{ font-size:.78rem; font-weight:700; color:var(--text-primary); margin-bottom:.1rem; }
+  .chat-toast-msg{ font-size:.72rem; color:var(--text-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:160px; }
+  .chat-toast-close{ background:none; border:none; cursor:pointer; color:var(--text-dim); font-size:.85rem; line-height:1; flex-shrink:0; padding:0 2px; }
+
+  /* Reuse bubble styles for message rendering in dock */
+  .chat-msg-row{display:flex;align-items:flex-end;gap:.35rem;margin-bottom:2px;}
+  .chat-msg-row.mine{flex-direction:row-reverse;}
+  .chat-msg-row.last-in-group{margin-bottom:8px;}
+  .dock-bubble{
+    padding:.38rem .65rem; font-size:.78rem; line-height:1.45;
+    word-break:break-word; max-width:200px; border-radius:14px;
+  }
+  .chat-msg-row.mine .dock-bubble{
+    background:linear-gradient(135deg,var(--gold),var(--gold-light));
+    color:#fff; border-radius:14px 14px 4px 14px;
+  }
+  .chat-msg-row.theirs .dock-bubble{
+    background:var(--navy-hover); color:var(--text-primary);
+    border:1px solid var(--navy-border); border-radius:14px 14px 14px 4px;
+  }
+  body.dark .chat-msg-row.theirs .dock-bubble{ background:#2a3347; }
+  .dock-bubble.is-gif{ padding:2px; background:transparent !important; border:none !important; }
+  .dock-bubble.is-gif img{ border-radius:8px; max-width:160px; max-height:140px; display:block; }
+  .dock-msg-time{ font-size:.58rem; color:var(--text-dim); padding:0 2px; }
+  .dock-chat-date-div{
+    text-align:center; font-size:.6rem; color:var(--text-dim);
+    margin:8px 0 4px; display:flex; align-items:center; gap:.4rem;
+  }
+  .dock-chat-date-div::before,.dock-chat-date-div::after{ content:''; flex:1; height:1px; background:var(--navy-border); }
+
+  /* Sound toggle in dock */
+  .dock-sound-btn{ background:none; border:none; cursor:pointer; font-size:.85rem; color:var(--text-dim); padding:2px 4px; }
 
   /* Chat list view */
   .chat-list-header{padding:1rem 1.2rem;border-bottom:1px solid var(--navy-border);display:flex;align-items:center;justify-content:space-between;background:var(--navy-card);}
@@ -4133,6 +4344,7 @@ async function doLogin(){
 }
 
 function doLogout(){
+  document.body.classList.remove('logged-in');
   // Check if agent has unhandled reassigned cases — wrapped in try/catch so it NEVER blocks logout
   try {
     if(typeof CT !== 'undefined' && currentUser){
@@ -7133,10 +7345,12 @@ async function loadQuizBuilderList(){
       enBtn.onclick=(function(id,en){ return function(){ qbToggleEnabled(id,en); }; })(q.id,isEnabled);
       right.appendChild(enBtn);
 
-      // Responses button — all quiz types
-      var revBtn=document.createElement('button'); revBtn.className='qa-toggle-btn'; revBtn.id='qbr-btn-'+q.id; revBtn.innerHTML='&#128065; Responses';
-      revBtn.onclick=(function(id){ return function(){ qbToggleEssayReview(id); }; })(q.id);
-      right.appendChild(revBtn);
+      // Essay review
+      if(isEssay){
+        var revBtn=document.createElement('button'); revBtn.className='qa-toggle-btn'; revBtn.id='qbr-btn-'+q.id; revBtn.innerHTML='&#128065; Review Answers';
+        revBtn.onclick=(function(id){ return function(){ qbToggleEssayReview(id); }; })(q.id);
+        right.appendChild(revBtn);
+      }
 
       // Review toggle
       var rtBtn=document.createElement('button'); rtBtn.className='qa-toggle-btn'+(q.review_enabled?' on':'');
@@ -7155,9 +7369,11 @@ async function loadQuizBuilderList(){
       var editPanel=document.createElement('div'); editPanel.id='qb-edit-'+q.id; editPanel.style.cssText='display:none;width:100%;margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;';
       item.appendChild(editPanel);
 
-      // Response review panel — all quiz types
-      var essayPanel=document.createElement('div'); essayPanel.id='qbr-panel-'+q.id; essayPanel.style.cssText='display:none;width:100%;margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;';
-      item.appendChild(essayPanel);
+      // Essay review panel
+      if(isEssay){
+        var essayPanel=document.createElement('div'); essayPanel.id='qbr-panel-'+q.id; essayPanel.style.cssText='display:none;width:100%;margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;';
+        item.appendChild(essayPanel);
+      }
 
       list.appendChild(item);
     });
@@ -7275,15 +7491,11 @@ async function qbToggleEssayReview(quizId){
             '<span style="font-size:.72rem;color:var(--text-dim);">'+time+'</span>'+
             statusBadge+
           '</div>'+
-          '<input id="qbrans-'+r.id+'" value="'+esc(r.answer||'')+'" style="font-size:.84rem;background:var(--navy-card);color:var(--text-primary);padding:.4rem .7rem;border-radius:6px;border:1px solid var(--navy-border);width:100%;box-sizing:border-box;font-family:DM Sans,sans-serif;" placeholder="(no answer)"/>'+
-          '<div style="margin-top:.3rem;">'+
-            '<button onclick="qbSaveAnswer(\''+r.id+'\',\''+quizId+'\')" style="font-size:.7rem;padding:2px 10px;background:var(--gold);color:#fff;border:none;border-radius:5px;cursor:pointer;font-weight:600;">Save</button>'+
-          '</div>'+
+          '<div style="font-size:.85rem;color:var(--text-primary);background:var(--navy-card);padding:.5rem .75rem;border-radius:6px;border:1px solid var(--navy-border);word-break:break-word;">'+esc(r.answer||'(no answer)')+'</div>'+
         '</div>'+
         '<div style="display:flex;flex-direction:column;gap:.4rem;flex-shrink:0;">'+
-          '<button class="qbr-mark-btn correct" onclick="qbMarkAnswer(\''+r.id+'\',true,\''+quizId+'\')" '+(isC?'style="opacity:.4;cursor:default;" disabled':'')+'>&#10003; Correct</button>'+
-          '<button class="qbr-mark-btn wrong"   onclick="qbMarkAnswer(\''+r.id+'\',false,\''+quizId+'\')" '+(isW?'style="opacity:.4;cursor:default;" disabled':'')+'>&#10007; Wrong</button>'+
-          '<button onclick="qbDeleteResponse(\''+r.id+'\',\''+quizId+'\')" style="font-size:.7rem;padding:2px 8px;background:rgba(239,73,60,.12);color:var(--accent-red);border:1px solid rgba(239,73,60,.25);border-radius:5px;cursor:pointer;font-weight:600;margin-top:2px;">Del</button>'+
+          '<button class="qbr-mark-btn correct" onclick="qbMarkAnswer(\''+r.id+'\',true,\''+quizId+'\')" '+(isC?'style="opacity:.4;cursor:default;" disabled':'')+'>✓ Correct</button>'+
+          '<button class="qbr-mark-btn wrong"   onclick="qbMarkAnswer(\''+r.id+'\',false,\''+quizId+'\')" '+(isW?'style="opacity:.4;cursor:default;" disabled':'')+'>✗ Wrong</button>'+
         '</div>'+
       '</div>';
     }).join('');
@@ -7312,23 +7524,6 @@ async function qbMarkAnswer(responseId, isCorrect, quizId){
   }catch(e){ alert('Could not save mark: '+e.message); }
 }
 
-async function qbSaveAnswer(responseId, quizId){
-  var inp = document.getElementById('qbrans-'+responseId);
-  if(!inp) return;
-  try{
-    await sbUpdate('quiz_responses','id',responseId,{answer:inp.value.trim()});
-    inp.style.borderColor='var(--accent-green)';
-    setTimeout(function(){ inp.style.borderColor=''; }, 1500);
-  }catch(e){ alert('Save failed: '+e.message); }
-}
-async function qbDeleteResponse(responseId, quizId){
-  if(!confirm('Delete this response? This cannot be undone.')) return;
-  try{
-    await sbDelete('quiz_responses','id',responseId);
-    var row = document.getElementById('qbrc-'+responseId);
-    if(row) row.remove();
-  }catch(e){ alert('Delete failed: '+e.message); }
-}
 async function toggleQuizReview(id, current){
   try{
     await sbUpdate('quizzes','id',id,{review_enabled:!current});
@@ -9505,477 +9700,301 @@ function chatFmtTime(iso){
   return d.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
 }
 
-// ── Init ──
+// ── DOCK INIT ──
+var _chatUsers = [], _chatUnreadMap = {}, _chatLastMsgMap = {};
+var _dockWindows = {}; // { userId: { minimised } }
+var _dockContactsOpen = false;
+var _lastNotifTotal = 0;
+var _notifSoundEnabled = localStorage.getItem('tc_notif_sound') !== 'false';
+var _dockHidden = localStorage.getItem('tc_dock_hidden') === '1';
+
 function chatInit(){
-  if(!currentUser||_isSysLevel())return;
-  document.getElementById('chat-wrap').style.display='block';
-  var tbBtn=document.getElementById('topbar-msg-btn');
-  if(tbBtn) tbBtn.style.display='none'; // kept hidden — using floating bubble instead
-  var sbBadge=document.getElementById('sidebar-msg-badge');
-  msgLoadConversations();
+  if(!currentUser||_isSysLevel()) return;
+  var icon = document.getElementById('chat-dock-icon');
+  if(icon) icon.classList.add('visible');
+  if(_dockHidden){ dockApplyHidden(true, false); }
+  dockLoadUsers();
   chatStartPolling();
   initSoundIcon();
+  msgLoadConversations();
 }
 
-function chatTogglePanel(){
-  _chatOpen=!_chatOpen;
-  var panel=document.getElementById('chat-panel');
-  panel.classList.toggle('open',_chatOpen);
-  if(_chatOpen){ chatLoadUsers(); }
-}
-
-// ── FLOATING BUBBLE (mini panel) ──
-async function chatLoadUsers(){
+// ── CONTACTS ──
+async function dockLoadUsers(){
   try{
-    var users=await sbQuery('users','select=id,name,role,last_seen&order=name.asc');
-    _chatUsers=(users||[]).filter(function(u){return u.id!==currentUser.id&&u.role!=='syslevel';});
-    // Fetch people photos to show in chat avatars
+    var users = await sbQuery('users','select=id,name,role,last_seen&order=name.asc');
+    _chatUsers = (users||[]).filter(function(u){ return u.id!==currentUser.id && u.role!=='syslevel'; });
     try{
-      var people=await sbQuery('people','select=name,photo_url');
-      var photoMap={};
-      (people||[]).forEach(function(p){if(p.photo_url)photoMap[p.name.toLowerCase().trim()]=p.photo_url;});
-      _chatUsers.forEach(function(u){u.photo_url=photoMap[u.name.toLowerCase().trim()]||null;});
+      var people = await sbQuery('people','select=name,photo_url');
+      var pm={};
+      (people||[]).forEach(function(p){ if(p.photo_url) pm[p.name.toLowerCase().trim()]=p.photo_url; });
+      _chatUsers.forEach(function(u){ u.photo_url=pm[u.name.toLowerCase().trim()]||null; });
     }catch(e){}
-    chatRenderUserList(_chatUsers);
+    dockRenderContacts(_chatUsers);
     chatCheckUnread();
   }catch(e){}
 }
 
-function chatFilterUsers(search){
-  var s=search.toLowerCase();
-  chatRenderUserList(s?_chatUsers.filter(function(u){return u.name.toLowerCase().indexOf(s)>-1;}):_chatUsers);
+function dockFilterContacts(q){
+  var s=q.toLowerCase();
+  dockRenderContacts(s?_chatUsers.filter(function(u){return u.name.toLowerCase().indexOf(s)>-1;}):_chatUsers);
 }
 
-function chatRenderUserList(users){
-  var list=document.getElementById('chat-user-list');
-  if(!list||!users.length){if(list)list.innerHTML='<div class="chat-empty">No one to message</div>';return;}
-  list.innerHTML=users.map(function(u){
-    var bg=chatColor(u.name),ini=chatIni(u.name);
+function dockRenderContacts(users){
+  var list = document.getElementById('dock-contacts-list');
+  if(!list) return;
+  if(!users.length){ list.innerHTML='<div style="padding:1rem;text-align:center;font-size:.8rem;color:var(--text-dim);">No contacts found</div>'; return; }
+  list.innerHTML = users.map(function(u){
+    var bg=chatColor(u.name), ini=chatIni(u.name);
     var unread=_chatUnreadMap[u.id]||0;
     var last=_chatLastMsgMap[u.id];
-    var preview=last?esc(last.content.slice(0,28))+(last.content.length>28?'...':''):'<span style="opacity:.5">Say hello 👋</span>';
-    
-    var isOnline = u.last_seen && Math.abs(Date.now() - new Date(u.last_seen).getTime()) < 12 * 60 * 1000;
-    var avContent = u.photo_url ? '<img src="'+u.photo_url+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>' : ini;
+    var preview=last?(last.content.startsWith('__GIF__')?'🎬 GIF':esc(last.content.slice(0,28))+(last.content.length>28?'...':'')):'<span style="opacity:.5">Say hello 👋</span>';
+    var avHtml = u.photo_url
+      ? '<img src="'+u.photo_url+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>'
+      : ini;
     var avBg = u.photo_url ? 'background:transparent;' : 'background:'+bg+';';
-    
-    return '<div class="chat-conv-item" onclick="chatOpenConv(\''+u.id+'\',\''+esc(u.name)+'\',\''+bg+'\')">'+
-      '<div class="chat-conv-av'+(isOnline?' online':'')+'" style="'+avBg+'">'+avContent+'</div>'+
-      '<div class="chat-conv-info"><div class="chat-conv-name">'+esc(u.name)+'</div><div class="chat-conv-preview">'+preview+'</div></div>'+
-      '<div class="chat-conv-meta"><span class="chat-conv-time">'+(last?chatFmtTime(last.time):'')+'</span>'+(unread?'<div class="chat-unread-dot">'+unread+'</div>':'')+' </div>'+
+    return '<div class="dock-contact-item" onclick="dockOpenChat(\''+u.id+'\',\''+esc(u.name)+'\',\''+bg+'\')">'+
+      '<div class="dock-contact-av" style="'+avBg+'">'+avHtml+'</div>'+
+      '<div style="flex:1;min-width:0;"><div class="dock-contact-name">'+esc(u.name)+'</div>'+
+      '<div style="font-size:.72rem;color:var(--text-muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+preview+'</div></div>'+
+      (unread?'<div class="dock-contact-badge">'+unread+'</div>':'')+
     '</div>';
   }).join('');
 }
 
-async function chatOpenConv(userId,userName,bg){
-  var activeUser = _chatUsers.find(function(u){return u.id===userId;});
-  var photo_url = activeUser ? activeUser.photo_url : null;
-  
-  _chatActiveUser={id:userId,name:userName,bg:bg,photo_url:photo_url};
-  document.getElementById('chat-list-view').style.display='none';
-  var cv=document.getElementById('chat-conv-view'); cv.style.display='flex';
-  var av=document.getElementById('chat-conv-av');
-  if(photo_url){
-    av.style.background='transparent';
-    av.innerHTML='<img src="'+photo_url+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>';
-  } else {
-    av.style.background=bg; av.textContent=chatIni(userName);
-  }
-  document.getElementById('chat-conv-hname').textContent=userName;
-  delete _chatUnreadMap[userId]; chatUpdateBadge();
-  try{
-    await fetch(SUPABASE_URL+'/rest/v1/messages?from_user_id=eq.'+userId+'&to_user_id=eq.'+currentUser.id+'&read_at=is.null',{
-      method:'PATCH',headers:sbHeaders({'Content-Type':'application/json','Prefer':'return=minimal'}),body:JSON.stringify({read_at:new Date().toISOString()})
-    });
-  }catch(e){}
-  await chatLoadMessages();
-  chatInitEmojis();
+function dockToggleContacts(){
+  if(_dockHidden){ dockRestore(); return; }
+  _dockContactsOpen = !_dockContactsOpen;
+  var popup = document.getElementById('chat-contacts-popup');
+  if(popup) popup.classList.toggle('dock-hidden', !_dockContactsOpen);
+  if(_dockContactsOpen) dockLoadUsers();
+}
+function dockCloseContacts(){
+  _dockContactsOpen = false;
+  var popup = document.getElementById('chat-contacts-popup');
+  if(popup) popup.classList.add('dock-hidden');
 }
 
-function chatBack(){
-  _chatActiveUser=null;
-  document.getElementById('chat-conv-view').style.display='none';
-  document.getElementById('chat-list-view').style.display='flex';
-  document.getElementById('chat-emoji-picker').style.display='none';
-  chatLoadUsers();
-}
+// ── OPEN CHAT WINDOW ──
+async function dockOpenChat(userId, userName, bg){
+  dockCloseContacts();
+  var activeUser = _chatUsers.find(function(u){ return u.id===userId; });
+  var photo = activeUser ? activeUser.photo_url : null;
 
-async function chatLoadMessages(){
-  var out=document.getElementById('chat-messages');
-  if(!out||!_chatActiveUser)return;
-  try{
-    var myId=currentUser.id,theirId=_chatActiveUser.id;
-    var rows=await sbQuery('messages',
-      'or=(and(from_user_id.eq.'+myId+',to_user_id.eq.'+theirId+'),and(from_user_id.eq.'+theirId+',to_user_id.eq.'+myId+'))'+
-      '&order=created_at.asc&select=id,from_user_id,content,created_at,expires_at,read_at'
-    );
-    chatRenderMessages(rows||[]);
-  }catch(e){out.innerHTML='<div class="chat-empty">Could not load messages.</div>';}
-}
-
-function chatRenderMessages(rows){
-  var out=document.getElementById('chat-messages');
-  if(!rows.length){
-    out.innerHTML='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;gap:.6rem;">'+
-      '<div style="font-size:2.5rem;">🔒</div>'+
-      '<div style="font-size:.85rem;font-weight:600;color:var(--text-primary);">End-to-End Encrypted</div>'+
-      '<div style="font-size:.75rem;color:var(--text-muted);max-width:200px;line-height:1.6;">Only you and the recipient can read these messages. Auto-deletes in 24h.</div>'+
-    '</div>';
+  if(_dockWindows[userId]){
+    var win = document.getElementById('dock-win-'+userId);
+    if(win){ win.classList.remove('minimised'); win.style.height='380px'; _dockWindows[userId].minimised=false; }
+    dockLoadMsgs(userId);
     return;
   }
-  var lastDate='';
-  var html='';
+
+  try{
+    await fetch(SUPABASE_URL+'/rest/v1/messages?from_user_id=eq.'+userId+'&to_user_id=eq.'+currentUser.id+'&read_at=is.null',{
+      method:'PATCH', headers:sbHeaders({'Content-Type':'application/json','Prefer':'return=minimal'}),
+      body:JSON.stringify({read_at:new Date().toISOString()})
+    });
+  }catch(e){}
+  delete _chatUnreadMap[userId]; chatUpdateBadge();
+
+  _dockWindows[userId] = { minimised:false };
+
+  var ini = chatIni(userName);
+  var avHtml = photo ? '<img src="'+photo+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>' : ini;
+  var avBg = photo ? 'background:transparent;' : 'background:'+bg+';';
+
+  var win = document.createElement('div');
+  win.className = 'dock-chat-window';
+  win.id = 'dock-win-'+userId;
+  win.style.height = '380px';
+  win.innerHTML =
+    '<div class="dock-chat-titlebar" onclick="dockToggleMinimise(\''+userId+'\')">'+
+      '<div class="dock-chat-title-av" style="'+avBg+'">'+avHtml+'</div>'+
+      '<span class="dock-chat-title-name">'+esc(userName)+'</span>'+
+      '<div class="dock-chat-title-unread" id="dock-win-badge-'+userId+'"></div>'+
+      '<button class="dock-win-btn" onclick="event.stopPropagation();toggleMsgSound()" title="Sound" id="dock-snd-'+userId+'">'+(_notifSoundEnabled?'🔔':'🔕')+'</button>'+
+      '<button class="dock-win-btn" onclick="event.stopPropagation();dockToggleMinimise(\''+userId+'\')" title="Minimise">—</button>'+
+      '<button class="dock-win-btn" onclick="event.stopPropagation();dockCloseChat(\''+userId+'\')" title="Close">✕</button>'+
+    '</div>'+
+    '<div class="dock-chat-body" id="dock-body-'+userId+'" style="position:relative;">'+
+      '<div class="dock-messages" id="dock-msgs-'+userId+'"><div style="text-align:center;padding:1rem;font-size:.75rem;color:var(--text-dim);">Loading...</div></div>'+
+      '<div class="dock-input-row">'+
+        '<button class="dock-emoji-btn" onclick="dockToggleEmoji(\''+userId+'\')" title="Emoji">😊</button>'+
+        '<textarea class="dock-input" id="dock-input-'+userId+'" placeholder="Aa" rows="1" '+
+          'oninput="this.style.height=\'auto\';this.style.height=Math.min(this.scrollHeight,60)+\'px\'" '+
+          'onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();dockSend(\''+userId+'\',\''+esc(userName)+'\',\''+bg+'\');}"></textarea>'+
+        '<button class="dock-send-btn" onclick="dockSend(\''+userId+'\',\''+esc(userName)+'\',\''+bg+'\')">'+
+          '<svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>'+
+        '</button>'+
+      '</div>'+
+      '<div class="chat-emoji-picker" id="dock-emoji-'+userId+'" style="display:none;position:absolute;bottom:50px;left:0;z-index:100;width:280px;"></div>'+
+    '</div>';
+
+  var dock = document.getElementById('chat-dock');
+  var popup = document.getElementById('chat-contacts-popup');
+  dock.insertBefore(win, popup);
+  dockLoadMsgs(userId);
+}
+
+function dockToggleMinimise(userId){
+  var win = document.getElementById('dock-win-'+userId);
+  if(!win) return;
+  var isMin = win.classList.contains('minimised');
+  if(isMin){
+    win.classList.remove('minimised'); win.style.height='380px';
+    _dockWindows[userId].minimised=false;
+    dockLoadMsgs(userId);
+  } else {
+    win.classList.add('minimised'); win.style.height='44px';
+    _dockWindows[userId].minimised=true;
+  }
+}
+
+function dockCloseChat(userId){
+  var win=document.getElementById('dock-win-'+userId);
+  if(win) win.remove();
+  delete _dockWindows[userId];
+}
+
+// ── HIDE / SHOW ──
+function dockHideAll(save){
+  _dockHidden=true;
+  if(save!==false) localStorage.setItem('tc_dock_hidden','1');
+  var dock=document.getElementById('chat-dock');
+  var restore=document.getElementById('chat-restore-btn');
+  if(dock) dock.classList.add('dock-hidden');
+  if(restore) restore.classList.add('visible');
+  _dockContactsOpen=false;
+}
+function dockRestore(){
+  _dockHidden=false;
+  localStorage.removeItem('tc_dock_hidden');
+  var dock=document.getElementById('chat-dock');
+  var restore=document.getElementById('chat-restore-btn');
+  if(dock) dock.classList.remove('dock-hidden');
+  if(restore) restore.classList.remove('visible');
+}
+function dockApplyHidden(hidden,save){
+  if(hidden) dockHideAll(save);
+  else dockRestore();
+}
+
+// ── MESSAGES ──
+async function dockLoadMsgs(userId){
+  var out=document.getElementById('dock-msgs-'+userId);
+  if(!out) return;
+  try{
+    var myId=currentUser.id;
+    var rows=await sbQuery('messages',
+      'or=(and(from_user_id.eq.'+myId+',to_user_id.eq.'+userId+'),and(from_user_id.eq.'+userId+',to_user_id.eq.'+myId+'))'+
+      '&order=created_at.asc&limit=80&select=id,from_user_id,from_name,content,created_at,read_at,expires_at'
+    );
+    dockRenderMsgs(out, rows||[], userId);
+  }catch(e){}
+}
+
+function dockRenderMsgs(out, rows, userId){
+  if(!rows.length){
+    out.innerHTML='<div style="text-align:center;padding:1.5rem;font-size:.75rem;color:var(--text-dim);">🔒 Start a conversation</div>';
+    return;
+  }
+  var html='', lastDate='';
   for(var i=0;i<rows.length;i++){
     var m=rows[i];
     var isMine=m.from_user_id===currentUser.id;
     var d=new Date(m.created_at);
     var dateStr=d.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
-    if(dateStr!==lastDate){
-      html+='<div class="chat-date-divider">'+dateStr+'</div>';
-      lastDate=dateStr;
-    }
-    // Grouping: is this the last message from this sender before next different sender?
+    if(dateStr!==lastDate){ html+='<div class="dock-chat-date-div">'+dateStr+'</div>'; lastDate=dateStr; }
     var nextMsg=rows[i+1];
-    var isLastInGroup=!nextMsg||nextMsg.from_user_id!==m.from_user_id;
-    var isFirstInGroup=i===0||rows[i-1].from_user_id!==m.from_user_id||rows[i-1].created_at.slice(0,10)!==m.created_at.slice(0,10);
+    var isLast=!nextMsg||nextMsg.from_user_id!==m.from_user_id;
     var timeStr=d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-    var expires=m.expires_at?new Date(m.expires_at):new Date(d.getTime()+24*3600000);
-    var hoursLeft=Math.max(0,Math.ceil((expires-Date.now())/3600000));
-    var tick=isMine?(m.read_at?'<span class="msg-tick read">✓✓</span>':'<span class="msg-tick sent">✓✓</span>'):'';
-    var delBtn=isMine?'<button class="msg-del-btn" onclick="chatDeleteMsg(\''+m.id+'\')" title="Delete">🗑</button>':'';
-    var expiryWarn=hoursLeft<=2?'<span class="chat-msg-expires-warn">⏱'+hoursLeft+'h</span>':'';
-    // Avatar for received messages (only show on last in group)
-    var avHtml='';
-    if(!isMine){
-      var sender=(_chatUsers||[]).find(function(u){return u.id===m.from_user_id;});
-      var avContent=sender&&sender.photo_url
-        ?'<img src="'+sender.photo_url+'" alt=""/>'
-        :'<span>'+chatIni(m.from_name||'?')+'</span>';
-      var avBg=sender&&sender.photo_url?'background:transparent;':('background:'+chatColor(m.from_name||'')+'');
-      avHtml='<div class="chat-msg-av'+(isLastInGroup?'':' hidden')+'" style="'+avBg+'">'+avContent+'</div>';
-    }
-    
-    // Grouping classes for Messenger border radius styles
-    var groupClass='';
-    if(isFirstInGroup && isLastInGroup){
-      groupClass='is-single';
-    } else if(isFirstInGroup){
-      groupClass='is-first';
-    } else if(isLastInGroup){
-      groupClass='is-last';
-    } else {
-      groupClass='is-middle';
-    }
-    
-    // Detect GIF
     var isGif=m.content&&m.content.startsWith('__GIF__');
-    var emojiOnly=!isGif && isEmojiOnly(m.content);
-    var bubbleContent=isGif
-      ?('<img src="'+esc(m.content.slice(7))+'" alt="GIF" loading="lazy"/>')
-      :linkify(esc(m.content));
-    var bubbleClass='chat-msg-bubble '+groupClass+(isGif?' is-gif':'')+(emojiOnly?' is-emoji-only':'');
-    
-    // Sender name for first in group (received only, could be group chat)
-    var senderName=(!isMine&&isFirstInGroup&&m.from_name)?'<div class="chat-msg-sender">'+esc(m.from_name)+'</div>':'';
-    html+='<div class="chat-msg-row '+(isMine?'mine':'theirs')+(isLastInGroup?' last-in-group':'')+'">'+
-      avHtml+
-      '<div class="chat-msg">'+
-        senderName+
-        '<div class="'+bubbleClass+'">'+bubbleContent+'</div>'+
-        (isLastInGroup?'<div class="chat-msg-meta"><span>'+timeStr+'</span>'+tick+expiryWarn+delBtn+'</div>':'')+
-      '</div>'+
+    var bubbleContent=isGif?'<img src="'+esc(m.content.slice(7))+'" alt="GIF" loading="lazy"/>':esc(m.content);
+    var cls='dock-bubble'+(isGif?' is-gif':'');
+    html+='<div class="chat-msg-row '+(isMine?'mine':'theirs')+(isLast?' last-in-group':'')+'">'+
+      '<div class="'+cls+'">'+bubbleContent+'</div>'+
+      (isLast?'<span class="dock-msg-time">'+timeStr+'</span>':'')+
     '</div>';
   }
   out.innerHTML=html;
   out.scrollTop=out.scrollHeight;
 }
 
-function chatDeleteMsg(id){
-  if(!confirm('Delete this message?')) return;
-  fetch(SUPABASE_URL+'/rest/v1/messages?id=eq.'+id,{method:'DELETE',headers:sbHeaders()}).then(function(){chatLoadMessages();}).catch(function(e){alert('Delete failed: '+e.message);});
-}
-
-async function chatSend(){
-  var input=document.getElementById('chat-input');
-  var content=(input.value||'').trim();
-  if(!content||!_chatActiveUser)return;
-  playSendSound();
-  input.value=''; input.style.height='auto';
-  document.getElementById('chat-emoji-picker').style.display='none';
+async function dockSend(userId, userName, bg){
+  var inp=document.getElementById('dock-input-'+userId);
+  if(!inp) return;
+  var content=(inp.value||'').trim();
+  if(!content) return;
+  inp.value=''; inp.style.height='auto';
   var now=new Date();
   try{
     await sbInsert('messages',{
-      from_user_id:currentUser.id,from_name:currentUser.name,
-      to_user_id:_chatActiveUser.id,to_name:_chatActiveUser.name,
-      content:content,created_at:now.toISOString(),
+      from_user_id:currentUser.id, from_name:currentUser.name,
+      to_user_id:userId, to_name:userName,
+      content:content, created_at:now.toISOString(),
       expires_at:new Date(now.getTime()+24*3600000).toISOString()
     });
-    await chatLoadMessages();
-  }catch(e){alert('Send failed: '+e.message);}
+    dockLoadMsgs(userId);
+  }catch(e){ alert('Send failed: '+e.message); }
 }
 
-function chatInitEmojis(){
-  chatRenderEmojiPicker('smileys');
-}
-
-function chatRenderEmojiPicker(cat){
-  _activeEmojiCat = cat;
-  var picker = document.getElementById('chat-emoji-picker');
+// ── EMOJI ──
+function dockToggleEmoji(userId){
+  var picker=document.getElementById('dock-emoji-'+userId);
   if(!picker) return;
-  var emojis = CHAT_EMOJI_CATS[cat] || CHAT_EMOJI_CATS['smileys'];
-  var tabs = Object.keys(CHAT_EMOJI_CATS).map(function(key){
-    var icon = CHAT_EMOJI_ICONS[key] || '😊';
-    return '<button type="button" class="ep-tab'+(key===cat?' active':'')+'" onclick="chatRenderEmojiPicker(\''+key+'\')">'+icon+'</button>';
-  }).join('');
-  var grid = emojis.map(function(e){
-    return '<span class="ep-emoji" data-emoji="'+e+'">'+e+'</span>';
-  }).join('');
-  picker.innerHTML =
-    '<div class="ep-tabs">'+tabs+'</div>'+
-    '<input class="ep-search" placeholder="Search emoji..." oninput="chatSearchEmoji(this.value)"/>'+
-    '<div class="ep-grid" id="ep-grid">'+grid+'</div>';
-    
-  if(!picker.dataset.listenerAttached){
-    picker.addEventListener('click', function(e){
-      var emojiEl = e.target.closest('.ep-emoji');
-      if(emojiEl){
-        chatInsertEmoji(emojiEl.getAttribute('data-emoji'));
-      }
-    });
-    picker.dataset.listenerAttached = 'true';
-  }
-}
-
-function chatSearchEmoji(q){
-  var all = Object.values(CHAT_EMOJI_CATS).flat();
-  var grid = document.getElementById('ep-grid');
-  if(!grid) return;
-  if(!q){ chatRenderEmojiPicker(_activeEmojiCat); return; }
-  grid.innerHTML = all.map(function(e){
-    return '<span class="ep-emoji" data-emoji="'+e+'">'+e+'</span>';
-  }).join('');
-}
-
-function chatToggleEmoji(){
-  var p=document.getElementById('chat-emoji-picker');
-  var g=document.getElementById('chat-gif-picker');
-  if(g) g.style.display='none';
-  if(p.style.display==='none'||!p.style.display){ p.style.display='block'; chatRenderEmojiPicker(_activeEmojiCat); }
-  else p.style.display='none';
-}
-function chatInsertEmoji(emoji){
-  var input=document.getElementById('chat-input');
-  input.value+=emoji;input.focus();
-  document.getElementById('chat-emoji-picker').style.display='none';
-}
-
-// GIF picker using Giphy public beta key
-var _gifSearchTimer=null;
-function chatToggleGif(){
-  var g=document.getElementById('chat-gif-picker');
-  var p=document.getElementById('chat-emoji-picker');
-  if(p) p.style.display='none';
-  if(g.style.display==='none'||!g.style.display){ g.style.display='block'; chatLoadGifs(''); }
-  else g.style.display='none';
-}
-async function chatLoadGifs(q){
-  var g=document.getElementById('chat-gif-picker');
-  if(!g) return;
-  var key='m0dieJ9yUJYL731cRb3tHeBiFUQPGk3q';
-  var url=q
-    ?'https://api.giphy.com/v1/gifs/search?api_key='+key+'&q='+encodeURIComponent(q)+'&limit=12&rating=g'
-    :'https://api.giphy.com/v1/gifs/trending?api_key='+key+'&limit=12&rating=g';
-  g.innerHTML='<div class="gp-header"><input class="gp-search" placeholder="Search GIFs..." oninput="chatGifSearch(this.value)" value="'+esc(q)+'"/></div><div class="gp-loading">Loading GIFs...</div>';
-  try{
-    var r=await fetch(url);
-    var data=await r.json();
-    var items=(data.data||[]).map(function(gif){
-      var preview=gif.images.fixed_height_small.url;
-      var full=gif.images.original.url;
-      return '<div class="gp-item" onclick="chatSendGif(\''+full+'\')"><img src="'+preview+'" loading="lazy"/></div>';
+  var isOpen=picker.style.display==='block';
+  document.querySelectorAll('[id^="dock-emoji-"]').forEach(function(p){p.style.display='none';});
+  if(!isOpen){
+    picker.style.display='block';
+    var cats=CHAT_EMOJI_CATS||{};
+    var icons=CHAT_EMOJI_CAT_ICONS||{};
+    var firstCat=Object.keys(cats)[0]||'smileys';
+    var tabs=Object.keys(cats).map(function(c){
+      return '<button style="background:none;border:none;cursor:pointer;font-size:1rem;padding:.25rem .3rem;border-radius:6px;" '+
+        'onclick="dockRenderEmojiCat(\''+userId+'\',\''+c+'\')">'+(icons[c]||c)+'</button>';
     }).join('');
-    g.innerHTML='<div class="gp-header"><input class="gp-search" placeholder="Search GIFs..." oninput="chatGifSearch(this.value)" value="'+esc(q)+'"/></div>'+
-      '<div class="gp-grid">'+(items||'<div class="gp-loading">No GIFs found</div>')+'</div>'+
-      '<div style="text-align:center;padding:.3rem;font-size:.58rem;color:var(--text-dim);">Powered by GIPHY</div>';
-  }catch(e){
-    g.innerHTML='<div class="gp-header"><input class="gp-search" placeholder="Search GIFs..." oninput="chatGifSearch(this.value)"/></div><div class="gp-loading">Could not load GIFs</div>';
+    var emojis=(cats[firstCat]||[]).map(function(e){
+      return '<span style="font-size:1.2rem;cursor:pointer;padding:.2rem;border-radius:6px;display:inline-block;" '+
+        'onclick="dockInsertEmoji(\''+userId+'\',\''+e+'\')">'+e+'</span>';
+    }).join('');
+    picker.innerHTML='<div style="display:flex;gap:.1rem;padding:.3rem;border-bottom:1px solid var(--navy-border);background:var(--navy-card);">'+tabs+'</div>'+
+      '<div id="dock-emoji-grid-'+userId+'" style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px;padding:.3rem;max-height:130px;overflow-y:auto;background:var(--navy-card);">'+emojis+'</div>';
   }
 }
-function chatGifSearch(q){
-  clearTimeout(_gifSearchTimer);
-  _gifSearchTimer=setTimeout(function(){ chatLoadGifs(q); },500);
+function dockRenderEmojiCat(userId,cat){
+  var grid=document.getElementById('dock-emoji-grid-'+userId);
+  if(!grid) return;
+  var cats=CHAT_EMOJI_CATS||{};
+  grid.innerHTML=(cats[cat]||[]).map(function(e){
+    return '<span style="font-size:1.2rem;cursor:pointer;padding:.2rem;border-radius:6px;display:inline-block;" onclick="dockInsertEmoji(\''+userId+'\',\''+e+'\')">'+e+'</span>';
+  }).join('');
 }
-async function chatSendGif(url){
-  document.getElementById('chat-gif-picker').style.display='none';
-  if(!_chatActiveUser) return;
-  var now=new Date();
-  try{
-    await sbInsert('messages',{
-      from_user_id:currentUser.id,from_name:currentUser.name,
-      to_user_id:_chatActiveUser.id,to_name:_chatActiveUser.name,
-      content:'__GIF__'+url,created_at:now.toISOString(),
-      expires_at:new Date(now.getTime()+24*3600000).toISOString()
-    });
-    await chatLoadMessages();
-  }catch(e){alert('Could not send GIF: '+e.message);}
+function dockInsertEmoji(userId,emoji){
+  var inp=document.getElementById('dock-input-'+userId);
+  if(inp){inp.value+=emoji;inp.focus();}
+  var picker=document.getElementById('dock-emoji-'+userId);
+  if(picker) picker.style.display='none';
 }
 
-// Close pickers when clicking outside
-document.addEventListener('click', function(e){
-  var ep=document.getElementById('chat-emoji-picker');
-  var gp=document.getElementById('chat-gif-picker');
-  var ep2=document.getElementById('msg-emoji-picker');
-  var gp2=document.getElementById('msg-gif-picker');
-  if(ep&&!ep.contains(e.target)&&!e.target.closest('.chat-icon-btn')&&!e.target.closest('.chat-emoji-btn')) ep.style.display='none';
-  if(gp&&!gp.contains(e.target)&&!e.target.closest('.chat-icon-btn')) gp.style.display='none';
-  if(ep2&&!ep2.contains(e.target)&&!e.target.closest('.chat-icon-btn')&&!e.target.closest('.msg-emoji-btn')) ep2.style.display='none';
-  if(gp2&&!gp2.contains(e.target)&&!e.target.closest('.chat-icon-btn')) gp2.style.display='none';
-});
-
+// ── POLLING ──
+var _chatPollInterval=null;
 function chatStartPolling(){
-  if(_chatPollInterval)clearInterval(_chatPollInterval);
+  if(_chatPollInterval) clearInterval(_chatPollInterval);
   _chatPollInterval=setInterval(function(){
     chatCheckUnread();
-    if(_chatOpen&&_chatActiveUser)chatLoadMessages();
-    if(document.getElementById('page-messages').style.display!=='none') msgPollMessages();
+    Object.keys(_dockWindows).forEach(function(uid){
+      if(!_dockWindows[uid].minimised) dockLoadMsgs(uid);
+    });
+    if(typeof msgPollMessages==='function'){
+      var mp=document.getElementById('page-messages');
+      if(mp&&mp.style.display!=='none') msgPollMessages();
+    }
   },4000);
 }
 
-// ── NOTIFICATION + SOUND SYSTEM ──────────────────────────────────────
-var _lastNotifTotal = 0;
-var _notifSoundEnabled = localStorage.getItem('tc_notif_sound') !== 'false'; // default on
-
-function chatRequestNotifPermission(){
-  if('Notification' in window && Notification.permission === 'default'){
-    Notification.requestPermission();
-  }
-}
-
-function playSendSound() {
-  if(!_notifSoundEnabled) return;
-  try {
-    var ctx = new (window.AudioContext || window.webkitAudioContext)();
-    var now = ctx.currentTime;
-    
-    var osc = ctx.createOscillator();
-    var gain = ctx.createGain();
-    osc.type = 'sine';
-    
-    osc.frequency.setValueAtTime(450, now);
-    osc.frequency.exponentialRampToValueAtTime(1300, now + 0.14);
-    
-    gain.gain.setValueAtTime(0, now);
-    gain.gain.linearRampToValueAtTime(0.25, now + 0.02);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
-    
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    
-    osc.start(now);
-    osc.stop(now + 0.16);
-  } catch(e) {
-    console.warn('AudioContext failed:', e);
-  }
-}
-
-function chatPlayMsgSound(){
-  if(!_notifSoundEnabled) return;
-  try{
-    var ctx = new (window.AudioContext || window.webkitAudioContext)();
-    var now = ctx.currentTime;
-    
-    var osc1 = ctx.createOscillator();
-    var gain1 = ctx.createGain();
-    osc1.type = 'sine';
-    osc1.frequency.setValueAtTime(800, now);
-    gain1.gain.setValueAtTime(0, now);
-    gain1.gain.linearRampToValueAtTime(0.12, now + 0.02);
-    gain1.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
-    osc1.connect(gain1);
-    gain1.connect(ctx.destination);
-    osc1.start(now);
-    osc1.stop(now + 0.12);
-    
-    var osc2 = ctx.createOscillator();
-    var gain2 = ctx.createGain();
-    osc2.type = 'sine';
-    osc2.frequency.setValueAtTime(1000, now + 0.07);
-    gain2.gain.setValueAtTime(0, now + 0.07);
-    gain2.gain.linearRampToValueAtTime(0.12, now + 0.09);
-    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.22);
-    osc2.connect(gain2);
-    gain2.connect(ctx.destination);
-    osc2.start(now + 0.07);
-    osc2.stop(now + 0.22);
-  }catch(e){}
-}
-
-async function chatClearConversation(){
-  if(!_chatActiveUser) return;
-  if(!confirm('Are you sure you want to delete all messages in this conversation permanently? This cannot be undone.')) return;
-  try {
-    var myId = currentUser.id;
-    var theirId = _chatActiveUser.id;
-    var url = SUPABASE_URL + '/rest/v1/messages?or=(and(from_user_id.eq.'+myId+',to_user_id.eq.'+theirId+'),and(from_user_id.eq.'+theirId+',to_user_id.eq.'+myId+'))&group_id=is.null';
-    var r = await fetch(url, {method: 'DELETE', headers: sbHeaders()});
-    if(!r.ok) throw new Error('Failed to delete');
-    await chatLoadMessages();
-  } catch(e) {
-    alert('Clear failed: ' + e.message);
-  }
-}
-
-async function msgClearConversation(){
-  if(!_msgActiveConv) return;
-  if(!confirm('Are you sure you want to delete all messages in this conversation permanently? This cannot be undone.')) return;
-  try {
-    var url = '';
-    if(_msgActiveConv.type === 'dm'){
-      var myId = currentUser.id;
-      var theirId = _msgActiveConv.id;
-      url = SUPABASE_URL + '/rest/v1/messages?or=(and(from_user_id.eq.'+myId+',to_user_id.eq.'+theirId+'),and(from_user_id.eq.'+theirId+',to_user_id.eq.'+myId+'))&group_id=is.null';
-    } else {
-      url = SUPABASE_URL + '/rest/v1/messages?group_id=eq.' + _msgActiveConv.id;
-    }
-    var r = await fetch(url, {method: 'DELETE', headers: sbHeaders()});
-    if(!r.ok) throw new Error('Failed to delete');
-    await msgLoadMessagesForConv();
-    await msgLoadConversations();
-  } catch(e) {
-    alert('Clear failed: ' + e.message);
-  }
-}
-
-function chatFireNotification(fromName, message){
-  if(!('Notification' in window) || Notification.permission !== 'granted') return;
-  if(document.hasFocus && document.hasFocus()) return; // don't notify if tab is active
-  try{
-    var n = new Notification('New message from '+fromName, {
-      body: message.length > 80 ? message.slice(0,77)+'...' : message,
-      icon: '/favicon.ico',
-      tag: 'tc-msg-'+fromName
-    });
-    n.onclick = function(){ window.focus(); n.close(); };
-    setTimeout(function(){ n.close(); }, 5000);
-  }catch(e){}
-}
-
-function toggleMsgSound(){
-  _notifSoundEnabled = !_notifSoundEnabled;
-  localStorage.setItem('tc_notif_sound', _notifSoundEnabled ? 'true' : 'false');
-  initSoundIcon();
-}
-
-function initSoundIcon(){
-  var btn = document.getElementById('msg-sound-toggle');
-  if(btn) btn.textContent = _notifSoundEnabled ? '🔔' : '🔕';
-  var btn2 = document.getElementById('msg-sound-toggle2');
-  if(btn2) btn2.textContent = _notifSoundEnabled ? '🔔 Sound On' : '🔕 Sound Off';
-}
-// ─────────────────────────────────────────────────────────────────────
-
+// ── UNREAD + NOTIFICATIONS ──
+var _chatToastTimer=null;
 async function chatCheckUnread(){
-  if(!currentUser||_isSysLevel())return;
+  if(!currentUser||_isSysLevel()) return;
   try{
     var rows=await sbQuery('messages','to_user_id=eq.'+currentUser.id+'&read_at=is.null&select=from_user_id,content,created_at');
     _chatUnreadMap={}; _chatLastMsgMap={};
@@ -9984,38 +10003,76 @@ async function chatCheckUnread(){
       _chatLastMsgMap[m.from_user_id]={content:m.content,time:m.created_at};
     });
     chatUpdateBadge();
-    if(_chatOpen&&!_chatActiveUser)chatRenderUserList(_chatUsers);
+    if(_dockContactsOpen) dockRenderContacts(_chatUsers);
   }catch(e){}
 }
 
 function chatUpdateBadge(){
   var total=Object.values(_chatUnreadMap).reduce(function(a,b){return a+b;},0);
-  var bubble=document.getElementById('chat-badge');
-  var sidebar=document.getElementById('sidebar-msg-badge');
-  var topbar=document.getElementById('topbar-msg-badge');
-  [bubble,sidebar,topbar].forEach(function(el){
-    if(!el)return;
+  var dockBadge=document.getElementById('chat-dock-unread');
+  if(dockBadge){
+    if(total>0){dockBadge.textContent=total>99?'99+':total;dockBadge.style.display='flex';}
+    else dockBadge.style.display='none';
+  }
+  ['sidebar-msg-badge','topbar-msg-badge','chat-badge'].forEach(function(id){
+    var el=document.getElementById(id);
+    if(!el) return;
     if(total>0){el.textContent=total>99?'99+':total;el.style.display='flex';}
     else el.style.display='none';
   });
-  // Fire notification + sound only when new messages arrive (total increased)
-  if(total > _lastNotifTotal){
+  Object.keys(_chatUnreadMap).forEach(function(uid){
+    var badge=document.getElementById('dock-win-badge-'+uid);
+    if(badge){badge.textContent=_chatUnreadMap[uid];badge.style.display='flex';}
+  });
+
+  if(total>_lastNotifTotal){
     chatPlayMsgSound();
-    // Find the sender of the newest message for notification text
-    var newestSender = null, newestMsg = null, newestTime = null;
+    var newestSender=null,newestMsg=null,newestTime=null;
     Object.keys(_chatLastMsgMap).forEach(function(uid){
-      var m = _chatLastMsgMap[uid];
-      if(!newestTime || m.time > newestTime){ newestTime=m.time; newestSender=uid; newestMsg=m.content; }
+      var m=_chatLastMsgMap[uid];
+      if(!newestTime||m.time>newestTime){newestTime=m.time;newestSender=uid;newestMsg=m.content;}
     });
     if(newestSender){
-      // Find sender name from _chatUsers
-      var sender = (_chatUsers||[]).find(function(u){ return u.id===newestSender; });
-      var senderName = sender ? sender.name : 'Someone';
-      chatFireNotification(senderName, newestMsg||'');
+      var sender=(_chatUsers||[]).find(function(u){return u.id===newestSender;});
+      var senderName=sender?sender.name:'Someone';
+      chatFireNotification(senderName,newestMsg||'');
+      var icon=document.getElementById('chat-dock-icon');
+      if(icon){icon.classList.remove('bounce');void icon.offsetWidth;icon.classList.add('bounce');}
+      var winOpen=_dockWindows[newestSender]&&!_dockWindows[newestSender].minimised;
+      if(!winOpen) dockShowToast(newestSender,senderName,newestMsg||'',sender?chatColor(senderName):'var(--gold)');
     }
   }
-  _lastNotifTotal = total;
+  _lastNotifTotal=total;
 }
+
+function dockShowToast(senderId,senderName,message,bg){
+  var existing=document.getElementById('chat-toast-el');
+  if(existing) existing.remove();
+  if(_chatToastTimer) clearTimeout(_chatToastTimer);
+  var isGif=message.startsWith('__GIF__');
+  var preview=isGif?'🎬 Sent a GIF':(message.length>45?message.slice(0,42)+'...':message);
+  var toast=document.createElement('div');
+  toast.id='chat-toast-el'; toast.className='chat-toast';
+  toast.onclick=function(){toast.remove();dockOpenChat(senderId,senderName,bg);};
+  toast.innerHTML=
+    '<div class="chat-toast-av" style="background:'+bg+';">'+chatIni(senderName)+'</div>'+
+    '<div style="flex:1;min-width:0;">'+
+      '<div class="chat-toast-name">'+esc(senderName)+'</div>'+
+      '<div class="chat-toast-msg">'+esc(preview)+'</div>'+
+    '</div>'+
+    '<button class="chat-toast-close" onclick="event.stopPropagation();this.parentElement.remove();">✕</button>';
+  document.body.appendChild(toast);
+  _chatToastTimer=setTimeout(function(){
+    if(toast.parentElement){toast.style.opacity='0';toast.style.transition='opacity .3s';setTimeout(function(){if(toast.parentElement)toast.remove();},300);}
+  },5000);
+}
+
+// Legacy aliases — keep full messages page and other callers working
+function chatTogglePanel(){dockToggleContacts();}
+function chatOpenConv(userId,userName,bg){dockOpenChat(userId,userName,bg);}
+function chatBack(){dockCloseContacts();}
+function chatFilterUsers(s){dockFilterContacts(s);}
+function chatRenderUserList(u){dockRenderContacts(u);}
 
 // ══════════════════════════════════════
 //  FULL PAGE MESSAGES
@@ -10471,6 +10528,8 @@ async function msgCreateGroup(btn){
 var _chatEnterRef=enterDashboard;
 enterDashboard=function(){
   _chatEnterRef();
+  // Show chat dock immediately for all non-syslevel users
+  document.body.classList.add('logged-in');
   setTimeout(chatInit,1200);
 };
 
@@ -11325,71 +11384,42 @@ window.addEventListener('DOMContentLoaded',function(){ setTimeout(function(){ CT
   </div>
 
 <!-- ═══════════════════════════════════
-     CHAT SYSTEM — Floating bubble
+     CHAT SYSTEM — Facebook Bottom Dock
 ═══════════════════════════════════ -->
-<div id="chat-wrap" style="display:none;">
 
-  <!-- Floating bubble button — HIDDEN (replaced by Orange Cat widget) -->
-  <button class="chat-bubble" id="chat-bubble-btn" onclick="chatTogglePanel()" title="Messages" style="display:none!important;">
-    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/>
-      <circle cx="9" cy="12" r=".8" fill="#fff"/>
-      <circle cx="12" cy="12" r=".8" fill="#fff"/>
-      <circle cx="15" cy="12" r=".8" fill="#fff"/>
-    </svg>
-    <div class="chat-unread-badge" id="chat-badge" style="display:none;">0</div>
+<!-- Bottom dock container -->
+<div id="chat-dock">
+
+  <!-- Contacts list popup -->
+  <div id="chat-contacts-popup" class="dock-hidden">
+    <div class="dock-contacts-header">
+      <span class="dock-contacts-title">💬 Messages</span>
+      <div style="display:flex;align-items:center;gap:.4rem;">
+        <button class="dock-sound-btn" id="dock-sound-btn" onclick="toggleMsgSound()" title="Toggle sound">🔔</button>
+        <button onclick="dockHideAll()" title="Hide chat" style="background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:.9rem;padding:2px 5px;border-radius:4px;" title="Hide">—</button>
+        <button onclick="dockCloseContacts()" style="background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:.9rem;padding:2px 5px;border-radius:4px;">✕</button>
+      </div>
+    </div>
+    <input type="text" class="dock-contacts-search" id="dock-contacts-search" placeholder="🔍 Search people..." oninput="dockFilterContacts(this.value)"/>
+    <div class="dock-contacts-list" id="dock-contacts-list">
+      <div style="padding:1rem;text-align:center;font-size:.8rem;color:var(--text-dim);">Loading...</div>
+    </div>
+  </div>
+
+  <!-- Chat dock icon (main button) -->
+  <button id="chat-dock-icon" onclick="dockToggleContacts()" title="Messages">
+    <svg viewBox="0 0 24 24"><path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"/><circle cx="9" cy="12" r=".8" fill="#fff"/><circle cx="12" cy="12" r=".8" fill="#fff"/><circle cx="15" cy="12" r=".8" fill="#fff"/></svg>
+    <div id="chat-dock-unread">0</div>
   </button>
 
-  <!-- Chat panel -->
-  <div class="chat-panel" id="chat-panel">
+</div>
 
-    <!-- LIST VIEW -->
-    <div id="chat-list-view" style="display:flex;flex-direction:column;height:100%;">
-      <div class="chat-list-header">
-        <span class="chat-list-title">💬 Messages</span>
-        <button onclick="chatTogglePanel()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:1.1rem;">✕</button>
-      </div>
-      <input type="text" class="chat-list-search" placeholder="🔍 Search people..." oninput="chatFilterUsers(this.value)"/>
-      <div class="chat-conv-list" id="chat-user-list">
-        <div class="chat-empty">Loading...</div>
-      </div>
-    </div>
+<!-- Restore button (shown when dock is hidden) -->
+<button id="chat-restore-btn" onclick="dockRestore()" title="Show chat">💬</button>
 
-    <!-- CONVERSATION VIEW -->
-    <div id="chat-conv-view" style="display:none;flex-direction:column;height:100%;">
-      <div class="chat-conv-header">
-        <button class="chat-back-btn" onclick="chatBack()">←</button>
-        <div class="chat-conv-av" id="chat-conv-av" style="width:32px;height:32px;font-size:.6rem;font-weight:700;color:#fff;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;"></div>
-        <span class="chat-conv-hname" id="chat-conv-hname"></span>
-        <button id="msg-sound-toggle" onclick="toggleMsgSound()" title="Toggle message sound" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:1rem;margin-right:.25rem;">🔔</button>
-        <button onclick="chatClearConversation()" title="Clear entire conversation" style="background:none;border:none;cursor:pointer;color:rgba(239,73,60,.85);font-size:1.05rem;margin-right:.5rem;">🗑️</button>
-        <button onclick="chatTogglePanel()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:1rem;">✕</button>
-      </div>
-      <div class="chat-e2e-bar">
-        🔒 End-to-end encrypted
-      </div>
-      <div class="chat-messages" id="chat-messages"></div>
-
-      <!-- Emoji picker -->
-      <div class="chat-emoji-picker" id="chat-emoji-picker" style="display:none;"></div>
-      <div class="chat-gif-picker" id="chat-gif-picker" style="display:none;"></div>
-
-      <div class="chat-input-row">
-        <button class="chat-icon-btn" id="chat-emoji-toggle-btn" onclick="chatToggleEmoji()" title="Emoji">😊</button>
-        <button class="chat-icon-btn" id="chat-gif-toggle-btn" onclick="chatToggleGif()" title="GIF" style="font-size:.7rem;font-weight:800;letter-spacing:-.5px;color:var(--gold);opacity:.85;">GIF</button>
-        <div class="chat-input-wrap">
-          <textarea class="chat-input" id="chat-input" placeholder="Aa" rows="1"
-            oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px'"
-            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatSend();}"></textarea>
-        </div>
-        <button id="msg-sound-toggle" onclick="toggleMsgSound()" title="Toggle sound" style="background:none;border:none;cursor:pointer;font-size:1rem;padding:.2rem;opacity:.7;"></button>
-        <button class="chat-send-btn" onclick="chatSend()">
-          <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-        </button>
-      </div>
-    </div>
-
-  </div>
+<!-- Keep the old chat-wrap hidden for legacy badge elements -->
+<div id="chat-wrap" style="display:none;">
+  <div class="chat-unread-badge" id="chat-badge" style="display:none;">0</div>
 </div>
 
 <script>
