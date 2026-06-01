@@ -1461,21 +1461,21 @@
   @media (max-width: 768px) {
 
     /* ── TOPBAR ── */
-    .topbar { padding: 0 .75rem; height: 54px; }
-    .topbar-brand { font-size: 1.1rem; }
-    .topbar-right { gap: .4rem; }
-    .agent-badge { padding: .28rem .5rem .28rem .28rem; gap: .3rem; }
+    .topbar { padding: 0 1rem; height: 54px; }
+    .topbar-brand { font-size: 1.2rem; }
+    .topbar-right { gap: .6rem; }
+    .agent-badge { padding: .28rem .6rem .28rem .28rem; gap: .4rem; }
     .agent-name { display: none; }
-    .logout-btn { padding: .28rem .6rem; font-size: .72rem; }
-    .dark-toggle { width: 32px; height: 32px; font-size: .9rem; }
-    .work-clock-wrap { gap: .3rem; padding: .25rem .3rem .25rem .6rem; }
-    .work-clock-time { font-size: .68rem; min-width: 36px; }
-    .wclock-btn { padding: .25rem .55rem; font-size: .68rem; }
+    .logout-btn { padding: .32rem .7rem; font-size: .75rem; }
+    .dark-toggle { font-size: .95rem; padding: .3rem; }
+    .work-clock-wrap { gap: .4rem; }
+    .work-clock-time { font-size: .72rem; }
+    .wclock-btn { padding: .3rem .65rem; font-size: .72rem; }
 
     /* ── LAYOUT ── */
     .dash-body { flex-direction: column; min-height: calc(100vh - 54px); }
     .sidebar { display: none; }
-    .main-content { padding: 1rem .85rem 7rem .85rem; }
+    .main-content { padding: 1rem 1rem 7rem 1rem; }
 
     /* ── BOTTOM NAV ── */
     .mobile-bottom-nav { display: flex !important; }
@@ -1491,14 +1491,13 @@
     .break-toast { left: 1rem; right: 1rem; transform: none; bottom: 130px; min-width: unset; max-width: unset; }
 
     /* ── HOME ── */
-    .home-greeting h1 { font-size: 1.4rem; }
-    .home-greeting { margin-bottom: 1.2rem; }
-    .live-stats-row { grid-template-columns: repeat(2,1fr); gap: .6rem; margin-bottom: 1rem; }
-    .live-stat-card { padding: .75rem .85rem; }
-    .live-stat-val { font-size: 1.5rem; }
-    .live-stat-icon { width: 32px; height: 32px; }
-    .whos-active-panel { margin-top: .75rem; }
-    .home-two-col { grid-template-columns: 1fr !important; gap: 1rem; }
+    .home-greeting h1 { font-size: 1.6rem; }
+    .home-greeting { margin-bottom: 1.5rem; }
+    .live-stats-row { grid-template-columns: repeat(2,1fr); gap: .75rem; margin-bottom: 1.25rem; }
+    .live-stat-card { padding: .9rem 1rem; }
+    .live-stat-val { font-size: 1.6rem; }
+    .live-stat-icon { width: 36px; height: 36px; }
+    .whos-active-panel { margin-top: 1rem; }
     .hm-card { padding: .75rem .9rem; }
     .attendance-badge { font-size: .65rem; padding: .25rem .6rem; }
 
@@ -1510,90 +1509,14 @@
     /* ── ROSTER ── */
     .roster-controls { flex-direction: column; align-items: stretch; }
     .roster-search { width: 100%; }
-    .roster-table { font-size: .72rem; }
-    .roster-table th, .roster-table td { padding: .4rem .5rem; }
-
-    /* ── QUIZ / ASSESSMENT ── */
-    .quiz-option { padding: .65rem .9rem; font-size: .85rem; }
-    .quiz-essay { font-size: .85rem; }
-    .qa-form-grid { grid-template-columns: 1fr; }
-
-    /* ── PEOPLE ── */
-    .ppl-grid { grid-template-columns: 1fr 1fr; gap: .75rem; }
-    .ppl-card { padding: 1rem .85rem; }
-    .ppl-info-grid { grid-template-columns: 1fr; }
-    .ppl-edit-grid { grid-template-columns: 1fr; }
-
-    /* ── MESSAGES / CHAT ── */
-    .msg-conv-list { font-size: .82rem; }
-    #page-messages { padding: 0 !important; }
-    #chat-panel { width: 100vw !important; right: 0 !important; left: 0 !important; border-radius: 16px 16px 0 0 !important; bottom: 56px !important; max-height: 72vh !important; }
-
-    /* ── TIMESHEET ── */
-    .ts-entry { flex-wrap: wrap; gap: .4rem; }
-    .ts-entry-meta { flex-wrap: wrap; }
-
-    /* ── CONTROL DECK ── */
-    .cd-wrap { padding: 1rem .85rem; gap: .85rem; }
-    .cd-card { padding: .9rem 1rem; }
-    .cd-card-header { flex-wrap: wrap; gap: .6rem; }
-
-    /* ── ABOUT / VOICE HUB ── */
-    #page-about { padding: 1.2rem .85rem !important; gap: 1rem !important; }
-    #page-voicehub { padding: 1.2rem .85rem !important; }
-
-    /* ── REMINDERS ── */
-    .rem-root { flex-direction: column; height: auto; min-height: calc(100vh - 120px); overflow: visible; }
-    .rem-sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--navy-border); flex-direction: row; flex-wrap: wrap; padding: .5rem .6rem; gap: .35rem; min-height: unset; }
-    .rem-sidebar-item { padding: .35rem .65rem; border-radius: 20px; font-size: .78rem; }
-    .rem-sidebar-icon { display: none; }
-    .rem-sidebar-count { display: none; }
-    .rem-content { flex: 1; overflow-y: auto; padding: .75rem; }
-
-    /* ── CASE TRACKER ── */
-    .ct-stats-row { grid-template-columns: repeat(2,1fr); }
-    .ct-dash-grid { grid-template-columns: 1fr; }
-    .ct-leave-grid { grid-template-columns: 1fr; }
-    .ct-vert-grid { grid-template-columns: 1fr; }
-    .ct-table-wrap { overflow-x: auto; }
-    .ct-agent-row { flex-wrap: wrap; gap: .4rem; }
-
-    /* ── XC ROWS ── */
-    .xc-row { grid-template-columns: 1fr 1fr; gap: .5rem; }
-    .xc-card { padding: .9rem; }
 
     /* ── MODALS — slide up from bottom ── */
     #stat-modal { max-width: 100% !important; margin: 0 !important; border-radius: var(--radius) var(--radius) 0 0 !important; position: fixed !important; bottom: 0 !important; left: 0 !important; right: 0 !important; max-height: 75vh !important; }
     #stat-modal-overlay { align-items: flex-end !important; }
-    .lightbox-box { flex-direction: column; }
-    .lightbox-info { width: 100%; max-height: 40vh; }
 
-    /* ── VOICE HUB CALL WIDGETS ── */
-    #vh-active-call { bottom: 66px; right: 8px; left: 8px; min-width: unset; }
-    #vh-room-widget { bottom: 66px; right: 8px; left: 8px; min-width: unset; }
-    #vh-call-overlay > div { width: 90vw; padding: 1.5rem; }
-
-    /* ── FORMS / INPUTS ── */
+    /* ── FORMS ── */
     .field-group input, .field-group select, .field-group textarea { width: 100%; box-sizing: border-box; }
     .login-card { padding: 2rem 1.25rem; margin: 1rem; }
-    input, select, textarea { font-size: 16px !important; }
-
-    /* ── TOUCH HELPERS ── */
-    button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
-    .xc-btn, .cd-btn, .xc-btn-sm { min-height: 40px; }
-    a { -webkit-tap-highlight-color: transparent; }
-  }
-
-  /* ── Extra small phones (< 400px) ── */
-  @media (max-width: 400px) {
-    .topbar-brand { font-size: .95rem; }
-    .work-clock-wrap { display: none; }
-    .live-stats-row { grid-template-columns: 1fr 1fr; gap: .5rem; }
-    .ppl-grid { grid-template-columns: 1fr; }
-    .live-stat-val { font-size: 1.3rem; }
-    .main-content { padding: .75rem .65rem 7rem .65rem; }
-    .cd-wrap { padding: .75rem .6rem; }
-    .cd-card { padding: .75rem .85rem; }
   }
 
   /* Hide bottom nav on desktop — shown only via media query above */
@@ -4121,6 +4044,9 @@ function enterDashboard(){
   setTimeout(loadAnnouncements,600);
   setTimeout(checkWorkClockOnLoad,500);
   setTimeout(xcSyncCfg, 800);
+  // Auto-refresh live dashboard every 60 seconds so all agents see updated data without manual refresh
+  if(window._dashAutoRefreshInterval) clearInterval(window._dashAutoRefreshInterval);
+  window._dashAutoRefreshInterval = setInterval(function(){ loadLiveDashboard(); }, 60 * 1000);
   // Cabin announcement audio on login
   setTimeout(function(){ playLoginAnnouncement(currentUser.name.split(' ')[0]); }, 1200);
 }
@@ -4273,13 +4199,6 @@ function showPage(id,elem){
 
 function isAdminUser(){return currentUser&&(currentUser.role==='admin'||currentUser.role==='tl'||currentUser.role==='syslevel');}
 function isAdminPage(id){return['quiz-admin','assessment-admin','users','sysconfig','controldeck'].indexOf(id)>-1;}
-function syncMobMsgBadge(count){
-  var b = document.getElementById('mob-msg-badge');
-  if(!b) return;
-  if(count > 0){ b.style.display='flex'; b.textContent=count; }
-  else { b.style.display='none'; }
-}
-
 function updateAdminVisibility(){
   var show=isAdminUser();
   document.querySelectorAll('.admin-only').forEach(function(el){
@@ -4296,8 +4215,6 @@ function updateAdminVisibility(){
     var canSeeTs=isAdminUser()||(currentUser&&currentUser.timesheetEnabled);
     tsItem.style.display=canSeeTs?'flex':'none';
   }
-  var mobTsItem=document.getElementById('mob-ts-item');
-  if(mobTsItem){ mobTsItem.style.display=canSeeTs?'flex':'none'; }
 }
 function openSimulation(){window.open('simulation.html','_blank');}
 function setGreetingAndDate(){
@@ -5085,7 +5002,7 @@ function tbBreakPick(type){
     clearInterval(state.interval);
     var elapsed=Math.floor((Date.now()-new Date(state.start).getTime())/1000);
     var limit=BREAK_LIMITS[type]*60;
-    var overBy=Math.max(0,elapsed-limit);
+    var overBy=Math.max(0,elapsed-(limit+60)); // exceeded only after full extra minute
     _breakState[type].active=false;
     _breakState[type].done=true;
     try{localStorage.removeItem('tc_break_'+currentUser.id+'_'+type);}catch(e){}
@@ -5147,7 +5064,7 @@ function tbBreakPick(type){
     var elapsed=Math.floor((Date.now()-new Date(_breakState[type].start).getTime())/1000);
     var limit=BREAK_LIMITS[type]*60;
     if(tbmTimer)tbmTimer.textContent=fmtSec(elapsed);
-    if(elapsed>limit){
+    if(elapsed>=limit+60){
       if(tbmTimer)tbmTimer.classList.add('warning');
       if(tbmBtn)tbmBtn.classList.add('over');
       if(mainBtn)mainBtn.classList.add('over');
@@ -5233,7 +5150,7 @@ async function toggleBreak(type){
       var elapsed = Math.floor((Date.now() - new Date(_breakState[type].start).getTime()) / 1000);
       var limit = BREAK_LIMITS[type] * 60;
       timerEl.textContent = fmtSec(elapsed);
-      if(elapsed > limit){
+      if(elapsed >= limit+60){
         timerEl.classList.add('warning');
         btn.classList.add('over');
       }
@@ -5244,7 +5161,7 @@ async function toggleBreak(type){
     clearInterval(_breakState[type].interval);
     var elapsed = Math.floor((Date.now() - new Date(_breakState[type].start).getTime()) / 1000);
     var limit = BREAK_LIMITS[type] * 60;
-    var overBy = Math.max(0, elapsed - limit);
+    var overBy = Math.max(0, elapsed - (limit + 60)); // exceeded only after full extra minute
     _breakState[type].active = false;
     _breakState[type].done = true;
 
@@ -5497,14 +5414,14 @@ async function restoreBreakState(){
         var elapsedNow = Math.floor((Date.now() - new Date(startTime).getTime()) / 1000);
         var limit = BREAK_LIMITS[type] * 60;
         timerEl.textContent = fmtSec(elapsedNow);
-        if(elapsedNow > limit){ timerEl.classList.add('warning'); btn.classList.add('over'); }
+        if(elapsedNow >= limit+60){ timerEl.classList.add('warning'); btn.classList.add('over'); }
 
         // Start ticking
         _breakState[type].interval = setInterval(function(){
           if(!_breakState[type] || !_breakState[type].active) return;
           var elapsed = Math.floor((Date.now() - new Date(_breakState[type].start).getTime()) / 1000);
           timerEl.textContent = fmtSec(elapsed);
-          if(elapsed > limit){ timerEl.classList.add('warning'); btn.classList.add('over'); }
+          if(elapsed >= limit+60){ timerEl.classList.add("warning"); btn.classList.add("over"); }
         }, 1000);
 
       } else if(closedRow){
@@ -5541,12 +5458,12 @@ async function restoreBreakState(){
       var elapsedNow = Math.floor((Date.now() - new Date(startTime).getTime()) / 1000);
       var limit = BREAK_LIMITS[type] * 60;
       timerEl.textContent = fmtSec(elapsedNow);
-      if(elapsedNow > limit){ timerEl.classList.add('warning'); btn.classList.add('over'); }
+      if(elapsedNow >= limit+60){ timerEl.classList.add('warning'); btn.classList.add('over'); }
       _breakState[type].interval = setInterval(function(){
         if(!_breakState[type] || !_breakState[type].active) return;
         var elapsed = Math.floor((Date.now() - new Date(_breakState[type].start).getTime()) / 1000);
         timerEl.textContent = fmtSec(elapsed);
-        if(elapsed > limit){ timerEl.classList.add('warning'); btn.classList.add('over'); }
+        if(elapsed >= limit+60){ timerEl.classList.add("warning"); btn.classList.add("over"); }
       }, 1000);
     });
   }
@@ -5585,7 +5502,7 @@ async function loadReport(){
 
   try {
     if(type === 'attendance'){
-      var filters = 'date=gte.'+from+'&date=lte.'+to+'&order=date.asc,user_name.asc';
+      var filters = 'date=gte.'+from+'&date=lte.'+to+'&order=date.asc,user_name.asc&select=id,user_id,user_name,date,login_time,logout_time,last_seen,attendance_status';
       if(agent) filters += '&user_id=eq.'+agent;
       var rows = await sbQuery('attendance', filters);
       _reportData = rows || [];
@@ -5594,7 +5511,7 @@ async function loadReport(){
 
     } else {
       // Break report — grouped by date then agent (like your Excel format)
-      var filters2 = 'date=gte.'+from+'&date=lte.'+to+'&order=date.asc,user_name.asc';
+      var filters2 = 'date=gte.'+from+'&date=lte.'+to+'&order=date.asc,user_name.asc,start_time.asc&select=id,user_id,user_name,date,break_type,start_time,end_time,duration_seconds,over_limit,over_by_seconds';
       if(agent) filters2 += '&user_id=eq.'+agent;
       var breaks = await sbQuery('breaks', filters2);
       _reportData = breaks || [];
@@ -5625,20 +5542,14 @@ function fmtDateHeader(dateStr){
 
 function renderBreakReport(breaks, from, to){
   var output = document.getElementById('report-output');
-  // Group by date
+
+  // Group by date → agent → array of break rows (preserve individual entries for times)
   var byDate = {};
   breaks.forEach(function(b){
     if(!byDate[b.date]) byDate[b.date] = {};
     var nm = b.user_name || 'Unknown';
-    if(!byDate[b.date][nm]) byDate[b.date][nm] = {
-      breakfast:{secs:0,over:false}, lunch:{secs:0,over:false},
-      beverage:{secs:0,over:false}, shortbreak:{secs:0,over:false}
-    };
-    var bt = b.break_type;
-    if(byDate[b.date][nm][bt] !== undefined){
-      byDate[b.date][nm][bt].secs += (b.duration_seconds||0);
-      byDate[b.date][nm][bt].over = byDate[b.date][nm][bt].secs > (BREAK_LIMITS[bt]||0)*60;
-    }
+    if(!byDate[b.date][nm]) byDate[b.date][nm] = [];
+    byDate[b.date][nm].push(b);
   });
 
   var dates = Object.keys(byDate).sort();
@@ -5648,10 +5559,31 @@ function renderBreakReport(breaks, from, to){
     var agentMap = byDate[date];
     var agents = Object.keys(agentMap).sort();
 
-    html += '<table class="reports-table" style="margin-bottom:2rem;">';
-    // Date header
+    // ── Summary table (same layout as before) ──
+    // Re-aggregate for summary row
+    var summaryMap = {};
+    agents.forEach(function(name){
+      summaryMap[name] = {
+        breakfast:{secs:0,over:false}, lunch:{secs:0,over:false},
+        beverage:{secs:0,over:false}, shortbreak:{secs:0,over:false}
+      };
+      agentMap[name].forEach(function(b){
+        var bt = b.break_type;
+        if(summaryMap[name][bt] !== undefined){
+          // For in-progress breaks (no end_time), calculate live elapsed
+          var secs = b.duration_seconds || 0;
+          if(!b.end_time && b.start_time){
+            secs = Math.floor((Date.now() - new Date(b.start_time).getTime()) / 1000);
+          }
+          summaryMap[name][bt].secs += secs;
+          summaryMap[name][bt].over = summaryMap[name][bt].secs >= (BREAK_LIMITS[bt]||0)*60+60; // exceeded only after full extra minute
+          if(!b.end_time) summaryMap[name][bt].live = true; // flag live
+        }
+      });
+    });
+
+    html += '<table class="reports-table" style="margin-bottom:.75rem;">';
     html += '<thead><tr><th colspan="7" style="text-align:center;background:#E8B84B;color:#1a1000;font-size:0.95rem;font-weight:700;padding:0.8rem;letter-spacing:0.04em;">'+fmtDateHeader(date)+'</th></tr>';
-    // Column headers
     html += '<tr style="background:#C5D5E8;">' +
       '<th style="color:#1a2a4a;">Username</th>' +
       '<th style="color:#1a2a4a;">Breakfast<br><span style="font-weight:400;font-size:0.65rem;opacity:0.7;">Limit: 20 Min</span></th>' +
@@ -5663,7 +5595,7 @@ function renderBreakReport(breaks, from, to){
       '</tr></thead><tbody>';
 
     agents.forEach(function(name){
-      var ag = agentMap[name];
+      var ag = summaryMap[name];
       var bf=ag.breakfast, lu=ag.lunch, bv=ag.beverage, sb=ag.shortbreak;
       var totalSec = bf.secs+lu.secs+bv.secs+sb.secs;
       var exceeded = [];
@@ -5671,16 +5603,59 @@ function renderBreakReport(breaks, from, to){
       if(lu.over) exceeded.push('Lunch');
       if(bv.over) exceeded.push('Beverage');
       if(sb.over) exceeded.push('Short Break');
-      var os = function(b){ return b.over?' style="background:rgba(232,150,75,0.35);font-weight:600;"':''; };
+      var os = function(b){
+        var s = b.over?' background:rgba(232,150,75,0.35);font-weight:600;':'';
+        var live = b.live?' color:#E8B84B;':'';
+        return (s||live)?' style="'+s+live+'"':'';
+      };
+      var liveTag = function(b){ return b.live?'<span style="font-size:.62rem;color:#E8B84B;font-weight:700;margin-left:3px;">●LIVE</span>':''; };
       html += '<tr>' +
         '<td style="font-weight:500;">'+name+'</td>' +
-        '<td'+os(bf)+'>'+(bf.secs>0?fmtDurMin(bf.secs):'-')+'</td>' +
-        '<td'+os(lu)+'>'+(lu.secs>0?fmtDurMin(lu.secs):'-')+'</td>' +
-        '<td'+os(bv)+'>'+(bv.secs>0?fmtDurMin(bv.secs):'-')+'</td>' +
-        '<td'+os(sb)+'>'+(sb.secs>0?fmtDurMin(sb.secs):'-')+'</td>' +
+        '<td'+os(bf)+'>'+(bf.secs>0?fmtDurMin(bf.secs):'-')+liveTag(bf)+'</td>' +
+        '<td'+os(lu)+'>'+(lu.secs>0?fmtDurMin(lu.secs):'-')+liveTag(lu)+'</td>' +
+        '<td'+os(bv)+'>'+(bv.secs>0?fmtDurMin(bv.secs):'-')+liveTag(bv)+'</td>' +
+        '<td'+os(sb)+'>'+(sb.secs>0?fmtDurMin(sb.secs):'-')+liveTag(sb)+'</td>' +
         '<td style="font-weight:600;">'+(totalSec>0?fmtDurMin(totalSec):'-')+'</td>' +
         '<td style="color:'+(exceeded.length?'var(--accent-red)':'var(--text-dim)')+';">'+(exceeded.length?exceeded.join(', '):'-')+'</td>' +
         '</tr>';
+    });
+
+    html += '</tbody></table>';
+
+    // ── Detail table: individual break entries with Start / End times ──
+    html += '<table class="reports-table" style="margin-bottom:2rem;font-size:.82rem;">';
+    html += '<thead><tr>' +
+      '<th style="background:#d4e4f7;color:#1a2a4a;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;">Agent</th>' +
+      '<th style="background:#d4e4f7;color:#1a2a4a;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;">Break Type</th>' +
+      '<th style="background:#d4e4f7;color:#1a2a4a;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;">Start Time</th>' +
+      '<th style="background:#d4e4f7;color:#1a2a4a;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;">End Time</th>' +
+      '<th style="background:#d4e4f7;color:#1a2a4a;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;">Duration</th>' +
+      '<th style="background:#d4e4f7;color:#1a2a4a;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;">Status</th>' +
+      '</tr></thead><tbody>';
+
+    agents.forEach(function(name){
+      var rows = agentMap[name].slice().sort(function(a,b){ return (a.start_time||'').localeCompare(b.start_time||''); });
+      rows.forEach(function(b, idx){
+        var isLive = !b.end_time;
+        var secs = b.duration_seconds || 0;
+        if(isLive && b.start_time) secs = Math.floor((Date.now() - new Date(b.start_time).getTime()) / 1000);
+        var limit = (BREAK_LIMITS[b.break_type]||0)*60;
+        var over = secs >= limit+60; // exceeded only after full extra minute
+        var rowBg = isLive ? 'background:rgba(232,184,75,.09);' : (over ? 'background:rgba(239,73,60,.06);' : '');
+        var statusHtml = isLive
+          ? '<span style="background:rgba(232,184,75,.2);color:#c9860a;border:1px solid rgba(232,184,75,.4);border-radius:4px;padding:1px 7px;font-size:.7rem;font-weight:700;">● In Progress</span>'
+          : (over
+            ? '<span style="background:rgba(239,73,60,.12);color:#EF493C;border:1px solid rgba(239,73,60,.3);border-radius:4px;padding:1px 7px;font-size:.7rem;font-weight:700;">Exceeded</span>'
+            : '<span style="background:rgba(46,197,111,.12);color:#2EC56F;border:1px solid rgba(46,197,111,.3);border-radius:4px;padding:1px 7px;font-size:.7rem;font-weight:700;">Done</span>');
+        html += '<tr style="'+rowBg+'">' +
+          '<td style="font-weight:500;color:var(--text-primary);">'+(idx===0?name:'')+'</td>' +
+          '<td>'+(BREAK_EMOJIS[b.break_type]||'')+'&nbsp;'+(BREAK_LABELS[b.break_type]||b.break_type||'-')+'</td>' +
+          '<td style="font-variant-numeric:tabular-nums;font-weight:600;">'+(b.start_time?fmtTime(b.start_time):'-')+'</td>' +
+          '<td style="font-variant-numeric:tabular-nums;font-weight:600;">'+(isLive?'<span style="color:#E8B84B;">—</span>':fmtTime(b.end_time))+'</td>' +
+          '<td style="font-variant-numeric:tabular-nums;'+(over?'color:var(--accent-red);font-weight:600;':'')+'">'+fmtDurMin(secs)+(isLive?'<span style="font-size:.65rem;color:#E8B84B;"> (live)</span>':'')+'</td>' +
+          '<td>'+statusHtml+'</td>' +
+          '</tr>';
+      });
     });
 
     html += '</tbody></table>';
@@ -5693,6 +5668,7 @@ function renderBreakReport(breaks, from, to){
 
 function renderAttendanceReport(rows){
   var output = document.getElementById('report-output');
+  var isAdmin = typeof isAdminUser === 'function' ? isAdminUser() : false;
   // Group by date
   var byDate = {};
   rows.forEach(function(r){ if(!byDate[r.date]) byDate[r.date]=[]; byDate[r.date].push(r); });
@@ -5701,9 +5677,17 @@ function renderAttendanceReport(rows){
 
   dates.forEach(function(date){
     var agents = byDate[date];
+    var colCount = isAdmin ? 6 : 5;
     html += '<table class="reports-table" style="margin-bottom:2rem;">';
-    html += '<thead><tr><th colspan="4" style="text-align:center;background:#E8B84B;color:#1a1000;font-size:0.95rem;font-weight:700;padding:0.8rem;">'+fmtDateHeader(date)+'</th></tr>';
-    html += '<tr style="background:#C5D5E8;"><th style="color:#1a2a4a;">Username</th><th style="color:#1a2a4a;">Login Time</th><th style="color:#1a2a4a;">Logout Time</th><th style="color:#1a2a4a;">Total Hours</th></tr></thead><tbody>';
+    html += '<thead><tr><th colspan="'+colCount+'" style="text-align:center;background:#E8B84B;color:#1a1000;font-size:0.95rem;font-weight:700;padding:0.8rem;">'+fmtDateHeader(date)+'</th></tr>';
+    html += '<tr style="background:#C5D5E8;">'+
+      '<th style="color:#1a2a4a;">Username</th>'+
+      '<th style="color:#1a2a4a;">Login Time</th>'+
+      '<th style="color:#1a2a4a;">Logout Time</th>'+
+      '<th style="color:#1a2a4a;">Total Hours</th>'+
+      '<th style="color:#1a2a4a;">Status</th>'+
+      (isAdmin ? '<th style="color:#1a2a4a;">Override</th>' : '')+
+      '</tr></thead><tbody>';
 
     agents.forEach(function(r){
       var dur = '-';
@@ -5713,11 +5697,40 @@ function renderAttendanceReport(rows){
         dur = h+' Hr(s) '+m+' Min';
       }
       var stillIn = r.login_time && !r.logout_time;
+      var agentName = r.user_name || (currentUser ? currentUser.name : 'Agent');
+
+      // Determine status: manual override wins, else roster-based, else No Roster
+      var status = r.attendance_status || computePunctuality(agentName, r.date, r.login_time);
+      var statusColor = status==='On Time' ? '#2EC56F' : status==='Late' ? '#EF493C' : status==='Permission' ? '#E8B84B' : '#94A3B8';
+      var statusBg   = status==='On Time' ? 'rgba(46,197,111,.12)' : status==='Late' ? 'rgba(239,73,60,.12)' : status==='Permission' ? 'rgba(232,184,75,.14)' : 'rgba(148,163,184,.1)';
+      var statusHtml = '<span style="background:'+statusBg+';color:'+statusColor+';border:1px solid '+statusColor+'40;border-radius:4px;padding:2px 9px;font-size:.72rem;font-weight:700;">'+status+'</span>';
+
+      var overrideHtml = '';
+      if(isAdmin){
+        var selId = 'att-status-'+r.id;
+        overrideHtml = '<td>'+
+          '<div style="display:flex;gap:.4rem;align-items:center;">'+
+            '<select id="'+selId+'" style="padding:.25rem .5rem;border:1px solid var(--navy-border);border-radius:5px;background:var(--navy-card);color:var(--text-primary);font-family:DM Sans,sans-serif;font-size:.76rem;">'+
+              '<option value=""'+((!r.attendance_status||r.attendance_status==='')?'selected':'')+'>Auto</option>'+
+              '<option value="On Time"'+(r.attendance_status==='On Time'?' selected':'')+'>On Time</option>'+
+              '<option value="Late"'+(r.attendance_status==='Late'?' selected':'')+'>Late</option>'+
+              '<option value="Permission"'+(r.attendance_status==='Permission'?' selected':'')+'>Permission</option>'+
+            '</select>'+
+            '<button onclick="attSaveStatus(\''+r.id+'\',\''+selId+'\',this)" '+
+              'style="padding:.25rem .65rem;background:var(--gold);color:#fff;border:none;border-radius:5px;font-size:.73rem;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">'+
+              'Save'+
+            '</button>'+
+          '</div>'+
+        '</td>';
+      }
+
       html += '<tr>'+
-        '<td style="font-weight:500;">'+(r.user_name||currentUser.name||'Agent')+'</td>'+
+        '<td style="font-weight:500;">'+agentName+'</td>'+
         '<td>'+fmtTime(r.login_time)+'</td>'+
         '<td>'+(stillIn?'<span style="color:var(--gold);font-weight:500;">Still in</span>':fmtTime(r.logout_time))+'</td>'+
         '<td style="font-weight:600;">'+dur+'</td>'+
+        '<td id="att-status-cell-'+r.id+'">'+statusHtml+'</td>'+
+        overrideHtml+
         '</tr>';
     });
     html += '</tbody></table>';
@@ -5728,16 +5741,46 @@ function renderAttendanceReport(rows){
   output.innerHTML = html;
 }
 
+async function attSaveStatus(rowId, selId, btn){
+  var sel = document.getElementById(selId);
+  if(!sel) return;
+  var val = sel.value; // '' means auto/clear
+  var orig = btn.textContent;
+  btn.textContent = '...'; btn.disabled = true;
+  try {
+    await sbUpdate('attendance', 'id', rowId, { attendance_status: val || null });
+    // Refresh the status badge cell
+    var cell = document.getElementById('att-status-cell-'+rowId);
+    if(cell){
+      var status = val || 'Auto';
+      var statusColor = status==='On Time'?'#2EC56F':status==='Late'?'#EF493C':status==='Permission'?'#E8B84B':'#94A3B8';
+      var statusBg = status==='On Time'?'rgba(46,197,111,.12)':status==='Late'?'rgba(239,73,60,.12)':status==='Permission'?'rgba(232,184,75,.14)':'rgba(148,163,184,.1)';
+      cell.innerHTML = '<span style="background:'+statusBg+';color:'+statusColor+';border:1px solid '+statusColor+'40;border-radius:4px;padding:2px 9px;font-size:.72rem;font-weight:700;">'+status+'</span>';
+    }
+    btn.textContent = '✓'; btn.style.background='#2EC56F';
+    setTimeout(function(){ btn.textContent=orig; btn.style.background=''; btn.disabled=false; }, 1800);
+  } catch(e){
+    if(e.message && e.message.includes('attendance_status')){
+      alert('Please run this SQL in Supabase first:\nALTER TABLE attendance ADD COLUMN IF NOT EXISTS attendance_status TEXT DEFAULT NULL;\n\nThen try again.');
+    } else {
+      alert('Save failed: '+e.message);
+    }
+    btn.textContent = orig; btn.disabled = false;
+  }
+}
+
 function exportReportCSV(){
   if(!_reportData.length){ alert('Pull a report first.'); return; }
   var type = document.getElementById('report-type').value;
   var headers, rows;
   if(type==='attendance'){
-    headers = ['Date','Agent','Login Time','Logout Time','Total Hours'];
+    headers = ['Date','Agent','Login Time','Logout Time','Total Hours','Status'];
     rows = _reportData.map(function(r){
       var dur='-';
       if(r.login_time&&r.logout_time){var diff=Math.floor((new Date(r.logout_time)-new Date(r.login_time))/1000);dur=Math.floor(diff/3600)+'h '+Math.floor((diff%3600)/60)+'m';}
-      return [r.date,r.user_name,fmtTime(r.login_time),r.logout_time?fmtTime(r.logout_time):'Still in',dur];
+      var agentName = r.user_name || '';
+      var status = r.attendance_status || computePunctuality(agentName, r.date, r.login_time);
+      return [r.date,agentName,fmtTime(r.login_time),r.logout_time?fmtTime(r.logout_time):'Still in',dur,status];
     });
   } else {
     // Group by date+agent for Excel-style export
@@ -5755,7 +5798,7 @@ function exportReportCSV(){
       if(byDateAgent[key][bt]!==undefined){
         byDateAgent[key][bt].secs += (b.duration_seconds||0);
         // Over-limit: true if total exceeds limit for that type
-        byDateAgent[key][bt].over = byDateAgent[key][bt].secs > (BREAK_LIMITS[bt]||0)*60;
+        byDateAgent[key][bt].over = byDateAgent[key][bt].secs >= (BREAK_LIMITS[bt]||0)*60+60; // exceeded only after full extra minute
       }
     });
     rows = Object.values(byDateAgent).sort(function(a,b){return a.date.localeCompare(b.date)||a.name.localeCompare(b.name);}).map(function(ag){
@@ -8123,7 +8166,7 @@ function mobNav(page, btn){
   if(btn) btn.classList.add('active');
   else {
     // Try to match by page
-    var map = { home:'mob-nav-home', messages:'mob-nav-messages', voicehub:'mob-nav-voicehub', roster:'mob-nav-roster', quiz:'mob-nav-quiz', reports:'mob-nav-reports', people:'mob-nav-people', casetracker:'mob-nav-cases', reminders:'mob-nav-reminders' };
+    var map = { home:'mob-nav-home', roster:'mob-nav-roster', quiz:'mob-nav-quiz', reports:'mob-nav-reports' };
     if(map[page]){ var el = document.getElementById(map[page]); if(el) el.classList.add('active'); }
   }
 }
@@ -8385,8 +8428,6 @@ function pplOpenEdit(id){
         '<div class="ppl-edit-field"><label class="ppl-edit-label">Team</label><input id="pf-team" class="ppl-edit-input" value="'+v('team')+'" placeholder="e.g. Online Sales Support"/></div>'+
         '<div class="ppl-edit-field"><label class="ppl-edit-label">Email</label><input id="pf-email" class="ppl-edit-input" value="'+v('email')+'" placeholder="work email"/></div>'+
         '<div class="ppl-edit-field"><label class="ppl-edit-label">Phone</label><input id="pf-phone" class="ppl-edit-input" value="'+v('phone')+'" placeholder="contact number"/></div>'+
-        '<div class="ppl-edit-field"><label class="ppl-edit-label">Joining Date</label><input id="pf-joining" class="ppl-edit-input" value="'+v('joining_date')+'" placeholder="e.g. Jan 2020"/></div>'+
-        '<div class="ppl-edit-field"><label class="ppl-edit-label">Birthday (DD/MM)</label><input id="pf-dob" class="ppl-edit-input" value="'+v('dob')+'" placeholder="e.g. 15/08"/></div>'+
       '</div>';
 
     if(isNew){
@@ -8395,6 +8436,13 @@ function pplOpenEdit(id){
         '<select id="pf-userid" class="ppl-edit-input"><option value="">— Select agent —</option></select></div>';
     }
   }
+
+  // DOB and Joining Date — agents can edit their own, admins can edit anyone's
+  html += '<div class="ppl-edit-section">Date of Birth &amp; Joining</div>'+
+    '<div class="ppl-edit-grid">'+
+      '<div class="ppl-edit-field"><label class="ppl-edit-label">Date of Birth (DD/MM)</label><input id="pf-dob" class="ppl-edit-input" value="'+v('dob')+'" placeholder="e.g. 15/08"/></div>'+
+      '<div class="ppl-edit-field"><label class="ppl-edit-label">Date of Joining</label><input id="pf-joining" class="ppl-edit-input" value="'+v('joining_date')+'" placeholder="e.g. Jan 2020"/></div>'+
+    '</div>';
 
   // Personal fields — everyone can edit their own
   html += '<div class="ppl-edit-section">Personal</div>'+
@@ -8533,13 +8581,15 @@ async function pplSaveProfile(){
       data.team = (document.getElementById('pf-team')||{}).value||'';
       data.email = (document.getElementById('pf-email')||{}).value||'';
       data.phone = (document.getElementById('pf-phone')||{}).value||'';
-      data.joining_date = (document.getElementById('pf-joining')||{}).value||'';
-      data.dob = (document.getElementById('pf-dob')||{}).value||'';
       if(isNew){
         var uid = (document.getElementById('pf-userid')||{}).value||null;
         data.user_id = uid||null;
       }
     }
+
+    // DOB and joining date — editable by anyone editing their own profile
+    data.joining_date = (document.getElementById('pf-joining')||{}).value||'';
+    data.dob = (document.getElementById('pf-dob')||{}).value||'';
 
     if(!data.name && isNew){ msg.textContent='Name is required.'; msg.style.display='block'; btn.disabled=false; btn.textContent='Save Profile'; return; }
 
@@ -10191,26 +10241,25 @@ window.addEventListener('DOMContentLoaded',function(){ setTimeout(function(){ CT
 
 
   <!-- MOBILE BOTTOM NAV — hidden on desktop via CSS -->
-  <nav class="mobile-bottom-nav" id="mobile-bottom-nav" style="position:fixed;bottom:0;left:0;right:0;background:var(--navy-card);backdrop-filter:blur(16px);border-top:1px solid var(--navy-border);z-index:300;height:56px;display:none;">
+  <nav class="mobile-bottom-nav" id="mobile-bottom-nav" style="position:fixed;bottom:0;left:0;right:0;background:rgba(19,23,49,0.98);backdrop-filter:blur(12px);border-top:1px solid var(--navy-border);z-index:300;height:56px;">
     <button class="mob-nav-item active" id="mob-nav-home" onclick="mobNav('home',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/><path d="M9 21V12h6v9"/></svg>
       Home
-    </button>
-    <button class="mob-nav-item" id="mob-nav-messages" onclick="mobNav('messages',this)" style="position:relative;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-      <span id="mob-msg-badge" style="display:none;position:absolute;top:4px;right:12px;background:#ef493c;color:#fff;font-size:.5rem;font-weight:700;min-width:14px;height:14px;border-radius:20px;align-items:center;justify-content:center;padding:0 3px;">0</span>
-      Chats
-    </button>
-    <button class="mob-nav-item" id="mob-nav-voicehub" onclick="mobNav('voicehub',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>
-      Voice
     </button>
     <button class="mob-nav-item" id="mob-nav-roster" onclick="mobNav('roster',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
       Roster
     </button>
+    <button class="mob-nav-item" id="mob-nav-quiz" onclick="mobNav('quiz',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><circle cx="9" cy="7" r="4"/><path d="M3 21v-2a4 4 0 014-4h4"/></svg>
+      Quiz
+    </button>
+    <button class="mob-nav-item" id="mob-nav-reports" onclick="mobNav('reports',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5a2 2 0 012-2h9l5 5v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M14 3v6h6M8 17v-4M12 17v-7M16 17v-2"/></svg>
+      Reports
+    </button>
     <button class="mob-nav-item" id="mob-nav-more" onclick="toggleMobMore(this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
       More
     </button>
   </nav>
@@ -10218,47 +10267,27 @@ window.addEventListener('DOMContentLoaded',function(){ setTimeout(function(){ CT
   <!-- MOBILE MORE PANEL -->
   <div class="mob-nav-more-panel" id="mob-more-panel">
     <div class="mob-nav-section-label">Pages</div>
-    <div class="mob-nav-more-item" onclick="mobNav('people',null);closeMobMore()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>
-      People
-    </div>
-    <div class="mob-nav-more-item" onclick="mobNav('quiz',null);closeMobMore()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
-      Quiz
+    <div class="mob-nav-more-item" onclick="mobNav('kb',null);closeMobMore()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z"/></svg>
+      Knowledge Base
     </div>
     <div class="mob-nav-more-item" onclick="mobNav('assessment',null);closeMobMore()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
       Assessment
     </div>
-    <div class="mob-nav-more-item" onclick="mobNav('reports',null);closeMobMore()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5a2 2 0 012-2h9l5 5v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M14 3v6h6M8 17v-4M12 17v-7M16 17v-2"/></svg>
-      Reports
-    </div>
     <div class="mob-nav-more-item" onclick="mobNav('moments',null);closeMobMore()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
       Moments
     </div>
-    <div class="mob-nav-more-item" onclick="mobNav('casetracker',null);closeMobMore()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
-      Cases
-    </div>
-    <div class="mob-nav-more-item" onclick="mobNav('reminders',null);closeMobMore()">
+    <div class="mob-nav-more-item" onclick="mobNav('announcements',null);closeMobMore()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-      Reminders
-    </div>
-    <div class="mob-nav-more-item" onclick="mobNav('about',null);closeMobMore()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      About
+      Announcements
     </div>
     <div class="mob-nav-more-item" onclick="mobNav('changepass',null);closeMobMore()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
       Change Password
     </div>
     <div class="mob-nav-section-label admin-only">Admin</div>
-    <div class="mob-nav-more-item admin-only" onclick="mobNav('controldeck',null);closeMobMore()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93l-1.41 1.41M4.93 4.93l1.41 1.41M12 2v2M12 20v2M2 12h2M20 12h2M19.07 19.07l-1.41-1.41M4.93 19.07l1.41-1.41"/></svg>
-      Control Deck
-    </div>
     <div class="mob-nav-more-item admin-only" onclick="mobNav('users',null);closeMobMore()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M19 8v6M22 11h-6"/></svg>
       Manage Users
@@ -10266,14 +10295,6 @@ window.addEventListener('DOMContentLoaded',function(){ setTimeout(function(){ CT
     <div class="mob-nav-more-item admin-only" onclick="mobNav('quiz-admin',null);closeMobMore()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
       Quiz Builder
-    </div>
-    <div class="mob-nav-more-item admin-only" onclick="mobNav('assessment-admin',null);closeMobMore()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><circle cx="12" cy="12" r="10"/></svg>
-      Assessment Builder
-    </div>
-    <div class="mob-nav-more-item admin-only" onclick="mobNav('timesheet',null);closeMobMore()" id="mob-ts-item" style="display:none;">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-      Timesheet
     </div>
   </div>
 
@@ -12495,6 +12516,43 @@ function shiftLabel(code){
   var m=code.match(/(\d{1,2})[-:]?(\d{0,2})\s*[-]\s*(\d{1,2})[-:]?(\d{0,2})/);
   if(m){var sh=parseInt(m[1]),eh=parseInt(m[3]);var s12=sh>12?sh-12:(sh===0?12:sh),e12=eh>12?eh-12:(eh===0?12:eh);var sa=sh<12?'AM':'PM',ea=eh<12?'AM':'PM';return s12+(m[2]?':'+m[2]:'')+' '+sa+' - '+e12+(m[4]?':'+m[4]:'')+' '+ea;}
   return code;
+}
+
+// Returns shift start time in total minutes-from-midnight (IST) for a given agent + date,
+// reading from the roster. Returns null if roster not available or shift not parseable.
+function getShiftStartMinutes(agentName, dateStr){
+  try {
+    var d = new Date(dateStr + 'T00:00:00');
+    var rc = getRowsAndColForDate(d);
+    if(!rc || !rc.rows || rc.col < 0) return null;
+    var agentRow = findAgent(rc.rows, agentName);
+    if(!agentRow) return null;
+    var code = String(agentRow[rc.col] || '').trim();
+    if(!code || isOff(code) || isLeave(code)) return null;
+    // Try to extract start time from pattern like "9-18", "10-19", "9:30-18:30"
+    var m = code.match(/(\d{1,2})(?::(\d{2}))?\s*[-]\s*(\d{1,2})(?::(\d{2}))?/);
+    if(m){
+      var h = parseInt(m[1]);
+      var min = m[2] ? parseInt(m[2]) : 0;
+      return h * 60 + min; // total minutes from midnight
+    }
+    return null;
+  } catch(e){ return null; }
+}
+
+// Compute punctuality status from login_time ISO vs roster shift start.
+// Returns: 'On Time' | 'Late' | 'No Roster' (if can't determine)
+function computePunctuality(agentName, dateStr, loginTimeIso){
+  if(!loginTimeIso) return 'No Roster';
+  var shiftMins = getShiftStartMinutes(agentName, dateStr);
+  if(shiftMins === null) return 'No Roster';
+  // Convert loginTime to IST minutes from midnight
+  var d = new Date(loginTimeIso);
+  var istMs = d.getTime() + 5.5 * 60 * 60 * 1000;
+  var istDate = new Date(istMs);
+  var loginMins = istDate.getUTCHours() * 60 + istDate.getUTCMinutes();
+  // On time = login <= shift start; late = login > shift start (even 1 min late)
+  return loginMins <= shiftMins ? 'On Time' : 'Late';
 }
 function findAgent(rows,name){
   var agents=getAgentRows(rows),n=name.toLowerCase().trim();
