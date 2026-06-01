@@ -3755,7 +3755,7 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
           </div>
 
           <!-- ── TAB: QUIZ ── -->
-          <div id="xc-panel-quiz-adv" class="xc-panel">
+          <div id="xc-panel-quiz-adv" class="xc-panel" style="display:none;">
             <div class="xc-card">
               <div class="xc-card-title">Quiz Responses</div>
               <p class="xc-card-sub">View, edit or delete agent quiz responses.</p>
@@ -3766,7 +3766,7 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
                 </div>
                 <div style="flex:0 0 160px;">
                   <label class="xc-label">Date</label>
-                  <input type="date" id="xc-qf2" class="xc-input" title="Leave blank to show all dates"/>
+                  <input type="date" id="xc-qf2" class="xc-input"/>
                 </div>
                 <div style="display:flex;align-items:flex-end;">
                   <button class="xc-btn" onclick="xcFetchQuiz()">Load</button>
@@ -6424,7 +6424,7 @@ async function xcPurgeRec(userId, name){
 // ── QUIZ GODMODE ─────────────────────────────────────────────────────
 async function xcInitQuizSelectors(){
   var sel = document.getElementById('xc-qf1');
-  if(!sel || sel.options.length > 1){ xcFetchQuiz(); return; }
+  if(!sel || sel.options.length > 1) return;
   try{
     var users = await sbQuery('users','select=id,name&order=name.asc');
     (users||[]).forEach(function(u){
@@ -6433,8 +6433,6 @@ async function xcInitQuizSelectors(){
     var today = todayStr();
     var df = document.getElementById('xc-qf2'); if(df&&!df.value) df.value=today;
   }catch(e){}
-  // Auto-load after initialising selectors
-  xcFetchQuiz();
 }
 
 async function xcFetchQuiz(){
@@ -6444,26 +6442,13 @@ async function xcFetchQuiz(){
   try{
     var agent = document.getElementById('xc-qf1').value;
     var date  = document.getElementById('xc-qf2').value;
-    // Fetch quiz questions so we can show the question text alongside each answer
-    var quizMap = {};
-    try{
-      var quizzes = await sbQuery('quizzes','select=id,question,date&order=date.desc');
-      (quizzes||[]).forEach(function(q){ quizMap[q.id] = q.question; });
-    }catch(e2){}
-    var filters = 'order=date.desc,submitted_at.desc&select=id,quiz_id,user_id,user_name,answer,is_correct,submitted_at,date';
+    var filters = 'order=submitted_at.asc&select=id,quiz_id,user_id,user_name,answer,is_correct,submitted_at,date';
     if(agent) filters += '&user_id=eq.'+agent;
     if(date)  filters += '&date=eq.'+date;
-    // Limit to last 200 rows to keep it manageable
-    filters += '&limit=200';
     var rows = await sbQuery('quiz_responses', filters);
-    if(!rows||!rows.length){
-      var msg = date ? 'No responses found for '+date+'.' : 'No quiz responses found.';
-      if(!date) msg += ' Try selecting a specific date or agent.';
-      out.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;padding:1rem;">'+msg+'</div>'; return;
-    }
+    if(!rows||!rows.length){ out.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;padding:1rem;">No quiz responses found.</div>'; return; }
     var html = rows.map(function(r){
-      var dt = r.submitted_at ? fmtTime(r.submitted_at)+' — '+r.date : r.date||'-';
-      var qText = quizMap[r.quiz_id] ? '<div style="font-size:.72rem;color:var(--text-dim);margin-top:2px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+esc(quizMap[r.quiz_id])+'">Q: '+esc(quizMap[r.quiz_id].slice(0,50))+(quizMap[r.quiz_id].length>50?'…':'')+'</div>' : '';
+      var dt = r.submitted_at ? fmtTime(r.submitted_at)+' ('+r.date+')' : r.date||'-';
       var isC = r.is_correct===true, isW = r.is_correct===false;
       var badge = isC
         ? '<span style="font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(46,197,111,.12);color:#1a7a45;">✓ Correct</span>'
@@ -6471,7 +6456,7 @@ async function xcFetchQuiz(){
         ? '<span style="font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(239,73,60,.1);color:var(--accent-red);">✗ Wrong</span>'
         : '<span style="font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(232,184,75,.12);color:var(--gold);">— Essay</span>';
       return '<div id="xcq-row-'+r.id+'" class="xc-row" style="flex-wrap:wrap;gap:.5rem;">'+
-        '<div style="flex:1;min-width:120px;"><span style="font-weight:600;font-size:.85rem;">'+esc(r.user_name||'')+'</span><br><span style="font-size:.72rem;color:var(--text-dim);">'+dt+'</span>'+qText+'</div>'+
+        '<div style="flex:1;min-width:120px;"><span style="font-weight:600;font-size:.85rem;">'+esc(r.user_name||'')+'</span><br><span style="font-size:.72rem;color:var(--text-dim);">'+dt+'</span></div>'+
         '<div style="flex:2;min-width:180px;"><label class="xc-label">Answer</label>'+
           '<input id="xcq-ans-'+r.id+'" class="xc-input" value="'+esc(r.answer||'')+'" style="font-size:.82rem;"/>'+
         '</div>'+
@@ -7148,12 +7133,10 @@ async function loadQuizBuilderList(){
       enBtn.onclick=(function(id,en){ return function(){ qbToggleEnabled(id,en); }; })(q.id,isEnabled);
       right.appendChild(enBtn);
 
-      // Essay review
-      if(isEssay){
-        var revBtn=document.createElement('button'); revBtn.className='qa-toggle-btn'; revBtn.id='qbr-btn-'+q.id; revBtn.innerHTML='&#128065; Review Answers';
-        revBtn.onclick=(function(id){ return function(){ qbToggleEssayReview(id); }; })(q.id);
-        right.appendChild(revBtn);
-      }
+      // Responses button — all quiz types
+      var revBtn=document.createElement('button'); revBtn.className='qa-toggle-btn'; revBtn.id='qbr-btn-'+q.id; revBtn.innerHTML='&#128065; Responses';
+      revBtn.onclick=(function(id){ return function(){ qbToggleEssayReview(id); }; })(q.id);
+      right.appendChild(revBtn);
 
       // Review toggle
       var rtBtn=document.createElement('button'); rtBtn.className='qa-toggle-btn'+(q.review_enabled?' on':'');
@@ -7172,11 +7155,9 @@ async function loadQuizBuilderList(){
       var editPanel=document.createElement('div'); editPanel.id='qb-edit-'+q.id; editPanel.style.cssText='display:none;width:100%;margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;';
       item.appendChild(editPanel);
 
-      // Essay review panel
-      if(isEssay){
-        var essayPanel=document.createElement('div'); essayPanel.id='qbr-panel-'+q.id; essayPanel.style.cssText='display:none;width:100%;margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;';
-        item.appendChild(essayPanel);
-      }
+      // Response review panel — all quiz types
+      var essayPanel=document.createElement('div'); essayPanel.id='qbr-panel-'+q.id; essayPanel.style.cssText='display:none;width:100%;margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;';
+      item.appendChild(essayPanel);
 
       list.appendChild(item);
     });
@@ -7294,11 +7275,15 @@ async function qbToggleEssayReview(quizId){
             '<span style="font-size:.72rem;color:var(--text-dim);">'+time+'</span>'+
             statusBadge+
           '</div>'+
-          '<div style="font-size:.85rem;color:var(--text-primary);background:var(--navy-card);padding:.5rem .75rem;border-radius:6px;border:1px solid var(--navy-border);word-break:break-word;">'+esc(r.answer||'(no answer)')+'</div>'+
+          '<input id="qbrans-'+r.id+'" value="'+esc(r.answer||'')+'" style="font-size:.84rem;background:var(--navy-card);color:var(--text-primary);padding:.4rem .7rem;border-radius:6px;border:1px solid var(--navy-border);width:100%;box-sizing:border-box;font-family:DM Sans,sans-serif;" placeholder="(no answer)"/>'+
+          '<div style="margin-top:.3rem;">'+
+            '<button onclick="qbSaveAnswer(\''+r.id+'\',\''+quizId+'\')" style="font-size:.7rem;padding:2px 10px;background:var(--gold);color:#fff;border:none;border-radius:5px;cursor:pointer;font-weight:600;">Save</button>'+
+          '</div>'+
         '</div>'+
         '<div style="display:flex;flex-direction:column;gap:.4rem;flex-shrink:0;">'+
-          '<button class="qbr-mark-btn correct" onclick="qbMarkAnswer(\''+r.id+'\',true,\''+quizId+'\')" '+(isC?'style="opacity:.4;cursor:default;" disabled':'')+'>✓ Correct</button>'+
-          '<button class="qbr-mark-btn wrong"   onclick="qbMarkAnswer(\''+r.id+'\',false,\''+quizId+'\')" '+(isW?'style="opacity:.4;cursor:default;" disabled':'')+'>✗ Wrong</button>'+
+          '<button class="qbr-mark-btn correct" onclick="qbMarkAnswer(\''+r.id+'\',true,\''+quizId+'\')" '+(isC?'style="opacity:.4;cursor:default;" disabled':'')+'>&#10003; Correct</button>'+
+          '<button class="qbr-mark-btn wrong"   onclick="qbMarkAnswer(\''+r.id+'\',false,\''+quizId+'\')" '+(isW?'style="opacity:.4;cursor:default;" disabled':'')+'>&#10007; Wrong</button>'+
+          '<button onclick="qbDeleteResponse(\''+r.id+'\',\''+quizId+'\')" style="font-size:.7rem;padding:2px 8px;background:rgba(239,73,60,.12);color:var(--accent-red);border:1px solid rgba(239,73,60,.25);border-radius:5px;cursor:pointer;font-weight:600;margin-top:2px;">Del</button>'+
         '</div>'+
       '</div>';
     }).join('');
@@ -7327,6 +7312,23 @@ async function qbMarkAnswer(responseId, isCorrect, quizId){
   }catch(e){ alert('Could not save mark: '+e.message); }
 }
 
+async function qbSaveAnswer(responseId, quizId){
+  var inp = document.getElementById('qbrans-'+responseId);
+  if(!inp) return;
+  try{
+    await sbUpdate('quiz_responses','id',responseId,{answer:inp.value.trim()});
+    inp.style.borderColor='var(--accent-green)';
+    setTimeout(function(){ inp.style.borderColor=''; }, 1500);
+  }catch(e){ alert('Save failed: '+e.message); }
+}
+async function qbDeleteResponse(responseId, quizId){
+  if(!confirm('Delete this response? This cannot be undone.')) return;
+  try{
+    await sbDelete('quiz_responses','id',responseId);
+    var row = document.getElementById('qbrc-'+responseId);
+    if(row) row.remove();
+  }catch(e){ alert('Delete failed: '+e.message); }
+}
 async function toggleQuizReview(id, current){
   try{
     await sbUpdate('quizzes','id',id,{review_enabled:!current});
