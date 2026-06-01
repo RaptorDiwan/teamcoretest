@@ -1894,45 +1894,74 @@ body.dark .ts-input { background:#111827;border-color:#2D3748;color:#F1F5F9; }
   .chat-conv-time{font-size:.65rem;color:var(--text-dim);}
   .chat-unread-dot{width:18px;height:18px;background:var(--gold);border-radius:50%;font-size:.6rem;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;}
 
-  /* Chat conversation view */
-  .chat-conv-header{padding:.75rem 1rem;border-bottom:1px solid var(--navy-border);display:flex;align-items:center;gap:.65rem;}
-  .chat-back-btn{background:none;border:none;cursor:pointer;color:var(--text-muted);padding:.2rem .4rem;font-size:1rem;}
-  .chat-conv-hname{font-size:.875rem;font-weight:600;color:var(--text-primary);flex:1;}
-  .chat-e2e-bar{padding:.3rem 1rem;background:rgba(26,122,69,.06);border-bottom:1px solid rgba(26,122,69,.1);font-size:.62rem;color:#1a7a45;display:flex;align-items:center;justify-content:center;gap:.35rem;letter-spacing:.02em;}
-  .chat-messages{flex:1;overflow-y:auto;padding:.5rem .75rem;display:flex;flex-direction:column;gap:.35rem;}
-  .chat-msg{max-width:82%;display:flex;flex-direction:column;}
-  .chat-msg.mine{align-self:flex-end;align-items:flex-end;}
-  .chat-msg.theirs{align-self:flex-start;align-items:flex-start;}
-  .chat-msg-bubble{padding:.4rem .75rem;border-radius:16px;font-size:.78rem;line-height:1.45;word-break:break-word;}
-  .chat-msg.mine .chat-msg-bubble{background:linear-gradient(135deg,var(--gold),var(--gold-light));color:#fff;border-radius:16px 16px 4px 16px;}
-  .chat-msg.theirs .chat-msg-bubble{background:var(--navy-hover);color:var(--text-primary);border:1px solid var(--navy-border);border-radius:16px 16px 16px 4px;}
-  .chat-msg-meta{font-size:.58rem;color:var(--text-dim);margin-top:.15rem;display:flex;align-items:center;gap:.3rem;}
-  .msg-tick{font-size:.62rem;margin-left:2px;letter-spacing:-.5px;}
-  .msg-tick.sent{color:rgba(255,255,255,.3);}
+  /* ── REDESIGNED CHAT CONVERSATION ── */
+  .chat-conv-header{padding:.75rem 1rem;border-bottom:1px solid var(--navy-border);display:flex;align-items:center;gap:.65rem;background:var(--navy-card);}
+  .chat-back-btn{background:none;border:none;cursor:pointer;color:var(--text-muted);padding:.2rem .5rem;font-size:1.1rem;line-height:1;}
+  .chat-conv-hname{font-size:.9rem;font-weight:700;color:var(--text-primary);flex:1;letter-spacing:.01em;}
+  .chat-e2e-bar{padding:.25rem 1rem;background:rgba(46,197,111,.06);border-bottom:1px solid rgba(46,197,111,.12);font-size:.6rem;color:#1a7a45;display:flex;align-items:center;justify-content:center;gap:.35rem;letter-spacing:.02em;}
+  .chat-messages{flex:1;overflow-y:auto;padding:.75rem .9rem;display:flex;flex-direction:column;gap:0;scroll-behavior:smooth;}
+  .chat-messages::-webkit-scrollbar{width:4px;}
+  .chat-messages::-webkit-scrollbar-thumb{background:var(--navy-border);border-radius:4px;}
+  .chat-msg-row{display:flex;align-items:flex-end;gap:.5rem;margin-bottom:2px;}
+  .chat-msg-row.mine{flex-direction:row-reverse;}
+  .chat-msg-row.last-in-group{margin-bottom:10px;}
+  .chat-msg-av{width:28px;height:28px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:.55rem;font-weight:700;color:#fff;overflow:hidden;}
+  .chat-msg-av img{width:100%;height:100%;object-fit:cover;}
+  .chat-msg-av.hidden{visibility:hidden;}
+  .chat-msg-row.mine .chat-msg-av{display:none;}
+  .chat-msg{max-width:72%;display:flex;flex-direction:column;}
+  .chat-msg.mine{align-items:flex-end;}
+  .chat-msg.theirs{align-items:flex-start;}
+  .chat-msg-sender{font-size:.66rem;font-weight:700;color:var(--gold);margin-bottom:.2rem;padding-left:2px;}
+  .chat-msg-bubble{padding:.52rem .85rem;font-size:.83rem;line-height:1.5;word-break:break-word;position:relative;animation:msgPop .18s cubic-bezier(.34,1.4,.64,1);}
+  @keyframes msgPop{from{opacity:0;transform:scale(.92) translateY(4px);}to{opacity:1;transform:scale(1) translateY(0);}}
+  .chat-msg.mine .chat-msg-bubble{background:linear-gradient(135deg,var(--gold) 0%,var(--gold-light) 100%);color:#fff;border-radius:18px 18px 4px 18px;box-shadow:0 2px 8px rgba(239,73,60,.25);}
+  .chat-msg.theirs .chat-msg-bubble{background:var(--navy-card);color:var(--text-primary);border:1px solid var(--navy-border);border-radius:18px 18px 18px 4px;box-shadow:0 1px 3px rgba(0,0,0,.06);}
+  body.dark .chat-msg.theirs .chat-msg-bubble{background:var(--navy-hover);border-color:var(--navy-border);box-shadow:0 1px 4px rgba(0,0,0,.2);}
+  .chat-msg-bubble.is-gif{padding:3px;background:transparent!important;border:none!important;box-shadow:none!important;}
+  .chat-msg-bubble.is-gif img{border-radius:12px;max-width:200px;max-height:200px;display:block;}
+  .chat-msg-meta{font-size:.6rem;color:var(--text-dim);margin-top:.2rem;display:flex;align-items:center;gap:.3rem;opacity:.85;padding:0 2px;}
+  .chat-msg.mine .chat-msg-meta{flex-direction:row-reverse;}
+  .msg-tick{font-size:.65rem;letter-spacing:-.5px;}
+  .msg-tick.sent{color:rgba(255,255,255,.45);}
   .msg-tick.read{color:#4fc3f7;}
-  .msg-meta .msg-tick{font-size:.65rem;}
-  .msg-del-btn{background:none;border:none;cursor:pointer;opacity:0;font-size:.7rem;color:rgba(255,80,80,.6);padding:2px 4px;margin-left:6px;transition:all .15s;line-height:1;border-radius:4px;}
-  .chat-msg.mine:hover .msg-del-btn,.msg-bubble-wrap.mine:hover .msg-del-btn{opacity:1;background:rgba(255,80,80,.08);}
-  .msg-del-btn:hover{color:#ff3333;background:rgba(255,80,80,.15)!important;opacity:1!important;}
-  /* Always show on touch devices */
-  @media (hover:none){.chat-msg.mine .msg-del-btn,.msg-bubble-wrap.mine .msg-del-btn{opacity:.6;}}
-  .chat-msg-expires{color:rgba(239,73,60,.6);}
-  .chat-input-row{padding:.65rem .9rem;border-top:1px solid var(--navy-border);display:flex;align-items:center;gap:.5rem;}
-  .chat-emoji-btn{background:none;border:none;cursor:pointer;font-size:1.2rem;padding:.2rem;flex-shrink:0;}
-  .chat-input{flex:1;padding:.45rem .75rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:20px;font-family:'DM Sans',sans-serif;font-size:.82rem;color:var(--text-primary);outline:none;resize:none;max-height:80px;}
-  .chat-send-btn{width:34px;height:34px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .15s;}
-  .chat-send-btn:hover{background:var(--gold-light);}
-  .chat-send-btn svg{width:16px;height:16px;stroke:#fff;fill:none;stroke-width:2.5;}
-
-  /* Emoji picker */
-  .chat-emoji-picker{position:absolute;bottom:60px;left:1rem;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:12px;padding:.6rem;display:grid;grid-template-columns:repeat(8,1fr);gap:2px;box-shadow:0 4px 20px rgba(7,13,45,.15);z-index:10;}
-  .chat-emoji-picker span{font-size:1.1rem;cursor:pointer;padding:.25rem;border-radius:6px;text-align:center;}
-  .chat-emoji-picker span:hover{background:var(--navy-hover);}
-
-  .chat-date-divider{text-align:center;font-size:.65rem;color:var(--text-dim);margin:.25rem 0;position:relative;}
-  .chat-date-divider::before,.chat-date-divider::after{content:'';position:absolute;top:50%;width:30%;height:1px;background:var(--navy-border);}
-  .chat-date-divider::before{left:5%;}
-  .chat-date-divider::after{right:5%;}
+  .chat-msg-expires-warn{color:rgba(239,73,60,.7);font-size:.58rem;}
+  .msg-del-btn{background:none;border:none;cursor:pointer;opacity:0;font-size:.68rem;color:rgba(239,73,60,.6);padding:1px 4px;transition:all .15s;line-height:1;border-radius:4px;}
+  .chat-msg-row:hover .msg-del-btn{opacity:1;}
+  .msg-del-btn:hover{color:#ff3333;background:rgba(255,80,80,.12)!important;}
+  @media(hover:none){.chat-msg.mine .msg-del-btn{opacity:.5;}}
+  .chat-date-divider{text-align:center;font-size:.63rem;color:var(--text-dim);margin:12px 0 8px;position:relative;display:flex;align-items:center;gap:.6rem;}
+  .chat-date-divider::before,.chat-date-divider::after{content:'';flex:1;height:1px;background:var(--navy-border);}
+  .chat-input-row{padding:.55rem .75rem;border-top:1px solid var(--navy-border);display:flex;align-items:flex-end;gap:.4rem;background:var(--navy-card);position:relative;}
+  .chat-icon-btn{background:none;border:none;cursor:pointer;font-size:1.15rem;padding:.3rem;border-radius:8px;transition:background .12s;line-height:1;opacity:.7;color:var(--text-muted);}
+  .chat-icon-btn:hover{background:var(--navy-hover);opacity:1;}
+  .chat-input-wrap{flex:1;position:relative;}
+  .chat-input{width:100%;padding:.5rem .85rem;background:var(--navy-hover);border:1.5px solid var(--navy-border);border-radius:22px;font-family:'DM Sans',sans-serif;font-size:.84rem;color:var(--text-primary);outline:none;resize:none;max-height:80px;transition:border-color .15s;box-sizing:border-box;}
+  .chat-input:focus{border-color:var(--gold-dim);}
+  .chat-send-btn{width:36px;height:36px;border-radius:50%;background:var(--gold);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .15s;box-shadow:0 2px 8px rgba(239,73,60,.3);}
+  .chat-send-btn:hover{background:var(--gold-light);transform:scale(1.06);}
+  .chat-send-btn svg{width:15px;height:15px;stroke:#fff;fill:none;stroke-width:2.5;}
+  .chat-emoji-btn{display:none;}
+  /* New emoji picker */
+  .chat-emoji-picker{position:absolute;bottom:62px;left:0;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:16px;width:300px;box-shadow:0 8px 32px rgba(7,13,45,.18);z-index:100;overflow:hidden;animation:msgPop .15s ease;}
+  .ep-tabs{display:flex;padding:.4rem .5rem;gap:.1rem;border-bottom:1px solid var(--navy-border);}
+  .ep-tab{background:none;border:none;cursor:pointer;font-size:1.05rem;padding:.3rem .4rem;border-radius:8px;opacity:.55;transition:all .12s;line-height:1;}
+  .ep-tab.active,.ep-tab:hover{opacity:1;background:var(--navy-hover);}
+  .ep-search{width:calc(100% - 1rem);margin:.4rem .5rem;padding:.35rem .65rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:20px;font-size:.78rem;color:var(--text-primary);outline:none;font-family:'DM Sans',sans-serif;box-sizing:border-box;}
+  .ep-grid{display:grid;grid-template-columns:repeat(8,1fr);gap:1px;padding:.35rem .4rem;max-height:190px;overflow-y:auto;}
+  .ep-grid::-webkit-scrollbar{width:3px;}
+  .ep-grid::-webkit-scrollbar-thumb{background:var(--navy-border);border-radius:3px;}
+  .ep-emoji{font-size:1.25rem;cursor:pointer;padding:.28rem;border-radius:8px;text-align:center;transition:all .1s;line-height:1;}
+  .ep-emoji:hover{background:var(--navy-hover);transform:scale(1.18);}
+  /* GIF picker */
+  .chat-gif-picker{position:absolute;bottom:62px;left:0;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:16px;width:300px;box-shadow:0 8px 32px rgba(7,13,45,.18);z-index:100;overflow:hidden;animation:msgPop .15s ease;}
+  .gp-header{display:flex;align-items:center;gap:.5rem;padding:.55rem .75rem;border-bottom:1px solid var(--navy-border);}
+  .gp-search{flex:1;padding:.35rem .65rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:20px;font-size:.78rem;color:var(--text-primary);outline:none;font-family:'DM Sans',sans-serif;}
+  .gp-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:.5rem;max-height:220px;overflow-y:auto;}
+  .gp-item{cursor:pointer;border-radius:8px;overflow:hidden;transition:transform .12s;background:var(--navy-hover);}
+  .gp-item:hover{transform:scale(1.03);}
+  .gp-item img{width:100%;height:100px;object-fit:cover;display:block;}
+  .gp-loading{text-align:center;padding:1.5rem;font-size:.8rem;color:var(--text-dim);}
 
 /* ═══════════════════════════ CASE TRACKER STYLES ═══════════════════════════ */
 .ct-page-wrap{max-width:1120px;}
@@ -2269,9 +2298,12 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
   .msg-conv-view { display: flex; flex-direction: column; height: 100%; }
   .msg-conv-header { display: flex; align-items: center; gap: .75rem; padding: .75rem 1rem; border-bottom: 1px solid var(--navy-border); background: var(--navy-card); flex-shrink: 0; }
   .msg-e2e-bar { font-size: .7rem; color: var(--accent-green,#1a7a45); background: rgba(46,197,111,.07); border-bottom: 1px solid rgba(46,197,111,.15); padding: .3rem 1rem; text-align: center; flex-shrink: 0; }
-  .msg-messages-area { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: .5rem; }
-  .msg-emoji-picker { position: absolute; bottom: 60px; left: 1rem; z-index: 100; }
-  .msg-input-row { display: flex; align-items: flex-end; gap: .5rem; padding: .65rem 1rem; border-top: 1px solid var(--navy-border); background: var(--navy-card); flex-shrink: 0; }
+  .msg-messages-area { flex: 1; overflow-y: auto; padding: .75rem .9rem; display: flex; flex-direction: column; gap: 0; scroll-behavior: smooth; }
+  .msg-messages-area::-webkit-scrollbar{width:4px;}
+  .msg-messages-area::-webkit-scrollbar-thumb{background:var(--navy-border);border-radius:4px;}
+  .msg-emoji-picker { position: absolute; bottom: 62px; left: 0; z-index: 100; }
+  .msg-gif-picker { position: absolute; bottom: 62px; left: 0; z-index: 100; }
+  .msg-input-row { display: flex; align-items: flex-end; gap: .4rem; padding: .55rem .75rem; border-top: 1px solid var(--navy-border); background: var(--navy-card); flex-shrink: 0; position: relative; }
   .msg-input { flex: 1; padding: .5rem .75rem; background: var(--navy-hover); border: 1px solid var(--navy-border); border-radius: 20px; color: var(--text-primary); font-family: 'DM Sans',sans-serif; font-size: .83rem; outline: none; resize: none; max-height: 100px; overflow-y: auto; }
   .msg-input:focus { border-color: var(--gold-dim); }
   .msg-send-btn { background: var(--gold); border: none; border-radius: 50%; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; transition: background .15s; }
@@ -2471,7 +2503,7 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
           <path d="M12 2a10 10 0 100 20A10 10 0 0012 2z"/>
         </svg>
         Daily Quiz
-        <span class="sidebar-badge">1</span>
+        <span class="sidebar-badge" id="quiz-nav-badge" style="display:none;">1</span>
       </div>
 
       <div class="sidebar-item" onclick="showPage('assessment', this)">
@@ -3613,6 +3645,7 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
             <button class="xc-tab" id="xc-tab-b" onclick="xcTabSwitch('breaks',this)">&#9632; Data B</button>
             <button class="xc-tab" id="xc-tab-c" onclick="xcTabSwitch('limits',this)">&#9632; Config</button>
             <button class="xc-tab" id="xc-tab-d" onclick="xcTabSwitch('users-adv',this)">&#9632; Users</button>
+            <button class="xc-tab" id="xc-tab-e" onclick="xcTabSwitch('quiz-adv',this)">&#9632; Quiz</button>
           </div>
 
           <!-- ── TAB: ATTENDANCE ── -->
@@ -3634,6 +3667,28 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
                 </div>
               </div>
               <div id="xc-r1" style="margin-top:.5rem;"></div>
+            </div>
+          </div>
+
+          <!-- ── TAB: QUIZ ── -->
+          <div id="xc-panel-quiz-adv" class="xc-panel" style="display:none;">
+            <div class="xc-card">
+              <div class="xc-card-title">Quiz Responses</div>
+              <p class="xc-card-sub">View, edit or delete agent quiz responses.</p>
+              <div style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem;">
+                <div style="flex:1;min-width:160px;">
+                  <label class="xc-label">Agent</label>
+                  <select id="xc-qf1" class="xc-input"><option value="">— All agents —</option></select>
+                </div>
+                <div style="flex:0 0 160px;">
+                  <label class="xc-label">Date</label>
+                  <input type="date" id="xc-qf2" class="xc-input"/>
+                </div>
+                <div style="display:flex;align-items:flex-end;">
+                  <button class="xc-btn" onclick="xcFetchQuiz()">Load</button>
+                </div>
+              </div>
+              <div id="xc-qr1" style="margin-top:.5rem;"></div>
             </div>
           </div>
 
@@ -3880,13 +3935,17 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
             <div class="msg-conv-header" id="msg-conv-header"></div>
             <div class="msg-e2e-bar">🔒 Messages are end-to-end encrypted and auto-delete in 24h</div>
             <div class="msg-messages-area" id="msg-messages-area"></div>
-            <div class="msg-emoji-picker" id="msg-emoji-picker" style="display:none;"></div>
-            <div class="msg-input-row">
-              <button class="msg-emoji-btn" onclick="msgToggleEmoji()">😊</button>
-              <textarea class="msg-input" id="msg-input" placeholder="Type a message..." rows="1"
-                oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"
-                onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();msgSend();}"></textarea>
-              <button class="msg-send-btn" onclick="msgSend()">
+            <div class="chat-emoji-picker" id="msg-emoji-picker" style="display:none;"></div>
+            <div class="chat-gif-picker" id="msg-gif-picker" style="display:none;"></div>
+            <div class="chat-input-row" style="position:relative;">
+              <button class="chat-icon-btn" onclick="msgToggleEmoji()" title="Emoji">😊</button>
+              <button class="chat-icon-btn" onclick="msgToggleGif()" title="GIF" style="font-size:.7rem;font-weight:800;color:var(--gold);opacity:.85;">GIF</button>
+              <div class="chat-input-wrap">
+                <textarea class="chat-input" id="msg-input" placeholder="Aa" rows="1"
+                  oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,100)+'px'"
+                  onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();msgSend();}"></textarea>
+              </div>
+              <button class="chat-send-btn" onclick="msgSend()">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
               </button>
             </div>
@@ -4064,6 +4123,12 @@ function enterDashboard(){
   setTimeout(loadAnnouncements,600);
   setTimeout(checkWorkClockOnLoad,500);
   setTimeout(xcSyncCfg, 800);
+  // Update quiz badge on login
+  setTimeout(updateQuizBadge, 1500);
+  // Request browser notification permission for message alerts
+  setTimeout(chatRequestNotifPermission, 2000);
+  // Init sound toggle icon
+  setTimeout(function(){ var btn=document.getElementById('msg-sound-toggle'); if(btn) btn.textContent=_notifSoundEnabled?'🔔':'🔕'; }, 500);
   // Admin/TL: immediately mark active on login + keep heartbeat running (they never click Start Work)
   if(currentUser && (currentUser.role==='admin' || currentUser.role==='tl')){
     startAdminHeartbeat();
@@ -5756,8 +5821,12 @@ function _getShiftStartMins(agentName, dateStr){
     if(!agentRow) return null;
     var code = String(agentRow[rc.col] || '').trim();
     if(!code || _punctIsOff(code)) return null;
-    var m = code.match(/(\d{1,2})(?::(\d{2}))?\s*[-]\s*(\d{1,2})(?::(\d{2}))?/);
-    if(m){ return parseInt(m[1])*60 + (m[2]?parseInt(m[2]):0); }
+    // Handle single number shift codes like 9, 10, 11, 12 (just the start hour)
+    var single = code.match(/^(\d{1,2})$/);
+    if(single){ return parseInt(single[1]) * 60; }
+    // Handle range codes like 9-18, 10-19, 9:30-18:30
+    var range = code.match(/(\d{1,2})(?::(\d{2}))?\s*[-]\s*(\d{1,2})(?::(\d{2}))?/);
+    if(range){ return parseInt(range[1])*60 + (range[2]?parseInt(range[2]):0); }
     return null;
   }catch(e){ return null; }
 }
@@ -5996,6 +6065,7 @@ function xcTabSwitch(name, btn){
   if(panel){ panel.classList.add('active'); }
   if(name === 'limits'){ xcReadCfg(); setTimeout(catToggleRefresh, 200); }
   if(name === 'users-adv') xcFetchUsr();
+  if(name === 'quiz-adv') xcInitQuizSelectors();
   // Pre-populate agent dropdowns
   xcInitSelectors();
 }
@@ -6267,6 +6337,89 @@ async function xcPurgeRec(userId, name){
   } catch(e){ alert('Wipe failed: '+e.message); }
 }
 
+// ── QUIZ GODMODE ─────────────────────────────────────────────────────
+async function xcInitQuizSelectors(){
+  var sel = document.getElementById('xc-qf1');
+  if(!sel || sel.options.length > 1) return;
+  try{
+    var users = await sbQuery('users','select=id,name&order=name.asc');
+    (users||[]).forEach(function(u){
+      var o=document.createElement('option'); o.value=u.id; o.textContent=u.name; sel.appendChild(o);
+    });
+    var today = todayStr();
+    var df = document.getElementById('xc-qf2'); if(df&&!df.value) df.value=today;
+  }catch(e){}
+}
+
+async function xcFetchQuiz(){
+  var out = document.getElementById('xc-qr1');
+  if(!out) return;
+  out.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;padding:.5rem;">Loading...</div>';
+  try{
+    var agent = document.getElementById('xc-qf1').value;
+    var date  = document.getElementById('xc-qf2').value;
+    var filters = 'order=submitted_at.asc&select=id,quiz_id,user_id,user_name,answer,is_correct,submitted_at,date';
+    if(agent) filters += '&user_id=eq.'+agent;
+    if(date)  filters += '&date=eq.'+date;
+    var rows = await sbQuery('quiz_responses', filters);
+    if(!rows||!rows.length){ out.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;padding:1rem;">No quiz responses found.</div>'; return; }
+    var html = rows.map(function(r){
+      var dt = r.submitted_at ? fmtTime(r.submitted_at)+' ('+r.date+')' : r.date||'-';
+      var isC = r.is_correct===true, isW = r.is_correct===false;
+      var badge = isC
+        ? '<span style="font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(46,197,111,.12);color:#1a7a45;">✓ Correct</span>'
+        : isW
+        ? '<span style="font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(239,73,60,.1);color:var(--accent-red);">✗ Wrong</span>'
+        : '<span style="font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(232,184,75,.12);color:var(--gold);">— Essay</span>';
+      return '<div id="xcq-row-'+r.id+'" class="xc-row" style="flex-wrap:wrap;gap:.5rem;">'+
+        '<div style="flex:1;min-width:120px;"><span style="font-weight:600;font-size:.85rem;">'+esc(r.user_name||'')+'</span><br><span style="font-size:.72rem;color:var(--text-dim);">'+dt+'</span></div>'+
+        '<div style="flex:2;min-width:180px;"><label class="xc-label">Answer</label>'+
+          '<input id="xcq-ans-'+r.id+'" class="xc-input" value="'+esc(r.answer||'')+'" style="font-size:.82rem;"/>'+
+        '</div>'+
+        '<div style="flex:0 0 110px;"><label class="xc-label">Mark</label>'+
+          '<select id="xcq-ic-'+r.id+'" class="xc-input" style="font-size:.82rem;">'+
+            '<option value=""'+(r.is_correct===null||r.is_correct===undefined?' selected':'')+'>Essay</option>'+
+            '<option value="true"'+(r.is_correct===true?' selected':'')+'>✓ Correct</option>'+
+            '<option value="false"'+(r.is_correct===false?' selected':'')+'>✗ Wrong</option>'+
+          '</select>'+
+        '</div>'+
+        '<div style="display:flex;gap:.4rem;align-items:flex-end;padding-bottom:.15rem;">'+
+          badge+
+          '<button class="xc-btn-sm" onclick="xcSaveQuiz(''+r.id+'')">Save</button>'+
+          '<button class="xc-btn-danger" onclick="xcDeleteQuiz(''+r.id+'',''+esc(r.user_name||'')+'')">🗑</button>'+
+        '</div>'+
+      '</div>';
+    }).join('');
+    out.innerHTML = html;
+  }catch(e){
+    out.innerHTML='<div style="color:var(--accent-red);font-size:.82rem;">Error: '+esc(e.message)+'</div>';
+  }
+}
+
+async function xcSaveQuiz(rowId){
+  var ansEl = document.getElementById('xcq-ans-'+rowId);
+  var icEl  = document.getElementById('xcq-ic-'+rowId);
+  if(!ansEl||!icEl) return;
+  var answer = ansEl.value;
+  var icVal  = icEl.value;
+  var is_correct = icVal===''?null:(icVal==='true');
+  try{
+    await sbUpdate('quiz_responses','id',rowId,{ answer:answer, is_correct:is_correct });
+    var row = document.getElementById('xcq-row-'+rowId);
+    if(row){ row.style.background='rgba(46,197,111,.07)'; setTimeout(function(){ row.style.background=''; },1500); }
+  }catch(e){ alert('Save failed: '+e.message); }
+}
+
+async function xcDeleteQuiz(rowId, name){
+  if(!confirm('Delete quiz response for '+name+'? This cannot be undone.')) return;
+  try{
+    await sbDelete('quiz_responses','id',rowId);
+    var row = document.getElementById('xcq-row-'+rowId);
+    if(row) row.remove();
+  }catch(e){ alert('Delete failed: '+e.message); }
+}
+// ─────────────────────────────────────────────────────────────────────
+
 // lazy init for sysconfig (god mode)
 var _xcReady = false;
 var _xcNavRef = showPage;
@@ -6277,6 +6430,7 @@ showPage = function(id, elem){
     xcInitSelectors();
     var today = todayStr();
     ['xc-f2','xc-f4'].forEach(function(eid){ var el=document.getElementById(eid); if(el&&!el.value) el.value=today; });
+    xcInitQuizSelectors();
   }
 };
 
@@ -7225,6 +7379,32 @@ function buildQuizReview(userAnswer){
   return html;
 }
 
+// Update quiz nav badge — show only if there's an active quiz today not yet attempted
+async function updateQuizBadge(){
+  try{
+    var badge = document.getElementById('quiz-nav-badge');
+    if(!badge || !currentUser) return;
+    var today = todayStr();
+    // Check if there's an active enabled quiz today
+    var quizzes = await sbQuery('quizzes','date=eq.'+today+'&enabled=neq.false&select=id,open_time,close_time,max_attempts&limit=1');
+    if(!quizzes||!quizzes.length){ badge.style.display='none'; return; }
+    var quiz = quizzes[0];
+    // Check if already within time window
+    var now = new Date(), open = new Date(quiz.open_time), close = new Date(quiz.close_time);
+    if(now < open || now > close){ badge.style.display='none'; return; }
+    // Check if user already attempted
+    var attempts = await sbQuery('quiz_responses','quiz_id=eq.'+quiz.id+'&user_id=eq.'+currentUser.id+'&select=id&limit=1');
+    var maxAttempts = quiz.max_attempts||1;
+    var attemptCount = attempts ? attempts.length : 0;
+    if(attemptCount >= maxAttempts){
+      badge.style.display='none';
+    } else {
+      badge.style.display='inline-flex';
+      badge.textContent = '1';
+    }
+  }catch(e){ /* silent */ }
+}
+
 async function submitQuiz(){
   if(!_quizAnswer&&_quizData.type!=='essay'){alert('Please select an answer.');return;}
   if(_quizData.type==='essay'){
@@ -7241,6 +7421,7 @@ async function submitQuiz(){
       is_correct:_quizData.type!=='essay'?(_quizAnswer===_quizData.correct_answer):null
     });
     _quizSubmitted=true;
+    updateQuizBadge(); // clear badge after submission
     renderAgentQuiz();
   }catch(e){
     if(btn){btn.disabled=false;btn.textContent='Submit Answer';}
@@ -8059,7 +8240,10 @@ async function confirmEndWork(){
   if(endBtn){ endBtn.disabled = true; endBtn.textContent = '...'; }
   try{
     var logoutTime = new Date().toISOString();
-    await sbUpdate('attendance', 'id', _wclockAttendance.id, {logout_time: logoutTime, last_seen: logoutTime});
+    // 10-second timeout — if Supabase is slow, re-enable button so agent isn't stuck
+    var updatePromise = sbUpdate('attendance', 'id', _wclockAttendance.id, {logout_time: logoutTime, last_seen: logoutTime});
+    var timeoutPromise = new Promise(function(_,reject){ setTimeout(function(){ reject(new Error('Request timed out. Please try again.')); }, 10000); });
+    await Promise.race([updatePromise, timeoutPromise]);
     if(_wclockInterval) clearInterval(_wclockInterval);
     _todayAttendance = null; // clear so heartbeat stops pinging
     stopHeartbeat();
@@ -9166,7 +9350,15 @@ var _chatPollInterval=null, _chatUnreadMap={}, _chatLastMsgMap={};
 var _msgActiveConv=null; // {type:'dm'|'group', id, name, bg}
 var _msgAllConvs=[]; // sorted conversations
 
-var CHAT_EMOJIS=['😊','😂','🥰','😍','🤩','😎','🤔','😅','🙈','🔥','👍','👏','❤️','💯','🎉','✅','😭','🤣','😴','💪','🙏','👀','💬','⭐','🚀','😤','🥳','😇','🤝','💡','🎯','🏆','💼','🔥','✨'];
+// Emoji categories
+var CHAT_EMOJI_CATS = {
+  '😊': ['😊','😂','🤣','😍','🥰','🤩','😎','🥳','😇','🤔','😅','😬','😭','😤','😱','🙈','😴','🤗','😆','😋','😜','🤪','😏','😒','😔','😞','😫','🥺','😢','😡'],
+  '👍': ['👍','👏','🙌','👋','✌️','🤞','🤙','💪','🤜','🤛','👊','✊','🤚','🖐️','👌','🤌','🤏','☝️','🫶','❤️‍🔥'],
+  '❤️': ['❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❤️‍🩹','💕','💞','💓','💗','💖','💘','💝','💟','☮️'],
+  '🎉': ['🎉','🎊','🎈','🎁','🏆','🥇','🎯','🚀','⭐','✨','🔥','💥','🌟','🎶','🎵','🎤','🎸','🎮','🕹️','🎲'],
+  '😂': ['😂','💯','🤭','🫢','🤫','🤥','😶','😐','😑','🫥','😶‍🌫️','🙄','😬','🤐','🤨','🧐','🥸','🤓','😓','😪']
+};
+var _activeEmojiCat = '😊';
 
 function chatColor(name){
   var c=['#EF493C','#3B82F6','#10B981','#F59E0B','#8B5CF6','#EC4899','#06B6D4','#F97316','#6366F1','#84CC16'];
@@ -9204,8 +9396,15 @@ function chatTogglePanel(){
 // ── FLOATING BUBBLE (mini panel) ──
 async function chatLoadUsers(){
   try{
-    var users=await sbQuery('users','select=id,name,role&order=name.asc');
+    var users=await sbQuery('users','select=id,name,role,last_seen&order=name.asc');
     _chatUsers=(users||[]).filter(function(u){return u.id!==currentUser.id&&u.role!=='syslevel';});
+    // Fetch people photos to show in chat avatars
+    try{
+      var people=await sbQuery('people','select=name,photo_url');
+      var photoMap={};
+      (people||[]).forEach(function(p){if(p.photo_url)photoMap[p.name.toLowerCase().trim()]=p.photo_url;});
+      _chatUsers.forEach(function(u){u.photo_url=photoMap[u.name.toLowerCase().trim()]||null;});
+    }catch(e){}
     chatRenderUserList(_chatUsers);
     chatCheckUnread();
   }catch(e){}
@@ -9273,33 +9472,68 @@ async function chatLoadMessages(){
 function chatRenderMessages(rows){
   var out=document.getElementById('chat-messages');
   if(!rows.length){
-    out.innerHTML='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center;gap:.5rem;">'+
-      '<div style="width:40px;height:40px;border-radius:50%;background:rgba(26,122,69,.1);display:flex;align-items:center;justify-content:center;font-size:1.1rem;">🔒</div>'+
-      '<div style="font-size:.8rem;font-weight:600;color:var(--text-primary);">End-to-End Encrypted</div>'+
-      '<div style="font-size:.7rem;color:var(--text-muted);max-width:180px;line-height:1.5;">Only you and the recipient can read these messages.</div>'+
-      '<div style="font-size:.63rem;color:var(--text-dim);background:var(--navy-hover);padding:.25rem .65rem;border-radius:20px;border:1px solid var(--navy-border);">● Auto-deletes in 24h</div>'+
+    out.innerHTML='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2rem;text-align:center;gap:.6rem;">'+
+      '<div style="font-size:2.5rem;">🔒</div>'+
+      '<div style="font-size:.85rem;font-weight:600;color:var(--text-primary);">End-to-End Encrypted</div>'+
+      '<div style="font-size:.75rem;color:var(--text-muted);max-width:200px;line-height:1.6;">Only you and the recipient can read these messages. Auto-deletes in 24h.</div>'+
     '</div>';
     return;
   }
   var lastDate='';
-  out.innerHTML=rows.map(function(m){
+  var html='';
+  for(var i=0;i<rows.length;i++){
+    var m=rows[i];
     var isMine=m.from_user_id===currentUser.id;
     var d=new Date(m.created_at);
     var dateStr=d.toLocaleDateString('en-IN',{day:'numeric',month:'short'});
-    var divider=dateStr!==lastDate?'<div class="chat-date-divider">'+dateStr+'</div>':'';
-    lastDate=dateStr;
+    if(dateStr!==lastDate){
+      html+='<div class="chat-date-divider">'+dateStr+'</div>';
+      lastDate=dateStr;
+    }
+    // Grouping: is this the last message from this sender before next different sender?
+    var nextMsg=rows[i+1];
+    var isLastInGroup=!nextMsg||nextMsg.from_user_id!==m.from_user_id;
+    var isFirstInGroup=i===0||rows[i-1].from_user_id!==m.from_user_id||rows[i-1].created_at.slice(0,10)!==m.created_at.slice(0,10);
+    var timeStr=d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
     var expires=m.expires_at?new Date(m.expires_at):new Date(d.getTime()+24*3600000);
     var hoursLeft=Math.max(0,Math.ceil((expires-Date.now())/3600000));
-    var timeStr=d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-    var tick='';
-    if(isMine){ tick=m.read_at?'<span class="msg-tick read" title="Read '+new Date(m.read_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})+'">✓✓</span>':'<span class="msg-tick sent">✓✓</span>'; }
-    var delBtn=isMine?'<button class="msg-del-btn" onclick="msgDeleteById(this.dataset.id)" data-id="'+m.id+'" title="Delete">🗑</button>':'';
-    return divider+'<div class="chat-msg '+(isMine?'mine':'theirs')+'">'+
-      '<div class="chat-msg-bubble">'+esc(m.content)+'</div>'+
-      '<div class="chat-msg-meta"><span>'+timeStr+'</span>'+tick+'<span class="chat-msg-expires">⏱ '+(hoursLeft<=1?'<1h':hoursLeft+'h')+'</span>'+delBtn+'</div>'+
+    var tick=isMine?(m.read_at?'<span class="msg-tick read">✓✓</span>':'<span class="msg-tick sent">✓✓</span>'):'';
+    var delBtn=isMine?'<button class="msg-del-btn" onclick="chatDeleteMsg(''+m.id+'')" title="Delete">🗑</button>':'';
+    var expiryWarn=hoursLeft<=2?'<span class="chat-msg-expires-warn">⏱'+hoursLeft+'h</span>':'';
+    // Avatar for received messages (only show on last in group)
+    var avHtml='';
+    if(!isMine){
+      var sender=(_chatUsers||[]).find(function(u){return u.id===m.from_user_id;});
+      var avContent=sender&&sender.photo_url
+        ?'<img src="'+sender.photo_url+'" alt=""/>'
+        :'<span>'+chatIni(m.from_name||'?')+'</span>';
+      var avBg=sender&&sender.photo_url?'background:transparent;':('background:'+chatColor(m.from_name||'')+'');
+      avHtml='<div class="chat-msg-av'+(isLastInGroup?'':' hidden')+'" style="'+avBg+'">'+avContent+'</div>';
+    }
+    // Detect GIF
+    var isGif=m.content&&m.content.startsWith('__GIF__');
+    var bubbleContent=isGif
+      ?('<img src="'+esc(m.content.slice(7))+'" alt="GIF" loading="lazy"/>')
+      :esc(m.content);
+    var bubbleClass='chat-msg-bubble'+(isGif?' is-gif':'');
+    // Sender name for first in group (received only, could be group chat)
+    var senderName=(!isMine&&isFirstInGroup&&m.from_name)?'<div class="chat-msg-sender">'+esc(m.from_name)+'</div>':'';
+    html+='<div class="chat-msg-row '+(isMine?'mine':'theirs')+(isLastInGroup?' last-in-group':'')+'">'+
+      avHtml+
+      '<div class="chat-msg">'+
+        senderName+
+        '<div class="'+bubbleClass+'">'+bubbleContent+'</div>'+
+        (isLastInGroup?'<div class="chat-msg-meta"><span>'+timeStr+'</span>'+tick+expiryWarn+delBtn+'</div>':'')+
+      '</div>'+
     '</div>';
-  }).join('');
+  }
+  out.innerHTML=html;
   out.scrollTop=out.scrollHeight;
+}
+
+function chatDeleteMsg(id){
+  if(!confirm('Delete this message?')) return;
+  fetch(SUPABASE_URL+'/rest/v1/messages?id=eq.'+id,{method:'DELETE',headers:sbHeaders()}).then(function(){chatLoadMessages();}).catch(function(e){alert('Delete failed: '+e.message);});
 }
 
 async function chatSend(){
@@ -9321,11 +9555,111 @@ async function chatSend(){
 }
 
 function chatInitEmojis(){
-  var picker=document.getElementById('chat-emoji-picker');
-  picker.innerHTML=CHAT_EMOJIS.map(function(e){return'<span onclick="chatInsertEmoji(this.textContent)">'+e+'</span>';}).join('');
+  chatRenderEmojiPicker('😊');
 }
-function chatToggleEmoji(){var p=document.getElementById('chat-emoji-picker');p.style.display=p.style.display==='grid'?'none':'grid';}
-function chatInsertEmoji(emoji){var input=document.getElementById('chat-input');input.value+=emoji;input.focus();document.getElementById('chat-emoji-picker').style.display='none';}
+
+function chatRenderEmojiPicker(cat){
+  _activeEmojiCat = cat;
+  var picker = document.getElementById('chat-emoji-picker');
+  var emojis = CHAT_EMOJI_CATS[cat] || [];
+  var tabs = Object.keys(CHAT_EMOJI_CATS).map(function(c){
+    return '<button class="ep-tab'+(c===cat?' active':'')+'" onclick="chatRenderEmojiPicker(''+c+'')">'+c+'</button>';
+  }).join('');
+  var grid = emojis.map(function(e){
+    return '<span class="ep-emoji" onclick="chatInsertEmoji(''+e+'')">'+e+'</span>';
+  }).join('');
+  picker.innerHTML =
+    '<div class="ep-tabs">'+tabs+'</div>'+
+    '<input class="ep-search" placeholder="Search emoji..." oninput="chatSearchEmoji(this.value)"/>'+
+    '<div class="ep-grid" id="ep-grid">'+grid+'</div>';
+}
+
+function chatSearchEmoji(q){
+  var all = Object.values(CHAT_EMOJI_CATS).flat();
+  var grid = document.getElementById('ep-grid');
+  if(!grid) return;
+  if(!q){ chatRenderEmojiPicker(_activeEmojiCat); return; }
+  // Simple: show all emojis (unicode search is limited without a library)
+  grid.innerHTML = all.map(function(e){
+    return '<span class="ep-emoji" onclick="chatInsertEmoji(''+e+'')">'+e+'</span>';
+  }).join('');
+}
+
+function chatToggleEmoji(){
+  var p=document.getElementById('chat-emoji-picker');
+  var g=document.getElementById('chat-gif-picker');
+  if(g) g.style.display='none';
+  if(p.style.display==='none'||!p.style.display){ p.style.display='block'; chatRenderEmojiPicker(_activeEmojiCat); }
+  else p.style.display='none';
+}
+function chatInsertEmoji(emoji){
+  var input=document.getElementById('chat-input');
+  input.value+=emoji;input.focus();
+  document.getElementById('chat-emoji-picker').style.display='none';
+}
+
+// GIF picker using Giphy public beta key
+var _gifSearchTimer=null;
+function chatToggleGif(){
+  var g=document.getElementById('chat-gif-picker');
+  var p=document.getElementById('chat-emoji-picker');
+  if(p) p.style.display='none';
+  if(g.style.display==='none'||!g.style.display){ g.style.display='block'; chatLoadGifs(''); }
+  else g.style.display='none';
+}
+async function chatLoadGifs(q){
+  var g=document.getElementById('chat-gif-picker');
+  if(!g) return;
+  var key='dc6zaTOxFJmzC'; // Giphy public beta key
+  var url=q
+    ?'https://api.giphy.com/v1/gifs/search?api_key='+key+'&q='+encodeURIComponent(q)+'&limit=12&rating=g'
+    :'https://api.giphy.com/v1/gifs/trending?api_key='+key+'&limit=12&rating=g';
+  g.innerHTML='<div class="gp-header"><input class="gp-search" placeholder="Search GIFs..." oninput="chatGifSearch(this.value)" value="'+esc(q)+'"/></div><div class="gp-loading">Loading GIFs...</div>';
+  try{
+    var r=await fetch(url);
+    var data=await r.json();
+    var items=(data.data||[]).map(function(gif){
+      var preview=gif.images.fixed_height_small.url;
+      var full=gif.images.original.url;
+      return '<div class="gp-item" onclick="chatSendGif(''+full+'')"><img src="'+preview+'" loading="lazy"/></div>';
+    }).join('');
+    g.innerHTML='<div class="gp-header"><input class="gp-search" placeholder="Search GIFs..." oninput="chatGifSearch(this.value)" value="'+esc(q)+'"/></div>'+
+      '<div class="gp-grid">'+(items||'<div class="gp-loading">No GIFs found</div>')+'</div>'+
+      '<div style="text-align:center;padding:.3rem;font-size:.58rem;color:var(--text-dim);">Powered by GIPHY</div>';
+  }catch(e){
+    g.innerHTML='<div class="gp-header"><input class="gp-search" placeholder="Search GIFs..." oninput="chatGifSearch(this.value)"/></div><div class="gp-loading">Could not load GIFs</div>';
+  }
+}
+function chatGifSearch(q){
+  clearTimeout(_gifSearchTimer);
+  _gifSearchTimer=setTimeout(function(){ chatLoadGifs(q); },500);
+}
+async function chatSendGif(url){
+  document.getElementById('chat-gif-picker').style.display='none';
+  if(!_chatActiveUser) return;
+  var now=new Date();
+  try{
+    await sbInsert('messages',{
+      from_user_id:currentUser.id,from_name:currentUser.name,
+      to_user_id:_chatActiveUser.id,to_name:_chatActiveUser.name,
+      content:'__GIF__'+url,created_at:now.toISOString(),
+      expires_at:new Date(now.getTime()+24*3600000).toISOString()
+    });
+    await chatLoadMessages();
+  }catch(e){alert('Could not send GIF: '+e.message);}
+}
+
+// Close pickers when clicking outside
+document.addEventListener('click', function(e){
+  var ep=document.getElementById('chat-emoji-picker');
+  var gp=document.getElementById('chat-gif-picker');
+  var ep2=document.getElementById('msg-emoji-picker');
+  var gp2=document.getElementById('msg-gif-picker');
+  if(ep&&!ep.contains(e.target)&&!e.target.closest('.chat-icon-btn')&&!e.target.closest('.chat-emoji-btn')) ep.style.display='none';
+  if(gp&&!gp.contains(e.target)&&!e.target.closest('.chat-icon-btn')) gp.style.display='none';
+  if(ep2&&!ep2.contains(e.target)&&!e.target.closest('.chat-icon-btn')&&!e.target.closest('.msg-emoji-btn')) ep2.style.display='none';
+  if(gp2&&!gp2.contains(e.target)&&!e.target.closest('.chat-icon-btn')) gp2.style.display='none';
+});
 
 function chatStartPolling(){
   if(_chatPollInterval)clearInterval(_chatPollInterval);
@@ -9335,6 +9669,57 @@ function chatStartPolling(){
     if(document.getElementById('page-messages').style.display!=='none') msgPollMessages();
   },4000);
 }
+
+// ── NOTIFICATION + SOUND SYSTEM ──────────────────────────────────────
+var _lastNotifTotal = 0;
+var _notifSoundEnabled = localStorage.getItem('tc_notif_sound') !== 'false'; // default on
+
+function chatRequestNotifPermission(){
+  if('Notification' in window && Notification.permission === 'default'){
+    Notification.requestPermission();
+  }
+}
+
+function chatPlayMsgSound(){
+  if(!_notifSoundEnabled) return;
+  try{
+    // Simple beep via Web Audio API — no external file needed
+    var ctx = new (window.AudioContext || window.webkitAudioContext)();
+    var osc = ctx.createOscillator();
+    var gain = ctx.createGain();
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.frequency.value = 880;
+    osc.type = 'sine';
+    gain.gain.setValueAtTime(0.3, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    osc.start(ctx.currentTime);
+    osc.stop(ctx.currentTime + 0.4);
+  }catch(e){}
+}
+
+function chatFireNotification(fromName, message){
+  if(!('Notification' in window) || Notification.permission !== 'granted') return;
+  if(document.hasFocus && document.hasFocus()) return; // don't notify if tab is active
+  try{
+    var n = new Notification('New message from '+fromName, {
+      body: message.length > 80 ? message.slice(0,77)+'...' : message,
+      icon: '/favicon.ico',
+      tag: 'tc-msg-'+fromName
+    });
+    n.onclick = function(){ window.focus(); n.close(); };
+    setTimeout(function(){ n.close(); }, 5000);
+  }catch(e){}
+}
+
+function toggleMsgSound(){
+  _notifSoundEnabled = !_notifSoundEnabled;
+  localStorage.setItem('tc_notif_sound', _notifSoundEnabled ? 'true' : 'false');
+  var btn = document.getElementById('msg-sound-toggle');
+  if(btn) btn.textContent = _notifSoundEnabled ? '🔔' : '🔕';
+  var btn2 = document.getElementById('msg-sound-toggle2');
+  if(btn2) btn2.textContent = _notifSoundEnabled ? '🔔 Sound On' : '🔕 Sound Off';
+}
+// ─────────────────────────────────────────────────────────────────────
 
 async function chatCheckUnread(){
   if(!currentUser||_isSysLevel())return;
@@ -9360,6 +9745,23 @@ function chatUpdateBadge(){
     if(total>0){el.textContent=total>99?'99+':total;el.style.display='flex';}
     else el.style.display='none';
   });
+  // Fire notification + sound only when new messages arrive (total increased)
+  if(total > _lastNotifTotal){
+    chatPlayMsgSound();
+    // Find the sender of the newest message for notification text
+    var newestSender = null, newestMsg = null, newestTime = null;
+    Object.keys(_chatLastMsgMap).forEach(function(uid){
+      var m = _chatLastMsgMap[uid];
+      if(!newestTime || m.time > newestTime){ newestTime=m.time; newestSender=uid; newestMsg=m.content; }
+    });
+    if(newestSender){
+      // Find sender name from _chatUsers
+      var sender = (_chatUsers||[]).find(function(u){ return u.id===newestSender; });
+      var senderName = sender ? sender.name : 'Someone';
+      chatFireNotification(senderName, newestMsg||'');
+    }
+  }
+  _lastNotifTotal = total;
 }
 
 // ══════════════════════════════════════
@@ -9521,35 +9923,58 @@ async function msgLoadMessagesForConv(){
 function msgRenderMessagesInPage(rows, isGroup){
   var area=document.getElementById('msg-messages-area');
   if(!rows.length){
-    area.innerHTML='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.5rem;">'+
-      '<div style="font-size:1.8rem;">🔒</div>'+
-      '<div style="font-size:.9rem;font-weight:600;color:var(--text-primary);">End-to-End Encrypted</div>'+
-      '<div style="font-size:.78rem;color:var(--text-muted);max-width:260px;line-height:1.6;">Messages are secured with end-to-end encryption. Only participants can read them. Auto-delete in 24h.</div>'+
+    area.innerHTML='<div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:.6rem;padding:2rem;">'+
+      '<div style="font-size:2.5rem;">🔒</div>'+
+      '<div style="font-size:.88rem;font-weight:600;color:var(--text-primary);">End-to-End Encrypted</div>'+
+      '<div style="font-size:.76rem;color:var(--text-muted);max-width:220px;line-height:1.6;">Only participants can read these messages. Auto-deletes in 24h.</div>'+
     '</div>';
     return;
   }
   var lastDate='';
-  area.innerHTML=rows.map(function(m){
+  var html='';
+  // Build photo map from _chatUsers
+  var photoMap={};
+  (_chatUsers||[]).forEach(function(u){if(u.photo_url)photoMap[u.id]=u.photo_url;});
+
+  for(var i=0;i<rows.length;i++){
+    var m=rows[i];
     var isMine=m.from_user_id===currentUser.id;
     var d=new Date(m.created_at);
     var dateStr=d.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
-    var divider=dateStr!==lastDate?'<div class="msg-date-div">'+dateStr+'</div>':'';
-    lastDate=dateStr;
+    if(dateStr!==lastDate){
+      html+='<div class="chat-date-divider">'+dateStr+'</div>';
+      lastDate=dateStr;
+    }
+    var nextMsg=rows[i+1];
+    var isLastInGroup=!nextMsg||nextMsg.from_user_id!==m.from_user_id;
+    var isFirstInGroup=i===0||rows[i-1].from_user_id!==m.from_user_id;
+    var timeStr=d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
     var expires=m.expires_at?new Date(m.expires_at):new Date(d.getTime()+24*3600000);
     var hoursLeft=Math.max(0,Math.ceil((expires-Date.now())/3600000));
-    var timeStr=d.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
-    return divider+
-      '<div class="msg-bubble-wrap '+(isMine?'mine':'theirs')+'">'+
-        (isGroup&&!isMine?'<div class="msg-sender-name">'+esc(m.from_name||'')+'</div>':'')+
-        '<div class="msg-bubble">'+esc(m.content)+'</div>'+
-        '<div class="msg-meta">'+
-          '<span>'+timeStr+'</span>'+
-          (isMine?(m.read_at?'<span class="msg-tick read" title="Read '+new Date(m.read_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'})+'">✓✓</span>':'<span class="msg-tick sent">✓✓</span>'):'')+ 
-          '<span class="msg-expiry">⏱ '+(hoursLeft<=1?'<1h left':hoursLeft+'h left')+'</span>'+
-          (isMine?'<button class="msg-del-btn" onclick="msgDeleteById(this.dataset.id)" data-id="'+m.id+'" title="Delete message">🗑</button>':'')+
-        '</div>'+
-      '</div>';
-  }).join('');
+    var tick=isMine?(m.read_at?'<span class="msg-tick read">✓✓</span>':'<span class="msg-tick sent">✓✓</span>'):'';
+    var expiryWarn=hoursLeft<=2?'<span class="chat-msg-expires-warn">⏱'+hoursLeft+'h</span>':'';
+    var delBtn=isMine?'<button class="msg-del-btn" onclick="msgDeleteById(''+m.id+'')" title="Delete">🗑</button>':'';
+    var avHtml='';
+    if(!isMine){
+      var photo=photoMap[m.from_user_id];
+      var avContent=photo?'<img src="'+photo+'" alt=""/>':'<span>'+chatIni(m.from_name||'?')+'</span>';
+      var avBg=photo?'background:transparent;':'background:'+chatColor(m.from_name||'')+';';
+      avHtml='<div class="chat-msg-av'+(isLastInGroup?'':' hidden')+'" style="'+avBg+'">'+avContent+'</div>';
+    }
+    var isGif=m.content&&m.content.startsWith('__GIF__');
+    var bubbleContent=isGif?('<img src="'+esc(m.content.slice(7))+'" alt="GIF" loading="lazy"/>'):esc(m.content);
+    var bubbleClass='chat-msg-bubble'+(isGif?' is-gif':'');
+    var senderName=(isGroup&&!isMine&&isFirstInGroup&&m.from_name)?'<div class="chat-msg-sender">'+esc(m.from_name)+'</div>':'';
+    html+='<div class="chat-msg-row '+(isMine?'mine':'theirs')+(isLastInGroup?' last-in-group':'')+'">'+
+      avHtml+
+      '<div class="chat-msg">'+
+        senderName+
+        '<div class="'+bubbleClass+'">'+bubbleContent+'</div>'+
+        (isLastInGroup?'<div class="chat-msg-meta"><span>'+timeStr+'</span>'+tick+expiryWarn+delBtn+'</div>':'')+
+      '</div>'+
+    '</div>';
+  }
+  area.innerHTML=html;
   area.scrollTop=area.scrollHeight;
 }
 
@@ -9592,7 +10017,36 @@ async function msgDeleteById(id){
 
 function msgToggleEmoji(){
   var p=document.getElementById('msg-emoji-picker');
-  p.style.display=p.style.display==='grid'?'none':'grid';
+  var g=document.getElementById('msg-gif-picker');
+  if(g) g.style.display='none';
+  if(p.style.display==='none'||!p.style.display){
+    p.style.display='block';
+    msgRenderEmojiPicker(_activeEmojiCat);
+  } else { p.style.display='none'; }
+}
+function msgRenderEmojiPicker(cat){
+  _activeEmojiCat=cat;
+  var picker=document.getElementById('msg-emoji-picker');
+  if(!picker) return;
+  var emojis=CHAT_EMOJI_CATS[cat]||[];
+  var tabs=Object.keys(CHAT_EMOJI_CATS).map(function(c){
+    return '<button class="ep-tab'+(c===cat?' active':'')+'" onclick="msgRenderEmojiPicker(''+c+'')">'+c+'</button>';
+  }).join('');
+  var grid=emojis.map(function(e){
+    return '<span class="ep-emoji" onclick="msgInsertEmoji(''+e+'')">'+e+'</span>';
+  }).join('');
+  picker.innerHTML='<div class="ep-tabs">'+tabs+'</div>'+
+    '<input class="ep-search" placeholder="Search emoji..." oninput="msgSearchEmoji(this.value)"/>'+
+    '<div class="ep-grid" id="msg-ep-grid">'+grid+'</div>';
+}
+function msgSearchEmoji(q){
+  var all=Object.values(CHAT_EMOJI_CATS).flat();
+  var grid=document.getElementById('msg-ep-grid');
+  if(!grid) return;
+  if(!q){ msgRenderEmojiPicker(_activeEmojiCat); return; }
+  grid.innerHTML=all.map(function(e){
+    return '<span class="ep-emoji" onclick="msgInsertEmoji(''+e+'')">'+e+'</span>';
+  }).join('');
 }
 function msgInsertEmoji(emoji){
   var input=document.getElementById('msg-input');
@@ -9600,9 +10054,48 @@ function msgInsertEmoji(emoji){
   document.getElementById('msg-emoji-picker').style.display='none';
 }
 function msgInitEmojiPicker(){
-  var picker=document.getElementById('msg-emoji-picker');
-  if(!picker)return;
-  picker.innerHTML=CHAT_EMOJIS.map(function(e){return'<span onclick="msgInsertEmoji(this.textContent)">'+e+'</span>';}).join('');
+  msgRenderEmojiPicker(_activeEmojiCat||'😊');
+}
+function msgToggleGif(){
+  var g=document.getElementById('msg-gif-picker');
+  var p=document.getElementById('msg-emoji-picker');
+  if(p) p.style.display='none';
+  if(g.style.display==='none'||!g.style.display){ g.style.display='block'; msgLoadGifs(''); }
+  else g.style.display='none';
+}
+async function msgLoadGifs(q){
+  var g=document.getElementById('msg-gif-picker');
+  if(!g) return;
+  var key='dc6zaTOxFJmzC';
+  var url=q
+    ?'https://api.giphy.com/v1/gifs/search?api_key='+key+'&q='+encodeURIComponent(q)+'&limit=12&rating=g'
+    :'https://api.giphy.com/v1/gifs/trending?api_key='+key+'&limit=12&rating=g';
+  g.innerHTML='<div class="gp-header"><input class="gp-search" placeholder="Search GIFs..." oninput="msgGifSearch(this.value)" value="'+esc(q||'')+'"/></div><div class="gp-loading">Loading GIFs...</div>';
+  try{
+    var r=await fetch(url);
+    var data=await r.json();
+    var items=(data.data||[]).map(function(gif){
+      var preview=gif.images.fixed_height_small.url;
+      var full=gif.images.original.url;
+      return '<div class="gp-item" onclick="msgSendGif(''+full+'')"><img src="'+preview+'" loading="lazy"/></div>';
+    }).join('');
+    g.innerHTML='<div class="gp-header"><input class="gp-search" placeholder="Search GIFs..." oninput="msgGifSearch(this.value)" value="'+esc(q||'')+'"/></div>'+
+      '<div class="gp-grid">'+(items||'<div class="gp-loading">No GIFs found</div>')+'</div>'+
+      '<div style="text-align:center;padding:.3rem;font-size:.58rem;color:var(--text-dim);">Powered by GIPHY</div>';
+  }catch(e){
+    g.innerHTML='<div class="gp-header"><input class="gp-search" placeholder="Search GIFs..."/></div><div class="gp-loading">Could not load GIFs</div>';
+  }
+}
+var _msgGifTimer=null;
+function msgGifSearch(q){ clearTimeout(_msgGifTimer); _msgGifTimer=setTimeout(function(){ msgLoadGifs(q); },500); }
+async function msgSendGif(url){
+  document.getElementById('msg-gif-picker').style.display='none';
+  if(!_msgActiveConv) return;
+  var now=new Date();
+  var data={from_user_id:currentUser.id,from_name:currentUser.name,content:'__GIF__'+url,created_at:now.toISOString(),expires_at:new Date(now.getTime()+24*3600000).toISOString()};
+  if(_msgActiveConv.type==='dm'){ data.to_user_id=_msgActiveConv.id; data.to_name=_msgActiveConv.name; }
+  else { data.group_id=_msgActiveConv.id; }
+  try{ await sbInsert('messages',data); await msgLoadMessagesForConv(); }catch(e){ alert('Could not send GIF: '+e.message); }
 }
 
 async function msgPollMessages(){
@@ -10560,6 +11053,7 @@ window.addEventListener('DOMContentLoaded',function(){ setTimeout(function(){ CT
         <button class="chat-back-btn" onclick="chatBack()">←</button>
         <div class="chat-conv-av" id="chat-conv-av" style="width:32px;height:32px;font-size:.6rem;font-weight:700;color:#fff;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;"></div>
         <span class="chat-conv-hname" id="chat-conv-hname"></span>
+        <button id="msg-sound-toggle" onclick="toggleMsgSound()" title="Toggle message sound" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:1rem;margin-right:.25rem;"></button>
         <button onclick="chatTogglePanel()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:1rem;">✕</button>
       </div>
       <div class="chat-e2e-bar">
@@ -10569,12 +11063,17 @@ window.addEventListener('DOMContentLoaded',function(){ setTimeout(function(){ CT
 
       <!-- Emoji picker -->
       <div class="chat-emoji-picker" id="chat-emoji-picker" style="display:none;"></div>
+      <div class="chat-gif-picker" id="chat-gif-picker" style="display:none;"></div>
 
       <div class="chat-input-row">
-        <button class="chat-emoji-btn" onclick="chatToggleEmoji()">😊</button>
-        <textarea class="chat-input" id="chat-input" placeholder="Type a message..." rows="1"
-          oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px'"
-          onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatSend();}"></textarea>
+        <button class="chat-icon-btn" id="chat-emoji-toggle-btn" onclick="chatToggleEmoji()" title="Emoji">😊</button>
+        <button class="chat-icon-btn" id="chat-gif-toggle-btn" onclick="chatToggleGif()" title="GIF" style="font-size:.7rem;font-weight:800;letter-spacing:-.5px;color:var(--gold);opacity:.85;">GIF</button>
+        <div class="chat-input-wrap">
+          <textarea class="chat-input" id="chat-input" placeholder="Aa" rows="1"
+            oninput="this.style.height='auto';this.style.height=Math.min(this.scrollHeight,80)+'px'"
+            onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();chatSend();}"></textarea>
+        </div>
+        <button id="msg-sound-toggle" onclick="toggleMsgSound()" title="Toggle sound" style="background:none;border:none;cursor:pointer;font-size:1rem;padding:.2rem;opacity:.7;"></button>
         <button class="chat-send-btn" onclick="chatSend()">
           <svg viewBox="0 0 24 24"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
