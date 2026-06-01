@@ -5547,6 +5547,32 @@ async function loadReport(){
   output.innerHTML='<div style="color:var(--text-dim);padding:2rem;text-align:center;">Loading...</div>';
 
   try {
+    // Ensure roster is loaded before rendering attendance report (needed for On Time/Late calculation)
+    if(type === 'attendance' && !window.rosterCache){
+      try{
+        var rosterUrl = window._rosterCsvUrl || ROSTER_CSV_URL;
+        try{
+          var mnNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+          var curMn=mnNames[new Date().getMonth()];
+          var rSettings=await sbQuery('settings','key=ilike.roster_url*&select=key,value');
+          if(rSettings&&rSettings.length){
+            var mRow=rSettings.find(function(r){return r.key==='roster_url_'+curMn.toLowerCase();});
+            var gRow=rSettings.find(function(r){return r.key==='roster_url';});
+            var best=mRow||gRow;
+            if(best&&best.value){rosterUrl=best.value;window._rosterCsvUrl=best.value;}
+          }
+        }catch(e2){}
+        var rResp=await fetch(rosterUrl+'&cacheBust='+Date.now());
+        if(rResp.ok){
+          var rRows=parseCsv(await rResp.text());
+          window.rosterCache=rRows;
+          window._rosterAllRows=rRows;
+          if(!window._rosterDataCache)window._rosterDataCache={};
+          window._rosterDataCache[rosterUrl]={rows:rRows,timestamp:Date.now()};
+        }
+      }catch(re){ /* silent — roster unavailable, status will show No Roster */ }
+    }
+
     if(type === 'attendance'){
       var filters = 'date=gte.'+from+'&date=lte.'+to+'&order=date.asc,user_name.asc&select=id,user_id,user_name,date,login_time,logout_time,last_seen,attendance_status';
       if(agent) filters += '&user_id=eq.'+agent;
