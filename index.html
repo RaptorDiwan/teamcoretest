@@ -4377,6 +4377,8 @@ function doLogout(){
 function enterDashboard(){
   document.getElementById('login-view').classList.remove('active');
   document.getElementById('dashboard-view').classList.add('active');
+  // Show chat dock icon
+  document.body.classList.add('logged-in');
   // Show cat widget — deferred so cat script has time to load
   setTimeout(function(){
     if(typeof catShowWidget==='function') catShowWidget();
