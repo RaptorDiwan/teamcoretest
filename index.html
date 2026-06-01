@@ -1894,7 +1894,7 @@ body.dark .ts-input { background:#111827;border-color:#2D3748;color:#F1F5F9; }
   .chat-conv-item:hover .chat-conv-av{transform:scale(1.04);}
   
   /* Online status indicator */
-  .chat-conv-av::after{content:'';position:absolute;bottom:1px;right:1px;width:11px;height:11px;background:#31A24C;border:2px solid var(--navy-card);border-radius:50%;}
+  .chat-conv-av.online::after{content:'';position:absolute;bottom:1px;right:1px;width:11px;height:11px;background:#31A24C;border:2px solid var(--navy-card);border-radius:50%;}
   .chat-conv-info{flex:1;min-width:0;}
   .chat-conv-name{font-size:.85rem;font-weight:600;color:var(--text-primary);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .chat-conv-preview{font-size:.75rem;color:var(--text-muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:.15rem;}
@@ -2342,8 +2342,8 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
   .msg-conv-av.group { border-radius: 12px; font-size: 1.1rem; background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%) !important; }
   
   /* Online dot on full page list */
-  .msg-conv-av:not(.group)::after { content:''; position:absolute; bottom:1px; right:1px; width:11px; height:11px; background:#31A24C; border:2px solid var(--navy-card); border-radius:50%; }
-  .msg-conv-item.active .msg-conv-av::after { border-color: #172044; }
+  .msg-conv-av:not(.group).online::after { content:''; position:absolute; bottom:1px; right:1px; width:11px; height:11px; background:#31A24C; border:2px solid var(--navy-card); border-radius:50%; }
+  .msg-conv-item.active .msg-conv-av.online::after { border-color: #172044; }
   
   .msg-conv-info { flex: 1; min-width: 0; }
   .msg-conv-name { font-size: .88rem; font-weight: 600; color: var(--text-primary); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
@@ -3766,7 +3766,7 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
                 </div>
                 <div style="flex:0 0 160px;">
                   <label class="xc-label">Date</label>
-                  <input type="date" id="xc-qf2" class="xc-input"/>
+                  <input type="date" id="xc-qf2" class="xc-input" title="Leave blank to show all dates"/>
                 </div>
                 <div style="display:flex;align-items:flex-end;">
                   <button class="xc-btn" onclick="xcFetchQuiz()">Load</button>
@@ -6424,7 +6424,7 @@ async function xcPurgeRec(userId, name){
 // ── QUIZ GODMODE ─────────────────────────────────────────────────────
 async function xcInitQuizSelectors(){
   var sel = document.getElementById('xc-qf1');
-  if(!sel || sel.options.length > 1) return;
+  if(!sel || sel.options.length > 1){ xcFetchQuiz(); return; }
   try{
     var users = await sbQuery('users','select=id,name&order=name.asc');
     (users||[]).forEach(function(u){
@@ -6433,6 +6433,8 @@ async function xcInitQuizSelectors(){
     var today = todayStr();
     var df = document.getElementById('xc-qf2'); if(df&&!df.value) df.value=today;
   }catch(e){}
+  // Auto-load after initialising selectors
+  xcFetchQuiz();
 }
 
 async function xcFetchQuiz(){
@@ -6442,13 +6444,26 @@ async function xcFetchQuiz(){
   try{
     var agent = document.getElementById('xc-qf1').value;
     var date  = document.getElementById('xc-qf2').value;
-    var filters = 'order=submitted_at.asc&select=id,quiz_id,user_id,user_name,answer,is_correct,submitted_at,date';
+    // Fetch quiz questions so we can show the question text alongside each answer
+    var quizMap = {};
+    try{
+      var quizzes = await sbQuery('quizzes','select=id,question,date&order=date.desc');
+      (quizzes||[]).forEach(function(q){ quizMap[q.id] = q.question; });
+    }catch(e2){}
+    var filters = 'order=date.desc,submitted_at.desc&select=id,quiz_id,user_id,user_name,answer,is_correct,submitted_at,date';
     if(agent) filters += '&user_id=eq.'+agent;
     if(date)  filters += '&date=eq.'+date;
+    // Limit to last 200 rows to keep it manageable
+    filters += '&limit=200';
     var rows = await sbQuery('quiz_responses', filters);
-    if(!rows||!rows.length){ out.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;padding:1rem;">No quiz responses found.</div>'; return; }
+    if(!rows||!rows.length){
+      var msg = date ? 'No responses found for '+date+'.' : 'No quiz responses found.';
+      if(!date) msg += ' Try selecting a specific date or agent.';
+      out.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;padding:1rem;">'+msg+'</div>'; return;
+    }
     var html = rows.map(function(r){
-      var dt = r.submitted_at ? fmtTime(r.submitted_at)+' ('+r.date+')' : r.date||'-';
+      var dt = r.submitted_at ? fmtTime(r.submitted_at)+' — '+r.date : r.date||'-';
+      var qText = quizMap[r.quiz_id] ? '<div style="font-size:.72rem;color:var(--text-dim);margin-top:2px;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+esc(quizMap[r.quiz_id])+'">Q: '+esc(quizMap[r.quiz_id].slice(0,50))+(quizMap[r.quiz_id].length>50?'…':'')+'</div>' : '';
       var isC = r.is_correct===true, isW = r.is_correct===false;
       var badge = isC
         ? '<span style="font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(46,197,111,.12);color:#1a7a45;">✓ Correct</span>'
@@ -6456,7 +6471,7 @@ async function xcFetchQuiz(){
         ? '<span style="font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(239,73,60,.1);color:var(--accent-red);">✗ Wrong</span>'
         : '<span style="font-size:.7rem;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(232,184,75,.12);color:var(--gold);">— Essay</span>';
       return '<div id="xcq-row-'+r.id+'" class="xc-row" style="flex-wrap:wrap;gap:.5rem;">'+
-        '<div style="flex:1;min-width:120px;"><span style="font-weight:600;font-size:.85rem;">'+esc(r.user_name||'')+'</span><br><span style="font-size:.72rem;color:var(--text-dim);">'+dt+'</span></div>'+
+        '<div style="flex:1;min-width:120px;"><span style="font-weight:600;font-size:.85rem;">'+esc(r.user_name||'')+'</span><br><span style="font-size:.72rem;color:var(--text-dim);">'+dt+'</span>'+qText+'</div>'+
         '<div style="flex:2;min-width:180px;"><label class="xc-label">Answer</label>'+
           '<input id="xcq-ans-'+r.id+'" class="xc-input" value="'+esc(r.answer||'')+'" style="font-size:.82rem;"/>'+
         '</div>'+
@@ -9497,6 +9512,7 @@ function chatInit(){
   var sbBadge=document.getElementById('sidebar-msg-badge');
   msgLoadConversations();
   chatStartPolling();
+  initSoundIcon();
 }
 
 function chatTogglePanel(){
@@ -9536,8 +9552,13 @@ function chatRenderUserList(users){
     var unread=_chatUnreadMap[u.id]||0;
     var last=_chatLastMsgMap[u.id];
     var preview=last?esc(last.content.slice(0,28))+(last.content.length>28?'...':''):'<span style="opacity:.5">Say hello 👋</span>';
+    
+    var isOnline = u.last_seen && Math.abs(Date.now() - new Date(u.last_seen).getTime()) < 12 * 60 * 1000;
+    var avContent = u.photo_url ? '<img src="'+u.photo_url+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>' : ini;
+    var avBg = u.photo_url ? 'background:transparent;' : 'background:'+bg+';';
+    
     return '<div class="chat-conv-item" onclick="chatOpenConv(\''+u.id+'\',\''+esc(u.name)+'\',\''+bg+'\')">'+
-      '<div class="chat-conv-av" style="background:'+bg+';">'+ini+'</div>'+
+      '<div class="chat-conv-av'+(isOnline?' online':'')+'" style="'+avBg+'">'+avContent+'</div>'+
       '<div class="chat-conv-info"><div class="chat-conv-name">'+esc(u.name)+'</div><div class="chat-conv-preview">'+preview+'</div></div>'+
       '<div class="chat-conv-meta"><span class="chat-conv-time">'+(last?chatFmtTime(last.time):'')+'</span>'+(unread?'<div class="chat-unread-dot">'+unread+'</div>':'')+' </div>'+
     '</div>';
@@ -9545,11 +9566,19 @@ function chatRenderUserList(users){
 }
 
 async function chatOpenConv(userId,userName,bg){
-  _chatActiveUser={id:userId,name:userName,bg:bg};
+  var activeUser = _chatUsers.find(function(u){return u.id===userId;});
+  var photo_url = activeUser ? activeUser.photo_url : null;
+  
+  _chatActiveUser={id:userId,name:userName,bg:bg,photo_url:photo_url};
   document.getElementById('chat-list-view').style.display='none';
   var cv=document.getElementById('chat-conv-view'); cv.style.display='flex';
   var av=document.getElementById('chat-conv-av');
-  av.style.background=bg; av.textContent=chatIni(userName);
+  if(photo_url){
+    av.style.background='transparent';
+    av.innerHTML='<img src="'+photo_url+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>';
+  } else {
+    av.style.background=bg; av.textContent=chatIni(userName);
+  }
   document.getElementById('chat-conv-hname').textContent=userName;
   delete _chatUnreadMap[userId]; chatUpdateBadge();
   try{
@@ -9932,6 +9961,10 @@ function chatFireNotification(fromName, message){
 function toggleMsgSound(){
   _notifSoundEnabled = !_notifSoundEnabled;
   localStorage.setItem('tc_notif_sound', _notifSoundEnabled ? 'true' : 'false');
+  initSoundIcon();
+}
+
+function initSoundIcon(){
   var btn = document.getElementById('msg-sound-toggle');
   if(btn) btn.textContent = _notifSoundEnabled ? '🔔' : '🔕';
   var btn2 = document.getElementById('msg-sound-toggle2');
@@ -9989,12 +10022,19 @@ function chatUpdateBadge(){
 async function msgInit(){
   await msgLoadConversations();
   msgInitEmojiPicker();
+  initSoundIcon();
 }
 
 async function msgLoadConversations(){
   try{
-    var users=await sbQuery('users','select=id,name,role&order=name.asc');
+    var users=await sbQuery('users','select=id,name,role,last_seen&order=name.asc');
     _chatUsers=(users||[]).filter(function(u){return u.id!==currentUser.id&&u.role!=='syslevel';});
+    try{
+      var people=await sbQuery('people','select=name,photo_url');
+      var photoMap={};
+      (people||[]).forEach(function(p){if(p.photo_url)photoMap[p.name.toLowerCase().trim()]=p.photo_url;});
+      _chatUsers.forEach(function(u){u.photo_url=photoMap[u.name.toLowerCase().trim()]||null;});
+    }catch(e){}
 
     // Load groups user is member of
     var groups=await sbQuery('chat_groups','select=*&order=created_at.desc');
@@ -10029,7 +10069,17 @@ async function msgLoadConversations(){
     var convs=[];
     _chatUsers.forEach(function(u){
       var last=lastMsgs[u.id];
-      convs.push({type:'dm',id:u.id,name:u.name,bg:chatColor(u.name),lastTime:last?new Date(last.time):null,lastMsg:last?last.content:'',unread:_chatUnreadMap[u.id]||0});
+      convs.push({
+        type:'dm',
+        id:u.id,
+        name:u.name,
+        bg:chatColor(u.name),
+        lastTime:last?new Date(last.time):null,
+        lastMsg:last?last.content:'',
+        unread:_chatUnreadMap[u.id]||0,
+        photo_url:u.photo_url || null,
+        last_seen:u.last_seen || null
+      });
     });
     _chatGroups.forEach(function(g){
       var last=groupLastMsgs[g.id];
@@ -10061,9 +10111,14 @@ function msgRenderConvList(convs){
     var ini=chatIni(c.name);
     var lastText=c.lastMsg?esc(c.lastMsg.slice(0,35))+(c.lastMsg.length>35?'...':''):'<em style="opacity:.5">Say hello 👋</em>';
     var timeStr=c.lastTime?chatFmtTime(c.lastTime.toISOString()):'';
+    
+    var isOnline = c.type === 'dm' && c.last_seen && Math.abs(Date.now() - new Date(c.last_seen).getTime()) < 12 * 60 * 1000;
+    var avContent = c.type === 'group' ? '👥' : (c.photo_url ? '<img src="'+c.photo_url+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>' : ini);
+    var avBg = (c.type !== 'group' && c.photo_url) ? 'background:transparent;' : 'background:'+c.bg+';';
+    
     return '<div class="msg-conv-item'+(isActive?' active':'')+'" data-cid="'+c.id+'" data-ctype="'+c.type+'" onclick="msgOpenConvEl(this)">'+
-      '<div class="msg-conv-av'+(c.type==='group'?' group':'')+'" style="background:'+c.bg+';">'+
-        (c.type==='group'?'👥':ini)+
+      '<div class="msg-conv-av'+(c.type==='group'?' group':'')+(isOnline?' online':'')+'" style="'+avBg+'">'+
+        avContent+
       '</div>'+
       '<div class="msg-conv-info">'+
         '<div class="msg-conv-name">'+esc(c.name)+'</div>'+
@@ -10099,8 +10154,10 @@ async function msgOpenConv(id,type){
       membersText=members.length+' members';
     }
   }
+  var avContent = (type === 'group') ? '👥' : (conv.photo_url ? '<img src="'+conv.photo_url+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%;"/>' : chatIni(conv.name));
+  var avBg = (type !== 'group' && conv.photo_url) ? 'background:transparent;' : 'background:'+conv.bg+';';
   document.getElementById('msg-conv-header').innerHTML=
-    '<div style="width:36px;height:36px;border-radius:'+(type==='group'?'8px':'50%')+';background:'+conv.bg+';display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:#fff;flex-shrink:0;">'+(type==='group'?'👥':chatIni(conv.name))+'</div>'+
+    '<div style="width:36px;height:36px;border-radius:'+(type==='group'?'8px':'50%')+';'+avBg+'display:flex;align-items:center;justify-content:center;font-size:.65rem;font-weight:700;color:#fff;flex-shrink:0;overflow:hidden;">'+avContent+'</div>'+
     '<div style="flex:1;"><div class="msg-conv-hname">'+esc(conv.name)+'</div>'+(membersText?'<div class="msg-conv-hsub">'+membersText+'</div>':'')+'</div>'+
     '<button onclick="msgClearConversation()" title="Clear entire conversation" style="background:none;border:none;cursor:pointer;color:rgba(239,73,60,.85);font-size:1rem;font-weight:600;display:flex;align-items:center;gap:.3rem;padding:.4rem .8rem;border-radius:20px;transition:background .2s;" onmouseover="this.style.background=\'var(--navy-hover)\'" onmouseout="this.style.background=\'none\'">🗑️ Clear Chat</button>';
 
