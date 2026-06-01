@@ -4044,9 +4044,13 @@ function enterDashboard(){
   setTimeout(loadAnnouncements,600);
   setTimeout(checkWorkClockOnLoad,500);
   setTimeout(xcSyncCfg, 800);
+  // Admin/TL: immediately mark active on login + keep heartbeat running (they never click Start Work)
+  if(currentUser && (currentUser.role==='admin' || currentUser.role==='tl')){
+    startAdminHeartbeat();
+  }
   // Auto-refresh live dashboard every 60 seconds so all agents see updated data without manual refresh
   if(window._dashAutoRefreshInterval) clearInterval(window._dashAutoRefreshInterval);
-  window._dashAutoRefreshInterval = setInterval(function(){ loadLiveDashboard(); }, 60 * 1000);
+  window._dashAutoRefreshInterval = setInterval(function(){ loadLiveDashboard(); }, 30 * 1000);
   // Cabin announcement audio on login
   setTimeout(function(){ playLoginAnnouncement(currentUser.name.split(' ')[0]); }, 1200);
 }
@@ -5297,6 +5301,24 @@ async function checkLiveSettings(){
     await checkVHGlobal();
   }catch(e){ /* silent — don't disrupt UX */ }
 }
+// Admin/TL heartbeat — only updates users.last_seen, not attendance
+var _adminHeartbeatInterval = null;
+function startAdminHeartbeat(){
+  stopAdminHeartbeat();
+  adminHeartbeatPing(); // immediate ping on login
+  _adminHeartbeatInterval = setInterval(adminHeartbeatPing, 10 * 60 * 1000);
+}
+function stopAdminHeartbeat(){
+  if(_adminHeartbeatInterval){ clearInterval(_adminHeartbeatInterval); _adminHeartbeatInterval=null; }
+}
+async function adminHeartbeatPing(){
+  if(!currentUser) return;
+  try{
+    await sbUpdate('users','id',currentUser.id,{ last_seen: new Date().toISOString() });
+  }catch(e){ /* silent — run: ALTER TABLE users ADD COLUMN IF NOT EXISTS last_seen TIMESTAMPTZ DEFAULT NULL; */ }
+}
+
+// Agent heartbeat — only runs after Start Work, updates attendance.last_seen
 async function heartbeatPing(){
   if(!currentUser||!_todayAttendance) return;
   try{
@@ -5665,6 +5687,42 @@ function renderBreakReport(breaks, from, to){
   output.style.padding='1rem';
   output.innerHTML = html;
 }
+
+// ─── Punctuality helpers (defined here so they're available when renderAttendanceReport runs) ───
+// Safe wrappers that don't depend on OFF_C / LEAVE_C being defined yet at call time
+function _punctIsOff(code){
+  var p = String(code||'').toUpperCase().split(/[^A-Z]+/).filter(Boolean);
+  var offSet = new Set(['L','CO','W','OFF','WO','SL','CL','EL']);
+  return p.some(function(x){ return offSet.has(x); });
+}
+function _getShiftStartMins(agentName, dateStr){
+  try{
+    if(typeof getRowsAndColForDate !== 'function') return null;
+    var d = new Date(dateStr + 'T00:00:00');
+    var rc = getRowsAndColForDate(d);
+    if(!rc || !rc.rows || rc.col < 0) return null;
+    if(typeof findAgent !== 'function') return null;
+    var agentRow = findAgent(rc.rows, agentName);
+    if(!agentRow) return null;
+    var code = String(agentRow[rc.col] || '').trim();
+    if(!code || _punctIsOff(code)) return null;
+    var m = code.match(/(\d{1,2})(?::(\d{2}))?\s*[-]\s*(\d{1,2})(?::(\d{2}))?/);
+    if(m){ return parseInt(m[1])*60 + (m[2]?parseInt(m[2]):0); }
+    return null;
+  }catch(e){ return null; }
+}
+function computePunctuality(agentName, dateStr, loginTimeIso){
+  if(!loginTimeIso) return 'No Roster';
+  var shiftMins = _getShiftStartMins(agentName, dateStr);
+  if(shiftMins === null) return 'No Roster';
+  // Convert loginTime ISO → IST minutes-from-midnight
+  var d = new Date(loginTimeIso);
+  var istMs = d.getTime() + 5.5 * 60 * 60 * 1000;
+  var istDate = new Date(istMs);
+  var loginMins = istDate.getUTCHours() * 60 + istDate.getUTCMinutes();
+  return loginMins <= shiftMins ? 'On Time' : 'Late';
+}
+// ─────────────────────────────────────────────────────────────────────────────
 
 function renderAttendanceReport(rows){
   var output = document.getElementById('report-output');
@@ -7537,14 +7595,14 @@ var _liveDashData = { users:[], att:[], onBreakSet:new Set(), onBreakDetails:{} 
 
 async function loadLiveDashboard(){
   try{
-    var users=await sbQuery('users','select=id,name,role,presence&order=name.asc');
+    var users=await sbQuery('users','select=id,name,role,presence,last_seen&order=name.asc');
     // Filter out syslevel
     users=(users||[]).filter(function(u){return u.role!=='syslevel';});
     var total=users.length;
     animateCount('stat-val-total',total);
 
     var today=todayStr();
-    var att=await sbQuery('attendance','date=eq.'+today+'&select=user_id,login_time,logout_time,last_seen&order=login_time.asc');
+    var att=await sbQuery('attendance','date=eq.'+today+'&select=user_id,user_name,login_time,logout_time,last_seen&order=login_time.asc');
 
     // DEDUPLICATE — one entry per user (latest login)
     var attMap={};
@@ -7559,6 +7617,12 @@ async function loadLiveDashboard(){
       return !a.logout_time && (!user||user.presence!=='offline');
     }).length;
     animateCount('stat-val-loggedin',loggedInCount);
+
+    // Absent = agents (not admin/tl/syslevel) with NO attendance record at all today
+    var attUserIds = new Set(attDeduped.map(function(a){ return a.user_id; }));
+    var shiftWorkers = users.filter(function(u){ return u.role==='agent' || (!u.role); });
+    var absentCount = shiftWorkers.filter(function(u){ return !attUserIds.has(u.id); }).length;
+    animateCount('stat-val-absent', absentCount);
 
     var brks=await sbQuery('breaks','date=eq.'+today+'&select=user_id,user_name,break_type,end_time');
     var onBreakSet=new Set();
@@ -7594,22 +7658,29 @@ function renderWhosActive(users,att,onBreakSet){
   var items=users.filter(function(u){return u.role!=='syslevel';}).map(function(u){
     var ini=(u.name||'?').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
     var isBreak=onBreakSet.has(u.name);
+    var isAdminOrTl = u.role==='admin' || u.role==='tl';
     var attRec=attMap[u.id];
-    // Active = has login_time today AND no logout_time (work session open)
-    var hasActiveSession = attRec && attRec.login_time && !attRec.logout_time;
-    // Check last_seen heartbeat — if > 12 min ago, show as Away
-    var isRecentlySeen = false;
-    if(attRec && attRec.last_seen){
-      var lastSeenMs = Date.now() - new Date(attRec.last_seen).getTime();
-      isRecentlySeen = lastSeenMs < 12*60*1000;
-    }
-    // Online = active work session + recent heartbeat only
-    var isOnline = hasActiveSession && isRecentlySeen;
     var sc, sl;
-    if(isBreak && isOnline){sc='onbreak';sl='On Break';}
-    else if(isOnline){sc='active';sl='Active';}
-    else if(hasActiveSession && !isRecentlySeen && attRec.last_seen){sc='out';sl='Away';}
-    else{sc='out';sl='Not In';}
+
+    if(isAdminOrTl){
+      // Admin/TL: use users.last_seen (set on portal login, no Start Work needed)
+      var userRecentlySeen = u.last_seen && (Date.now()-new Date(u.last_seen).getTime()) < 12*60*1000;
+      if(isBreak && userRecentlySeen){sc='onbreak';sl='On Break';}
+      else if(userRecentlySeen){sc='active';sl='Active';}
+      else{sc='out';sl='Not In';}
+    } else {
+      // Agent: Active only after Start Work click (hasActiveSession + heartbeat)
+      var hasActiveSession = attRec && attRec.login_time && !attRec.logout_time;
+      var attRecentlySeen = false;
+      if(attRec && attRec.last_seen){
+        attRecentlySeen = (Date.now()-new Date(attRec.last_seen).getTime()) < 12*60*1000;
+      }
+      var isOnline = hasActiveSession && attRecentlySeen;
+      if(isBreak && isOnline){sc='onbreak';sl='On Break';}
+      else if(isOnline){sc='active';sl='Active';}
+      else if(hasActiveSession && !attRecentlySeen && attRec.last_seen){sc='out';sl='Away';}
+      else{sc='out';sl='Not In';}
+    }
 
     var toggleBtn='';
 
@@ -7981,7 +8052,10 @@ function openStatModal(type){
     });
 
   } else if(type==='absent'){
-    var absentAgents = users.filter(function(u){ return !attIds.has(u.id); });
+    // Only show agents (role=agent) — admins/TLs don't do shift work so shouldn't appear here
+    var absentAgents = users.filter(function(u){
+      return (u.role==='agent' || !u.role || u.role==='') && !attIds.has(u.id);
+    });
     title='Absent Today';
     subtext=absentAgents.length+' agent'+(absentAgents.length!==1?'s':'')+' not in';
     iconBg='rgba(76,118,168,.12)';
@@ -12518,42 +12592,6 @@ function shiftLabel(code){
   return code;
 }
 
-// Returns shift start time in total minutes-from-midnight (IST) for a given agent + date,
-// reading from the roster. Returns null if roster not available or shift not parseable.
-function getShiftStartMinutes(agentName, dateStr){
-  try {
-    var d = new Date(dateStr + 'T00:00:00');
-    var rc = getRowsAndColForDate(d);
-    if(!rc || !rc.rows || rc.col < 0) return null;
-    var agentRow = findAgent(rc.rows, agentName);
-    if(!agentRow) return null;
-    var code = String(agentRow[rc.col] || '').trim();
-    if(!code || isOff(code) || isLeave(code)) return null;
-    // Try to extract start time from pattern like "9-18", "10-19", "9:30-18:30"
-    var m = code.match(/(\d{1,2})(?::(\d{2}))?\s*[-]\s*(\d{1,2})(?::(\d{2}))?/);
-    if(m){
-      var h = parseInt(m[1]);
-      var min = m[2] ? parseInt(m[2]) : 0;
-      return h * 60 + min; // total minutes from midnight
-    }
-    return null;
-  } catch(e){ return null; }
-}
-
-// Compute punctuality status from login_time ISO vs roster shift start.
-// Returns: 'On Time' | 'Late' | 'No Roster' (if can't determine)
-function computePunctuality(agentName, dateStr, loginTimeIso){
-  if(!loginTimeIso) return 'No Roster';
-  var shiftMins = getShiftStartMinutes(agentName, dateStr);
-  if(shiftMins === null) return 'No Roster';
-  // Convert loginTime to IST minutes from midnight
-  var d = new Date(loginTimeIso);
-  var istMs = d.getTime() + 5.5 * 60 * 60 * 1000;
-  var istDate = new Date(istMs);
-  var loginMins = istDate.getUTCHours() * 60 + istDate.getUTCMinutes();
-  // On time = login <= shift start; late = login > shift start (even 1 min late)
-  return loginMins <= shiftMins ? 'On Time' : 'Late';
-}
 function findAgent(rows,name){
   var agents=getAgentRows(rows),n=name.toLowerCase().trim();
   var r=null;
