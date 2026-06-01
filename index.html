@@ -4786,14 +4786,18 @@ function _processRosterRows(rows){
   var dc = dr.findIndex(function(c,i){ return i>=2&&String(Number(c))===day; });
   if(dc<0){ renderRosterPage(rows, false); return; }
   var s={absent:[],wfh:[],halfDay:[]};
+  var _absentDetails=[];
   rows.slice(rows.indexOf(dr)+2).forEach(function(row){
     var ei=String(row[0]||'').trim(),n=String(row[1]||'').trim();
     if(!ei||!n||!/^K\d+/i.test(ei))return;
     var p=statusParts(row[dc]);
-    if(p.some(function(x){return NOT_PRESENT_CODES.has(x);}))s.absent.push(n);
+    var rawCode=String(row[dc]||'').trim();
+    if(p.some(function(x){return NOT_PRESENT_CODES.has(x);})){s.absent.push(n);_absentDetails.push({name:n,code:rawCode});}
     if(p.indexOf('WFH')>-1)s.wfh.push(n);
     if(p.indexOf('HL')>-1)s.halfDay.push(n);
   });
+  // Store for absent modal
+  window._rosterAbsent = _absentDetails;
   updateRosterBanner(s);
   renderRosterPage(rows, dc);
   loadMyShift(rows);
@@ -5965,7 +5969,10 @@ async function xcFetchAtt(){
         '<div><label class="xc-label">'+esc(r.user_name)+'</label><span style="font-size:.72rem;color:var(--text-dim);">ID: '+esc(r.id.toString().slice(0,8))+'…</span></div>' +
         '<div><label class="xc-label">Login Time (HH:MM)</label><input type="time" id="'+lid+'" class="xc-input" value="'+loginVal+'"/></div>' +
         '<div><label class="xc-label">Logout Time (HH:MM)</label><input type="time" id="'+loid+'" class="xc-input" value="'+logoutVal+'"/></div>' +
-        '<button class="xc-btn-sm" onclick="xcWriteAtt(\''+r.id+'\',\''+date+'\',\''+lid+'\',\''+loid+'\')">Save</button>' +
+        '<div style="display:flex;gap:.4rem;">'+
+          '<button class="xc-btn-sm" onclick="xcWriteAtt(\''+r.id+'\',\''+date+'\',\''+lid+'\',\''+loid+'\')">Save</button>' +
+          '<button class="xc-btn-danger" onclick="xcDeleteAtt(\''+r.id+'\')" title="Delete this entry">🗑 Delete</button>' +
+        '</div>'+
         '</div>';
     }).join('');
     out.innerHTML = html;
@@ -5998,6 +6005,20 @@ function xcLocalTime(isoStr){
   var istDate = new Date(istMs);
   var h = istDate.getUTCHours(), m = istDate.getUTCMinutes();
   return String(h).padStart(2,'0') + ':' + String(m).padStart(2,'0');
+}
+
+async function xcDeleteAtt(rowId){
+  if(!confirm('Delete this attendance entry? This cannot be undone.')) return;
+  try{
+    await sbDelete('attendance','id',rowId);
+    // Remove the row from the UI immediately
+    var el = document.getElementById('xc-t1-'+rowId);
+    if(el){ var row=el.closest('.xc-row'); if(row) row.remove(); }
+    // Refresh the full list
+    xcFetchAtt();
+  }catch(e){
+    alert('Delete failed: '+e.message);
+  }
 }
 
 async function xcWriteAtt(rowId, date, loginElId, logoutElId){
@@ -7618,11 +7639,7 @@ async function loadLiveDashboard(){
     }).length;
     animateCount('stat-val-loggedin',loggedInCount);
 
-    // Absent = agents (not admin/tl/syslevel) with NO attendance record at all today
-    var attUserIds = new Set(attDeduped.map(function(a){ return a.user_id; }));
-    var shiftWorkers = users.filter(function(u){ return u.role==='agent' || (!u.role); });
-    var absentCount = shiftWorkers.filter(function(u){ return !attUserIds.has(u.id); }).length;
-    animateCount('stat-val-absent', absentCount);
+    // Absent count is owned by the roster (updateRosterBanner) — do not overwrite here
 
     var brks=await sbQuery('breaks','date=eq.'+today+'&select=user_id,user_name,break_type,end_time');
     var onBreakSet=new Set();
@@ -8052,17 +8069,25 @@ function openStatModal(type){
     });
 
   } else if(type==='absent'){
-    // Only show agents (role=agent) — admins/TLs don't do shift work so shouldn't appear here
-    var absentAgents = users.filter(function(u){
-      return (u.role==='agent' || !u.role || u.role==='') && !attIds.has(u.id);
-    });
+    // Use roster-based absent list (L/CO/W codes) — same data shown in the dashboard banner
+    var rosterAbsent = window._rosterAbsent || [];
     title='Absent Today';
-    subtext=absentAgents.length+' agent'+(absentAgents.length!==1?'s':'')+' not in';
+    subtext=rosterAbsent.length+' agent'+(rosterAbsent.length!==1?'s':'')+' on leave / off';
     iconBg='rgba(76,118,168,.12)';
     iconSvg='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="18" y1="8" x2="23" y2="13"/><line x1="23" y1="8" x2="18" y2="13"/></svg>';
-    agents = absentAgents.map(function(u){
-      return { name:u.name, badge:'Absent', badgeClass:'absent', detail:'' };
+    var leaveLabel = function(code){
+      var c=(code||'').toUpperCase().trim();
+      if(c==='L')return 'Leave';
+      if(c==='CO')return 'Comp Off';
+      if(c==='W'||c==='WO')return 'Week Off';
+      return code||'Off';
+    };
+    agents = rosterAbsent.map(function(a){
+      return { name:a.name, badge:leaveLabel(a.code), badgeClass:'absent', detail:'' };
     });
+    if(!rosterAbsent.length){
+      agents = [];
+    }
 
   } else if(type==='total'){
     title='All Agents';
