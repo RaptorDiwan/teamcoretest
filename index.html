@@ -1866,9 +1866,8 @@ body.dark .ts-input { background:#111827;border-color:#2D3748;color:#F1F5F9; }
   .rem-date-input{background:var(--navy-card);border:1px solid var(--navy-border);border-radius:7px;padding:.3rem .65rem;color:var(--text-primary);font-size:.74rem;font-family:'DM Sans',sans-serif;outline:none;min-width:0;transition:border-color .18s;}
   .rem-date-input:focus{border-color:var(--gold-dim,rgba(239,73,60,.35));}
 
-  /* ═══════════════════════════════════════
+/* ═══════════════════════════════════════
      CHAT SYSTEM
-  ═══════════════════════════════════════ */
   ═══════════════════════════════════════ */
   .chat-bubble{display:none!important;}
   .chat-bubble:hover{transform:scale(1.08);}
@@ -6384,10 +6383,10 @@ async function xcFetchQuiz(){
           '</select>'+
         '</div>'+
         '<div style="display:flex;gap:.4rem;align-items:flex-end;padding-bottom:.15rem;">'+
-          badge+
-          '<button class="xc-btn-sm" onclick="xcSaveQuiz(''+r.id+'')">Save</button>'+
-          '<button class="xc-btn-danger" onclick="xcDeleteQuiz(''+r.id+'',''+esc(r.user_name||'')+'')">🗑</button>'+
-        '</div>'+
+  badge+
+  '<button class="xc-btn-sm" onclick="xcSaveQuiz(\''+r.id+'\')">Save</button>'+
+  '<button class="xc-btn-danger" onclick="xcDeleteQuiz(\''+r.id+'\',\''+esc(r.user_name||'')+'\')">🗑</button>'+
+'</div>'+
       '</div>';
     }).join('');
     out.innerHTML = html;
@@ -9498,7 +9497,7 @@ function chatRenderMessages(rows){
     var expires=m.expires_at?new Date(m.expires_at):new Date(d.getTime()+24*3600000);
     var hoursLeft=Math.max(0,Math.ceil((expires-Date.now())/3600000));
     var tick=isMine?(m.read_at?'<span class="msg-tick read">✓✓</span>':'<span class="msg-tick sent">✓✓</span>'):'';
-    var delBtn=isMine?'<button class="msg-del-btn" onclick="chatDeleteMsg(''+m.id+'')" title="Delete">🗑</button>':'';
+    var delBtn=isMine?'<button class="msg-del-btn" onclick="chatDeleteMsg(\''+m.id+'\')" title="Delete">🗑</button>':'';
     var expiryWarn=hoursLeft<=2?'<span class="chat-msg-expires-warn">⏱'+hoursLeft+'h</span>':'';
     // Avatar for received messages (only show on last in group)
     var avHtml='';
@@ -9563,10 +9562,10 @@ function chatRenderEmojiPicker(cat){
   var picker = document.getElementById('chat-emoji-picker');
   var emojis = CHAT_EMOJI_CATS[cat] || [];
   var tabs = Object.keys(CHAT_EMOJI_CATS).map(function(c){
-    return '<button class="ep-tab'+(c===cat?' active':'')+'" onclick="chatRenderEmojiPicker(''+c+'')">'+c+'</button>';
+    return '<button class="ep-tab'+(c===cat?' active':'')+'" onclick="chatRenderEmojiPicker(\''+c+'\')">'+c+'</button>';
   }).join('');
   var grid = emojis.map(function(e){
-    return '<span class="ep-emoji" onclick="chatInsertEmoji(''+e+'')">'+e+'</span>';
+    return '<span class="ep-emoji" onclick="chatInsertEmoji(\''+e+'\')">'+e+'</span>';
   }).join('');
   picker.innerHTML =
     '<div class="ep-tabs">'+tabs+'</div>'+
@@ -9581,7 +9580,7 @@ function chatSearchEmoji(q){
   if(!q){ chatRenderEmojiPicker(_activeEmojiCat); return; }
   // Simple: show all emojis (unicode search is limited without a library)
   grid.innerHTML = all.map(function(e){
-    return '<span class="ep-emoji" onclick="chatInsertEmoji(''+e+'')">'+e+'</span>';
+    return '<span class="ep-emoji" onclick="chatInsertEmoji(\''+e+'\')">'+e+'</span>';
   }).join('');
 }
 
@@ -9621,7 +9620,7 @@ async function chatLoadGifs(q){
     var items=(data.data||[]).map(function(gif){
       var preview=gif.images.fixed_height_small.url;
       var full=gif.images.original.url;
-      return '<div class="gp-item" onclick="chatSendGif(''+full+'')"><img src="'+preview+'" loading="lazy"/></div>';
+      return '<div class="gp-item" onclick="chatSendGif(\''+full+'\')"><img src="'+preview+'" loading="lazy"/></div>';
     }).join('');
     g.innerHTML='<div class="gp-header"><input class="gp-search" placeholder="Search GIFs..." oninput="chatGifSearch(this.value)" value="'+esc(q)+'"/></div>'+
       '<div class="gp-grid">'+(items||'<div class="gp-loading">No GIFs found</div>')+'</div>'+
@@ -9953,7 +9952,7 @@ function msgRenderMessagesInPage(rows, isGroup){
     var hoursLeft=Math.max(0,Math.ceil((expires-Date.now())/3600000));
     var tick=isMine?(m.read_at?'<span class="msg-tick read">✓✓</span>':'<span class="msg-tick sent">✓✓</span>'):'';
     var expiryWarn=hoursLeft<=2?'<span class="chat-msg-expires-warn">⏱'+hoursLeft+'h</span>':'';
-    var delBtn=isMine?'<button class="msg-del-btn" onclick="msgDeleteById(''+m.id+'')" title="Delete">🗑</button>':'';
+    var delBtn=isMine?'<button class="msg-del-btn" onclick="msgDeleteById(\''+m.id+'\')" title="Delete">🗑</button>':'';
     var avHtml='';
     if(!isMine){
       var photo=photoMap[m.from_user_id];
@@ -10030,10 +10029,10 @@ function msgRenderEmojiPicker(cat){
   if(!picker) return;
   var emojis=CHAT_EMOJI_CATS[cat]||[];
   var tabs=Object.keys(CHAT_EMOJI_CATS).map(function(c){
-    return '<button class="ep-tab'+(c===cat?' active':'')+'" onclick="msgRenderEmojiPicker(''+c+'')">'+c+'</button>';
+    return '<button class="ep-tab'+(c===cat?' active':'')+'" onclick="msgRenderEmojiPicker(\''+c+'\')">'+c+'</button>';
   }).join('');
   var grid=emojis.map(function(e){
-    return '<span class="ep-emoji" onclick="msgInsertEmoji(''+e+'')">'+e+'</span>';
+    return '<span class="ep-emoji" onclick="msgInsertEmoji(\''+e+'\')">'+e+'</span>';
   }).join('');
   picker.innerHTML='<div class="ep-tabs">'+tabs+'</div>'+
     '<input class="ep-search" placeholder="Search emoji..." oninput="msgSearchEmoji(this.value)"/>'+
@@ -10045,7 +10044,7 @@ function msgSearchEmoji(q){
   if(!grid) return;
   if(!q){ msgRenderEmojiPicker(_activeEmojiCat); return; }
   grid.innerHTML=all.map(function(e){
-    return '<span class="ep-emoji" onclick="msgInsertEmoji(''+e+'')">'+e+'</span>';
+    return '<span class="ep-emoji" onclick="msgInsertEmoji(\''+e+'\')">'+e+'</span>';
   }).join('');
 }
 function msgInsertEmoji(emoji){
@@ -10077,7 +10076,7 @@ async function msgLoadGifs(q){
     var items=(data.data||[]).map(function(gif){
       var preview=gif.images.fixed_height_small.url;
       var full=gif.images.original.url;
-      return '<div class="gp-item" onclick="msgSendGif(''+full+'')"><img src="'+preview+'" loading="lazy"/></div>';
+      return '<div class="gp-item" onclick="msgSendGif(\''+full+'\')"><img src="'+preview+'" loading="lazy"/></div>';
     }).join('');
     g.innerHTML='<div class="gp-header"><input class="gp-search" placeholder="Search GIFs..." oninput="msgGifSearch(this.value)" value="'+esc(q||'')+'"/></div>'+
       '<div class="gp-grid">'+(items||'<div class="gp-loading">No GIFs found</div>')+'</div>'+
