@@ -5790,18 +5790,29 @@ function renderAttendanceReport(rows){
       var overrideHtml = '';
       if(isAdmin){
         var selId = 'att-status-'+r.id;
+        var inlineId = 'att-inline-'+r.id;
         overrideHtml = '<td>'+
-          '<div style="display:flex;gap:.4rem;align-items:center;">'+
-            '<select id="'+selId+'" style="padding:.25rem .5rem;border:1px solid var(--navy-border);border-radius:5px;background:var(--navy-card);color:var(--text-primary);font-family:DM Sans,sans-serif;font-size:.76rem;">'+
-              '<option value=""'+((!r.attendance_status||r.attendance_status==='')?'selected':'')+'>Auto</option>'+
-              '<option value="On Time"'+(r.attendance_status==='On Time'?' selected':'')+'>On Time</option>'+
-              '<option value="Late"'+(r.attendance_status==='Late'?' selected':'')+'>Late</option>'+
-              '<option value="Permission"'+(r.attendance_status==='Permission'?' selected':'')+'>Permission</option>'+
-            '</select>'+
-            '<button onclick="attSaveStatus(\''+r.id+'\',\''+selId+'\',this)" '+
-              'style="padding:.25rem .65rem;background:var(--gold);color:#fff;border:none;border-radius:5px;font-size:.73rem;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">'+
-              'Save'+
-            '</button>'+
+          '<button onclick="attShowOverride(\''+r.id+'\')" title="Override status" '+
+            'style="background:none;border:1px solid var(--navy-border);border-radius:5px;padding:.2rem .5rem;cursor:pointer;color:var(--text-dim);font-size:.75rem;">'+
+            '&#9998;'+
+          '</button>'+
+          '<div id="'+inlineId+'" style="display:none;margin-top:.35rem;">'+
+            '<div style="display:flex;gap:.35rem;align-items:center;flex-wrap:wrap;">'+
+              '<select id="'+selId+'" style="padding:.25rem .5rem;border:1px solid var(--navy-border);border-radius:5px;background:var(--navy-card);color:var(--text-primary);font-family:DM Sans,sans-serif;font-size:.76rem;">'+
+                '<option value=""'+((!r.attendance_status||r.attendance_status==='')?'selected':'')+'>Auto</option>'+
+                '<option value="On Time"'+(r.attendance_status==='On Time'?' selected':'')+'>On Time</option>'+
+                '<option value="Late"'+(r.attendance_status==='Late'?' selected':'')+'>Late</option>'+
+                '<option value="Permission"'+(r.attendance_status==='Permission'?' selected':'')+'>Permission</option>'+
+              '</select>'+
+              '<button onclick="attSaveStatus(\''+r.id+'\',\''+selId+'\',\''+inlineId+'\',this)" '+
+                'style="padding:.25rem .6rem;background:var(--gold);color:#fff;border:none;border-radius:5px;font-size:.73rem;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">'+
+                'Save'+
+              '</button>'+
+              '<button onclick="document.getElementById(\''+inlineId+'\').style.display=\'none\'" '+
+                'style="padding:.25rem .45rem;background:transparent;border:1px solid var(--navy-border);border-radius:5px;font-size:.73rem;cursor:pointer;color:var(--text-muted);">'+
+                '&#10005;'+
+              '</button>'+
+            '</div>'+
           '</div>'+
         '</td>';
       }
@@ -5823,7 +5834,13 @@ function renderAttendanceReport(rows){
   output.innerHTML = html;
 }
 
-async function attSaveStatus(rowId, selId, btn){
+function attShowOverride(rowId){
+  var inlineId = 'att-inline-'+rowId;
+  var el = document.getElementById(inlineId);
+  if(el) el.style.display = el.style.display==='none' ? 'block' : 'none';
+}
+
+async function attSaveStatus(rowId, selId, inlineId, btn){
   var sel = document.getElementById(selId);
   if(!sel) return;
   var val = sel.value; // '' means auto/clear
@@ -5834,12 +5851,20 @@ async function attSaveStatus(rowId, selId, btn){
     // Refresh the status badge cell
     var cell = document.getElementById('att-status-cell-'+rowId);
     if(cell){
-      var status = val || 'Auto';
-      var statusColor = status==='On Time'?'#2EC56F':status==='Late'?'#EF493C':status==='Permission'?'#E8B84B':'#94A3B8';
-      var statusBg = status==='On Time'?'rgba(46,197,111,.12)':status==='Late'?'rgba(239,73,60,.12)':status==='Permission'?'rgba(232,184,75,.14)':'rgba(148,163,184,.1)';
-      cell.innerHTML = '<span style="background:'+statusBg+';color:'+statusColor+';border:1px solid '+statusColor+'40;border-radius:4px;padding:2px 9px;font-size:.72rem;font-weight:700;">'+status+'</span>';
+      // If cleared to Auto, the badge will refresh next time report is pulled — just show a refresh note
+      var status = val || null;
+      if(status){
+        var statusColor = status==='On Time'?'#2EC56F':status==='Late'?'#EF493C':status==='Permission'?'#E8B84B':'#94A3B8';
+        var statusBg = status==='On Time'?'rgba(46,197,111,.12)':status==='Late'?'rgba(239,73,60,.12)':status==='Permission'?'rgba(232,184,75,.14)':'rgba(148,163,184,.1)';
+        cell.innerHTML = '<span style="background:'+statusBg+';color:'+statusColor+';border:1px solid '+statusColor+'40;border-radius:4px;padding:2px 9px;font-size:.72rem;font-weight:700;">'+status+'</span>';
+      } else {
+        cell.innerHTML = '<span style="color:var(--text-dim);font-size:.72rem;font-style:italic;">Auto (pull report to refresh)</span>';
+      }
     }
     btn.textContent = '✓'; btn.style.background='#2EC56F';
+    // Hide the inline dropdown after successful save
+    var inlineEl = document.getElementById(inlineId);
+    if(inlineEl) setTimeout(function(){ inlineEl.style.display='none'; }, 800);
     setTimeout(function(){ btn.textContent=orig; btn.style.background=''; btn.disabled=false; }, 1800);
   } catch(e){
     if(e.message && e.message.includes('attendance_status')){
