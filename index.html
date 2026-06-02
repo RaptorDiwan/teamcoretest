@@ -3835,7 +3835,7 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
           </div>
           <div style="flex:1;min-width:0;">
             <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--text-primary);line-height:1.2;">K7Team<span style="color:var(--gold);">Core</span></div>
-            <div style="font-size:.72rem;color:var(--text-muted);margin-top:3px;">v5.3.0 &nbsp;·&nbsp; Build 2605.29 &nbsp;·&nbsp; Designed &amp; engineered by Diwan Chowthry</div>
+            <div style="font-size:.72rem;color:var(--text-muted);margin-top:3px;">V 8.3.0 &nbsp;·&nbsp; Build 260602.1908 &nbsp;·&nbsp; Designed &amp; engineered by Diwan Chowthry</div>
           </div>
           <button class="about-update-check-btn" id="about-update-btn" onclick="aboutCheckUpdate()" style="flex-shrink:0;">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
@@ -6559,29 +6559,36 @@ async function loadReport(){
 
   try {
     // Ensure roster is loaded before rendering attendance report (needed for On Time/Late calculation)
-    if(type === 'attendance' && !window.rosterCache){
+    if(type === 'attendance'){
       try{
-        var rosterUrl = window._rosterCsvUrl || ROSTER_CSV_URL;
-        try{
-          var mnNames=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-          var curMn=mnNames[new Date().getMonth()];
-          var rSettings=await sbQuery('settings','key=ilike.roster_url*&select=key,value');
-          if(rSettings&&rSettings.length){
-            var mRow=rSettings.find(function(r){return r.key==='roster_url_'+curMn.toLowerCase();});
-            var gRow=rSettings.find(function(r){return r.key==='roster_url';});
-            var best=mRow||gRow;
-            if(best&&best.value){rosterUrl=best.value;window._rosterCsvUrl=best.value;}
-          }
-        }catch(e2){}
-        var rResp=await fetch(rosterUrl+'&cacheBust='+Date.now());
-        if(rResp.ok){
-          var rRows=parseCsv(await rResp.text());
-          window.rosterCache=rRows;
-          window._rosterAllRows=rRows;
-          if(!window._rosterDataCache)window._rosterDataCache={};
-          window._rosterDataCache[rosterUrl]={rows:rRows,timestamp:Date.now()};
+        if(typeof loadRosterMonthSettings === 'function'){
+          await loadRosterMonthSettings();
         }
-      }catch(re){ /* silent — roster unavailable, status will show No Roster */ }
+        var dateStart = new Date(from + 'T00:00:00');
+        var dateEnd = new Date(to + 'T00:00:00');
+        var MKEYS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+        
+        var tempDate = new Date(dateStart);
+        while(tempDate <= dateEnd){
+          var mKey = MKEYS[tempDate.getMonth()];
+          if(window.ROSTER_MONTHS && window.ROSTER_MONTHS[mKey]){
+            var cfg = window.ROSTER_MONTHS[mKey];
+            var mUrl = cfg.customUrl || (typeof getRosterMonthUrl === 'function' ? getRosterMonthUrl(cfg.gid) : '');
+            if(mUrl && (!window._rosterDataCache || !window._rosterDataCache[mUrl])){
+              var rResp = await fetch(mUrl + '&cacheBust=' + Date.now());
+              if(rResp.ok){
+                var rRows = parseCsv(await rResp.text());
+                if(!window._rosterDataCache) window._rosterDataCache = {};
+                window._rosterDataCache[mUrl] = { rows: rRows, timestamp: Date.now() };
+                if(!window.rosterCache) window.rosterCache = rRows;
+                if(!window._rosterAllRows) window._rosterAllRows = rRows;
+              }
+            }
+          }
+          tempDate.setMonth(tempDate.getMonth() + 1);
+          tempDate.setDate(1);
+        }
+      }catch(re){}
     }
 
     if(type === 'attendance'){
@@ -14770,6 +14777,13 @@ function findAgent(rows,name){
   var words=n.split(/\s+/);
   if(words.length>=2)r=agents.find(function(a){return String(a[1]).toLowerCase().includes(words[0]+' '+words[1]);});
   if(!r)r=agents.find(function(a){return String(a[1]).toLowerCase().includes(n);});
+  if(!r)r=agents.find(function(a){
+    var rn=String(a[1]).toLowerCase().trim();
+    return rn && n.includes(rn);
+  });
+  if(!r && n==='arif'){
+    r=agents.find(function(a){return String(a[1]).toLowerCase().trim()==='anif';});
+  }
   return r||null;
 }
 function relativeDate(qlo){
