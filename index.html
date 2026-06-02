@@ -2967,6 +2967,13 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
         Reports
       </div>
 
+      <div class="sidebar-item" id="sidebar-csat" onclick="showPage('csat', this)">
+        <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/>
+        </svg>
+        CSAT Reports
+      </div>
+
       <div class="sidebar-item" id="sidebar-casetracker" onclick="showPage('casetracker', this)">
         <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
@@ -3515,6 +3522,46 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
       </div>
 
       <!-- â”€â”€ ADMIN: USER MANAGEMENT â”€â”€ -->
+      <!-- ── CSAT REPORTS PAGE — loaded from csat_module_patch.js ── -->
+      <div class="page" id="page-csat">
+        <div class="csat-page">
+          <div>
+            <h2 class="csat-title">📊 CSAT Reports</h2>
+            <p class="csat-sub">Daily satisfaction reports — Consumer · Vision Helpdesk · ESP · Live Chat</p>
+          </div>
+          <div class="csat-tabs" id="csat-tabs">
+            <button class="csat-tab active" id="csat-tab-consumer" onclick="csatSwitchTab('consumer',this)">
+              <span class="csat-tab-dot" id="csat-dot-consumer"></span>👤 Consumer
+            </button>
+            <button class="csat-tab" id="csat-tab-vision" onclick="csatSwitchTab('vision',this)">
+              <span class="csat-tab-dot" id="csat-dot-vision"></span>🏢 Vision Helpdesk
+            </button>
+            <button class="csat-tab" id="csat-tab-esp" onclick="csatSwitchTab('esp',this)">
+              <span class="csat-tab-dot" id="csat-dot-esp"></span>📋 ESP Report
+            </button>
+            <button class="csat-tab" id="csat-tab-chat" onclick="csatSwitchTab('chat',this)">
+              <span class="csat-tab-dot" id="csat-dot-chat"></span>💬 Live Chat
+            </button>
+          </div>
+          <div id="csat-panel-consumer"><div id="csat-inner-consumer"></div></div>
+          <div id="csat-panel-vision"  style="display:none;"><div id="csat-inner-vision"></div></div>
+          <div id="csat-panel-esp"     style="display:none;"><div id="csat-inner-esp"></div></div>
+          <div id="csat-panel-chat"    style="display:none;"><div id="csat-inner-chat"></div></div>
+          <div id="csat-email-wrap" style="display:none;padding-top:.5rem;border-top:1px solid var(--navy-border);margin-top:.5rem;">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;">
+              <div>
+                <div style="font-size:.82rem;font-weight:600;color:var(--text-primary);">&#128231; Send Combined Report</div>
+                <div style="font-size:.74rem;color:var(--text-muted);margin-top:.15rem;">Compiles all 4 reports into one email — opens your default mail client</div>
+              </div>
+              <button class="csat-email-btn" onclick="csatSendEmail()">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
+                Send All Reports via Email
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <!-- ── CASE TRACKER PAGE ── -->
       <div class="page" id="page-casetracker">
         <div id="ct-root"></div>
@@ -4167,6 +4214,9 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
               <div style="color:var(--text-dim);font-size:.8rem;">Loading announcements…</div>
             </div>
           </div>
+
+          <!-- ── CSAT Reports — loaded from csat_module_patch.js ── -->
+          <div id="cd-csat-card"></div>
 
         </div>
       </div>
@@ -17989,4 +18039,13 @@ async function tmHandleSignal(sig){
 
 </script>
 
+<!-- ═══════════════════════════════════════════════════
+     CSAT MODULE — separate maintainable files
+     Edit csat_styles.css and csat_module_patch.js only.
+     Never need to touch index.html for CSAT changes.
+═══════════════════════════════════════════════════ -->
+<link rel="stylesheet" href="csat_styles.css"/>
+<script src="csat_module_patch.js"></script>
 
+</body>
+</html>

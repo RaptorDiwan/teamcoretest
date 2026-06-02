@@ -1,0 +1,151 @@
+/* ═══════════════════════════════════════════════════
+   K7TeamCore — CSAT Module Styles
+   Edit freely. index.html loads this automatically.
+═══════════════════════════════════════════════════ */
+
+/* ── Page layout ── */
+.csat-page { display:flex; flex-direction:column; gap:1.2rem; padding-bottom:3rem; }
+.csat-title { font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:600; color:var(--text-primary); margin-bottom:.2rem; }
+.csat-sub   { font-size:.82rem; color:var(--text-muted); }
+
+/* ── Tab strip ── */
+.csat-tabs { display:flex; gap:.4rem; flex-wrap:wrap; border-bottom:1px solid var(--navy-border); padding-bottom:0; margin-bottom:.25rem; }
+.csat-tab {
+  display:flex; align-items:center; gap:.4rem;
+  padding:.55rem 1.1rem; background:transparent; border:none;
+  border-bottom:2px solid transparent; color:var(--text-muted);
+  font-family:'DM Sans',sans-serif; font-size:.84rem; font-weight:500;
+  cursor:pointer; transition:all .2s; margin-bottom:-1px; border-radius:6px 6px 0 0;
+}
+.csat-tab:hover { color:var(--text-primary); background:var(--navy-hover); }
+.csat-tab.active { color:var(--gold); border-bottom-color:var(--gold); background:rgba(239,73,60,.06); font-weight:600; }
+.csat-tab-dot { width:7px; height:7px; border-radius:50%; background:var(--text-dim); flex-shrink:0; transition:background .2s; }
+.csat-tab.active .csat-tab-dot  { background:var(--gold); }
+.csat-tab.has-data .csat-tab-dot { background:var(--accent-green); }
+
+/* ── Stats strip ── */
+.csat-stats { display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:.75rem; }
+.csat-stat  { background:var(--navy-card); border:1px solid var(--navy-border); border-radius:var(--radius); padding:.9rem 1.1rem; }
+.csat-stat-label { font-size:.62rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-dim); margin-bottom:.35rem; }
+.csat-stat-val   { font-family:'Cormorant Garamond',serif; font-size:1.9rem; font-weight:600; color:var(--text-primary); line-height:1; }
+.csat-stat-val.green { color:var(--accent-green); }
+.csat-stat-val.red   { color:var(--accent-red); }
+.csat-stat-val.blue  { color:var(--accent-blue); }
+.csat-stat-val.gold  { color:var(--gold); }
+
+/* ── Upload zone ── */
+.csat-upload-zone {
+  border:2px dashed var(--navy-border); border-radius:var(--radius);
+  padding:1.8rem; text-align:center; cursor:pointer;
+  transition:border-color .2s,background .2s; position:relative; background:var(--navy-card);
+}
+.csat-upload-zone:hover, .csat-upload-zone.drag { border-color:var(--gold); background:rgba(239,73,60,.03); }
+.csat-upload-zone input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; width:100%; height:100%; }
+.csat-upload-badge {
+  display:inline-flex; align-items:center; gap:.35rem; font-size:.72rem;
+  color:var(--accent-green); background:rgba(46,197,111,.1);
+  border:1px solid rgba(46,197,111,.25); border-radius:20px; padding:.18rem .65rem;
+}
+
+/* ── Report table ── */
+.csat-table-wrap { background:var(--navy-card); border:1px solid var(--navy-border); border-radius:var(--radius); overflow:hidden; }
+.csat-table-header {
+  display:flex; align-items:center; justify-content:space-between;
+  padding:.85rem 1.2rem; border-bottom:1px solid var(--navy-border);
+  flex-wrap:wrap; gap:.6rem; background:rgba(7,13,45,.02);
+}
+.csat-tbl-scroll { overflow-x:auto; }
+table.csat-tbl { width:100%; border-collapse:collapse; min-width:860px; font-size:.8rem; }
+table.csat-tbl thead tr { background:rgba(7,13,45,.04); border-bottom:2px solid var(--navy-border); }
+table.csat-tbl th {
+  padding:.65rem .9rem; text-align:left; font-size:.62rem; font-weight:700;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted);
+  white-space:nowrap; border-right:1px solid var(--navy-border);
+}
+table.csat-tbl th:last-child { border-right:none; }
+table.csat-tbl td {
+  padding:.6rem .9rem; border-bottom:1px solid var(--navy-border);
+  border-right:1px solid var(--navy-border); vertical-align:middle; white-space:nowrap;
+}
+table.csat-tbl td:last-child  { border-right:none; }
+table.csat-tbl tr:last-child td { border-bottom:none; }
+table.csat-tbl tr:hover td    { background:var(--navy-hover); }
+table.csat-tbl tbody tr:nth-child(even) { background:rgba(226,235,245,.25); }
+
+/* My row — soft gold glow */
+table.csat-tbl tr.csat-my-row td {
+  background:rgba(239,73,60,.05) !important;
+  box-shadow:inset 3px 0 0 var(--gold);
+}
+/* DSAT row */
+table.csat-tbl tr.csat-dsat-row td { background:rgba(239,73,60,.05) !important; }
+table.csat-tbl tr.csat-dsat-row td:first-child { border-left:3px solid var(--accent-red); }
+/* Agent group separator */
+table.csat-tbl tr.csat-agent-sep td { border-bottom:2px solid var(--navy-mid) !important; }
+
+/* ── Score chips ── */
+.cs-chip { display:inline-flex; align-items:center; justify-content:center; min-width:34px; padding:.18rem .5rem; border-radius:20px; font-weight:700; font-size:.76rem; }
+.cs-5 { background:#d1fae5; color:#065f46; }
+.cs-4 { background:#dbeafe; color:#1e40af; }
+.cs-3 { background:#fef9c3; color:#854d0e; }
+.cs-2 { background:#fee2e2; color:#991b1b; }
+.cs-1 { background:#fce7f3; color:#9d174d; }
+.cs-avg { display:inline-flex; align-items:center; justify-content:center; min-width:48px; padding:.22rem .7rem; border-radius:8px; font-weight:700; font-size:.88rem; font-family:'Cormorant Garamond',serif; }
+.cs-avg-h { background:#d1fae5; color:#065f46; border:1px solid #6ee7b7; }
+.cs-avg-m { background:#dbeafe; color:#1e40af; border:1px solid #93c5fd; }
+.cs-avg-l { background:#fef9c3; color:#854d0e; border:1px solid #fde68a; }
+.cs-avg-p { background:#fee2e2; color:#991b1b; border:1px solid #fca5a5; }
+
+/* ── Leaderboard ── */
+.csat-lb { display:flex; flex-direction:column; gap:.5rem; }
+.csat-lb-row {
+  display:flex; align-items:center; gap:.85rem; padding:.7rem 1rem;
+  background:var(--navy-hover); border:1px solid var(--navy-border);
+  border-radius:var(--radius-sm); transition:all .15s;
+}
+.csat-lb-row:hover { border-color:var(--gold-dim); transform:translateX(2px); }
+.csat-lb-rank { font-family:'Cormorant Garamond',serif; font-size:1.3rem; font-weight:600; color:var(--text-dim); width:26px; text-align:center; flex-shrink:0; }
+.csat-lb-rank.top1 { color:#f59e0b; }
+.csat-lb-rank.top2 { color:#94a3b8; }
+.csat-lb-rank.top3 { color:#cd7c2f; }
+.csat-lb-name    { flex:1; font-size:.875rem; font-weight:600; color:var(--text-primary); }
+.csat-lb-tickets { font-size:.72rem; color:var(--text-muted); }
+.csat-lb-bar-wrap { width:120px; flex-shrink:0; }
+.csat-lb-bar-bg   { height:6px; background:var(--navy-border); border-radius:3px; overflow:hidden; }
+.csat-lb-bar-fill { height:100%; border-radius:3px; background:var(--accent-green); transition:width .4s ease; }
+.csat-lb-row.lb-dsat .csat-lb-bar-fill { background:var(--accent-red); }
+.csat-lb-row.lb-my  { box-shadow:inset 3px 0 0 var(--gold); background:rgba(239,73,60,.06); }
+
+/* ── Filter ── */
+.csat-filter-bar { display:flex; gap:.6rem; flex-wrap:wrap; align-items:center; }
+.csat-filter-inp {
+  padding:.42rem .85rem; background:var(--navy-card); border:1px solid var(--navy-border);
+  border-radius:20px; font-family:'DM Sans',sans-serif; font-size:.8rem;
+  color:var(--text-primary); outline:none; min-width:200px; transition:border-color .2s;
+}
+.csat-filter-inp:focus { border-color:var(--gold-dim); }
+
+/* ── Email button ── */
+.csat-email-btn {
+  display:flex; align-items:center; gap:.55rem;
+  padding:.6rem 1.4rem; background:linear-gradient(135deg,#4C76A8,#6B93C4);
+  border:none; border-radius:var(--radius-sm); color:#fff;
+  font-family:'DM Sans',sans-serif; font-size:.85rem; font-weight:600;
+  cursor:pointer; transition:opacity .2s; white-space:nowrap;
+}
+.csat-email-btn:hover { opacity:.88; }
+
+/* ── No data placeholder ── */
+.csat-no-data {
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  padding:4rem 2rem; text-align:center; color:var(--text-dim);
+  background:var(--navy-card); border:1px solid var(--navy-border); border-radius:var(--radius);
+}
+.csat-no-data-icon  { font-size:2.4rem; margin-bottom:.75rem; opacity:.5; }
+.csat-no-data-title { font-size:.95rem; font-weight:600; color:var(--text-muted); margin-bottom:.35rem; }
+.csat-no-data-sub   { font-size:.78rem; line-height:1.6; max-width:300px; }
+
+/* ── Dark mode ── */
+body.dark .csat-upload-zone  { background:#1A2236; border-color:#2D3748; }
+body.dark .csat-filter-inp   { background:#111827; border-color:#2D3748; color:#F1F5F9; }
+body.dark table.csat-tbl thead tr { background:rgba(255,255,255,.03); }
