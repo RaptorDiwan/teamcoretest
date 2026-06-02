@@ -1223,6 +1223,11 @@
   .qa-toggle-btn { background:rgba(76,118,168,.1); border:1px solid rgba(76,118,168,.25); color:var(--accent-blue); padding:.35rem .85rem; border-radius:6px; font-size:.78rem; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif; transition:all .2s; }
   .qa-toggle-btn:hover { background:rgba(76,118,168,.2); }
   .qa-toggle-btn.on { background:rgba(46,197,111,.12); border-color:rgba(46,197,111,.3); color:#1a7a45; }
+  .qbr-mark-btn { padding:.28rem .65rem; border-radius:5px; font-family:'DM Sans',sans-serif; font-size:.74rem; font-weight:700; cursor:pointer; border:1px solid; transition:all .2s; }
+  .qbr-mark-btn.correct { background:rgba(46,197,111,.1); border-color:rgba(46,197,111,.3); color:#1a7a45; }
+  .qbr-mark-btn.correct:hover { background:rgba(46,197,111,.22); }
+  .qbr-mark-btn.wrong { background:rgba(239,73,60,.08); border-color:rgba(239,73,60,.25); color:var(--accent-red); }
+  .qbr-mark-btn.wrong:hover { background:rgba(239,73,60,.18); }
 
   /* Agent quiz/assessment view */
   .quiz-lock-screen { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:60vh; text-align:center; gap:1rem; }
@@ -3281,7 +3286,48 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
             <div id="qb-msg" style="font-size:.82rem;margin:.75rem 0;display:none;"></div>
             <div style="display:flex;gap:.75rem;margin-top:1rem;"><button class="qa-save-btn" onclick="saveQuiz()">Save Quiz</button><button class="qa-cancel-btn" onclick="resetQuizBuilder()">Clear</button></div>
           </div>
-          <div><div class="section-title" style="margin-top:.5rem;">Saved Quizzes</div><div class="qa-list" id="qb-list"><div style="color:var(--text-dim);font-size:.875rem;padding:1rem;">Loading...</div></div></div>
+          <!-- SAVED QUIZZES: MONTH FOLDERS -->
+          <div style="margin-top:.5rem;">
+            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem;">
+              <div class="section-title" style="margin:0;">&#128193; Saved Quizzes</div>
+              <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+                <button class="qa-toggle-btn" onclick="qbBackupAllResponses()" title="Download all quiz responses as JSON backup">&#128229; Backup All Responses</button>
+                <button class="qa-toggle-btn" onclick="qbViewAllResponses()" title="View all agent answers">&#128065; View All Answers</button>
+                <button class="qa-toggle-btn" onclick="qbOpenLeaderboardManager()" title="Manage leaderboard entries">&#127942; Leaderboard Manager</button>
+              </div>
+            </div>
+            <div id="qb-list"><div style="color:var(--text-dim);font-size:.875rem;padding:1rem;">Loading...</div></div>
+            <!-- All Answers Panel -->
+            <div id="qb-all-answers-panel" style="display:none;margin-top:1rem;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius);padding:1.2rem 1.4rem;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem;">
+                <div style="font-size:.88rem;font-weight:700;color:var(--text-primary);">&#128203; All Agent Answers</div>
+                <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">
+                  <input type="date" id="qb-aa-from" class="ts-input" style="width:140px;"/>
+                  <input type="date" id="qb-aa-to" class="ts-input" style="width:140px;"/>
+                  <button class="qa-toggle-btn on" onclick="qbLoadAllAnswers()">Load</button>
+                  <button class="qa-toggle-btn" onclick="qbDownloadAnswersCSV()" id="qb-aa-dl-btn" style="display:none;">&#8659; CSV</button>
+                  <button class="qa-del-btn" onclick="document.getElementById('qb-all-answers-panel').style.display='none'">&#10005; Close</button>
+                </div>
+              </div>
+              <div id="qb-aa-body" style="color:var(--text-dim);font-size:.85rem;">Select date range and click Load.</div>
+            </div>
+            <!-- Leaderboard Manager -->
+            <div id="qb-lb-manager-panel" style="display:none;margin-top:1rem;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius);padding:1.2rem 1.4rem;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;flex-wrap:wrap;gap:.5rem;">
+                <div>
+                  <div style="font-size:.88rem;font-weight:700;color:var(--text-primary);">&#127942; Leaderboard Manager</div>
+                  <div style="font-size:.74rem;color:var(--text-muted);margin-top:.15rem;">Delete test entries or manually fix marks. Rankings auto-recalculate.</div>
+                </div>
+                <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:center;">
+                  <input type="date" id="qb-lb-from" class="ts-input" style="width:140px;"/>
+                  <input type="date" id="qb-lb-to" class="ts-input" style="width:140px;"/>
+                  <button class="qa-toggle-btn on" onclick="qbLoadLeaderboardManager()">Load</button>
+                  <button class="qa-del-btn" onclick="document.getElementById('qb-lb-manager-panel').style.display='none'">&#10005; Close</button>
+                </div>
+              </div>
+              <div id="qb-lb-body" style="color:var(--text-dim);font-size:.85rem;">Select date range and click Load.</div>
+            </div>
+          </div>
 
           <!-- ── QUIZ MONTHLY REPORT ── -->
           <div class="qa-builder-card" style="margin-top:1.5rem;">
@@ -6058,7 +6104,6 @@ function renderBreakReport(breaks, from, to){
     html += '</tbody></table>';
 
     // ── Detail table: individual break entries with Start / End times ──
-    var isGodMode = typeof _isSysLevel === 'function' && _isSysLevel();
     html += '<table class="reports-table" style="margin-bottom:2rem;font-size:.82rem;">';
     html += '<thead><tr>' +
       '<th style="background:#d4e4f7;color:#1a2a4a;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;">Agent</th>' +
@@ -6067,7 +6112,6 @@ function renderBreakReport(breaks, from, to){
       '<th style="background:#d4e4f7;color:#1a2a4a;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;">End Time</th>' +
       '<th style="background:#d4e4f7;color:#1a2a4a;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;">Duration</th>' +
       '<th style="background:#d4e4f7;color:#1a2a4a;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;">Status</th>' +
-      (isGodMode ? '<th style="background:#d4e4f7;color:#1a2a4a;font-size:.72rem;letter-spacing:.05em;text-transform:uppercase;">⚙ Delete</th>' : '') +
       '</tr></thead><tbody>';
 
     agents.forEach(function(name){
@@ -6084,17 +6128,13 @@ function renderBreakReport(breaks, from, to){
           : (over
             ? '<span style="background:rgba(239,73,60,.12);color:#EF493C;border:1px solid rgba(239,73,60,.3);border-radius:4px;padding:1px 7px;font-size:.7rem;font-weight:700;">Exceeded</span>'
             : '<span style="background:rgba(46,197,111,.12);color:#2EC56F;border:1px solid rgba(46,197,111,.3);border-radius:4px;padding:1px 7px;font-size:.7rem;font-weight:700;">Done</span>');
-        var deleteTd = isGodMode
-          ? '<td><button onclick="rptDeleteBreak(\''+b.id+'\')" title="Delete this break entry" style="background:rgba(239,73,60,.1);color:var(--accent-red);border:1px solid rgba(239,73,60,.28);border-radius:5px;padding:2px 8px;font-size:.72rem;font-weight:700;cursor:pointer;">🗑 Del</button></td>'
-          : '';
-        html += '<tr id="rpt-brow-'+b.id+'" style="'+rowBg+'">' +
+        html += '<tr style="'+rowBg+'">' +
           '<td style="font-weight:500;color:var(--text-primary);">'+(idx===0?name:'')+'</td>' +
           '<td>'+(BREAK_EMOJIS[b.break_type]||'')+'&nbsp;'+(BREAK_LABELS[b.break_type]||b.break_type||'-')+'</td>' +
           '<td style="font-variant-numeric:tabular-nums;font-weight:600;">'+(b.start_time?fmtTime(b.start_time):'-')+'</td>' +
           '<td style="font-variant-numeric:tabular-nums;font-weight:600;">'+(isLive?'<span style="color:#E8B84B;">—</span>':fmtTime(b.end_time))+'</td>' +
           '<td style="font-variant-numeric:tabular-nums;'+(over?'color:var(--accent-red);font-weight:600;':'')+'">'+fmtDurMin(secs)+(isLive?'<span style="font-size:.65rem;color:#E8B84B;"> (live)</span>':'')+'</td>' +
           '<td>'+statusHtml+'</td>' +
-          deleteTd+
           '</tr>';
       });
     });
@@ -6105,19 +6145,6 @@ function renderBreakReport(breaks, from, to){
   output.style.display='block';
   output.style.padding='1rem';
   output.innerHTML = html;
-}
-
-// ── God-mode: delete a break entry directly from the report view ──
-async function rptDeleteBreak(breakId){
-  if(!_isSysLevel()){ alert('God Mode only.'); return; }
-  if(!confirm('Delete this break entry? This cannot be undone.')) return;
-  try{
-    await sbDelete('breaks','id',breakId);
-    var row = document.getElementById('rpt-brow-'+breakId);
-    if(row){ row.style.transition='opacity .3s'; row.style.opacity='0'; setTimeout(function(){ row.remove(); },320); }
-    // Also remove from _reportData so re-exports are accurate
-    _reportData = _reportData.filter(function(b){ return b.id !== breakId; });
-  }catch(e){ alert('Delete failed: '+e.message); }
 }
 
 // ─── Punctuality helpers (defined here so they're available when renderAttendanceReport runs) ───
@@ -6291,46 +6318,19 @@ async function attSaveStatus(rowId, selId, inlineId, btn){
 function exportReportCSV(){
   if(!_reportData.length){ alert('Pull a report first.'); return; }
   var type = document.getElementById('report-type').value;
-  var fromDate = document.getElementById('report-from').value;
-  var toDate   = document.getElementById('report-to').value;
-
-  // Helper: escape a CSV cell value
-  function csvCell(v){ return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'; }
-
-  var csvLines = [];
-
+  var headers, rows;
   if(type==='attendance'){
-    // ── Filter info header ──
-    csvLines.push(csvCell('Report: Login / Logout')+',,,,');
-    csvLines.push(csvCell('Period: '+fromDate+' to '+toDate)+',,,,');
-    csvLines.push(''); // blank spacer
-
-    // ── Group by date ──
-    var byDate = {};
-    _reportData.forEach(function(r){ if(!byDate[r.date]) byDate[r.date]=[]; byDate[r.date].push(r); });
-    var dates = Object.keys(byDate).sort();
-
-    dates.forEach(function(date, di){
-      // Date section header row
-      csvLines.push(csvCell('— '+fmtDateHeader(date)+' —')+',,,,');
-      // Column headers
-      csvLines.push(['Date','Agent','Login Time','Logout Time','Total Hours','Status'].map(csvCell).join(','));
-      byDate[date].forEach(function(r){
-        var dur='-';
-        if(r.login_time&&r.logout_time){var diff=Math.floor((new Date(r.logout_time)-new Date(r.login_time))/1000);dur=Math.floor(diff/3600)+'h '+Math.floor((diff%3600)/60)+'m';}
-        var agentName = r.user_name || '';
-        var status = r.attendance_status || computePunctuality(agentName, r.date, r.login_time);
-        csvLines.push([r.date,agentName,fmtTime(r.login_time),r.logout_time?fmtTime(r.logout_time):'Still in',dur,status].map(csvCell).join(','));
-      });
-      csvLines.push(''); // blank row between dates
+    headers = ['Date','Agent','Login Time','Logout Time','Total Hours','Status'];
+    rows = _reportData.map(function(r){
+      var dur='-';
+      if(r.login_time&&r.logout_time){var diff=Math.floor((new Date(r.logout_time)-new Date(r.login_time))/1000);dur=Math.floor(diff/3600)+'h '+Math.floor((diff%3600)/60)+'m';}
+      var agentName = r.user_name || '';
+      var status = r.attendance_status || computePunctuality(agentName, r.date, r.login_time);
+      return [r.date,agentName,fmtTime(r.login_time),r.logout_time?fmtTime(r.logout_time):'Still in',dur,status];
     });
-
   } else {
-    // ── Filter info header ──
-    csvLines.push(csvCell('Report: Break Tracker')+',,,,,,');
-    csvLines.push(csvCell('Period: '+fromDate+' to '+toDate)+',,,,,,');
-    csvLines.push(''); // blank spacer
-
+    // Group by date+agent for Excel-style export
+    headers = ['Date','Username','Breakfast','Lunch','Beverage','Short Break','Total Break Time','Exceeded Limits'];
     // Group by date+agent — SUM durations if same break type taken multiple times
     var byDateAgent = {};
     _reportData.forEach(function(b){
@@ -6341,54 +6341,35 @@ function exportReportCSV(){
         beverage:{secs:0,over:false}, shortbreak:{secs:0,over:false}
       };
       var bt=b.break_type;
-      if(byDateAgent[bt]===undefined && byDateAgent[key][bt]!==undefined){
+      if(byDateAgent[key][bt]!==undefined){
         byDateAgent[key][bt].secs += (b.duration_seconds||0);
-        byDateAgent[key][bt].over = byDateAgent[key][bt].secs >= (BREAK_LIMITS[bt]||0)*60+60;
-      } else if(byDateAgent[key][bt]!==undefined){
-        byDateAgent[key][bt].secs += (b.duration_seconds||0);
-        byDateAgent[key][bt].over = byDateAgent[key][bt].secs >= (BREAK_LIMITS[bt]||0)*60+60;
+        // Over-limit: true if total exceeds limit for that type
+        byDateAgent[key][bt].over = byDateAgent[key][bt].secs >= (BREAK_LIMITS[bt]||0)*60+60; // exceeded only after full extra minute
       }
     });
-
-    // Group entries by date for section headers
-    var byDate2 = {};
-    Object.values(byDateAgent).forEach(function(ag){
-      if(!byDate2[ag.date]) byDate2[ag.date]=[];
-      byDate2[ag.date].push(ag);
-    });
-    var dates2 = Object.keys(byDate2).sort();
-
-    dates2.forEach(function(date){
-      // Date section header row
-      csvLines.push(csvCell('— '+fmtDateHeader(date)+' —')+',,,,,,');
-      // Column headers
-      csvLines.push(['Date','Username','Breakfast','Lunch','Beverage','Short Break','Total Break Time','Exceeded Limits'].map(csvCell).join(','));
-      byDate2[date].sort(function(a,b){return a.name.localeCompare(b.name);}).forEach(function(ag){
-        var bf=ag.breakfast,lu=ag.lunch,bv=ag.beverage,sb=ag.shortbreak;
-        var total=bf.secs+lu.secs+bv.secs+sb.secs;
-        var exc=[];
-        if(bf.over)exc.push('Breakfast');
-        if(lu.over)exc.push('Lunch');
-        if(bv.over)exc.push('Beverage');
-        if(sb.over)exc.push('Short Break');
-        csvLines.push([
-          ag.date, ag.name,
-          bf.secs>0?fmtDurMin(bf.secs):'-',
-          lu.secs>0?fmtDurMin(lu.secs):'-',
-          bv.secs>0?fmtDurMin(bv.secs):'-',
-          sb.secs>0?fmtDurMin(sb.secs):'-',
-          total>0?fmtDurMin(total):'-',
-          exc.length?exc.join(', '):'-'
-        ].map(csvCell).join(','));
-      });
-      csvLines.push(''); // blank row between dates
+    rows = Object.values(byDateAgent).sort(function(a,b){return a.date.localeCompare(b.date)||a.name.localeCompare(b.name);}).map(function(ag){
+      var bf=ag.breakfast,lu=ag.lunch,bv=ag.beverage,sb=ag.shortbreak;
+      var total=bf.secs+lu.secs+bv.secs+sb.secs;
+      var exc=[];
+      if(bf.over)exc.push('Breakfast');
+      if(lu.over)exc.push('Lunch');
+      if(bv.over)exc.push('Beverage');
+      if(sb.over)exc.push('Short Break');
+      return [
+        ag.date, ag.name,
+        bf.secs>0?fmtDurMin(bf.secs):'-',
+        lu.secs>0?fmtDurMin(lu.secs):'-',
+        bv.secs>0?fmtDurMin(bv.secs):'-',
+        sb.secs>0?fmtDurMin(sb.secs):'-',
+        total>0?fmtDurMin(total):'-',
+        exc.length?exc.join(', '):'-'
+      ];
     });
   }
-
-  var csv = csvLines.join('\n');
+  var csv=[headers.join(',')].concat(rows.map(function(r){return r.map(function(v){return '"'+String(v).replace(/"/g,'""')+'"';}).join(',');})).join('\n');
   var blob=new Blob([csv],{type:'text/csv'});
   var a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download=type+'_report_'+fromDate+'_to_'+toDate+'.csv';a.click();
+  a.download=type+'_report_'+todayStr()+'.csv';a.click();
 }
 
 async function loadReportAgents(){
@@ -7376,75 +7357,399 @@ async function loadQuizBuilderList(){
     var rows=await sbQuery('quizzes','select=id,question,type,date,open_time,close_time,max_attempts,review_enabled,correct_answer,enabled&order=date.desc,open_time.desc');
     if(!rows||!rows.length){list.innerHTML='<div style="color:var(--text-dim);padding:1rem;font-size:.875rem;">No quizzes yet. Create one above.</div>';return;}
     list.innerHTML='';
+
+    // ── Group quizzes by Month-Year ──
+    var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+    var folders={}; // key = "YYYY-MM", value = { label, quizzes[] }
     rows.forEach(function(q){
-      var status=qaGetStatus(q.open_time,q.close_time);
-      var statusLabels={upcoming:'Upcoming',open:'Open Now',closed:'Closed'};
-      var isEssay=q.type==='essay';
-      var isEnabled=q.enabled!==false;
-      var item=document.createElement('div');
-      item.className='qa-item'; item.id='qbi-'+q.id;
-      if(!isEnabled) item.style.cssText='opacity:.55;border-color:rgba(255,255,255,.08);';
+      var d=q.date||''; var parts=d.split('-');
+      var key=parts[0]+'-'+parts[1];
+      if(!folders[key]){
+        var mo=parseInt(parts[1],10)-1;
+        folders[key]={label:MONTHS[mo]+' '+parts[0],year:parts[0],month:parts[1],quizzes:[]};
+      }
+      folders[key].quizzes.push(q);
+    });
 
-      // Left side
-      var left=document.createElement('div'); left.className='qa-item-left';
-      var titleRow=document.createElement('div'); titleRow.style.cssText='display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem;';
-      if(!isEnabled){var badge=document.createElement('span');badge.style.cssText='font-size:.68rem;font-weight:700;background:rgba(239,73,60,.15);color:#ef493c;padding:1px 7px;border-radius:10px;';badge.textContent='DISABLED';titleRow.appendChild(badge);}
-      var title=document.createElement('div'); title.className='qa-item-title'; title.style.margin='0';
-      title.textContent=q.question.slice(0,80)+(q.question.length>80?'...':'');
-      titleRow.appendChild(title); left.appendChild(titleRow);
-      var meta=document.createElement('div'); meta.className='qa-item-meta';
-      meta.innerHTML='<span>'+q.type.toUpperCase()+'</span><span>'+qaFmtDateTime(q.open_time)+' &#8594; '+qaFmtDateTime(q.close_time)+'</span><span>Max '+q.max_attempts+' attempt(s)</span>';
-      left.appendChild(meta); item.appendChild(left);
+    var folderKeys=Object.keys(folders).sort(function(a,b){return b.localeCompare(a);}); // newest first
 
-      // Right side buttons
-      var right=document.createElement('div'); right.style.cssText='display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;';
-      var pill=document.createElement('span'); pill.className='qa-status-pill '+status; pill.textContent=statusLabels[status];
-      right.appendChild(pill);
+    folderKeys.forEach(function(key,fi){
+      var folder=folders[key];
+      var folderEl=document.createElement('div');
+      folderEl.style.cssText='margin-bottom:.75rem;border:1px solid var(--navy-border);border-radius:var(--radius);overflow:hidden;';
 
-      // Edit button
-      var editBtn=document.createElement('button'); editBtn.className='qa-toggle-btn'; editBtn.innerHTML='&#9998; Edit';
-      editBtn.onclick=(function(id){ return function(){ qbEditQuiz(this,id); }; })(q.id);
-      right.appendChild(editBtn);
+      // Folder header
+      var hdr=document.createElement('div');
+      hdr.style.cssText='display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.1rem;background:var(--navy-hover);cursor:pointer;user-select:none;flex-wrap:wrap;gap:.5rem;';
 
-      // Enable/Disable button
-      var enBtn=document.createElement('button'); enBtn.className='qa-toggle-btn'+(isEnabled?' on':'');
-      enBtn.innerHTML=isEnabled?'&#9989; Enabled':'&#10060; Disabled';
-      enBtn.onclick=(function(id,en){ return function(){ qbToggleEnabled(id,en); }; })(q.id,isEnabled);
-      right.appendChild(enBtn);
+      var hdrLeft=document.createElement('div');
+      hdrLeft.style.cssText='display:flex;align-items:center;gap:.65rem;';
+      var arrow=document.createElement('span'); arrow.textContent='▼';
+      arrow.style.cssText='font-size:.7rem;color:var(--gold);transition:transform .2s;';
+      arrow.id='qbf-arrow-'+key;
+      var folderLabel=document.createElement('span');
+      folderLabel.style.cssText='font-size:.88rem;font-weight:700;color:var(--text-primary);';
+      folderLabel.textContent='📁 '+folder.label;
+      var countBadge=document.createElement('span');
+      countBadge.style.cssText='font-size:.68rem;font-weight:600;padding:2px 9px;border-radius:20px;background:rgba(239,73,60,.1);color:var(--gold);';
+      countBadge.textContent=folder.quizzes.length+' quiz'+(folder.quizzes.length!==1?'zes':'');
+      hdrLeft.appendChild(arrow); hdrLeft.appendChild(folderLabel); hdrLeft.appendChild(countBadge);
 
-      // Essay review
-      if(isEssay){
-        var revBtn=document.createElement('button'); revBtn.className='qa-toggle-btn'; revBtn.id='qbr-btn-'+q.id; revBtn.innerHTML='&#128065; Review Answers';
-        revBtn.onclick=(function(id){ return function(){ qbToggleEssayReview(id); }; })(q.id);
+      var hdrRight=document.createElement('div');
+      hdrRight.style.cssText='display:flex;gap:.5rem;flex-wrap:wrap;';
+
+      // Folder backup button
+      var fbkBtn=document.createElement('button'); fbkBtn.className='qa-toggle-btn';
+      fbkBtn.innerHTML='&#8659; Backup Month';
+      fbkBtn.title='Download all responses for '+folder.label+' as CSV';
+      fbkBtn.onclick=(function(yr,mo,lbl){return function(e){e.stopPropagation();qbBackupMonthResponses(yr,mo,lbl);};})(folder.year,folder.month,folder.label);
+      hdrRight.appendChild(fbkBtn);
+
+      // Delete entire month button
+      var fdelBtn=document.createElement('button'); fdelBtn.className='qa-del-btn';
+      fdelBtn.innerHTML='&#128465; Delete '+folder.label;
+      fdelBtn.title='Delete ALL quizzes and responses for '+folder.label;
+      fdelBtn.onclick=(function(k,lbl){return function(e){e.stopPropagation();qbDeleteMonth(k,lbl);};})(key,folder.label);
+      hdrRight.appendChild(fdelBtn);
+
+      hdr.appendChild(hdrLeft); hdr.appendChild(hdrRight);
+
+      // Folder body (quiz items)
+      var body=document.createElement('div');
+      body.id='qbf-body-'+key;
+      body.style.cssText='padding:.6rem .75rem;display:block;'; // open by default for current month, closed for older
+      var isCurrentMonth=(function(){var n=new Date();var nm=String(n.getMonth()+1).padStart(2,'0');return key===n.getFullYear()+'-'+nm;})();
+      if(fi>0) body.style.display='none', arrow.style.transform='rotate(-90deg)';
+
+      // Toggle folder open/close
+      hdr.onclick=function(){
+        var bd=document.getElementById('qbf-body-'+key);
+        var ar=document.getElementById('qbf-arrow-'+key);
+        if(bd.style.display==='none'){bd.style.display='block';if(ar)ar.style.transform='';}
+        else{bd.style.display='none';if(ar)ar.style.transform='rotate(-90deg)';}
+      };
+
+      // Build quiz items inside folder
+      folder.quizzes.forEach(function(q){
+        var status=qaGetStatus(q.open_time,q.close_time);
+        var statusLabels={upcoming:'Upcoming',open:'Open Now',closed:'Closed'};
+        var isEssay=q.type==='essay';
+        var isEnabled=q.enabled!==false;
+        var item=document.createElement('div');
+        item.className='qa-item'; item.id='qbi-'+q.id;
+        item.style.cssText='margin-bottom:.5rem;'+(isEnabled?'':'opacity:.55;border-color:rgba(255,255,255,.08);');
+
+        var left=document.createElement('div'); left.className='qa-item-left';
+        var titleRow=document.createElement('div'); titleRow.style.cssText='display:flex;align-items:center;gap:.5rem;margin-bottom:.25rem;';
+        if(!isEnabled){var badge=document.createElement('span');badge.style.cssText='font-size:.68rem;font-weight:700;background:rgba(239,73,60,.15);color:#ef493c;padding:1px 7px;border-radius:10px;';badge.textContent='DISABLED';titleRow.appendChild(badge);}
+        var title=document.createElement('div'); title.className='qa-item-title'; title.style.margin='0';
+        title.textContent=q.question.slice(0,80)+(q.question.length>80?'...':'');
+        titleRow.appendChild(title); left.appendChild(titleRow);
+        var meta=document.createElement('div'); meta.className='qa-item-meta';
+        meta.innerHTML='<span>'+q.date+'</span><span>'+q.type.toUpperCase()+'</span><span>'+qaFmtDateTime(q.open_time)+' &#8594; '+qaFmtDateTime(q.close_time)+'</span><span>Max '+q.max_attempts+' attempt(s)</span>';
+        left.appendChild(meta); item.appendChild(left);
+
+        var right=document.createElement('div'); right.style.cssText='display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;';
+        var pill=document.createElement('span'); pill.className='qa-status-pill '+status; pill.textContent=statusLabels[status];
+        right.appendChild(pill);
+
+        var editBtn=document.createElement('button'); editBtn.className='qa-toggle-btn'; editBtn.innerHTML='&#9998; Edit';
+        editBtn.onclick=(function(id){return function(){qbEditQuiz(this,id);};})(q.id);
+        right.appendChild(editBtn);
+
+        var enBtn=document.createElement('button'); enBtn.className='qa-toggle-btn'+(isEnabled?' on':'');
+        enBtn.innerHTML=isEnabled?'&#9989; Enabled':'&#10060; Disabled';
+        enBtn.onclick=(function(id,en){return function(){qbToggleEnabled(id,en);};})(q.id,isEnabled);
+        right.appendChild(enBtn);
+
+        // View Responses button (for ALL quiz types, not just essay)
+        var revBtn=document.createElement('button'); revBtn.className='qa-toggle-btn'; revBtn.id='qbr-btn-'+q.id; revBtn.innerHTML='&#128065; Responses';
+        revBtn.onclick=(function(id){return function(){qbToggleEssayReview(id);};})(q.id);
         right.appendChild(revBtn);
-      }
 
-      // Review toggle
-      var rtBtn=document.createElement('button'); rtBtn.className='qa-toggle-btn'+(q.review_enabled?' on':'');
-      rtBtn.innerHTML='&#128065; Review '+(q.review_enabled?'ON':'OFF'); rtBtn.title='Toggle review mode';
-      rtBtn.onclick=(function(id,rv){ return function(){ toggleQuizReview(id,rv); }; })(q.id,q.review_enabled);
-      right.appendChild(rtBtn);
+        var rtBtn=document.createElement('button'); rtBtn.className='qa-toggle-btn'+(q.review_enabled?' on':'');
+        rtBtn.innerHTML='&#128065; Review '+(q.review_enabled?'ON':'OFF'); rtBtn.title='Toggle review mode';
+        rtBtn.onclick=(function(id,rv){return function(){toggleQuizReview(id,rv);};})(q.id,q.review_enabled);
+        right.appendChild(rtBtn);
 
-      // Delete
-      var delBtn=document.createElement('button'); delBtn.className='qa-del-btn'; delBtn.textContent='Delete';
-      delBtn.onclick=(function(id){ return function(){ deleteQuiz(id); }; })(q.id);
-      right.appendChild(delBtn);
+        var delBtn=document.createElement('button'); delBtn.className='qa-del-btn'; delBtn.textContent='Delete';
+        delBtn.onclick=(function(id){return function(){deleteQuiz(id);};})(q.id);
+        right.appendChild(delBtn);
 
-      item.appendChild(right);
+        item.appendChild(right);
 
-      // Edit panel
-      var editPanel=document.createElement('div'); editPanel.id='qb-edit-'+q.id; editPanel.style.cssText='display:none;width:100%;margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;';
-      item.appendChild(editPanel);
+        var editPanel=document.createElement('div'); editPanel.id='qb-edit-'+q.id; editPanel.style.cssText='display:none;width:100%;margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;';
+        item.appendChild(editPanel);
 
-      // Essay review panel
-      if(isEssay){
-        var essayPanel=document.createElement('div'); essayPanel.id='qbr-panel-'+q.id; essayPanel.style.cssText='display:none;width:100%;margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;';
-        item.appendChild(essayPanel);
-      }
+        var respPanel=document.createElement('div'); respPanel.id='qbr-panel-'+q.id; respPanel.style.cssText='display:none;width:100%;margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;';
+        item.appendChild(respPanel);
 
-      list.appendChild(item);
+        body.appendChild(item);
+      });
+
+      folderEl.appendChild(hdr);
+      folderEl.appendChild(body);
+      list.appendChild(folderEl);
     });
   }catch(e){list.innerHTML='<div style="color:var(--accent-red);padding:1rem;font-size:.875rem;">Error loading quizzes: '+e.message+'</div>';}
+}
+
+// ── Delete entire month of quizzes + responses ──
+async function qbDeleteMonth(monthKey, label){
+  if(!confirm('⚠️ DELETE ENTIRE MONTH: '+label+'\n\nThis will permanently delete ALL quizzes and ALL responses for this month.\n\nType OK to confirm or Cancel to abort.'))return;
+  var parts=monthKey.split('-');
+  var yr=parts[0]; var mo=parts[1];
+  var fromDate=yr+'-'+mo+'-01';
+  var lastDay=new Date(parseInt(yr),parseInt(mo),0).getDate();
+  var toDate=yr+'-'+mo+'-'+String(lastDay).padStart(2,'0');
+  try{
+    // Get all quizzes for the month
+    var quizzes=await sbQuery('quizzes','date=gte.'+fromDate+'&date=lte.'+toDate+'&select=id');
+    var total=quizzes?quizzes.length:0;
+    if(!total){alert('No quizzes found for '+label+'.');return;}
+    var respCount=0;
+    // Delete all responses for each quiz
+    for(var i=0;i<quizzes.length;i++){
+      var responses=await sbQuery('quiz_responses','quiz_id=eq.'+quizzes[i].id+'&select=id');
+      if(responses&&responses.length){
+        for(var j=0;j<responses.length;j++){
+          await sbDelete('quiz_responses','id',responses[j].id);
+          respCount++;
+        }
+      }
+      await sbDelete('quizzes','id',quizzes[i].id);
+    }
+    alert('✅ Deleted '+total+' quiz'+(total!==1?'zes':'')+' and '+respCount+' response(s) for '+label+'.');
+    loadQuizBuilderList();
+  }catch(e){alert('Delete month failed: '+e.message);}
+}
+
+// ── Backup month responses as CSV ──
+async function qbBackupMonthResponses(yr, mo, label){
+  var fromDate=yr+'-'+mo+'-01';
+  var lastDay=new Date(parseInt(yr),parseInt(mo),0).getDate();
+  var toDate=yr+'-'+mo+'-'+String(lastDay).padStart(2,'0');
+  try{
+    var quizzes=await sbQuery('quizzes','date=gte.'+fromDate+'&date=lte.'+toDate+'&select=id,question,date&order=date.asc');
+    var responses=await sbQuery('quiz_responses','date=gte.'+fromDate+'&date=lte.'+toDate+'&order=submitted_at.asc&select=id,quiz_id,user_id,user_name,answer,is_correct,submitted_at,date');
+    if(!responses||!responses.length){alert('No responses found for '+label+'.');return;}
+    var qMap={};
+    (quizzes||[]).forEach(function(q){qMap[q.id]=q.question;});
+    var rows=[['ID','Date','Quiz ID','Question','User Name','Answer','Is Correct','Submitted At']];
+    responses.forEach(function(r){
+      rows.push([r.id,r.date,r.quiz_id,qMap[r.quiz_id]||'',r.user_name,r.answer,r.is_correct===true?'Yes':r.is_correct===false?'No':'Unmarked',r.submitted_at]);
+    });
+    var csv=rows.map(function(row){return row.map(function(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+    var blob=new Blob([csv],{type:'text/csv'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    a.download=label.replace(/\s+/g,'_')+'_QuizResponses_Backup.csv'; a.click();
+  }catch(e){alert('Backup failed: '+e.message);}
+}
+
+// ── Backup ALL responses ──
+async function qbBackupAllResponses(){
+  try{
+    var quizzes=await sbQuery('quizzes','select=id,question,date&order=date.asc');
+    var responses=await sbQuery('quiz_responses','order=submitted_at.asc&select=id,quiz_id,user_id,user_name,answer,is_correct,submitted_at,date');
+    if(!responses||!responses.length){alert('No responses found.');return;}
+    var qMap={};
+    (quizzes||[]).forEach(function(q){qMap[q.id]=q.question;});
+    var rows=[['ID','Date','Quiz ID','Question','User Name','Answer','Is Correct','Submitted At']];
+    responses.forEach(function(r){
+      rows.push([r.id,r.date,r.quiz_id,qMap[r.quiz_id]||'',r.user_name,r.answer,r.is_correct===true?'Yes':r.is_correct===false?'No':'Unmarked',r.submitted_at]);
+    });
+    var csv=rows.map(function(row){return row.map(function(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+    var blob=new Blob([csv],{type:'text/csv'});
+    var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+    var today=new Date(); a.download='AllQuizResponses_Backup_'+today.getFullYear()+String(today.getMonth()+1).padStart(2,'0')+String(today.getDate()).padStart(2,'0')+'.csv'; a.click();
+  }catch(e){alert('Backup failed: '+e.message);}
+}
+
+// ── View All Answers panel ──
+var _qbAllAnswersData=null;
+function qbViewAllResponses(){
+  var panel=document.getElementById('qb-all-answers-panel');
+  panel.style.display='block';
+  // Default to current month
+  var now=new Date();
+  var fromD=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-01';
+  var lastDay=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+  var toD=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(lastDay).padStart(2,'0');
+  var fromEl=document.getElementById('qb-aa-from');
+  var toEl=document.getElementById('qb-aa-to');
+  if(fromEl&&!fromEl.value) fromEl.value=fromD;
+  if(toEl&&!toEl.value) toEl.value=toD;
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+async function qbLoadAllAnswers(){
+  var from=document.getElementById('qb-aa-from').value;
+  var to=document.getElementById('qb-aa-to').value;
+  var body=document.getElementById('qb-aa-body');
+  var dlBtn=document.getElementById('qb-aa-dl-btn');
+  if(!from||!to){body.innerHTML='<span style="color:var(--accent-red);">Please select both From and To dates.</span>';return;}
+  body.innerHTML='<span style="color:var(--text-dim);">Loading...</span>';
+  try{
+    var quizzes=await sbQuery('quizzes','date=gte.'+from+'&date=lte.'+to+'&select=id,question,date,correct_answer&order=date.asc');
+    var responses=await sbQuery('quiz_responses','date=gte.'+from+'&date=lte.'+to+'&order=submitted_at.asc&select=id,quiz_id,user_name,answer,is_correct,submitted_at,date');
+    if(!responses||!responses.length){body.innerHTML='<span style="color:var(--text-muted);">No responses found for this date range.</span>';if(dlBtn)dlBtn.style.display='none';return;}
+    var qMap={};
+    (quizzes||[]).forEach(function(q){qMap[q.id]={question:q.question,date:q.date,correct_answer:q.correct_answer};});
+    _qbAllAnswersData={responses:responses,qMap:qMap,from:from,to:to};
+    if(dlBtn) dlBtn.style.display='inline-flex';
+
+    // Group by date
+    var byDate={};
+    responses.forEach(function(r){
+      if(!byDate[r.date])byDate[r.date]=[];
+      byDate[r.date].push(r);
+    });
+    var dates=Object.keys(byDate).sort();
+    var html='<div style="font-size:.78rem;color:var(--text-muted);margin-bottom:.75rem;">'+responses.length+' response(s) across '+dates.length+' day(s)</div>';
+    dates.forEach(function(dt){
+      var qInfo=quizzes?quizzes.find(function(q){return q.date===dt;}):null;
+      html+='<div style="margin-bottom:1rem;">';
+      html+='<div style="font-size:.78rem;font-weight:700;color:var(--gold);letter-spacing:.06em;text-transform:uppercase;padding:.35rem 0;border-bottom:1px solid var(--navy-border);margin-bottom:.5rem;">';
+      html+=dt+(qInfo?' — '+esc(qInfo.question.slice(0,60))+(qInfo.question.length>60?'...':''):'')+'</div>';
+      byDate[dt].forEach(function(r){
+        var isC=r.is_correct===true; var isW=r.is_correct===false;
+        var badge=isC?'<span style="font-size:.68rem;font-weight:700;padding:1px 7px;border-radius:20px;background:rgba(46,197,111,.12);color:#1a7a45;">&#10003; Correct</span>':isW?'<span style="font-size:.68rem;font-weight:700;padding:1px 7px;border-radius:20px;background:rgba(239,73,60,.1);color:var(--accent-red);">&#10007; Wrong</span>':'<span style="font-size:.68rem;font-weight:700;padding:1px 7px;border-radius:20px;background:rgba(239,73,60,.07);color:var(--gold);">— Unmarked</span>';
+        var time=r.submitted_at?xcLocalTime(r.submitted_at).slice(0,8):'';
+        html+='<div style="display:flex;align-items:flex-start;gap:.75rem;padding:.5rem .75rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:var(--radius-sm);margin-bottom:.35rem;">'
+          +'<div style="min-width:110px;font-size:.8rem;font-weight:600;color:var(--text-primary);">'+esc(r.user_name||'?')+'</div>'
+          +'<div style="flex:1;font-size:.82rem;color:var(--text-primary);word-break:break-word;">'+esc(r.answer||'(no answer)')+'</div>'
+          +'<div style="display:flex;flex-direction:column;align-items:flex-end;gap:.25rem;flex-shrink:0;">'+badge+'<span style="font-size:.68rem;color:var(--text-dim);">'+time+'</span></div>'
+          +'</div>';
+      });
+      html+='</div>';
+    });
+    body.innerHTML=html;
+  }catch(e){body.innerHTML='<span style="color:var(--accent-red);">Error: '+e.message+'</span>';}
+}
+
+function qbDownloadAnswersCSV(){
+  if(!_qbAllAnswersData){alert('Load answers first.');return;}
+  var d=_qbAllAnswersData;
+  var rows=[['Date','User Name','Answer','Is Correct','Submitted At','Quiz Question']];
+  d.responses.forEach(function(r){
+    var qi=d.qMap[r.quiz_id]||{};
+    rows.push([r.date,r.user_name,r.answer,r.is_correct===true?'Yes':r.is_correct===false?'No':'Unmarked',r.submitted_at,qi.question||'']);
+  });
+  var csv=rows.map(function(row){return row.map(function(v){return '"'+String(v==null?'':v).replace(/"/g,'""')+'"';}).join(',');}).join('\n');
+  var blob=new Blob([csv],{type:'text/csv'});
+  var a=document.createElement('a'); a.href=URL.createObjectURL(blob);
+  a.download='QuizAnswers_'+d.from+'_to_'+d.to+'.csv'; a.click();
+}
+
+// ── Leaderboard Manager ──
+function qbOpenLeaderboardManager(){
+  var panel=document.getElementById('qb-lb-manager-panel');
+  panel.style.display='block';
+  var now=new Date();
+  var fromD=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-01';
+  var lastDay=new Date(now.getFullYear(),now.getMonth()+1,0).getDate();
+  var toD=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(lastDay).padStart(2,'0');
+  var fromEl=document.getElementById('qb-lb-from');
+  var toEl=document.getElementById('qb-lb-to');
+  if(fromEl&&!fromEl.value) fromEl.value=fromD;
+  if(toEl&&!toEl.value) toEl.value=toD;
+  panel.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+
+async function qbLoadLeaderboardManager(){
+  var from=document.getElementById('qb-lb-from').value;
+  var to=document.getElementById('qb-lb-to').value;
+  var body=document.getElementById('qb-lb-body');
+  if(!from||!to){body.innerHTML='<span style="color:var(--accent-red);">Please select both From and To dates.</span>';return;}
+  body.innerHTML='<span style="color:var(--text-dim);">Loading...</span>';
+  try{
+    var quizzes=await sbQuery('quizzes','date=gte.'+from+'&date=lte.'+to+'&select=id,question,date&order=date.asc');
+    var responses=await sbQuery('quiz_responses','date=gte.'+from+'&date=lte.'+to+'&order=submitted_at.asc&select=id,quiz_id,user_id,user_name,answer,is_correct,submitted_at,date');
+    if(!responses||!responses.length){body.innerHTML='<span style="color:var(--text-muted);">No responses found for this range.</span>';return;}
+
+    var qMap={};
+    (quizzes||[]).forEach(function(q){qMap[q.id]={question:q.question,date:q.date};});
+
+    // Calculate current leaderboard
+    var POINTS=[50,40,30,20];
+    var agPts={};
+    var rmByQuiz={};
+    responses.forEach(function(r){
+      if(!rmByQuiz[r.quiz_id])rmByQuiz[r.quiz_id]=[];
+      rmByQuiz[r.quiz_id].push(r);
+      if(!agPts[r.user_id])agPts[r.user_id]={name:r.user_name,points:0,correct:0,wrong:0};
+    });
+    (quizzes||[]).forEach(function(q){
+      var allR=rmByQuiz[q.id]||[];
+      var correct=allR.filter(function(r){return r.is_correct;}).sort(function(a,b){return new Date(a.submitted_at)-new Date(b.submitted_at);});
+      correct.forEach(function(r,i){if(agPts[r.user_id]){agPts[r.user_id].points+=(i<4?POINTS[i]:0);agPts[r.user_id].correct++;}});
+      allR.filter(function(r){return r.is_correct===false;}).forEach(function(r){if(agPts[r.user_id])agPts[r.user_id].wrong++;});
+    });
+    var sorted=Object.entries(agPts).sort(function(a,b){return b[1].points-a[1].points;});
+    var medals=['🥇','🥈','🥉'];
+
+    // Leaderboard summary
+    var lbHtml='<div style="margin-bottom:1rem;">';
+    lbHtml+='<div style="font-size:.78rem;font-weight:700;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;">Current Rankings ('+from+' to '+to+')</div>';
+    lbHtml+='<div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:.75rem;">';
+    sorted.forEach(function(entry,i){
+      var uid=entry[0]; var ag=entry[1];
+      var medal=i<3?medals[i]:'#'+(i+1);
+      lbHtml+='<div style="padding:.4rem .9rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:var(--radius-sm);font-size:.8rem;display:flex;align-items:center;gap:.4rem;">'
+        +'<span>'+medal+'</span>'
+        +'<span style="font-weight:600;color:var(--text-primary);">'+esc(ag.name)+'</span>'
+        +'<span style="color:var(--gold);font-weight:700;">'+ag.points+' pts</span>'
+        +'</div>';
+    });
+    lbHtml+='</div></div>';
+
+    // Detailed response table with edit/delete per row
+    lbHtml+='<div style="font-size:.78rem;font-weight:700;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.5rem;">All Responses (edit marks or delete entries)</div>';
+    // Group by date
+    var byDate={};
+    responses.forEach(function(r){if(!byDate[r.date])byDate[r.date]=[];byDate[r.date].push(r);});
+    var dates=Object.keys(byDate).sort();
+    lbHtml+='<div id="qb-lb-rows">';
+    dates.forEach(function(dt){
+      var qInfo=quizzes?quizzes.find(function(q){return q.date===dt;}):null;
+      lbHtml+='<div style="margin-bottom:.9rem;">';
+      lbHtml+='<div style="font-size:.76rem;font-weight:700;color:var(--gold);padding:.3rem 0;border-bottom:1px solid var(--navy-border);margin-bottom:.4rem;">'
+        +dt+(qInfo?' — '+esc(qInfo.question.slice(0,55))+(qInfo.question.length>55?'...':''):'')+'</div>';
+      byDate[dt].forEach(function(r){
+        var isC=r.is_correct===true; var isW=r.is_correct===false;
+        var cBtnStyle=isC?'opacity:.4;cursor:default;':'';
+        var wBtnStyle=isW?'opacity:.4;cursor:default;':'';
+        lbHtml+='<div id="qblbrow-'+r.id+'" style="display:flex;align-items:center;gap:.6rem;padding:.45rem .75rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:var(--radius-sm);margin-bottom:.3rem;flex-wrap:wrap;">'
+          +'<div style="min-width:110px;font-size:.82rem;font-weight:600;color:var(--text-primary);">'+esc(r.user_name||'?')+'</div>'
+          +'<div style="flex:1;font-size:.8rem;color:var(--text-muted);word-break:break-word;min-width:100px;">'+esc(r.answer||'(no answer)')+'</div>'
+          +'<div style="display:flex;gap:.3rem;flex-shrink:0;">'
+            +'<button class="qbr-mark-btn correct" onclick="qbLbMarkEntry(\''+r.id+'\',true)" '+cBtnStyle+(isC?' disabled':'')+'>&#10003; Correct</button>'
+            +'<button class="qbr-mark-btn wrong" onclick="qbLbMarkEntry(\''+r.id+'\',false)" '+wBtnStyle+(isW?' disabled':'')+'>&#10007; Wrong</button>'
+            +'<button class="qa-del-btn" onclick="qbLbDeleteEntry(\''+r.id+'\')" style="padding:.28rem .65rem;font-size:.74rem;">Delete</button>'
+          +'</div>'
+          +'</div>';
+      });
+      lbHtml+='</div>';
+    });
+    lbHtml+='</div>';
+    body.innerHTML=lbHtml;
+  }catch(e){body.innerHTML='<span style="color:var(--accent-red);">Error: '+e.message+'</span>';}
+}
+
+async function qbLbMarkEntry(responseId, isCorrect){
+  try{
+    await sbUpdate('quiz_responses','id',responseId,{is_correct:isCorrect});
+    // Reload leaderboard manager
+    qbLoadLeaderboardManager();
+  }catch(e){alert('Could not update: '+e.message);}
+}
+
+async function qbLbDeleteEntry(responseId){
+  if(!confirm('Delete this response entry? The agent\'s ranking will update automatically.'))return;
+  try{
+    await sbDelete('quiz_responses','id',responseId);
+    qbLoadLeaderboardManager();
+  }catch(e){alert('Could not delete: '+e.message);}
 }
 
 // ── Edit quiz inline ──
@@ -7558,20 +7863,11 @@ async function qbToggleEssayReview(quizId){
             '<span style="font-size:.72rem;color:var(--text-dim);">'+time+'</span>'+
             statusBadge+
           '</div>'+
-          '<div id="qbrc-ans-display-'+r.id+'" style="font-size:.85rem;color:var(--text-primary);background:var(--navy-card);padding:.5rem .75rem;border-radius:6px;border:1px solid var(--navy-border);word-break:break-word;">'+esc(r.answer||'(no answer)')+'</div>'+
-          '<div id="qbrc-ans-edit-'+r.id+'" style="display:none;margin-top:.35rem;display:none;">'+
-            '<div style="display:flex;gap:.4rem;align-items:center;">'+
-              '<input id="qbrc-ans-inp-'+r.id+'" type="text" value="'+esc(r.answer||'')+'" style="flex:1;padding:.3rem .6rem;border:1px solid var(--navy-border);border-radius:6px;background:var(--navy-hover);color:var(--text-primary);font-family:DM Sans,sans-serif;font-size:.82rem;outline:none;"/>'+
-              '<button onclick="qbSaveEditedAnswer(\''+r.id+'\',\''+quizId+'\')" style="padding:.28rem .7rem;background:var(--gold);color:#fff;border:none;border-radius:5px;font-size:.74rem;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">Save</button>'+
-              '<button onclick="qbCancelEditAnswer(\''+r.id+'\')" style="padding:.28rem .55rem;background:transparent;border:1px solid var(--navy-border);border-radius:5px;font-size:.74rem;cursor:pointer;color:var(--text-muted);">✕</button>'+
-            '</div>'+
-          '</div>'+
+          '<div style="font-size:.85rem;color:var(--text-primary);background:var(--navy-card);padding:.5rem .75rem;border-radius:6px;border:1px solid var(--navy-border);word-break:break-word;">'+esc(r.answer||'(no answer)')+'</div>'+
         '</div>'+
         '<div style="display:flex;flex-direction:column;gap:.4rem;flex-shrink:0;">'+
           '<button class="qbr-mark-btn correct" onclick="qbMarkAnswer(\''+r.id+'\',true,\''+quizId+'\')" '+(isC?'style="opacity:.4;cursor:default;" disabled':'')+'>✓ Correct</button>'+
           '<button class="qbr-mark-btn wrong"   onclick="qbMarkAnswer(\''+r.id+'\',false,\''+quizId+'\')" '+(isW?'style="opacity:.4;cursor:default;" disabled':'')+'>✗ Wrong</button>'+
-          '<button onclick="qbEditAnswer(\''+r.id+'\')" style="padding:.28rem .6rem;background:transparent;border:1px solid var(--navy-border);border-radius:5px;font-size:.72rem;cursor:pointer;color:var(--text-muted);font-family:DM Sans,sans-serif;">✏ Edit</button>'+
-          '<button onclick="qbDeleteResponse(\''+r.id+'\',\''+esc(r.user_name||'')+'\',\''+quizId+'\')" style="padding:.28rem .6rem;background:rgba(239,73,60,.08);color:var(--accent-red);border:1px solid rgba(239,73,60,.22);border-radius:5px;font-size:.72rem;cursor:pointer;font-family:DM Sans,sans-serif;font-weight:600;">🗑 Del</button>'+
         '</div>'+
       '</div>';
     }).join('');
@@ -7600,45 +7896,6 @@ async function qbMarkAnswer(responseId, isCorrect, quizId){
   }catch(e){ alert('Could not save mark: '+e.message); }
 }
 
-function qbEditAnswer(responseId){
-  var display = document.getElementById('qbrc-ans-display-'+responseId);
-  var editBox = document.getElementById('qbrc-ans-edit-'+responseId);
-  if(display) display.style.display='none';
-  if(editBox){ editBox.style.display='block'; var inp=document.getElementById('qbrc-ans-inp-'+responseId); if(inp){inp.focus();inp.select();} }
-}
-
-function qbCancelEditAnswer(responseId){
-  var display = document.getElementById('qbrc-ans-display-'+responseId);
-  var editBox = document.getElementById('qbrc-ans-edit-'+responseId);
-  if(display) display.style.display='block';
-  if(editBox) editBox.style.display='none';
-}
-
-async function qbSaveEditedAnswer(responseId, quizId){
-  var inp = document.getElementById('qbrc-ans-inp-'+responseId);
-  if(!inp) return;
-  var newAnswer = inp.value.trim();
-  if(!newAnswer){ alert('Answer cannot be empty.'); return; }
-  try{
-    await sbUpdate('quiz_responses','id',responseId,{answer:newAnswer});
-    var display = document.getElementById('qbrc-ans-display-'+responseId);
-    if(display){ display.textContent=newAnswer; display.style.display='block'; }
-    var editBox = document.getElementById('qbrc-ans-edit-'+responseId);
-    if(editBox) editBox.style.display='none';
-    var card = document.getElementById('qbrc-'+responseId);
-    if(card){ card.style.outline='2px solid var(--accent-green)'; setTimeout(function(){ card.style.outline=''; },1500); }
-  }catch(e){ alert('Could not save answer: '+e.message); }
-}
-
-async function qbDeleteResponse(responseId, agentName, quizId){
-  if(!confirm('Delete quiz response for '+agentName+'? This cannot be undone.')) return;
-  try{
-    await sbDelete('quiz_responses','id',responseId);
-    var card = document.getElementById('qbrc-'+responseId);
-    if(card){ card.style.transition='opacity .3s'; card.style.opacity='0'; setTimeout(function(){ card.remove(); },320); }
-  }catch(e){ alert('Delete failed: '+e.message); }
-}
-
 async function toggleQuizReview(id, current){
   try{
     await sbUpdate('quizzes','id',id,{review_enabled:!current});
@@ -7647,8 +7904,20 @@ async function toggleQuizReview(id, current){
 }
 
 async function deleteQuiz(id){
-  if(!confirm('Delete this quiz?'))return;
-  try{await sbDelete('quizzes','id',id);loadQuizBuilderList();}catch(e){alert('Delete failed.');}
+  if(!confirm('Delete this quiz and ALL its responses? This cannot be undone.'))return;
+  try{
+    // Cascade: delete all responses for this quiz first (avoids FK constraint errors)
+    var responses = await sbQuery('quiz_responses','quiz_id=eq.'+id+'&select=id');
+    if(responses && responses.length){
+      for(var i=0;i<responses.length;i++){
+        await sbDelete('quiz_responses','id',responses[i].id);
+      }
+    }
+    await sbDelete('quizzes','id',id);
+    loadQuizBuilderList();
+  }catch(e){
+    alert('Delete failed: '+e.message+'\n\nIf this keeps happening, check Supabase RLS policies for the quizzes table.');
+  }
 }
 
 // ── AGENT QUIZ VIEW ──
