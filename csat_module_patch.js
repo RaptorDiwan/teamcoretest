@@ -192,6 +192,14 @@ function csatBuildPanel(tab, data, canUpload, vhData) {
     agentData.push({name:name,ticketRows:trows,agentAvg:agentAvg,comments:comments});
   });
 
+  // Sort by agentAvg descending (highest first)
+  agentData.sort(function(a, b){
+    var avgA = a.agentAvg !== null ? a.agentAvg : -1;
+    var avgB = b.agentAvg !== null ? b.agentAvg : -1;
+    if (avgB !== avgA) return avgB - avgA;
+    return a.name.localeCompare(b.name);
+  });
+
   // Stats
   var allAvgs=agentData.map(function(a){return a.agentAvg;}).filter(function(a){return a!==null;});
   var overallAvg=allAvgs.length>0?allAvgs.reduce(function(a,b){return a+b;},0)/allAvgs.length:0;
@@ -400,6 +408,14 @@ function csatBuildPanel(tab, data, canUpload, vhData) {
       var comments=tix.map(function(t){return t.comment;}).filter(function(c){return c&&c.trim()!=='';}).join(' | ');
       var allTickets=tix.map(function(t){return t.ticket;}).filter(Boolean).join(', ');
       vhAgentData.push({name:name,ticketRows:tix,agentAvg:avg,comments:comments,allTickets:allTickets,aK:aK,aTT:aTT,aU:aU,aCS:aCS});
+    });
+
+    // Sort by agentAvg descending (highest first)
+    vhAgentData.sort(function(a, b){
+      var avgA = a.agentAvg !== null ? a.agentAvg : -1;
+      var avgB = b.agentAvg !== null ? b.agentAvg : -1;
+      if (avgB !== avgA) return avgB - avgA;
+      return a.name.localeCompare(b.name);
     });
 
     // VH separator row + rows
@@ -621,7 +637,7 @@ function csatExportExcel(tab) {
   var agentMap={};
   data.rows.forEach(function(r){var k=r.agent||'Unknown';if(!agentMap[k])agentMap[k]=[];agentMap[k].push(r);});
   var out=[['Agent','Ticket ID','Customer','Knowledge','Time Taken','Understandability','Customer Service','Average','Comments']];
-  Object.keys(agentMap).sort().forEach(function(name){
+  var agentList = Object.keys(agentMap).map(function(name){
     var tix=agentMap[name];
     var trows=tix.map(function(t){
       var cols=[t.scores.knowledge,t.scores.timeTaken,t.scores.understandability,t.scores.customerService];
@@ -632,6 +648,21 @@ function csatExportExcel(tab) {
     trows.forEach(function(t){[t.scores.knowledge,t.scores.timeTaken,t.scores.understandability,t.scores.customerService].forEach(function(s){if(s!==null)allS.push(s);});});
     var agentAvg=allS.length>0?+(allS.reduce(function(a,b){return a+b;},0)/allS.length).toFixed(2):'';
     var comments=trows.map(function(t){return t.comment;}).filter(function(c){return c&&c.trim()!=='';}).join(' | ');
+    return { name: name, trows: trows, agentAvg: agentAvg, comments: comments };
+  });
+
+  agentList.sort(function(a, b){
+    var valA = a.agentAvg !== '' ? parseFloat(a.agentAvg) : -1;
+    var valB = b.agentAvg !== '' ? parseFloat(b.agentAvg) : -1;
+    if (valB !== valA) return valB - valA;
+    return a.name.localeCompare(b.name);
+  });
+
+  var out=[['Agent','Ticket ID','Customer','Knowledge','Time Taken','Understandability','Customer Service','Average','Comments']];
+  agentList.forEach(function(agent){
+    var name = agent.name;
+    var trows = agent.trows;
+    var comments = agent.comments;
     trows.forEach(function(t,ti){
       out.push([ti===0?name:'',t.ticket,t.customer,
         t.scores.knowledge!==null?t.scores.knowledge:'',
@@ -659,7 +690,19 @@ function csatBuildEmailHTML() {
   var TDL  = 'padding:7px 11px;text-align:left;font-family:Arial,sans-serif;font-size:13px;border:1px solid #d0d0d0;white-space:nowrap;';
   var TDTK = 'padding:7px 11px;text-align:left;font-family:Arial,sans-serif;font-size:13px;border:1px solid #d0d0d0;white-space:normal;max-width:200px;';
   var TDCM = 'padding:7px 11px;text-align:left;font-family:Arial,sans-serif;font-size:13px;border:1px solid #d0d0d0;white-space:normal;max-width:260px;';
-  function avgStyle(v){ return (v>=4) ? 'padding:7px 11px;text-align:center;font-family:Arial,sans-serif;font-size:13px;border:1px solid #d0d0d0;background:#90EE90;font-weight:bold;' : 'padding:7px 11px;text-align:center;font-family:Arial,sans-serif;font-size:13px;border:1px solid #d0d0d0;background:#FFD700;font-weight:bold;'; }
+  function renderAvgCell(avg) {
+    if (avg === null || avg === undefined || avg === '') {
+      return '<td style="padding:7px 11px;text-align:center;font-family:Arial,sans-serif;font-size:13px;border:1px solid #d0d0d0;color:#666;vertical-align:middle;">—</td>';
+    }
+    var val = parseFloat(avg);
+    var bg = val >= 4 ? '#90EE90' : val > 0 ? '#FFD700' : 'transparent';
+    if (bg === 'transparent') {
+      return '<td style="padding:7px 11px;text-align:center;font-family:Arial,sans-serif;font-size:13px;border:1px solid #d0d0d0;color:#666;vertical-align:middle;">—</td>';
+    }
+    return '<td style="padding:0;text-align:center;font-family:Arial,sans-serif;font-size:13px;border:1px solid #d0d0d0;white-space:nowrap;vertical-align:middle;">' +
+      '<div style="background-color:' + bg + ';padding:7px 11px;font-weight:bold;color:#000;">' + avg + '</div>' +
+      '</td>';
+  }
   function ca(arr){ var v=arr.filter(function(s){return s!==null;}); return v.length>0?+(v.reduce(function(a,b){return a+b;},0)/v.length).toFixed(2):null; }
 
   var html = '<div style="font-family:Arial,sans-serif;font-size:13px;color:#000;">';
@@ -677,7 +720,7 @@ function csatBuildEmailHTML() {
     function renderConsumerRows(rows, stripe) {
       var agentMap = {};
       rows.forEach(function(r){ var k=r.agent||'Unknown'; if(!agentMap[k]) agentMap[k]=[]; agentMap[k].push(r); });
-      Object.keys(agentMap).sort().forEach(function(name, ni) {
+      var list = Object.keys(agentMap).map(function(name) {
         var tix = agentMap[name];
         var aK=ca(tix.map(function(t){return t.scores.knowledge;}));
         var aTT=ca(tix.map(function(t){return t.scores.timeTaken;}));
@@ -687,8 +730,17 @@ function csatBuildEmailHTML() {
         var avg = ca(allV.map(function(v){return v;}));
         var tickets  = tix.map(function(t){return t.ticket;}).filter(Boolean).join(', ');
         var comments = tix.map(function(t){return t.comment;}).filter(function(c){return c&&c.trim()!=='';}).join(' | ');
+        return { name: name, aK: aK, aTT: aTT, aU: aU, aCS: aCS, avg: avg, tickets: tickets, comments: comments };
+      });
+      list.sort(function(a, b) {
+        var valA = a.avg !== null ? a.avg : -1;
+        var valB = b.avg !== null ? b.avg : -1;
+        if (valB !== valA) return valB - valA;
+        return a.name.localeCompare(b.name);
+      });
+      list.forEach(function(item, ni) {
         var bg = (stripe && ni%2===0) ? 'background:#f9f9f9;' : '';
-        html += '<tr style="' + bg + '"><td style="' + TDL + '">' + name + '</td><td style="' + TDTK + '">' + tickets + '</td><td style="' + TD + '">' + (aK||'—') + '</td><td style="' + TD + '">' + (aTT||'—') + '</td><td style="' + TD + '">' + (aU||'—') + '</td><td style="' + TD + '">' + (aCS||'—') + '</td><td style="' + TDCM + '">' + (comments||'—') + '</td><td style="' + avgStyle(avg||0) + '">' + (avg||'—') + '</td></tr>';
+        html += '<tr style="' + bg + '"><td style="' + TDL + '">' + item.name + '</td><td style="' + TDTK + '">' + item.tickets + '</td><td style="' + TD + '">' + (item.aK||'—') + '</td><td style="' + TD + '">' + (item.aTT||'—') + '</td><td style="' + TD + '">' + (item.aU||'—') + '</td><td style="' + TD + '">' + (item.aCS||'—') + '</td><td style="' + TDCM + '">' + (item.comments||'—') + '</td>' + renderAvgCell(item.avg) + '</tr>';
       });
     }
 
@@ -707,11 +759,20 @@ function csatBuildEmailHTML() {
     html += '<p style="margin:20px 0 6px;"><strong>ENTERPRISE (ESP)</strong></p>';
     html += '<table style="border-collapse:collapse;width:100%;">';
     html += '<tr><th style="' + TH + '">Ticket id</th><th style="' + TH + '">Account Name</th><th style="' + TH + '">Names</th><th style="' + TH + '">Knowledge and Expertise</th><th style="' + TH + '">Professionalism and courteousness</th><th style="' + TH + '">Follow-up and clear communication on solution</th><th style="' + TH + '">Time required to resolved</th><th style="' + TH + '">Overall support experience</th><th style="' + TH + '">Comments</th><th style="' + TH + '">Average</th></tr>';
-    espData.rows.forEach(function(t, ti) {
+    var espList = espData.rows.map(function(t) {
       var cols=[t.scores.knowledge,t.scores.professionalism,t.scores.followUp,t.scores.timeResolved,t.scores.overallExp];
-      var avg = ca(cols);
+      return { t: t, avg: ca(cols) };
+    });
+    espList.sort(function(a, b) {
+      var valA = a.avg !== null ? a.avg : -1;
+      var valB = b.avg !== null ? b.avg : -1;
+      if (valB !== valA) return valB - valA;
+      return (a.t.agent||'').localeCompare(b.t.agent||'');
+    });
+    espList.forEach(function(item, ti) {
+      var t = item.t;
       var bg = ti%2===0 ? 'background:#f9f9f9;' : '';
-      html += '<tr style="' + bg + '"><td style="' + TD + '">' + (t.ticket||'—') + '</td><td style="' + TDL + '">' + (t.account||t.customer||'—') + '</td><td style="' + TDL + '">' + (t.agent||'—') + '</td><td style="' + TD + '">' + (t.scores.knowledge||'—') + '</td><td style="' + TD + '">' + (t.scores.professionalism||'—') + '</td><td style="' + TD + '">' + (t.scores.followUp||'—') + '</td><td style="' + TD + '">' + (t.scores.timeResolved||'—') + '</td><td style="' + TD + '">' + (t.scores.overallExp||'—') + '</td><td style="' + TDCM + '">' + (t.comment||'—') + '</td><td style="' + avgStyle(avg||0) + '">' + (avg||'—') + '</td></tr>';
+      html += '<tr style="' + bg + '"><td style="' + TD + '">' + (t.ticket||'—') + '</td><td style="' + TDL + '">' + (t.account||t.customer||'—') + '</td><td style="' + TDL + '">' + (t.agent||'—') + '</td><td style="' + TD + '">' + (t.scores.knowledge||'—') + '</td><td style="' + TD + '">' + (t.scores.professionalism||'—') + '</td><td style="' + TD + '">' + (t.scores.followUp||'—') + '</td><td style="' + TD + '">' + (t.scores.timeResolved||'—') + '</td><td style="' + TD + '">' + (t.scores.overallExp||'—') + '</td><td style="' + TDCM + '">' + (t.comment||'—') + '</td>' + renderAvgCell(item.avg) + '</tr>';
     });
     html += '</table><br/>';
   }
@@ -724,7 +785,7 @@ function csatBuildEmailHTML() {
     html += '<tr><th style="' + TH + '">Names</th><th style="' + TH + '">Ticket id</th><th style="' + TH + '">Knowledge</th><th style="' + TH + '">Time taken</th><th style="' + TH + '">Understandability</th><th style="' + TH + '">Customer service</th><th style="' + TH + '">Comments</th><th style="' + TH + '">Average</th></tr>';
     var chatMap={};
     chatData.rows.forEach(function(r){var k=r.agent||'Unknown';if(!chatMap[k])chatMap[k]=[];chatMap[k].push(r);});
-    Object.keys(chatMap).sort().forEach(function(name,ni){
+    var chatList = Object.keys(chatMap).map(function(name){
       var tix=chatMap[name];
       var aK=ca(tix.map(function(t){return t.scores.knowledge;}));
       var aTT=ca(tix.map(function(t){return t.scores.timeTaken;}));
@@ -734,8 +795,17 @@ function csatBuildEmailHTML() {
       var avg=ca(allV.map(function(v){return v;}));
       var tickets=tix.map(function(t){return t.ticket;}).filter(Boolean).join(', ');
       var comments=tix.map(function(t){return t.comment;}).filter(function(c){return c&&c.trim()!=='';}).join(' | ');
+      return { name: name, aK: aK, aTT: aTT, aU: aU, aCS: aCS, avg: avg, tickets: tickets, comments: comments };
+    });
+    chatList.sort(function(a, b) {
+      var valA = a.avg !== null ? a.avg : -1;
+      var valB = b.avg !== null ? b.avg : -1;
+      if (valB !== valA) return valB - valA;
+      return a.name.localeCompare(b.name);
+    });
+    chatList.forEach(function(item,ni){
       var bg = ni%2===0 ? 'background:#f9f9f9;' : '';
-      html += '<tr style="' + bg + '"><td style="' + TDL + '">' + name + '</td><td style="' + TDTK + '">' + tickets + '</td><td style="' + TD + '">' + (aK||'—') + '</td><td style="' + TD + '">' + (aTT||'—') + '</td><td style="' + TD + '">' + (aU||'—') + '</td><td style="' + TD + '">' + (aCS||'—') + '</td><td style="' + TDCM + '">' + (comments||'—') + '</td><td style="' + avgStyle(avg||0) + '">' + (avg||'—') + '</td></tr>';
+      html += '<tr style="' + bg + '"><td style="' + TDL + '">' + item.name + '</td><td style="' + TDTK + '">' + item.tickets + '</td><td style="' + TD + '">' + (item.aK||'—') + '</td><td style="' + TD + '">' + (item.aTT||'—') + '</td><td style="' + TD + '">' + (item.aU||'—') + '</td><td style="' + TD + '">' + (item.aCS||'—') + '</td><td style="' + TDCM + '">' + (item.comments||'—') + '</td>' + renderAvgCell(item.avg) + '</tr>';
     });
     html += '</table><br/>';
   }
