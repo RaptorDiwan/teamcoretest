@@ -6573,7 +6573,10 @@ async function xcFetchBrk(){
           '<input type="checkbox" id="'+oid+'" '+(r.over_limit?'checked':'')+' style="accent-color:var(--accent-red);width:16px;height:16px;"/>' +
           '<label for="'+oid+'" style="font-size:.8rem;color:var(--text-muted);cursor:pointer;">Over limit</label>' +
         '</div>' +
-        '<button class="xc-btn-sm" onclick="xcWriteBrk(\''+r.id+'\',\''+did+'\',\''+oid+'\')">Save</button>' +
+        '<div style="display:flex;gap:.4rem;">'+
+          '<button class="xc-btn-sm" onclick="xcWriteBrk(\''+r.id+'\',\''+did+'\',\''+oid+'\')">Save</button>' +
+          '<button class="xc-btn-danger" onclick="xcDeleteBrk(\''+r.id+'\')" title="Delete this break entry">🗑 Delete</button>' +
+        '</div>'+
         '</div>';
     }).join('');
     out.innerHTML = html;
@@ -6599,6 +6602,16 @@ async function xcWriteBrk(rowId, durElId, olElId){
     if(row){ var p=row.closest('.xc-row'); if(p){p.style.borderColor='var(--accent-green)';setTimeout(function(){p.style.borderColor='';},1800);} }
   } catch(e){
     alert('Save failed: '+e.message);
+  }
+}
+
+async function xcDeleteBrk(rowId){
+  if(!confirm('Delete this break entry? This cannot be undone.')) return;
+  try{
+    await sbDelete('breaks','id',rowId);
+    xcFetchBrk();
+  }catch(e){
+    alert('Delete failed: '+e.message);
   }
 }
 
