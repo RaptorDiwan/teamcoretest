@@ -650,47 +650,153 @@ function csatExportExcel(tab) {
 }
 
 // ─────────────────────────────────────────────────────────
-// SEND EMAIL
+// BUILD EMAIL HTML — plain table, dark navy header, only avg colored
 // ─────────────────────────────────────────────────────────
-function csatSendEmail() {
-  var tabs=['consumer','vision','esp','chat'];
-  var lbl={consumer:'CONSUMER',vision:'VISION HELPDESK',esp:'ESP',chat:'LIVE CHAT'};
-  var todayStr=new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
-  var subject=encodeURIComponent('K7 CSAT Report — '+todayStr);
-  var body='Hi Team,\n\nPlease find the CSAT Report for '+todayStr+' below.\n\n';
+function csatBuildEmailHTML() {
+  var todayStr = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  var TH   = 'background:#1a2744;color:#ffffff;padding:8px 12px;text-align:center;font-family:Arial,sans-serif;font-size:13px;font-weight:bold;border:1px solid #ffffff;white-space:nowrap;';
+  var TD   = 'padding:7px 11px;text-align:center;font-family:Arial,sans-serif;font-size:13px;border:1px solid #d0d0d0;white-space:nowrap;';
+  var TDL  = 'padding:7px 11px;text-align:left;font-family:Arial,sans-serif;font-size:13px;border:1px solid #d0d0d0;white-space:nowrap;';
+  var TDTK = 'padding:7px 11px;text-align:left;font-family:Arial,sans-serif;font-size:13px;border:1px solid #d0d0d0;white-space:normal;max-width:200px;';
+  var TDCM = 'padding:7px 11px;text-align:left;font-family:Arial,sans-serif;font-size:13px;border:1px solid #d0d0d0;white-space:normal;max-width:260px;';
+  function avgStyle(v){ return (v>=4) ? 'padding:7px 11px;text-align:center;font-family:Arial,sans-serif;font-size:13px;border:1px solid #d0d0d0;background:#90EE90;font-weight:bold;' : 'padding:7px 11px;text-align:center;font-family:Arial,sans-serif;font-size:13px;border:1px solid #d0d0d0;background:#FFD700;font-weight:bold;'; }
+  function ca(arr){ var v=arr.filter(function(s){return s!==null;}); return v.length>0?+(v.reduce(function(a,b){return a+b;},0)/v.length).toFixed(2):null; }
 
-  tabs.forEach(function(tab){
-    var data=CSAT_DATA[tab]; if(!data||!data.rows||data.rows.length===0) return;
-    var agentMap={};
-    data.rows.forEach(function(r){var k=r.agent||'Unknown';if(!agentMap[k])agentMap[k]=[];agentMap[k].push(r);});
-    var agentData=[];
-    Object.keys(agentMap).sort().forEach(function(name){
-      var tix=agentMap[name];
-      var allS=[];
-      tix.forEach(function(t){[t.scores.knowledge,t.scores.timeTaken,t.scores.understandability,t.scores.customerService].forEach(function(s){if(s!==null)allS.push(s);});});
-      var avg=allS.length>0?allS.reduce(function(a,b){return a+b;},0)/allS.length:null;
-      var cmts=tix.map(function(t){return t.comment;}).filter(function(c){return c&&c.trim()!=='';}).join('; ');
-      agentData.push({name:name,count:tix.length,avg:avg,comments:cmts});
+  var html = '<div style="font-family:Arial,sans-serif;font-size:13px;color:#000;">';
+  html += '<p>Hi Team,</p>';
+  html += '<p>Please find the CSAT report for <strong>' + todayStr + '</strong> below.</p>';
+
+  // ── CONSUMER + VH ──
+  var conData = CSAT_DATA['consumer'];
+  var vhData  = CSAT_DATA['vision'];
+  if ((conData && conData.rows && conData.rows.length > 0) || (vhData && vhData.rows && vhData.rows.length > 0)) {
+    html += '<p style="margin:20px 0 6px;"><strong>CONSUMER</strong></p>';
+    html += '<table style="border-collapse:collapse;width:100%;">';
+    html += '<tr><th style="' + TH + '">Names</th><th style="' + TH + '">Ticket id</th><th style="' + TH + '">Knowledge</th><th style="' + TH + '">Time taken</th><th style="' + TH + '">Understandability</th><th style="' + TH + '">Customer service</th><th style="' + TH + '">Comments</th><th style="' + TH + '">Average</th></tr>';
+
+    function renderConsumerRows(rows, stripe) {
+      var agentMap = {};
+      rows.forEach(function(r){ var k=r.agent||'Unknown'; if(!agentMap[k]) agentMap[k]=[]; agentMap[k].push(r); });
+      Object.keys(agentMap).sort().forEach(function(name, ni) {
+        var tix = agentMap[name];
+        var aK=ca(tix.map(function(t){return t.scores.knowledge;}));
+        var aTT=ca(tix.map(function(t){return t.scores.timeTaken;}));
+        var aU=ca(tix.map(function(t){return t.scores.understandability;}));
+        var aCS=ca(tix.map(function(t){return t.scores.customerService;}));
+        var allV=[]; tix.forEach(function(t){[t.scores.knowledge,t.scores.timeTaken,t.scores.understandability,t.scores.customerService].forEach(function(s){if(s!==null)allV.push(s);});});
+        var avg = ca(allV.map(function(v){return v;}));
+        var tickets  = tix.map(function(t){return t.ticket;}).filter(Boolean).join(', ');
+        var comments = tix.map(function(t){return t.comment;}).filter(function(c){return c&&c.trim()!=='';}).join(' | ');
+        var bg = (stripe && ni%2===0) ? 'background:#f9f9f9;' : '';
+        html += '<tr style="' + bg + '"><td style="' + TDL + '">' + name + '</td><td style="' + TDTK + '">' + tickets + '</td><td style="' + TD + '">' + (aK||'—') + '</td><td style="' + TD + '">' + (aTT||'—') + '</td><td style="' + TD + '">' + (aU||'—') + '</td><td style="' + TD + '">' + (aCS||'—') + '</td><td style="' + TDCM + '">' + (comments||'—') + '</td><td style="' + avgStyle(avg||0) + '">' + (avg||'—') + '</td></tr>';
+      });
+    }
+
+    if (conData && conData.rows && conData.rows.length > 0) renderConsumerRows(conData.rows, true);
+
+    if (vhData && vhData.rows && vhData.rows.length > 0) {
+      html += '<tr><td colspan="8" style="background:#1a2744;color:#ffffff;padding:5px 10px;font-family:Arial,sans-serif;font-size:12px;font-weight:bold;border:1px solid #ffffff;">Vision Helpdesk (VH) — ' + vhData.rows.length + ' response' + (vhData.rows.length!==1?'s':'') + '</td></tr>';
+      renderConsumerRows(vhData.rows, false);
+    }
+    html += '</table><br/>';
+  }
+
+  // ── ENTERPRISE (ESP) ──
+  var espData = CSAT_DATA['esp'];
+  if (espData && espData.rows && espData.rows.length > 0) {
+    html += '<p style="margin:20px 0 6px;"><strong>ENTERPRISE (ESP)</strong></p>';
+    html += '<table style="border-collapse:collapse;width:100%;">';
+    html += '<tr><th style="' + TH + '">Ticket id</th><th style="' + TH + '">Account Name</th><th style="' + TH + '">Names</th><th style="' + TH + '">Knowledge and Expertise</th><th style="' + TH + '">Professionalism and courteousness</th><th style="' + TH + '">Follow-up and clear communication on solution</th><th style="' + TH + '">Time required to resolved</th><th style="' + TH + '">Overall support experience</th><th style="' + TH + '">Comments</th><th style="' + TH + '">Average</th></tr>';
+    espData.rows.forEach(function(t, ti) {
+      var cols=[t.scores.knowledge,t.scores.professionalism,t.scores.followUp,t.scores.timeResolved,t.scores.overallExp];
+      var avg = ca(cols);
+      var bg = ti%2===0 ? 'background:#f9f9f9;' : '';
+      html += '<tr style="' + bg + '"><td style="' + TD + '">' + (t.ticket||'—') + '</td><td style="' + TDL + '">' + (t.account||t.customer||'—') + '</td><td style="' + TDL + '">' + (t.agent||'—') + '</td><td style="' + TD + '">' + (t.scores.knowledge||'—') + '</td><td style="' + TD + '">' + (t.scores.professionalism||'—') + '</td><td style="' + TD + '">' + (t.scores.followUp||'—') + '</td><td style="' + TD + '">' + (t.scores.timeResolved||'—') + '</td><td style="' + TD + '">' + (t.scores.overallExp||'—') + '</td><td style="' + TDCM + '">' + (t.comment||'—') + '</td><td style="' + avgStyle(avg||0) + '">' + (avg||'—') + '</td></tr>';
     });
-    var allAvgs=agentData.map(function(a){return a.avg;}).filter(function(a){return a!==null;});
-    var overall=allAvgs.length>0?allAvgs.reduce(function(a,b){return a+b;},0)/allAvgs.length:0;
-    body+='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
-    body+=lbl[tab]+' — CSAT REPORT\n';
-    body+='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
-    body+='Total Responses : '+data.rows.length+'\n';
-    body+='Overall Average : '+overall.toFixed(2)+' / 5\n\n';
-    body+='Agent                   Tickets  Avg     Comments\n';
-    body+='─'.repeat(72)+'\n';
-    agentData.forEach(function(a){
-      body+=(a.name+'                        ').slice(0,24)+String(a.count).padEnd(9)+(a.avg!==null?a.avg.toFixed(2):'—').padEnd(8)+(a.comments||'—')+'\n';
+    html += '</table><br/>';
+  }
+
+  // ── LIVE CHAT ──
+  var chatData = CSAT_DATA['chat'];
+  if (chatData && chatData.rows && chatData.rows.length > 0) {
+    html += '<p style="margin:20px 0 6px;"><strong>LIVE CHAT</strong></p>';
+    html += '<table style="border-collapse:collapse;width:100%;">';
+    html += '<tr><th style="' + TH + '">Names</th><th style="' + TH + '">Ticket id</th><th style="' + TH + '">Knowledge</th><th style="' + TH + '">Time taken</th><th style="' + TH + '">Understandability</th><th style="' + TH + '">Customer service</th><th style="' + TH + '">Comments</th><th style="' + TH + '">Average</th></tr>';
+    var chatMap={};
+    chatData.rows.forEach(function(r){var k=r.agent||'Unknown';if(!chatMap[k])chatMap[k]=[];chatMap[k].push(r);});
+    Object.keys(chatMap).sort().forEach(function(name,ni){
+      var tix=chatMap[name];
+      var aK=ca(tix.map(function(t){return t.scores.knowledge;}));
+      var aTT=ca(tix.map(function(t){return t.scores.timeTaken;}));
+      var aU=ca(tix.map(function(t){return t.scores.understandability;}));
+      var aCS=ca(tix.map(function(t){return t.scores.customerService;}));
+      var allV=[]; tix.forEach(function(t){[t.scores.knowledge,t.scores.timeTaken,t.scores.understandability,t.scores.customerService].forEach(function(s){if(s!==null)allV.push(s);});});
+      var avg=ca(allV.map(function(v){return v;}));
+      var tickets=tix.map(function(t){return t.ticket;}).filter(Boolean).join(', ');
+      var comments=tix.map(function(t){return t.comment;}).filter(function(c){return c&&c.trim()!=='';}).join(' | ');
+      var bg = ni%2===0 ? 'background:#f9f9f9;' : '';
+      html += '<tr style="' + bg + '"><td style="' + TDL + '">' + name + '</td><td style="' + TDTK + '">' + tickets + '</td><td style="' + TD + '">' + (aK||'—') + '</td><td style="' + TD + '">' + (aTT||'—') + '</td><td style="' + TD + '">' + (aU||'—') + '</td><td style="' + TD + '">' + (aCS||'—') + '</td><td style="' + TDCM + '">' + (comments||'—') + '</td><td style="' + avgStyle(avg||0) + '">' + (avg||'—') + '</td></tr>';
     });
-    body+='\n';
-  });
-  body+='━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
-  body+='Generated by K7TeamCore · Sent by: '+(currentUser?currentUser.name:'—')+'\n';
-  window.location.href='mailto:'+CSAT_GROUP_EMAIL+'?subject='+subject+'&body='+encodeURIComponent(body);
+    html += '</table><br/>';
+  }
+
+  html += '<p style="color:#666;font-size:12px;margin-top:16px;">Generated by K7TeamCore &nbsp;·&nbsp; ' + (currentUser?currentUser.name:'—') + '</p>';
+  html += '</div>';
+  return html;
 }
 
+// ─────────────────────────────────────────────────────────
+// SEND EMAIL — copies formatted HTML, opens compose window
+// ─────────────────────────────────────────────────────────
+function csatSendEmail() {
+  var emailHTML = csatBuildEmailHTML();
+  var todayStr  = new Date().toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+  var subject   = 'C-Sat Report of ' + todayStr;
+
+  function showModal() { csatShowEmailModal(subject); }
+
+  try {
+    var blob = new Blob([emailHTML], {type:'text/html'});
+    var item = new ClipboardItem({'text/html': blob});
+    navigator.clipboard.write([item]).then(showModal).catch(function(){
+      navigator.clipboard.writeText(emailHTML).then(showModal).catch(showModal);
+    });
+  } catch(e) { showModal(); }
+}
+
+function csatShowEmailModal(subject) {
+  var old = document.getElementById('_csat_email_modal');
+  if (old) old.remove();
+  var overlay = document.createElement('div');
+  overlay.id = '_csat_email_modal';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(7,13,45,.6);backdrop-filter:blur(6px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1.5rem;';
+  overlay.innerHTML =
+    '<div style="background:var(--navy-card);border:1px solid var(--navy-border);border-radius:16px;max-width:500px;width:100%;padding:2rem;box-shadow:0 24px 64px rgba(4,8,30,.4);">' +
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.2rem;">' +
+    '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.3rem;font-weight:600;color:var(--text-primary);">&#128231; Send CSAT Report</div>' +
+    '<button onclick="document.getElementById(\'_csat_email_modal\').remove()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:1.2rem;">&#10005;</button>' +
+    '</div>' +
+    '<div style="background:rgba(46,197,111,.08);border:1px solid rgba(46,197,111,.25);border-radius:8px;padding:.85rem 1rem;margin-bottom:1.2rem;display:flex;align-items:center;gap:.75rem;">' +
+    '<span style="font-size:1.2rem;">&#10003;</span>' +
+    '<div><div style="font-size:.85rem;font-weight:600;color:#1a7a45;">Report HTML copied to clipboard!</div>' +
+    '<div style="font-size:.76rem;color:var(--text-muted);margin-top:.2rem;">Open Gmail or Outlook → New compose → Paste (Ctrl+V / Cmd+V) → Table appears with colors.</div></div>' +
+    '</div>' +
+    '<div style="margin-bottom:1rem;">' +
+    '<div style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.35rem;font-weight:500;">Subject Line (copy separately)</div>' +
+    '<div style="display:flex;gap:.5rem;">' +
+    '<input id="_csat_email_subj" value="' + subject + '" style="flex:1;padding:.55rem .85rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:8px;color:var(--text-primary);font-family:\'DM Sans\',sans-serif;font-size:.875rem;outline:none;"/>' +
+    '<button onclick="navigator.clipboard.writeText(document.getElementById(\'_csat_email_subj\').value)" style="padding:.5rem .9rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:8px;cursor:pointer;font-size:.78rem;color:var(--text-muted);">Copy</button>' +
+    '</div></div>' +
+    '<div style="font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.5rem;font-weight:500;">Open email client</div>' +
+    '<div style="display:flex;gap:.6rem;">' +
+    '<button onclick="window.open(\'https://mail.google.com/mail/?view=cm&fs=1&to=\'+encodeURIComponent(CSAT_GROUP_EMAIL)+\'&su=\'+encodeURIComponent(document.getElementById(\'_csat_email_subj\').value),\'_blank\')" style="flex:1;padding:.65rem 1rem;background:linear-gradient(135deg,#EA4335,#c5221f);border:none;border-radius:8px;color:#fff;font-family:\'DM Sans\',sans-serif;font-size:.84rem;font-weight:600;cursor:pointer;">&#128231; Open Gmail</button>' +
+    '<button onclick="window.open(\'https://outlook.live.com/mail/0/deeplink/compose?to=\'+encodeURIComponent(CSAT_GROUP_EMAIL)+\'&subject=\'+encodeURIComponent(document.getElementById(\'_csat_email_subj\').value),\'_blank\')" style="flex:1;padding:.65rem 1rem;background:linear-gradient(135deg,#0078d4,#005a9e);border:none;border-radius:8px;color:#fff;font-family:\'DM Sans\',sans-serif;font-size:.84rem;font-weight:600;cursor:pointer;">&#128231; Open Outlook</button>' +
+    '</div>' +
+    '<div style="font-size:.7rem;color:var(--text-dim);text-align:center;margin-top:.6rem;">Click to open compose → Ctrl+V to paste the table</div>' +
+    '</div>';
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.remove(); });
+}
 // ─────────────────────────────────────────────────────────
 // CONTROL DECK
 // ─────────────────────────────────────────────────────────

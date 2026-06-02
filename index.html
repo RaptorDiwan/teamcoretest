@@ -2967,13 +2967,6 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
         Reports
       </div>
 
-      <div class="sidebar-item" id="sidebar-csat" onclick="showPage('csat', this)">
-        <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h9"/>
-        </svg>
-        CSAT Reports
-      </div>
-
       <div class="sidebar-item" id="sidebar-casetracker" onclick="showPage('casetracker', this)">
         <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
@@ -3522,46 +3515,6 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
       </div>
 
       <!-- â”€â”€ ADMIN: USER MANAGEMENT â”€â”€ -->
-      <!-- ── CSAT REPORTS PAGE — loaded from csat_module_patch.js ── -->
-      <div class="page" id="page-csat">
-        <div class="csat-page">
-          <div>
-            <h2 class="csat-title">📊 CSAT Reports</h2>
-            <p class="csat-sub">Daily satisfaction reports — Consumer · Vision Helpdesk · ESP · Live Chat</p>
-          </div>
-          <div class="csat-tabs" id="csat-tabs">
-            <button class="csat-tab active" id="csat-tab-consumer" onclick="csatSwitchTab('consumer',this)">
-              <span class="csat-tab-dot" id="csat-dot-consumer"></span>👤 Consumer
-            </button>
-            <button class="csat-tab" id="csat-tab-vision" onclick="csatSwitchTab('vision',this)">
-              <span class="csat-tab-dot" id="csat-dot-vision"></span>🏢 Vision Helpdesk
-            </button>
-            <button class="csat-tab" id="csat-tab-esp" onclick="csatSwitchTab('esp',this)">
-              <span class="csat-tab-dot" id="csat-dot-esp"></span>📋 ESP Report
-            </button>
-            <button class="csat-tab" id="csat-tab-chat" onclick="csatSwitchTab('chat',this)">
-              <span class="csat-tab-dot" id="csat-dot-chat"></span>💬 Live Chat
-            </button>
-          </div>
-          <div id="csat-panel-consumer"><div id="csat-inner-consumer"></div></div>
-          <div id="csat-panel-vision"  style="display:none;"><div id="csat-inner-vision"></div></div>
-          <div id="csat-panel-esp"     style="display:none;"><div id="csat-inner-esp"></div></div>
-          <div id="csat-panel-chat"    style="display:none;"><div id="csat-inner-chat"></div></div>
-          <div id="csat-email-wrap" style="display:none;padding-top:.5rem;border-top:1px solid var(--navy-border);margin-top:.5rem;">
-            <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;">
-              <div>
-                <div style="font-size:.82rem;font-weight:600;color:var(--text-primary);">&#128231; Send Combined Report</div>
-                <div style="font-size:.74rem;color:var(--text-muted);margin-top:.15rem;">Compiles all 4 reports into one email — opens your default mail client</div>
-              </div>
-              <button class="csat-email-btn" onclick="csatSendEmail()">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,12 2,6"/></svg>
-                Send All Reports via Email
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
       <!-- ── CASE TRACKER PAGE ── -->
       <div class="page" id="page-casetracker">
         <div id="ct-root"></div>
@@ -4214,9 +4167,6 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
               <div style="color:var(--text-dim);font-size:.8rem;">Loading announcements…</div>
             </div>
           </div>
-
-          <!-- ── CSAT Reports — loaded from csat_module_patch.js ── -->
-          <div id="cd-csat-card"></div>
 
         </div>
       </div>
@@ -7242,6 +7192,121 @@ function qrTab(n, btn){
   document.getElementById('qr-panel-'+n).classList.add('active');
 }
 
+
+// ── Quiz Override Store ──
+var _qrOverrides = {};
+
+async function qrLoadOverrides(fromDate, toDate) {
+  try {
+    var rows = await sbQuery('quiz_overrides',
+      'updated_at=gte.'+fromDate+'T00:00:00&updated_at=lte.'+toDate+'T23:59:59&select=quiz_id,user_id,override_val'
+    );
+    _qrOverrides = {};
+    (rows||[]).forEach(function(r){ _qrOverrides[r.quiz_id+'|'+r.user_id] = r.override_val; });
+  } catch(e) {
+    try { var ls=localStorage.getItem('quiz_overrides_v1'); _qrOverrides=ls?JSON.parse(ls):{}; } catch(e2){ _qrOverrides={}; }
+  }
+}
+
+async function qrSaveOverride(quizId, userId, val) {
+  _qrOverrides[quizId+'|'+userId] = val;
+  try {
+    await fetch(SUPABASE_URL+'/rest/v1/quiz_overrides', {
+      method:'POST',
+      headers:sbHeaders({'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=minimal'}),
+      body:JSON.stringify({ quiz_id:quizId, user_id:userId, override_val:val, updated_by:currentUser?currentUser.name:'—', updated_at:new Date().toISOString() })
+    });
+  } catch(e) {
+    try { localStorage.setItem('quiz_overrides_v1', JSON.stringify(_qrOverrides)); } catch(e2){}
+  }
+}
+
+function qrGetCellState(quizId, userId, hasResponse, isCorrect, isOff) {
+  var key = quizId+'|'+userId;
+  if (_qrOverrides[key]) return _qrOverrides[key];
+  if (!hasResponse && isOff) return 'not_present';
+  if (!hasResponse)          return 'not_attended';
+  if (isCorrect)             return 'correct';
+  return 'wrong';
+}
+
+function qrCellHTML(state, quizId, userId, isAdmin) {
+  var chips = {
+    correct:      '<span class="qc-correct">&#10003;</span>',
+    wrong:        '<span class="qc-wrong">WA</span>',
+    not_attended: '<span class="qc-na">Not Attended</span>',
+    not_present:  '<span class="qc-np">Not Present</span>'
+  };
+  var chip = chips[state] || chips['not_attended'];
+  if (!isAdmin) return chip;
+  return '<button onclick="qrOpenEditCell(\''+quizId+'\',\''+userId+'\',\''+state+'\')" '+
+    'style="background:none;border:none;cursor:pointer;padding:3px 6px;border-radius:6px;transition:background .15s;" '+
+    'onmouseover="this.style.background=\'rgba(239,73,60,.1)\'" '+
+    'onmouseout="this.style.background=\'none\'" title="Click to override">'+chip+
+    '<span style="font-size:.55rem;color:var(--gold);margin-left:2px;vertical-align:middle;">&#9998;</span></button>';
+}
+
+function qrOpenEditCell(quizId, userId, currentState) {
+  var old = document.getElementById('_qr_edit_modal');
+  if (old) old.remove();
+  var agentName='—', quizDate='—', quizQ='';
+  if (_qrData) {
+    var ag = _qrData.agents.find(function(a){return a.id===userId;});
+    if (ag) agentName = ag.name;
+    var qz = _qrData.quizzes.find(function(q){return q.id===quizId;});
+    if (qz) { quizDate=qz.date; quizQ=qz.question||''; }
+  }
+  var opts = [
+    {val:'correct',      label:'&#10003; Correct',     bg:'rgba(46,197,111,.15)',  color:'#065f46',        border:'#6ee7b7'},
+    {val:'wrong',        label:'&#10007; Wrong Answer', bg:'rgba(239,73,60,.1)',    color:'#991b1b',        border:'#fca5a5'},
+    {val:'not_attended', label:'Not Attended',          bg:'rgba(239,73,60,.07)',   color:'var(--gold)',    border:'rgba(239,73,60,.25)'},
+    {val:'not_present',  label:'Not Present',           bg:'rgba(123,135,153,.12)', color:'var(--text-dim)','border':'#d0d0d0'}
+  ];
+  var btnHTML = opts.map(function(o){
+    var isActive = currentState===o.val;
+    return '<button onclick="qrApplyOverride(\''+quizId+'\',\''+userId+'\',\''+o.val+'\')" '+
+      'style="padding:.6rem 1rem;border-radius:8px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:.84rem;'+
+      'background:'+o.bg+';color:'+o.color+';border:1px solid '+o.border+';'+
+      (isActive?'font-weight:700;outline:2px solid '+o.border+';':'')+
+      'transition:all .15s;">'+o.label+'</button>';
+  }).join('');
+
+  var overlay = document.createElement('div');
+  overlay.id = '_qr_edit_modal';
+  overlay.style.cssText = 'position:fixed;inset:0;background:rgba(7,13,45,.6);backdrop-filter:blur(5px);z-index:9999;display:flex;align-items:center;justify-content:center;padding:1rem;';
+  overlay.innerHTML =
+    '<div style="background:var(--navy-card);border:1px solid var(--navy-border);border-radius:16px;max-width:420px;width:100%;padding:1.8rem;box-shadow:0 24px 64px rgba(4,8,30,.35);">'+
+    '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;">'+
+    '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.2rem;font-weight:600;color:var(--text-primary);">&#9998; Override Quiz Result</div>'+
+    '<button onclick="document.getElementById(\'_qr_edit_modal\').remove()" style="background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:1.1rem;">&#10005;</button>'+
+    '</div>'+
+    '<div style="background:var(--navy-hover);border-radius:8px;padding:.7rem .9rem;margin-bottom:1.1rem;">'+
+    '<div style="font-size:.72rem;color:var(--text-muted);margin-bottom:.2rem;">Agent &nbsp;&middot;&nbsp; Date</div>'+
+    '<div style="font-size:.9rem;font-weight:600;color:var(--text-primary);">'+agentName+' &nbsp;&mdash;&nbsp; '+quizDate+'</div>'+
+    (quizQ?'<div style="font-size:.72rem;color:var(--text-muted);margin-top:.25rem;line-height:1.4;white-space:normal;">Q: '+quizQ.slice(0,80)+(quizQ.length>80?'&hellip;':'')+'</div>':'')+
+    '</div>'+
+    '<div style="font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;margin-bottom:.55rem;">Set result to</div>'+
+    '<div style="display:flex;flex-wrap:wrap;gap:.5rem;margin-bottom:1rem;">'+btnHTML+'</div>'+
+    '<div id="_qr_edit_status" style="font-size:.78rem;min-height:1.1rem;color:var(--accent-green);"></div>'+
+    '</div>';
+  document.body.appendChild(overlay);
+  overlay.addEventListener('click', function(e){ if(e.target===overlay) overlay.remove(); });
+}
+
+async function qrApplyOverride(quizId, userId, val) {
+  var st = document.getElementById('_qr_edit_status');
+  if (st) st.textContent = 'Saving…';
+  await qrSaveOverride(quizId, userId, val);
+  if (st) st.textContent = '✅ Saved!';
+  setTimeout(function(){
+    var m = document.getElementById('_qr_edit_modal');
+    if (m) m.remove();
+    qrRenderTab1();
+    qrRenderTab2();
+    qrRenderTab4();
+  }, 500);
+}
+
 async function qrLoadReport(){
   var month = parseInt(document.getElementById('qr-month').value);
   var year  = parseInt(document.getElementById('qr-year').value);
@@ -7249,29 +7314,24 @@ async function qrLoadReport(){
   p1.innerHTML = '<div style="color:var(--text-dim);font-size:.85rem;padding:1rem 0;">Loading...</div>';
 
   try{
-    // Date range for the month
     var fromDate = year+'-'+String(month+1).padStart(2,'0')+'-01';
     var lastDay  = new Date(year, month+1, 0).getDate();
     var toDate   = year+'-'+String(month+1).padStart(2,'0')+'-'+String(lastDay).padStart(2,'0');
 
-    // Fetch all quizzes that month
     var quizzes = await sbQuery('quizzes',
       'date=gte.'+fromDate+'&date=lte.'+toDate+'&order=date.asc&select=id,date,question,type,correct_answer'
     );
-
-    // Fetch all responses that month
     var responses = await sbQuery('quiz_responses',
       'date=gte.'+fromDate+'&date=lte.'+toDate+'&order=submitted_at.asc&select=quiz_id,user_id,user_name,answer,is_correct,submitted_at,date'
     );
-
-    // Fetch all users
     var users = await sbQuery('users','select=id,name,role&order=name.asc');
     var agents = (users||[]).filter(function(u){ return u.role!=='syslevel'; });
-
-    // Fetch roster data to check who was on leave/off each day
     var rosterRows = window.rosterCache || null;
 
     _qrData = { quizzes:quizzes||[], responses:responses||[], agents:agents, rosterRows:rosterRows, month:month, year:year, fromDate:fromDate, toDate:toDate };
+
+    // Load overrides then render all tabs
+    await qrLoadOverrides(fromDate, toDate);
 
     qrRenderTab1();
     qrRenderTab2();
@@ -7306,11 +7366,12 @@ function qrRenderTab1(){
   var d = _qrData;
   if(!d.quizzes.length){ document.getElementById('qr-panel-1').innerHTML='<div style="color:var(--text-muted);font-size:.85rem;padding:1rem 0;">No quizzes found for this month.</div>'; return; }
 
-  // Build response map: quizId -> { userId -> response }
+  var isAdmin = currentUser && (currentUser.role==='admin'||currentUser.role==='tl');
+
   var respMap = {};
   d.responses.forEach(function(r){
-    if(!respMap[r.quiz_id]) respMap[r.quiz_id] = {};
-    if(!respMap[r.quiz_id][r.user_id]) respMap[r.quiz_id][r.user_id] = r; // first response
+    if(!respMap[r.quiz_id]) respMap[r.quiz_id]={};
+    if(!respMap[r.quiz_id][r.user_id]) respMap[r.quiz_id][r.user_id]=r;
   });
 
   var thead = '<thead><tr><th style="min-width:90px;">Date</th>'+
@@ -7318,95 +7379,97 @@ function qrRenderTab1(){
   '</tr></thead>';
 
   var tbody = '<tbody>'+d.quizzes.map(function(q){
-    return '<tr><td>'+q.date+'</td>'+
+    return '<tr><td style="font-weight:600;">'+q.date+'</td>'+
       d.agents.map(function(a){
-        var resp = respMap[q.id] ? respMap[q.id][a.id] : null;
+        var resp  = respMap[q.id] ? respMap[q.id][a.id] : null;
         var isOff = qrIsOffDay(a.name, q.date, d.rosterRows);
-        var cell = '';
-        if(isOff && !resp){
-          cell = '<span class="qc-np">Not Present</span>';
-        } else if(!resp){
-          cell = '<span class="qc-na">Not Attended</span>';
-        } else if(resp.is_correct){
-          cell = '<span class="qc-correct">1</span>';
-        } else {
-          cell = '<span class="qc-wrong">WA</span>';
-        }
-        return '<td>'+cell+'</td>';
+        var state = qrGetCellState(q.id, a.id, !!resp, resp?resp.is_correct:false, isOff);
+        var hasOverride = !!(_qrOverrides[q.id+'|'+a.id]);
+        var overrideMark = hasOverride ? ' <span style="font-size:.55rem;color:var(--gold);vertical-align:super;" title="Manually overridden">★</span>' : '';
+        return '<td>'+qrCellHTML(state, q.id, a.id, isAdmin)+overrideMark+'</td>';
       }).join('')+
     '</tr>';
   }).join('')+'</tbody>';
 
+  var editNote = isAdmin
+    ? '<div style="font-size:.72rem;color:var(--text-muted);margin-bottom:.6rem;">'+
+        '<span style="color:var(--gold);">★</span> = manually overridden &nbsp;·&nbsp; '+
+        'Click any result cell to override it</div>'
+    : '';
+
   document.getElementById('qr-panel-1').innerHTML =
+    editNote +
     '<div class="qr-tbl-wrap"><table class="qr-tbl">'+thead+tbody+'</table></div>';
 }
 
 // ── TAB 2: Points & Ranking ──
 function qrRenderTab2(){
   var d = _qrData;
-  // For each quiz, sort correct responses by submitted_at, assign points
-  var agentPoints = {}; // userId -> { name, points, correct, wrong, notAtt, notPresent }
+  var agentPoints = {};
   d.agents.forEach(function(a){
     agentPoints[a.id] = { name:a.name, points:0, correct:0, wrong:0, notAtt:0, notPresent:0 };
   });
 
   var respMap = {};
   d.responses.forEach(function(r){
-    if(!respMap[r.quiz_id]) respMap[r.quiz_id] = [];
+    if(!respMap[r.quiz_id]) respMap[r.quiz_id]=[];
     respMap[r.quiz_id].push(r);
   });
 
   var POINTS = [50,40,30,20];
 
   d.quizzes.forEach(function(q){
-    var allResp = respMap[q.id] || [];
-    // Sort correct responses by submitted_at
-    var correct = allResp.filter(function(r){ return r.is_correct; })
-      .sort(function(a,b){ return new Date(a.submitted_at)-new Date(b.submitted_at); });
+    var allResp = respMap[q.id]||[];
+    var respondedIds = new Set(allResp.map(function(r){return r.user_id;}));
 
-    // Assign points
-    correct.forEach(function(r,i){
-      if(agentPoints[r.user_id]){
-        agentPoints[r.user_id].points += (i<4 ? POINTS[i] : 0);
-        agentPoints[r.user_id].correct++;
+    // Count non-correct states first
+    d.agents.forEach(function(a){
+      var resp  = allResp.find(function(r){return r.user_id===a.id;});
+      var isOff = qrIsOffDay(a.name, q.date, d.rosterRows);
+      var state = qrGetCellState(q.id, a.id, !!resp, resp?resp.is_correct:false, isOff);
+      if      (state==='not_present')  agentPoints[a.id].notPresent++;
+      else if (state==='not_attended') agentPoints[a.id].notAtt++;
+      else if (state==='wrong')        agentPoints[a.id].wrong++;
+    });
+
+    // Points: sort correct by submitted_at, handle overrides
+    var correctList = allResp.filter(function(r){
+      var state = qrGetCellState(q.id, r.user_id, true, r.is_correct, false);
+      return state==='correct';
+    }).sort(function(a,b){ return new Date(a.submitted_at)-new Date(b.submitted_at); });
+
+    // Agents overridden to correct but had no real response — append at end
+    d.agents.forEach(function(a){
+      if (_qrOverrides[q.id+'|'+a.id]==='correct' && !respondedIds.has(a.id)){
+        correctList.push({ user_id:a.id, submitted_at:new Date().toISOString() });
       }
     });
 
-    // Wrong answers
-    var wrong = allResp.filter(function(r){ return r.is_correct===false; });
-    wrong.forEach(function(r){
-      if(agentPoints[r.user_id]) agentPoints[r.user_id].wrong++;
-    });
-
-    // Not attended / not present
-    var respondedIds = new Set(allResp.map(function(r){ return r.user_id; }));
-    d.agents.forEach(function(a){
-      if(!respondedIds.has(a.id)){
-        var isOff = qrIsOffDay(a.name, q.date, d.rosterRows);
-        if(isOff) agentPoints[a.id].notPresent++;
-        else agentPoints[a.id].notAtt++;
+    correctList.forEach(function(r,i){
+      if(agentPoints[r.user_id]){
+        agentPoints[r.user_id].points += (i<4?POINTS[i]:0);
+        agentPoints[r.user_id].correct++;
       }
     });
   });
 
-  // Sort by points desc
   var sorted = Object.values(agentPoints).sort(function(a,b){ return b.points-a.points; });
   var medals = ['🥇','🥈','🥉','🎖️'];
   var medalColors = ['#FFD700','#C0C0C0','#CD7F32','#4C76A8'];
 
-  var topFourWithPts = sorted.filter(function(a){ return a.points > 0; }).slice(0,4);
+  var topFourWithPts = sorted.filter(function(a){ return a.points>0; }).slice(0,4);
   var topCards = topFourWithPts.map(function(a,i){
-    return '<div class="qr-rank-card" style="'+(i===3?'border-color:rgba(76,118,168,.3);background:rgba(76,118,168,.04);':'')+'">' +
+    return '<div class="qr-rank-card" style="'+(i===3?'border-color:rgba(76,118,168,.3);background:rgba(76,118,168,.04);':'')+'">'+
       '<div class="qr-rank-medal" style="color:'+medalColors[i]+';">'+medals[i]+'</div>'+
       '<div style="flex:1;"><div class="qr-rank-name">'+esc(a.name)+'</div>'+
       '<div class="qr-rank-sub">'+a.correct+' correct · '+a.wrong+' wrong · '+a.notAtt+' not attended</div></div>'+
-      '<div class="qr-rank-pts" style="'+(i===3?'color:var(--accent-blue);':'')+'">' +a.points+' pts</div>'+
+      '<div class="qr-rank-pts" style="'+(i===3?'color:var(--accent-blue);':'')+'">'+a.points+' pts</div>'+
     '</div>';
   }).join('');
 
   var tableRows = sorted.map(function(a,i){
-    var rowStyle = i < 4 && a.points > 0 ? 'background:rgba(239,73,60,.03);' : '';
-    var rankBadge = i < 4 && a.points > 0 ? medals[i] : (i+1);
+    var rowStyle = i<4&&a.points>0 ? 'background:rgba(239,73,60,.03);' : '';
+    var rankBadge = i<4&&a.points>0 ? medals[i] : (i+1);
     return '<tr style="'+rowStyle+'">'+
       '<td style="text-align:center;font-weight:600;">'+rankBadge+'</td>'+
       '<td style="text-align:left;">'+esc(a.name)+'</td>'+
@@ -7453,23 +7516,20 @@ function qrRenderTab4(){
   var d = _qrData;
   var respMap = {};
   d.responses.forEach(function(r){
-    if(!respMap[r.quiz_id]) respMap[r.quiz_id] = {};
-    if(!respMap[r.quiz_id][r.user_id]) respMap[r.quiz_id][r.user_id] = r;
+    if(!respMap[r.quiz_id]) respMap[r.quiz_id]={};
+    if(!respMap[r.quiz_id][r.user_id]) respMap[r.quiz_id][r.user_id]=r;
   });
 
   var summary = d.agents.map(function(a,i){
     var daysPresent=0, attempted=0, correct=0, wrong=0, notAtt=0;
     d.quizzes.forEach(function(q){
+      var resp  = respMap[q.id] ? respMap[q.id][a.id] : null;
       var isOff = qrIsOffDay(a.name, q.date, d.rosterRows);
-      if(!isOff) daysPresent++;
-      var resp = respMap[q.id] ? respMap[q.id][a.id] : null;
-      if(resp){
-        attempted++;
-        if(resp.is_correct) correct++;
-        else wrong++;
-      } else if(!isOff){
-        notAtt++;
-      }
+      var state = qrGetCellState(q.id, a.id, !!resp, resp?resp.is_correct:false, isOff);
+      if (state!=='not_present')  daysPresent++;
+      if      (state==='correct')       { attempted++; correct++; }
+      else if (state==='wrong')         { attempted++; wrong++; }
+      else if (state==='not_attended')  { notAtt++; }
     });
     var pct = attempted>0 ? Math.round(correct/attempted*100)+'%' : '0%';
     return { no:i+1, name:a.name, daysPresent:daysPresent, attempted:attempted, correct:correct, wrong:wrong, notAtt:notAtt, pct:pct };
@@ -18039,13 +18099,4 @@ async function tmHandleSignal(sig){
 
 </script>
 
-<!-- ═══════════════════════════════════════════════════
-     CSAT MODULE — separate maintainable files
-     Edit csat_styles.css and csat_module_patch.js only.
-     Never need to touch index.html for CSAT changes.
-═══════════════════════════════════════════════════ -->
-<link rel="stylesheet" href="csat_styles.css"/>
-<script src="csat_module_patch.js"></script>
 
-</body>
-</html>
