@@ -4533,8 +4533,8 @@ const SUPABASE_URL='https://sodvlpcjpnepohpoqicf.supabase.co';
 const SUPABASE_KEY='sb_publishable_nEbzsiR9Qhb31ZMc-Pg-cA_tJEzkmAf';
 
 // ── Cloudflare TURN credentials — fill in your own below ──
-const CF_TURN_TOKEN_ID  = '8c1147a2b9ce301812a67174735d15be';   // replace with your token ID
-const CF_TURN_API_TOKEN = 'df8223b259d761e0a85719db4602e94370a02b02d78bcc714377c33c0a4e3ca4';  // replace with your API token
+const CF_TURN_TOKEN_ID  = 'YOUR_CF_TURN_TOKEN_ID';   // replace with your token ID
+const CF_TURN_API_TOKEN = 'YOUR_CF_TURN_API_TOKEN';  // replace with your API token
 
 function sbHeaders(extra){
   return Object.assign({'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},extra||{});
@@ -4636,15 +4636,36 @@ function doLogout(){
       }
     }
   } catch(e){ console.warn('Logout check skipped:', e.message); }
+  // ── Clean up chat dock completely ──
+  try{
+    // Close all open chat windows
+    document.querySelectorAll('.dock-chat-window').forEach(function(w){ w.remove(); });
+    // Close contacts popup
+    var popup = document.getElementById('chat-contacts-popup');
+    if(popup) popup.classList.add('dock-hidden');
+    // Reset dock state
+    _dockWindows = {};
+    _chatUnreadMap = {};
+    _chatLastMsgMap = {};
+    _dockContactsOpen = false;
+    if(_chatPollInterval){ clearInterval(_chatPollInterval); _chatPollInterval=null; }
+    // Hide dock icon
+    var icon = document.getElementById('chat-dock-icon');
+    if(icon) icon.classList.remove('visible');
+    // Hide restore button
+    var restore = document.getElementById('chat-restore-btn');
+    if(restore) restore.style.display='none';
+    // End any active dock call
+    if(DC && DC.peerId){ try{ dcCleanup(DC.peerId); }catch(e){} }
+  }catch(e){ console.warn('Dock cleanup on logout:', e); }
   // NOTE: recordLogout intentionally NOT called here.
-  // End Work is a separate action — logging out of the portal should not auto-close the work session.
   if(_loginClockInterval)clearInterval(_loginClockInterval);
   if(typeof catHideWidget==='function') catHideWidget();
   currentUser=null;clearSession();
   document.getElementById('dashboard-view').classList.remove('active');
   document.getElementById('login-view').classList.add('active');
   var bb=document.getElementById('break-bar');if(bb)bb.style.display='none';
-  var tbw=document.getElementById('tb-break-wrap');if(tbw)tbw.style.display='none'; // shown only after Start Work
+  var tbw=document.getElementById('tb-break-wrap');if(tbw)tbw.style.display='none';
   var ab=document.getElementById('attendance-badge');if(ab)ab.style.display='none';
   document.getElementById('username').value='';
   document.getElementById('password').value='';
@@ -10229,7 +10250,26 @@ var CHAT_EMOJI_ICONS = {
   'celebration': '🎉',
   'expressions': '😂'
 };
+// Alias used in dockToggleEmoji
+var CHAT_EMOJI_CAT_ICONS = CHAT_EMOJI_ICONS;
 var _activeEmojiCat = 'smileys';
+
+// ── Notification permission ──
+function chatRequestNotifPermission(){
+  try{
+    if('Notification' in window && Notification.permission === 'default'){
+      Notification.requestPermission().catch(function(){});
+    }
+  }catch(e){}
+}
+
+// ── Sound icon init ──
+function initSoundIcon(){
+  var btn = document.getElementById('dock-sound-btn');
+  if(btn) btn.textContent = _notifSoundEnabled ? '🔔' : '🔕';
+  var msgBtn = document.getElementById('msg-sound-toggle');
+  if(msgBtn) msgBtn.textContent = _notifSoundEnabled ? '🔔' : '🔕';
+}
 
 function chatColor(name){
   var c=['#EF493C','#3B82F6','#10B981','#F59E0B','#8B5CF6','#EC4899','#06B6D4','#F97316','#6366F1','#84CC16'];
@@ -10263,6 +10303,22 @@ function chatInit(){
   chatStartPolling();
   initSoundIcon();
   msgLoadConversations();
+  // Escape key: close topmost dock window or contacts popup
+  document.addEventListener('keydown', function(e){
+    if(e.key !== 'Escape') return;
+    // Close any open emoji/gif pickers first
+    var anyPicker = false;
+    document.querySelectorAll('[id^="dock-emoji-"],[id^="dock-gif-"]').forEach(function(p){
+      if(p.style.display==='block'){ p.style.display='none'; anyPicker=true; }
+    });
+    if(anyPicker) return;
+    // Close contacts popup
+    var popup = document.getElementById('chat-contacts-popup');
+    if(popup && !popup.classList.contains('dock-hidden')){ dockCloseContacts(); return; }
+    // Close the rightmost (last) open dock window
+    var wins = document.querySelectorAll('.dock-chat-window');
+    if(wins.length) dockCloseChat(wins[wins.length-1].id.replace('dock-win-',''));
+  });
 }
 
 // ── CONTACTS ──
@@ -10380,6 +10436,7 @@ async function dockOpenChat(userId, userName, bg){
       '<div class="dock-messages" id="dock-msgs-'+userId+'"><div style="text-align:center;padding:1rem;font-size:.75rem;color:var(--text-dim);">Loading...</div></div>'+
       '<div class="dock-input-row">'+
         '<button class="dock-emoji-btn" onclick="dockToggleEmoji(\''+userId+'\')" title="Emoji">😊</button>'+
+        '<button class="dock-emoji-btn" onclick="dockToggleGif(\''+userId+'\')" title="GIF" style="font-size:.65rem;font-weight:800;color:var(--gold);opacity:.85;letter-spacing:-.5px;">GIF</button>'+
         '<textarea class="dock-input" id="dock-input-'+userId+'" placeholder="Aa" rows="1" '+
           'oninput="this.style.height=\'auto\';this.style.height=Math.min(this.scrollHeight,60)+\'px\'" '+
           'onkeydown="if(event.key===\'Enter\'&&!event.shiftKey){event.preventDefault();dockSend(\''+userId+'\',\''+esc(userName)+'\',\''+bg+'\');}"></textarea>'+
@@ -10388,6 +10445,7 @@ async function dockOpenChat(userId, userName, bg){
         '</button>'+
       '</div>'+
       '<div class="chat-emoji-picker" id="dock-emoji-'+userId+'" style="display:none;position:absolute;bottom:50px;left:0;z-index:100;width:280px;"></div>'+
+      '<div class="chat-gif-picker" id="dock-gif-'+userId+'" style="display:none;position:absolute;bottom:50px;left:0;z-index:101;width:280px;max-height:300px;overflow:hidden;border-radius:12px;"></div>'+
     '</div>';
 
   var dock = document.getElementById('chat-dock');
@@ -10503,37 +10561,134 @@ function dockToggleEmoji(userId){
   var picker=document.getElementById('dock-emoji-'+userId);
   if(!picker) return;
   var isOpen=picker.style.display==='block';
-  document.querySelectorAll('[id^="dock-emoji-"]').forEach(function(p){p.style.display='none';});
+  // Close all pickers first
+  document.querySelectorAll('[id^="dock-emoji-"],[id^="dock-gif-"]').forEach(function(p){p.style.display='none';});
   if(!isOpen){
     picker.style.display='block';
     var cats=CHAT_EMOJI_CATS||{};
     var icons=CHAT_EMOJI_CAT_ICONS||{};
     var firstCat=Object.keys(cats)[0]||'smileys';
     var tabs=Object.keys(cats).map(function(c){
-      return '<button style="background:none;border:none;cursor:pointer;font-size:1rem;padding:.25rem .3rem;border-radius:6px;" '+
+      var isActive=c===firstCat;
+      return '<button style="background:'+(isActive?'rgba(239,73,60,.15)':'none')+';border:none;cursor:pointer;font-size:1rem;padding:.25rem .4rem;border-radius:6px;transition:background .12s;" '+
+        'id="dock-etab-'+userId+'-'+c+'" '+
         'onclick="dockRenderEmojiCat(\''+userId+'\',\''+c+'\')">'+(icons[c]||c)+'</button>';
     }).join('');
     var emojis=(cats[firstCat]||[]).map(function(e){
-      return '<span style="font-size:1.2rem;cursor:pointer;padding:.2rem;border-radius:6px;display:inline-block;" '+
+      return '<span style="font-size:1.25rem;cursor:pointer;padding:.25rem;border-radius:6px;display:inline-block;transition:background .1s;" '+
+        'onmouseover="this.style.background=\'var(--navy-hover)\'" onmouseout="this.style.background=\'\'" '+
         'onclick="dockInsertEmoji(\''+userId+'\',\''+e+'\')">'+e+'</span>';
     }).join('');
-    picker.innerHTML='<div style="display:flex;gap:.1rem;padding:.3rem;border-bottom:1px solid var(--navy-border);background:var(--navy-card);">'+tabs+'</div>'+
-      '<div id="dock-emoji-grid-'+userId+'" style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px;padding:.3rem;max-height:130px;overflow-y:auto;background:var(--navy-card);">'+emojis+'</div>';
+    picker.innerHTML=
+      '<div style="display:flex;gap:.1rem;padding:.35rem .4rem;border-bottom:1px solid var(--navy-border);background:var(--navy-card);flex-wrap:wrap;">'+tabs+'</div>'+
+      '<div id="dock-emoji-grid-'+userId+'" style="display:grid;grid-template-columns:repeat(7,1fr);gap:1px;padding:.4rem;max-height:150px;overflow-y:auto;background:var(--navy-card);">'+emojis+'</div>'+
+      '<div style="padding:.3rem .5rem;border-top:1px solid var(--navy-border);background:var(--navy-card);font-size:.62rem;color:var(--text-dim);text-align:center;">Click input or press Esc to close</div>';
+
+    // ── Click outside → close ──
+    setTimeout(function(){
+      function outsideClick(e){
+        if(!picker.contains(e.target)){
+          picker.style.display='none';
+          document.removeEventListener('mousedown', outsideClick);
+          var inp=document.getElementById('dock-input-'+userId);
+          if(inp) inp.removeEventListener('focus', onInputFocus);
+        }
+      }
+      function onInputFocus(){
+        picker.style.display='none';
+        document.removeEventListener('mousedown', outsideClick);
+        var inp=document.getElementById('dock-input-'+userId);
+        if(inp) inp.removeEventListener('focus', onInputFocus);
+      }
+      document.addEventListener('mousedown', outsideClick);
+      // Also close when user clicks the input to type
+      var inp=document.getElementById('dock-input-'+userId);
+      if(inp) inp.addEventListener('focus', onInputFocus);
+    }, 0);
   }
 }
+
 function dockRenderEmojiCat(userId,cat){
   var grid=document.getElementById('dock-emoji-grid-'+userId);
   if(!grid) return;
+  // Update active tab highlight
   var cats=CHAT_EMOJI_CATS||{};
+  Object.keys(cats).forEach(function(c){
+    var tab=document.getElementById('dock-etab-'+userId+'-'+c);
+    if(tab) tab.style.background=c===cat?'rgba(239,73,60,.15)':'none';
+  });
   grid.innerHTML=(cats[cat]||[]).map(function(e){
-    return '<span style="font-size:1.2rem;cursor:pointer;padding:.2rem;border-radius:6px;display:inline-block;" onclick="dockInsertEmoji(\''+userId+'\',\''+e+'\')">'+e+'</span>';
+    return '<span style="font-size:1.25rem;cursor:pointer;padding:.25rem;border-radius:6px;display:inline-block;transition:background .1s;" '+
+      'onmouseover="this.style.background=\'var(--navy-hover)\'" onmouseout="this.style.background=\'\'" '+
+      'onclick="dockInsertEmoji(\''+userId+'\',\''+e+'\')">'+e+'</span>';
   }).join('');
 }
 function dockInsertEmoji(userId,emoji){
   var inp=document.getElementById('dock-input-'+userId);
-  if(inp){inp.value+=emoji;inp.focus();}
-  var picker=document.getElementById('dock-emoji-'+userId);
-  if(picker) picker.style.display='none';
+  if(inp){
+    // Insert at cursor position if possible, otherwise append
+    var start=inp.selectionStart, end=inp.selectionEnd;
+    var val=inp.value;
+    inp.value=val.slice(0,start)+emoji+val.slice(end);
+    inp.selectionStart=inp.selectionEnd=start+emoji.length;
+    inp.focus();
+    // Trigger height auto-resize
+    inp.style.height='auto';
+    inp.style.height=Math.min(inp.scrollHeight,60)+'px';
+  }
+  // ── Picker stays open — do NOT close it ──
+}
+
+function dockToggleGif(userId){
+  var g=document.getElementById('dock-gif-'+userId);
+  var e=document.getElementById('dock-emoji-'+userId);
+  if(e) e.style.display='none';
+  if(!g) return;
+  var isOpen=g.style.display==='block';
+  // Close all other gif pickers
+  document.querySelectorAll('[id^="dock-gif-"]').forEach(function(p){p.style.display='none';});
+  if(!isOpen){
+    g.style.display='block';
+    dockLoadGifs(userId,'');
+  }
+}
+
+async function dockLoadGifs(userId, q){
+  var g=document.getElementById('dock-gif-'+userId);
+  if(!g) return;
+  var key='m0dieJ9yUJYL731cRb3tHeBiFUQPGk3q';
+  var url=q
+    ?'https://api.giphy.com/v1/gifs/search?api_key='+key+'&q='+encodeURIComponent(q)+'&limit=9&rating=g'
+    :'https://api.giphy.com/v1/gifs/trending?api_key='+key+'&limit=9&rating=g';
+  g.innerHTML='<div class="gp-header"><input class="gp-search" placeholder="Search GIFs..." oninput="dockGifSearch(\''+userId+'\',this.value)" value="'+esc(q||'')+'"/></div><div class="gp-loading">Loading GIFs…</div>';
+  try{
+    var r=await fetch(url);
+    var data=await r.json();
+    var items=(data.data||[]).map(function(gif){
+      var preview=gif.images.fixed_height_small.url;
+      var full=gif.images.original.url;
+      return '<div class="gp-item" onclick="dockSendGif(\''+userId+'\',\''+full+'\')"><img src="'+preview+'" loading="lazy"/></div>';
+    }).join('');
+    g.innerHTML='<div class="gp-header"><input class="gp-search" placeholder="Search GIFs..." oninput="dockGifSearch(\''+userId+'\',this.value)" value="'+esc(q||'')+'"/></div>'+
+      '<div class="gp-grid">'+(items||'<div class="gp-loading">No GIFs found</div>')+'</div>'+
+      '<div style="text-align:center;padding:.3rem;font-size:.58rem;color:var(--text-dim);">Powered by GIPHY</div>';
+  }catch(e){
+    g.innerHTML='<div class="gp-header"><input class="gp-search" placeholder="Search GIFs..."/></div><div class="gp-loading">Could not load GIFs</div>';
+  }
+}
+
+var _dockGifTimers={};
+function dockGifSearch(userId,q){ clearTimeout(_dockGifTimers[userId]); _dockGifTimers[userId]=setTimeout(function(){dockLoadGifs(userId,q);},500); }
+
+async function dockSendGif(userId, url){
+  var g=document.getElementById('dock-gif-'+userId);
+  if(g) g.style.display='none';
+  var activeUser=_chatUsers.find(function(u){return u.id===userId;});
+  var userName=activeUser?activeUser.name:userId;
+  var bg=activeUser?chatColor(activeUser.name):'#4c76a8';
+  var now=new Date();
+  var data={from_user_id:currentUser.id,from_name:currentUser.name,to_user_id:userId,to_name:userName,content:'__GIF__'+url,created_at:now.toISOString(),expires_at:new Date(now.getTime()+24*3600000).toISOString()};
+  try{ await sbInsert('messages',data); dockLoadMsgs(userId); }catch(e){ alert('Could not send GIF: '+e.message); }
 }
 
 // ── POLLING ──
