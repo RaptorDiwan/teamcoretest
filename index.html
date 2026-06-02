@@ -3818,11 +3818,19 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
               </div>
             </div>
             <div id="cd-ts-msg" class="cd-msg" style="display:none;"></div>
-            <!-- Per-agent list -->
+            <!-- Per-agent list — collapsed by default -->
             <div style="margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;">
-              <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-bottom:.6rem;">PER AGENT ACCESS</div>
-              <div id="cd-ts-agents" style="display:flex;flex-direction:column;gap:.35rem;">
-                <div style="color:var(--text-dim);font-size:.8rem;">Loading agents…</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;" onclick="cdToggleAgentList('cd-ts-agents-wrap','cd-ts-agents-arrow')">
+                <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;">PER AGENT ACCESS</div>
+                <div style="display:flex;align-items:center;gap:.5rem;">
+                  <span id="cd-ts-agents-count" style="font-size:.72rem;color:var(--text-dim);"></span>
+                  <span id="cd-ts-agents-arrow" style="font-size:.7rem;color:var(--gold);transition:transform .2s;transform:rotate(-90deg);">▼</span>
+                </div>
+              </div>
+              <div id="cd-ts-agents-wrap" style="display:none;margin-top:.65rem;">
+                <div id="cd-ts-agents" style="display:flex;flex-direction:column;gap:.35rem;">
+                  <div style="color:var(--text-dim);font-size:.8rem;">Loading agents…</div>
+                </div>
               </div>
             </div>
           </div>
@@ -3843,9 +3851,17 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
             </div>
             <div id="cd-vh-msg" class="cd-msg" style="display:none;"></div>
             <div style="margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;">
-              <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-bottom:.6rem;">PER AGENT — WALKIE TALKIE ACCESS</div>
-              <div id="cd-vh-agents" style="display:flex;flex-direction:column;gap:.35rem;">
-                <div style="color:var(--text-dim);font-size:.8rem;">Loading agents…</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;" onclick="cdToggleAgentList('cd-vh-agents-wrap','cd-vh-agents-arrow')">
+                <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;">PER AGENT — WALKIE TALKIE ACCESS</div>
+                <div style="display:flex;align-items:center;gap:.5rem;">
+                  <span id="cd-vh-agents-count" style="font-size:.72rem;color:var(--text-dim);"></span>
+                  <span id="cd-vh-agents-arrow" style="font-size:.7rem;color:var(--gold);transition:transform .2s;transform:rotate(-90deg);">▼</span>
+                </div>
+              </div>
+              <div id="cd-vh-agents-wrap" style="display:none;margin-top:.65rem;">
+                <div id="cd-vh-agents" style="display:flex;flex-direction:column;gap:.35rem;">
+                  <div style="color:var(--text-dim);font-size:.8rem;">Loading agents…</div>
+                </div>
               </div>
             </div>
           </div>
@@ -4369,11 +4385,11 @@ async function doLogin(){
     }
 
     console.log('Attempting login for:',email);
-    const rows=await sbQuery('users','email=eq.'+encodeURIComponent(email)+'&select=id,name,email,role,password,timesheet_enabled');
+    const rows=await sbQuery('users','email=eq.'+encodeURIComponent(email)+'&select=id,name,email,role,password,timesheet_enabled,photo_url');
     console.log('Rows returned:',rows?rows.length:0);
     if(!rows||rows.length===0||rows[0].password!==hashed)throw new Error('invalid');
     const u=rows[0];
-    currentUser={id:u.id,name:u.name,email:u.email,role:u.role,timesheetEnabled:u.timesheet_enabled?true:false};
+    currentUser={id:u.id,name:u.name,email:u.email,role:u.role,timesheetEnabled:u.timesheet_enabled?true:false,photo_url:u.photo_url||null};
     saveSession(currentUser);
     statusEl.style.display='none';btn.disabled=false;btn.textContent='Sign In';
     enterDashboard();
@@ -9572,6 +9588,27 @@ async function pplSaveProfile(){
       await sbInsert('people', data);
     } else {
       await sbUpdate('people','id',_pplEditId, data);
+      // ── Sync photo_url into users table so messages/chat always shows correctly ──
+      if(data.photo_url){
+        try{
+          // Find matching user by name (exact first, then first-name fallback)
+          var personName = (data.name||(document.getElementById('pf-name')||{}).value||'').toLowerCase().trim();
+          var allUsers = await sbQuery('users','select=id,name&order=name.asc');
+          var matched = null;
+          if(allUsers){
+            // Try exact match first
+            matched = allUsers.find(function(u){ return u.name.toLowerCase().trim()===personName; });
+            // If no exact match, try first-name match
+            if(!matched){
+              var firstName = personName.split(' ')[0];
+              matched = allUsers.find(function(u){ return u.name.toLowerCase().trim().split(' ')[0]===firstName; });
+            }
+          }
+          if(matched){
+            await sbUpdate('users','id',matched.id,{photo_url:data.photo_url});
+          }
+        }catch(e){ /* silent — photo sync is best-effort */ }
+      }
     }
 
     document.getElementById('ppl-edit-overlay').style.display='none';
@@ -9991,10 +10028,19 @@ async function dockLoadUsers(){
     var users = await sbQuery('users','select=id,name,role,last_seen&order=name.asc');
     _chatUsers = (users||[]).filter(function(u){ return u.id!==currentUser.id && u.role!=='syslevel'; });
     try{
-      var people = await sbQuery('people','select=name,photo_url');
+      var people = await sbQuery('people','select=name,photo_url,user_id');
       var pm={};
-      (people||[]).forEach(function(p){ if(p.photo_url) pm[p.name.toLowerCase().trim()]=p.photo_url; });
-      _chatUsers.forEach(function(u){ u.photo_url=pm[u.name.toLowerCase().trim()]||null; });
+      // Map by user_id (most reliable)
+      (people||[]).forEach(function(p){ if(p.photo_url && p.user_id) pm['id:'+p.user_id]=p.photo_url; });
+      // Also map by exact name and first-name for fallback
+      (people||[]).forEach(function(p){ if(p.photo_url){ pm['name:'+p.name.toLowerCase().trim()]=p.photo_url; var fn=p.name.toLowerCase().trim().split(' ')[0]; if(!pm['fn:'+fn]) pm['fn:'+fn]=p.photo_url; } });
+      _chatUsers.forEach(function(u){
+        u.photo_url = pm['id:'+u.id]
+          || u.photo_url  // already set from users table
+          || pm['name:'+u.name.toLowerCase().trim()]
+          || pm['fn:'+u.name.toLowerCase().trim().split(' ')[0]]
+          || null;
+      });
     }catch(e){}
     dockRenderContacts(_chatUsers);
     chatCheckUnread();
@@ -10355,10 +10401,17 @@ async function msgLoadConversations(){
     var users=await sbQuery('users','select=id,name,role,last_seen&order=name.asc');
     _chatUsers=(users||[]).filter(function(u){return u.id!==currentUser.id&&u.role!=='syslevel';});
     try{
-      var people=await sbQuery('people','select=name,photo_url');
+      var people=await sbQuery('people','select=name,photo_url,user_id');
       var photoMap={};
-      (people||[]).forEach(function(p){if(p.photo_url)photoMap[p.name.toLowerCase().trim()]=p.photo_url;});
-      _chatUsers.forEach(function(u){u.photo_url=photoMap[u.name.toLowerCase().trim()]||null;});
+      (people||[]).forEach(function(p){ if(p.photo_url && p.user_id) photoMap['id:'+p.user_id]=p.photo_url; });
+      (people||[]).forEach(function(p){ if(p.photo_url){ photoMap['name:'+p.name.toLowerCase().trim()]=p.photo_url; var fn=p.name.toLowerCase().trim().split(' ')[0]; if(!photoMap['fn:'+fn]) photoMap['fn:'+fn]=p.photo_url; } });
+      _chatUsers.forEach(function(u){
+        u.photo_url = photoMap['id:'+u.id]
+          || u.photo_url
+          || photoMap['name:'+u.name.toLowerCase().trim()]
+          || photoMap['fn:'+u.name.toLowerCase().trim().split(' ')[0]]
+          || null;
+      });
     }catch(e){}
 
     // Load groups user is member of
@@ -10533,9 +10586,11 @@ function msgRenderMessagesInPage(rows, isGroup){
   }
   var lastDate='';
   var html='';
-  // Build photo map from _chatUsers
+  // Build photo map from _chatUsers (by user_id — reliable)
   var photoMap={};
-  (_chatUsers||[]).forEach(function(u){if(u.photo_url)photoMap[u.id]=u.photo_url;});
+  (_chatUsers||[]).forEach(function(u){ if(u.photo_url) photoMap[u.id]=u.photo_url; });
+  // Also include current user's own photo if available
+  if(currentUser && currentUser.photo_url) photoMap[currentUser.id]=currentUser.photo_url;
 
   for(var i=0;i<rows.length;i++){
     var m=rows[i];
@@ -15360,6 +15415,16 @@ async function cdCatToggle(enabled){
   }catch(e){ if(msg){ msg.textContent='Error: '+e.message; msg.style.color='#ef493c'; } }
 }
 
+// ── Control Deck: collapsible agent list toggle ──
+function cdToggleAgentList(wrapId, arrowId){
+  var wrap = document.getElementById(wrapId);
+  var arrow = document.getElementById(arrowId);
+  if(!wrap) return;
+  var open = wrap.style.display !== 'none';
+  wrap.style.display = open ? 'none' : 'block';
+  if(arrow) arrow.style.transform = open ? 'rotate(-90deg)' : '';
+}
+
 // ── Timesheet Global ──
 async function cdLoadTs(){
   try{
@@ -15399,7 +15464,10 @@ async function cdLoadAgents(){
     // TS per-agent list
     if(wrap){
       wrap.innerHTML='';
-      users.filter(function(u){return u.role!=='syslevel';}).forEach(function(u){
+      var agentList = users.filter(function(u){return u.role!=='syslevel';});
+      var countEl = document.getElementById('cd-ts-agents-count');
+      if(countEl) countEl.textContent = agentList.length+' agent'+(agentList.length!==1?'s':'');
+      agentList.forEach(function(u){
         var on=u.timesheet_enabled?true:false;
         var row=document.createElement('div'); row.className='cd-agent-row'; row.id='cd-ts-row-'+u.id;
         var nm=document.createElement('span'); nm.className='cd-agent-name'; nm.textContent=u.name;
@@ -16314,6 +16382,8 @@ async function cdLoadVHAgents(){
     var statusEl = document.getElementById('cd-vh-status');
     var onCount = Object.values(wtMap).filter(Boolean).length;
     if(statusEl) statusEl.textContent = onCount+' agent'+(onCount!==1?'s':'')+' active';
+    var countEl = document.getElementById('cd-vh-agents-count');
+    if(countEl) countEl.textContent = (users||[]).length+' agent'+((users||[]).length!==1?'s':'');
   }catch(e){ list.innerHTML='<div style="color:var(--text-dim);font-size:.8rem;">Could not load.</div>'; }
 }
 
