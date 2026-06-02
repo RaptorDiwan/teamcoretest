@@ -3265,7 +3265,7 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
             <div class="qa-form-grid">
               <div class="qa-field" style="grid-column:1/-1"><label>Question</label><textarea id="qb-question" placeholder="Type your question here..."></textarea></div>
               <div class="qa-field"><label>Question Type</label><select id="qb-type" onchange="qbTypeChange()"><option value="mcq">Multiple Choice</option><option value="truefalse">True / False</option><option value="essay">Essay / Text</option></select></div>
-              <div class="qa-field"><label>Active Date</label><input type="date" id="qb-date"/></div>
+              <div class="qa-field"><label>Active Date</label><input type="date" id="qb-date" onchange="qbUpdateFolderHint()"/><div id="qb-folder-hint" style="font-size:.72rem;color:var(--gold);margin-top:.3rem;display:none;">📁 Will save to: <span id="qb-folder-hint-label"></span></div></div>
               <div class="qa-field"><label>Opens At</label><input type="time" id="qb-open"/></div>
               <div class="qa-field"><label>Closes At</label><input type="time" id="qb-close"/></div>
               <div class="qa-field"><label>Max Attempts</label><input type="number" id="qb-attempts" value="1" min="1" max="10"/></div>
@@ -4622,7 +4622,7 @@ function showPage(id,elem){
   if(id==='controldeck'){ cdLoadAll(); cdLoadVHAgents(); cdVHLoadGlobalStatus(); }
   if(id==='voicehub'){ vhPageInit(); }
   if(id==='assessment') loadAgentAssessment();
-  if(id==='quiz-admin') loadQuizBuilderList();
+  if(id==='quiz-admin'){ loadQuizBuilderList(); var d=document.getElementById('qb-date'); if(d&&!d.value){ var n=new Date(); d.value=n.getFullYear()+'-'+String(n.getMonth()+1).padStart(2,'0')+'-'+String(n.getDate()).padStart(2,'0'); qbUpdateFolderHint(); } if(!document.getElementById('qb-open').value) document.getElementById('qb-open').value='09:00'; if(!document.getElementById('qb-close').value) document.getElementById('qb-close').value='17:00'; }
   if(id==='assessment-admin') loadAssessmentBuilderList();
   if(id==='people') pplLoad();
   if(id==='timesheet') tsInit();
@@ -7297,12 +7297,28 @@ function qrDownloadSelected(){
   document.getElementById('qr-sheet-picker').remove();
 }
 
+function qbUpdateFolderHint(){
+  var val=document.getElementById('qb-date').value;
+  var hint=document.getElementById('qb-folder-hint');
+  var label=document.getElementById('qb-folder-hint-label');
+  if(!val||!hint||!label){if(hint)hint.style.display='none';return;}
+  var parts=val.split('-');
+  var MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var mo=parseInt(parts[1],10)-1;
+  label.textContent=MONTHS[mo]+' '+parts[0];
+  hint.style.display='block';
+}
+
 function resetQuizBuilder(){
   document.getElementById('qb-question').value='';
   document.getElementById('qb-type').value='mcq';
-  document.getElementById('qb-date').value='';
-  document.getElementById('qb-open').value='';
-  document.getElementById('qb-close').value='';
+  // Auto-fill today's date
+  var now=new Date();
+  var today=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  document.getElementById('qb-date').value=today;
+  qbUpdateFolderHint();
+  document.getElementById('qb-open').value='09:00';
+  document.getElementById('qb-close').value='17:00';
   document.getElementById('qb-attempts').value='1';
   document.getElementById('qb-choices').innerHTML=
     '<div class="qa-choice-row"><input type="radio" name="qb-correct" value="0"/><input type="text" placeholder="Choice A" class="qb-choice-input"/><span class="qa-correct-label">Correct</span></div>'+
