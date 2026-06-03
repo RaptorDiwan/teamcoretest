@@ -45,7 +45,8 @@
   body.dark .comment-body { background: #1F2937; }
   body.dark .comment-input { background: #1F2937; color: #F1F5F9; }
   body.dark .ann-textarea { background: #111827; color: #F1F5F9; }
-  body.dark .qa-field input, body.dark .qa-field select, body.dark .qa-field textarea { background: #111827; color: #F1F5F9; border-color: #2D3748; }
+  body.dark .qa-field input, body.dark .qa-field select, body.dark .qa-field textarea,
+  body.dark .qa-choice-row input[type=text] { background: #1e293b; color: #F1F5F9; border-color: #2D3748; }
   body.dark .um-input { background: #111827; color: #F1F5F9; border-color: #2D3748; }
   body.dark .quiz-option { background: #1F2937; border-color: #2D3748; color: #F1F5F9; }
   body.dark .quiz-essay { background: #111827; border-color: #2D3748; color: #F1F5F9; }
@@ -192,8 +193,10 @@
     background:
       linear-gradient(145deg, #EAF2FC 0%, #DCE7F5 46%, #C8D3E1 100%);
     color: var(--text-primary);
-    min-height: 100vh;
-    overflow-x: hidden;
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
   }
 
   /* ─── GRID NOISE BACKGROUND ─── */
@@ -211,17 +214,17 @@
   }
 
   /* ─── VIEWS ─── */
-  .view { display: none; position: relative; z-index: 1; }
+  .view { display: none; position: relative; z-index: 1; flex: 1; min-height: 0; }
   .view.active { display: flex; }
 
   /* ══════════════════════════════
      LOGIN PAGE
   ══════════════════════════════ */
   #login-view {
-    min-height: 100vh;
     align-items: center;
     justify-content: center;
     padding: 2rem;
+    overflow-y: auto;
   }
 
   .login-box {
@@ -368,7 +371,6 @@
      DASHBOARD LAYOUT
   ══════════════════════════════ */
   #dashboard-view {
-    min-height: 100vh;
     flex-direction: column;
   }
 
@@ -454,7 +456,8 @@
   .dash-body {
     display: flex;
     flex: 1;
-    min-height: calc(100vh - 60px);
+    min-height: 0; /* critical: lets flex children shrink below content size */
+    overflow: hidden;
   }
 
   /* ─── SIDEBAR ─── */
@@ -467,6 +470,8 @@
     display: flex;
     flex-direction: column;
     gap: 0.25rem;
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   .sidebar-section {
@@ -1192,12 +1197,12 @@
   .qa-form-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; margin-bottom:1rem; }
   .qa-field { display:flex; flex-direction:column; gap:.35rem; }
   .qa-field label { font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); font-weight:500; }
-  .qa-field input, .qa-field select, .qa-field textarea { padding:.65rem .9rem; background:#F1F6FD; border:1px solid var(--navy-border); border-radius:var(--radius-sm); font-family:'DM Sans',sans-serif; font-size:.875rem; color:var(--text-primary); outline:none; transition:border-color .2s; }
+  .qa-field input, .qa-field select, .qa-field textarea { padding:.65rem .9rem; background:#F1F6FD; border:1px solid var(--navy-border); border-radius:var(--radius-sm); font-family:'DM Sans',sans-serif; font-size:.875rem; color:#0f172a; outline:none; transition:border-color .2s; }
   .qa-field input:focus, .qa-field select:focus, .qa-field textarea:focus { border-color:var(--gold-dim); box-shadow:0 0 0 3px rgba(239,73,60,.1); }
   .qa-field textarea { resize:vertical; min-height:80px; }
   .qa-choices { display:flex; flex-direction:column; gap:.5rem; margin:1rem 0; }
   .qa-choice-row { display:flex; align-items:center; gap:.6rem; }
-  .qa-choice-row input[type=text] { flex:1; padding:.55rem .8rem; background:#F1F6FD; border:1px solid var(--navy-border); border-radius:var(--radius-sm); font-family:'DM Sans',sans-serif; font-size:.85rem; color:var(--text-primary); outline:none; }
+  .qa-choice-row input[type=text] { flex:1; padding:.55rem .8rem; background:#F1F6FD; border:1px solid var(--navy-border); border-radius:var(--radius-sm); font-family:'DM Sans',sans-serif; font-size:.85rem; color:#0f172a; outline:none; }
   .qa-choice-row input[type=radio], .qa-choice-row input[type=checkbox] { accent-color:var(--gold); width:16px; height:16px; cursor:pointer; }
   .qa-correct-label { font-size:.7rem; color:var(--text-dim); white-space:nowrap; }
   .qa-add-choice { background:transparent; border:1px dashed var(--navy-border); color:var(--text-dim); padding:.45rem 1rem; border-radius:var(--radius-sm); font-family:'DM Sans',sans-serif; font-size:.8rem; cursor:pointer; transition:all .2s; width:100%; margin-top:.25rem; }
@@ -1478,9 +1483,9 @@
     .wclock-btn { padding: .3rem .65rem; font-size: .72rem; }
 
     /* ── LAYOUT ── */
-    .dash-body { flex-direction: column; min-height: calc(100vh - 54px); }
+    .dash-body { flex-direction: column; overflow: auto; }
     .sidebar { display: none; }
-    .main-content { padding: 1rem 1rem 7rem 1rem; }
+    .main-content { padding: 1rem 1rem 7rem 1rem; overflow-y: visible; }
 
     /* ── BOTTOM NAV ── */
     .mobile-bottom-nav { display: flex !important; }
@@ -1979,7 +1984,6 @@ body.dark .ts-input { background:#111827;border-color:#2D3748;color:#F1F5F9; }
   .dock-messages{
     flex:1; overflow-y:auto; padding:.6rem .75rem;
     display:flex; flex-direction:column; gap:3px;
-    scroll-behavior:smooth;
     background:var(--navy);
   }
   .dock-messages::-webkit-scrollbar{width:3px;}
@@ -2096,7 +2100,7 @@ body.dark .ts-input { background:#111827;border-color:#2D3748;color:#F1F5F9; }
   #chat-dock-icon{
     width:48px; height:48px; border-radius:50%;
     background:linear-gradient(135deg,var(--gold-dim),var(--gold));
-    border:none; cursor:pointer;
+    border:none; cursor:grab;
     display:none; align-items:center; justify-content:center;
     box-shadow:0 4px 14px rgba(239,73,60,.35);
     pointer-events:all; flex-shrink:0;
@@ -2781,6 +2785,17 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
 <body>
 
 <!-- ══════════ LOGIN VIEW ══════════ -->
+<canvas id="ambient-canvas"></canvas>
+<canvas id="eg-matrix-canvas"></canvas>
+<div id="eg-rave-overlay"></div>
+<div id="eg-diwan-splash">
+  <div class="eg-diwan-stars">✦ ✦ ✦ ✦ ✦</div>
+  <div class="eg-diwan-title">Diwan Chowthry</div>
+  <div class="eg-diwan-sub">The Architect of K7TeamCore</div>
+  <div class="eg-diwan-stars">✦ ✦ ✦ ✦ ✦</div>
+  <div class="eg-diwan-close" onclick="egDiwanClose()">— Press Escape or click to close —</div>
+</div>
+<div id="eg-hint-toast"></div>
 <div id="login-view" class="view active">
   <div class="login-box">
     <div class="login-logo">
@@ -3835,7 +3850,7 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
           </div>
           <div style="flex:1;min-width:0;">
             <div style="font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--text-primary);line-height:1.2;">K7Team<span style="color:var(--gold);">Core</span></div>
-            <div style="font-size:.72rem;color:var(--text-muted);margin-top:3px;">V 8.3.0 &nbsp;·&nbsp; Build 260602.1908 &nbsp;·&nbsp; Designed &amp; engineered by Diwan Chowthry</div>
+            <div style="font-size:.72rem;color:var(--text-muted);margin-top:3px;">V 8.3.0 &nbsp;·&nbsp; Build 260602_1908 &nbsp;·&nbsp; Designed &amp; Engineered by Diwan Chowthry</div>
           </div>
           <button class="about-update-check-btn" id="about-update-btn" onclick="aboutCheckUpdate()" style="flex-shrink:0;">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
@@ -4041,37 +4056,7 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
           <div style="color:var(--text-dim);font-size:0.875rem;padding:1rem;text-align:center;">Loading agents…</div>
         </div>
 
-        <!-- ── Cat AI Settings ── -->
-        <div style="margin-top:2.5rem;padding-top:2rem;border-top:1px solid var(--navy-border);">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;flex-wrap:wrap;gap:.75rem;">
-            <div>
-              <h2 class="um-title" style="margin-bottom:.2rem;">🐱 Orange Cat AI</h2>
-              <p class="um-sub" style="margin:0;">Enable or disable the cat for all agents, and configure AI provider.</p>
-            </div>
-            <button class="um-add-btn" onclick="catOpenSettings()" style="white-space:nowrap;">⚙️ Configure AI Brain</button>
-          </div>
-
-          <!-- ON/OFF Toggle — clearly visible -->
-          <div style="display:flex;align-items:center;justify-content:space-between;padding:1rem 1.2rem;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius);margin-bottom:.75rem;flex-wrap:wrap;gap:.75rem;">
-            <div>
-              <div style="font-size:.88rem;font-weight:700;color:var(--text-primary);margin-bottom:3px;">Orange Cat — Show / Hide for all agents</div>
-              <div style="font-size:.76rem;color:var(--text-muted);">Turn OFF to hide the cat completely. Agents won't see it until you turn it back ON.</div>
-            </div>
-            <div style="display:flex;align-items:center;gap:.9rem;flex-shrink:0;">
-              <span id="cat-toggle-status" style="font-size:.82rem;color:var(--text-muted);">Loading…</span>
-              <label class="cat-toggle-wrap" title="Toggle Orange Cat for all agents">
-                <input type="checkbox" id="cat-global-toggle" onchange="catGlobalToggle(this.checked)"/>
-                <span class="cat-toggle-slider"></span>
-              </label>
-              <button class="um-cancel-btn" onclick="catToggleRefresh()" style="padding:.35rem .8rem;font-size:.75rem;">↻ Refresh</button>
-            </div>
-          </div>
-          <div id="cat-toggle-msg" style="font-size:.78rem;color:var(--accent-green);margin-bottom:.75rem;display:none;padding:.4rem .6rem;"></div>
-
-          <div id="cat-ai-status-card" style="padding:1rem 1.2rem;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius);font-size:.83rem;color:var(--text-muted);">
-            Loading AI status…
-          </div>
-        </div>
+        <!-- Cat AI Settings moved to Control Deck -->
       </div>
 
       <!-- ══ VOICE HUB PAGE ══ -->
@@ -4469,6 +4454,110 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
             </div>
             <div style="margin-top:1rem;border-top:1px solid var(--navy-border);padding-top:.9rem;" id="cd-ann-list">
               <div style="color:var(--text-dim);font-size:.8rem;">Loading announcements…</div>
+            </div>
+          </div>
+
+          <!-- ── Section: Ambient Theme ── -->
+          <div class="cd-card" id="cd-ambient-card">
+            <div class="cd-card-header">
+              <span class="cd-card-icon" style="background:rgba(76,118,168,.12);">🌦️</span>
+              <div style="flex:1;">
+                <div class="cd-card-title">Ambient Theme</div>
+                <div class="cd-card-sub">Set a live weather mood for the whole portal. Agents see it instantly.</div>
+              </div>
+              <span id="cd-amb-status" style="font-size:.75rem;color:var(--text-muted);margin-left:auto;align-self:center;"></span>
+            </div>
+
+            <!-- Theme grid -->
+            <div style="margin-top:1rem;display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:.45rem;" id="cd-amb-grid">
+              <!-- filled by JS -->
+            </div>
+
+            <!-- Controls: Opacity / Speed / Density -->
+            <div style="margin-top:1rem;border-top:1px solid var(--navy-border);padding-top:.85rem;display:flex;flex-direction:column;gap:.7rem;">
+              <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-bottom:.1rem;">🎛️ CONTROLS</div>
+
+              <div style="display:flex;align-items:center;gap:.8rem;">
+                <label style="font-size:.78rem;color:var(--text-muted);min-width:68px;">Opacity</label>
+                <input type="range" id="cd-amb-opacity" min="10" max="100" value="70" step="5"
+                  oninput="ambSetOpacity(this.value)"
+                  style="flex:1;accent-color:var(--gold);cursor:pointer;"/>
+                <span id="cd-amb-opacity-val" style="font-size:.75rem;color:var(--text-primary);min-width:30px;text-align:right;">70%</span>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:.8rem;">
+                <label style="font-size:.78rem;color:var(--text-muted);min-width:68px;">Speed</label>
+                <input type="range" id="cd-amb-speed" min="20" max="200" value="100" step="10"
+                  oninput="ambSetSpeed(this.value)"
+                  style="flex:1;accent-color:var(--gold);cursor:pointer;"/>
+                <span id="cd-amb-speed-val" style="font-size:.75rem;color:var(--text-primary);min-width:30px;text-align:right;">1×</span>
+              </div>
+
+              <div style="display:flex;align-items:center;gap:.8rem;">
+                <label style="font-size:.78rem;color:var(--text-muted);min-width:68px;">Density</label>
+                <input type="range" id="cd-amb-density" min="10" max="200" value="100" step="10"
+                  oninput="ambSetDensity(this.value)"
+                  style="flex:1;accent-color:var(--gold);cursor:pointer;"/>
+                <span id="cd-amb-density-val" style="font-size:.75rem;color:var(--text-primary);min-width:30px;text-align:right;">1×</span>
+              </div>
+            </div>
+
+            <!-- Schedule section -->
+            <div style="margin-top:1rem;border-top:1px solid var(--navy-border);padding-top:.9rem;">
+              <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-bottom:.65rem;">⏰ SCHEDULED THEMES</div>
+              <div id="cd-amb-sched-list" style="display:flex;flex-direction:column;gap:.45rem;margin-bottom:.7rem;">
+                <div style="font-size:.78rem;color:var(--text-dim);">Loading schedules…</div>
+              </div>
+              <div style="display:flex;gap:.5rem;flex-wrap:wrap;align-items:flex-end;">
+                <div>
+                  <label class="cd-label">Theme</label>
+                  <select id="cd-amb-sched-theme" class="cd-input" style="width:130px;"><!-- filled by JS --></select>
+                </div>
+                <div>
+                  <label class="cd-label">Start time</label>
+                  <input type="time" id="cd-amb-sched-start" class="cd-input" style="width:120px;"/>
+                </div>
+                <div>
+                  <label class="cd-label">End time</label>
+                  <input type="time" id="cd-amb-sched-end" class="cd-input" style="width:120px;"/>
+                </div>
+                <div>
+                  <label class="cd-label">Days</label>
+                  <div style="display:flex;gap:3px;" id="cd-amb-sched-days">
+                    <!-- filled by JS -->
+                  </div>
+                </div>
+                <button class="cd-btn" onclick="cdAmbSchedAdd()" style="align-self:flex-end;">+ Add</button>
+              </div>
+              <div id="cd-amb-sched-msg" style="font-size:.76rem;margin-top:.5rem;display:none;"></div>
+            </div>
+
+            <div id="cd-amb-msg" class="cd-msg" style="display:none;margin-top:.6rem;"></div>
+          </div>
+
+          <!-- ── Section: Agent Password Reset (Admin — PIN protected) ── -->
+
+          <div class="cd-card" id="cd-pwreset-card">
+            <div class="cd-card-header">
+              <span class="cd-card-icon" style="background:rgba(76,118,168,.12);">🔑</span>
+              <div>
+                <div class="cd-card-title">Reset Agent Password</div>
+                <div class="cd-card-sub">Set a new password for any agent. Requires admin PIN to unlock.</div>
+              </div>
+              <div style="margin-left:auto;">
+                <button id="cd-pwreset-unlock-btn" class="cd-btn" onclick="cdPwResetUnlock()" style="font-size:.76rem;">🔒 Unlock</button>
+              </div>
+            </div>
+            <div id="cd-pwreset-locked" style="margin-top:.8rem;display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;">
+              <input id="cd-pwreset-pin" type="password" maxlength="4" placeholder="Enter PIN" class="cd-input" style="max-width:140px;letter-spacing:.2em;font-size:.95rem;" onkeydown="if(event.key==='Enter')cdPwResetUnlock()"/>
+              <button class="cd-btn" onclick="cdPwResetUnlock()">Unlock</button>
+              <span id="cd-pwreset-pin-err" style="font-size:.78rem;color:var(--accent-red);display:none;">Wrong PIN.</span>
+            </div>
+            <div id="cd-pwreset-panel" style="display:none;margin-top:.9rem;">
+              <div id="cd-pwreset-agents" style="display:flex;flex-direction:column;gap:.5rem;">
+                <div style="color:var(--text-dim);font-size:.82rem;">Loading agents…</div>
+              </div>
+              <div id="cd-pwreset-msg" style="font-size:.78rem;margin-top:.6rem;display:none;"></div>
             </div>
           </div>
 
@@ -5040,6 +5129,8 @@ function enterDashboard(){
   // Auto-refresh live dashboard every 60 seconds so all agents see updated data without manual refresh
   if(window._dashAutoRefreshInterval) clearInterval(window._dashAutoRefreshInterval);
   window._dashAutoRefreshInterval = setInterval(function(){ loadLiveDashboard(); }, 30 * 1000);
+  // Start ambient theme poll
+  setTimeout(ambStartPoll, 2000);
   // Cabin announcement audio on login
   setTimeout(function(){ playLoginAnnouncement(currentUser.name.split(' ')[0]); }, 1200);
 }
@@ -5111,6 +5202,25 @@ window.addEventListener('DOMContentLoaded',function(){
       if(typeof catShowWidget==='function') catShowWidget();
       else { var t=setInterval(function(){ if(typeof catShowWidget==='function'){ catShowWidget(); clearInterval(t); } },200); }
     }, 300);
+    // Silently re-fetch name/email/role from DB so stale localStorage names are corrected automatically
+    setTimeout(function(){
+      if(!currentUser||!currentUser.id||currentUser.role==='syslevel') return;
+      sbQuery('users','id=eq.'+currentUser.id+'&select=id,name,email,role,timesheet_enabled,photo_url').then(function(rows){
+        if(!rows||!rows.length) return;
+        var u=rows[0];
+        var changed=currentUser.name!==u.name||currentUser.email!==u.email||currentUser.role!==u.role;
+        currentUser.name=u.name;
+        currentUser.email=u.email;
+        currentUser.role=u.role;
+        currentUser.timesheetEnabled=u.timesheet_enabled?true:false;
+        if(u.photo_url) currentUser.photo_url=u.photo_url;
+        saveSession(currentUser);
+        if(changed){
+          var nameEl=document.getElementById('agent-display')||document.querySelector('.agent-name');
+          if(nameEl) nameEl.textContent=u.name;
+        }
+      }).catch(function(){});
+    }, 1500);
   }
 });
 
@@ -5190,7 +5300,7 @@ function showPage(id,elem){
   if(id==='moments') setTimeout(function(){_mLoadTab(_mActiveTab);},60);
   if(id==='quiz') loadAgentQuiz();
   if(id==='announcements') loadAnnouncementsAdmin();
-  if(id==='controldeck'){ cdLoadAll(); cdLoadVHAgents(); cdVHLoadGlobalStatus(); }
+  if(id==='controldeck'){ _cdPwResetUnlocked=false; var lk=document.getElementById('cd-pwreset-locked'),pk=document.getElementById('cd-pwreset-panel'),ub=document.getElementById('cd-pwreset-unlock-btn'),pi=document.getElementById('cd-pwreset-pin'); if(lk)lk.style.display='flex'; if(pk)pk.style.display='none'; if(ub)ub.style.display=''; if(pi){pi.value='';} cdLoadAll(); cdLoadVHAgents(); cdVHLoadGlobalStatus(); }
   if(id==='voicehub'){ vhPageInit(); }
   if(id==='teammeet'){ tmPageInit(); }
   if(id==='assessment') loadAgentAssessment();
@@ -6837,30 +6947,26 @@ function renderAttendanceReport(rows){
 
       var overrideHtml = '';
       if(isAdmin){
-        var selId = 'att-status-'+r.id;
-        var inlineId = 'att-inline-'+r.id;
-        overrideHtml = '<td>'+
-          '<button onclick="attShowOverride(\''+r.id+'\')" title="Override status" '+
-            'style="background:none;border:1px solid var(--navy-border);border-radius:5px;padding:.2rem .5rem;cursor:pointer;color:var(--text-dim);font-size:.75rem;">'+
-            '&#9998;'+
-          '</button>'+
-          '<div id="'+inlineId+'" style="display:none;margin-top:.35rem;">'+
-            '<div style="display:flex;gap:.35rem;align-items:center;flex-wrap:wrap;">'+
-              '<select id="'+selId+'" style="padding:.25rem .5rem;border:1px solid var(--navy-border);border-radius:5px;background:var(--navy-card);color:var(--text-primary);font-family:DM Sans,sans-serif;font-size:.76rem;">'+
-                '<option value=""'+((!r.attendance_status||r.attendance_status==='')?'selected':'')+'>Auto</option>'+
-                '<option value="On Time"'+(r.attendance_status==='On Time'?' selected':'')+'>On Time</option>'+
-                '<option value="Late"'+(r.attendance_status==='Late'?' selected':'')+'>Late</option>'+
-                '<option value="Permission"'+(r.attendance_status==='Permission'?' selected':'')+'>Permission</option>'+
-              '</select>'+
-              '<button onclick="attSaveStatus(\''+r.id+'\',\''+selId+'\',\''+inlineId+'\',this)" '+
-                'style="padding:.25rem .6rem;background:var(--gold);color:#fff;border:none;border-radius:5px;font-size:.73rem;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;">'+
-                'Save'+
-              '</button>'+
-              '<button onclick="document.getElementById(\''+inlineId+'\').style.display=\'none\'" '+
-                'style="padding:.25rem .45rem;background:transparent;border:1px solid var(--navy-border);border-radius:5px;font-size:.73rem;cursor:pointer;color:var(--text-muted);">'+
-                '&#10005;'+
-              '</button>'+
-            '</div>'+
+        var isOt = r.attendance_status === 'On Time';
+        var isLt = r.attendance_status === 'Late';
+        var isPm = r.attendance_status === 'Permission';
+        
+        overrideHtml = '<td style="white-space:nowrap;">'+
+          '<div style="display:inline-flex;gap:.35rem;align-items:center;">'+
+            '<button onclick="attSaveStatusDirect(\''+r.id+'\',\'On Time\',this)" data-status="On Time" '+
+              'style="padding:.25rem .5rem;border-radius:4px;font-family:DM Sans,sans-serif;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .15s;'+
+              (isOt ? 'background:rgba(46,197,111,.15);color:#2EC56F;border:1px solid #2EC56F;' : 'background:rgba(255,255,255,0.03);color:var(--text-muted);border:1px solid var(--navy-border);')+'">On Time</button>'+
+            '<button onclick="attSaveStatusDirect(\''+r.id+'\',\'Late\',this)" data-status="Late" '+
+              'style="padding:.25rem .5rem;border-radius:4px;font-family:DM Sans,sans-serif;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .15s;'+
+              (isLt ? 'background:rgba(239,73,60,.15);color:#EF493C;border:1px solid #EF493C;' : 'background:rgba(255,255,255,0.03);color:var(--text-muted);border:1px solid var(--navy-border);')+'">Late</button>'+
+            '<button onclick="attSaveStatusDirect(\''+r.id+'\',\'Permission\',this)" data-status="Permission" '+
+              'style="padding:.25rem .5rem;border-radius:4px;font-family:DM Sans,sans-serif;font-size:.72rem;font-weight:600;cursor:pointer;transition:all .15s;'+
+              (isPm ? 'background:rgba(232,184,75,.15);color:#E8B84B;border:1px solid #E8B84B;' : 'background:rgba(255,255,255,0.03);color:var(--text-muted);border:1px solid var(--navy-border);')+'">Permission</button>'+
+            (r.attendance_status ? 
+              '<button onclick="attSaveStatusDirect(\''+r.id+'\',\'\',this)" data-status="" title="Reset to Auto" '+
+              'style="padding:.25rem .35rem;border-radius:4px;font-family:DM Sans,sans-serif;font-size:.72rem;font-weight:600;cursor:pointer;background:rgba(255,255,255,0.03);color:var(--text-dim);border:1px solid var(--navy-border);display:inline-block;">↺</button>' : 
+              '<button onclick="attSaveStatusDirect(\''+r.id+'\',\'\',this)" data-status="" title="Reset to Auto" '+
+              'style="padding:.25rem .35rem;border-radius:4px;font-family:DM Sans,sans-serif;font-size:.72rem;font-weight:600;cursor:pointer;background:rgba(255,255,255,0.03);color:var(--text-dim);border:1px solid var(--navy-border);display:none;">↺</button>')+
           '</div>'+
         '</td>';
       }
@@ -6882,24 +6988,17 @@ function renderAttendanceReport(rows){
   output.innerHTML = html;
 }
 
-function attShowOverride(rowId){
-  var inlineId = 'att-inline-'+rowId;
-  var el = document.getElementById(inlineId);
-  if(el) el.style.display = el.style.display==='none' ? 'block' : 'none';
-}
-
-async function attSaveStatus(rowId, selId, inlineId, btn){
-  var sel = document.getElementById(selId);
-  if(!sel) return;
-  var val = sel.value; // '' means auto/clear
+async function attSaveStatusDirect(rowId, val, btn){
   var orig = btn.textContent;
-  btn.textContent = '...'; btn.disabled = true;
+  btn.textContent = '...';
+  var container = btn.parentElement;
+  if(container){
+    Array.from(container.children).forEach(function(c){ c.disabled = true; });
+  }
   try {
     await sbUpdate('attendance', 'id', rowId, { attendance_status: val || null });
-    // Refresh the status badge cell
     var cell = document.getElementById('att-status-cell-'+rowId);
     if(cell){
-      // If cleared to Auto, the badge will refresh next time report is pulled — just show a refresh note
       var status = val || null;
       if(status){
         var statusColor = status==='On Time'?'#2EC56F':status==='Late'?'#EF493C':status==='Permission'?'#E8B84B':'#94A3B8';
@@ -6909,18 +7008,56 @@ async function attSaveStatus(rowId, selId, inlineId, btn){
         cell.innerHTML = '<span style="color:var(--text-dim);font-size:.72rem;font-style:italic;">Auto (pull report to refresh)</span>';
       }
     }
-    btn.textContent = '✓'; btn.style.background='#2EC56F';
-    // Hide the inline dropdown after successful save
-    var inlineEl = document.getElementById(inlineId);
-    if(inlineEl) setTimeout(function(){ inlineEl.style.display='none'; }, 800);
-    setTimeout(function(){ btn.textContent=orig; btn.style.background=''; btn.disabled=false; }, 1800);
+    
+    var prevBg = btn.style.background;
+    var prevBorder = btn.style.borderColor;
+    var prevColor = btn.style.color;
+    
+    btn.textContent = '✓';
+    btn.style.background = '#2EC56F';
+    btn.style.borderColor = '#2EC56F';
+    btn.style.color = '#fff';
+    
+    setTimeout(function(){
+      btn.textContent = orig;
+      btn.style.background = prevBg;
+      btn.style.borderColor = prevBorder;
+      btn.style.color = prevColor;
+      
+      if(container){
+        Array.from(container.children).forEach(function(c){
+          c.disabled = false;
+          var cStat = c.getAttribute('data-status');
+          if(cStat === ''){
+            // Reset button
+            c.style.display = val ? 'inline-block' : 'none';
+          } else {
+            var isCurrent = cStat === val;
+            if(isCurrent){
+              var statusColor = val==='On Time'?'#2EC56F':val==='Late'?'#EF493C':val==='Permission'?'#E8B84B':'#94A3B8';
+              var statusBg = val==='On Time'?'rgba(46,197,111,.15)':val==='Late'?'rgba(239,73,60,.15)':val==='Permission'?'rgba(232,184,75,.15)':'rgba(148,163,184,.1)';
+              c.style.background = statusBg;
+              c.style.borderColor = statusColor;
+              c.style.color = statusColor;
+            } else {
+              c.style.background = 'rgba(255,255,255,0.03)';
+              c.style.borderColor = 'var(--navy-border)';
+              c.style.color = 'var(--text-muted)';
+            }
+          }
+        });
+      }
+    }, 1200);
   } catch(e){
     if(e.message && e.message.includes('attendance_status')){
       alert('Please run this SQL in Supabase first:\nALTER TABLE attendance ADD COLUMN IF NOT EXISTS attendance_status TEXT DEFAULT NULL;\n\nThen try again.');
     } else {
       alert('Save failed: '+e.message);
     }
-    btn.textContent = orig; btn.disabled = false;
+    btn.textContent = orig;
+    if(container){
+      Array.from(container.children).forEach(function(c){ c.disabled = false; });
+    }
   }
 }
 
@@ -10730,10 +10867,72 @@ function chatRequestNotifPermission(){
 
 // ── Sound icon init ──
 function initSoundIcon(){
+  var icon = _notifSoundEnabled ? '🔔' : '🔕';
+  // Main popup header bell
   var btn = document.getElementById('dock-sound-btn');
-  if(btn) btn.textContent = _notifSoundEnabled ? '🔔' : '🔕';
+  if(btn) btn.textContent = icon;
+  // Full messages page bell (may not exist)
   var msgBtn = document.getElementById('msg-sound-toggle');
-  if(msgBtn) msgBtn.textContent = _notifSoundEnabled ? '🔔' : '🔕';
+  if(msgBtn) msgBtn.textContent = icon;
+  // All per-chat-window sound buttons
+  document.querySelectorAll('[id^="dock-snd-"]').forEach(function(b){ b.textContent = icon; });
+}
+
+function toggleMsgSound(){
+  _notifSoundEnabled = !_notifSoundEnabled;
+  localStorage.setItem('tc_notif_sound', _notifSoundEnabled ? 'true' : 'false');
+  initSoundIcon();
+}
+
+function chatPlayMsgSound(){
+  if(!_notifSoundEnabled) return;
+  try{
+    var ctx = new (window.AudioContext||window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.type = 'sine';
+    o.connect(g);
+    g.connect(ctx.destination);
+    o.frequency.setValueAtTime(800, ctx.currentTime);
+    g.gain.setValueAtTime(0.05, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+    o.start();
+    o.stop(ctx.currentTime + 0.15);
+
+    setTimeout(function(){
+      try {
+        var ctx2 = new (window.AudioContext||window.webkitAudioContext)();
+        var o2 = ctx2.createOscillator();
+        var g2 = ctx2.createGain();
+        o2.type = 'sine';
+        o2.connect(g2);
+        g2.connect(ctx2.destination);
+        o2.frequency.setValueAtTime(1000, ctx2.currentTime);
+        g2.gain.setValueAtTime(0.05, ctx2.currentTime);
+        g2.gain.exponentialRampToValueAtTime(0.001, ctx2.currentTime + 0.25);
+        o2.start();
+        o2.stop(ctx2.currentTime + 0.25);
+      } catch(e){}
+    }, 80);
+  }catch(e){}
+}
+
+function playSendSound(){
+  if(!_notifSoundEnabled) return;
+  try{
+    var ctx = new (window.AudioContext||window.webkitAudioContext)();
+    var o = ctx.createOscillator();
+    var g = ctx.createGain();
+    o.type = 'sine';
+    o.connect(g);
+    g.connect(ctx.destination);
+    o.frequency.setValueAtTime(600, ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(200, ctx.currentTime + 0.12);
+    g.gain.setValueAtTime(0.05, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.12);
+    o.start();
+    o.stop(ctx.currentTime + 0.12);
+  }catch(e){}
 }
 
 function chatColor(name){
@@ -10756,19 +10955,33 @@ var _chatUsers = [], _chatUnreadMap = {}, _chatLastMsgMap = {};
 var _dockWindows = {}; // { userId: { minimised } }
 var _dockContactsOpen = false;
 var _lastNotifTotal = 0;
+var _lastNotifMsgTime = null; // ISO timestamp of the newest msg we already notified about
 var _notifSoundEnabled = localStorage.getItem('tc_notif_sound') !== 'false';
 var _dockHidden = localStorage.getItem('tc_dock_hidden') === '1';
+var _dragBlockClick = false;
 
 function chatInit(){
   if(!currentUser||_isSysLevel()) return;
   var icon = document.getElementById('chat-dock-icon');
   if(icon) icon.classList.add('visible');
   if(_dockHidden){ dockApplyHidden(true, false); }
+
+  // Restore persisted drag coordinates
+  var savedRight = localStorage.getItem('tc_dock_right');
+  var savedBottom = localStorage.getItem('tc_dock_bottom');
+  var dock = document.getElementById('chat-dock');
+  if(savedRight !== null && savedBottom !== null && dock){
+    dock.style.right = savedRight + 'px';
+    dock.style.bottom = savedBottom + 'px';
+  }
+
   dockLoadUsers();
   chatStartPolling();
   initSoundIcon();
   msgLoadConversations();
-  // Escape key: close topmost dock window or contacts popup
+  makeDockDraggable();
+
+  // Escape key: minimise topmost dock window (not close), or close contacts popup
   document.addEventListener('keydown', function(e){
     if(e.key !== 'Escape') return;
     // Close any open emoji/gif pickers first
@@ -10777,13 +10990,104 @@ function chatInit(){
       if(p.style.display==='block'){ p.style.display='none'; anyPicker=true; }
     });
     if(anyPicker) return;
-    // Close contacts popup
+    // Close contacts popup if open
     var popup = document.getElementById('chat-contacts-popup');
     if(popup && !popup.classList.contains('dock-hidden')){ dockCloseContacts(); return; }
-    // Close the rightmost (last) open dock window
-    var wins = document.querySelectorAll('.dock-chat-window');
-    if(wins.length) dockCloseChat(wins[wins.length-1].id.replace('dock-win-',''));
+    // Minimise (not close) the rightmost open dock window
+    var wins = document.querySelectorAll('.dock-chat-window:not(.minimised)');
+    if(wins.length){
+      var lastWin = wins[wins.length-1];
+      dockToggleMinimise(lastWin.id.replace('dock-win-',''));
+    }
   });
+}
+
+function makeDockDraggable() {
+  var icon = document.getElementById('chat-dock-icon');
+  var dock = document.getElementById('chat-dock');
+  if (!icon || !dock) return;
+
+  var isDragging = false;
+  var startX, startY;
+  var startRight, startBottom;
+
+  icon.addEventListener('mousedown', dragStart);
+  icon.addEventListener('touchstart', dragStart, { passive: false });
+
+  function dragStart(e) {
+    var clientX = e.type === 'touchstart' ? e.touches[0].clientX : e.clientX;
+    var clientY = e.type === 'touchstart' ? e.touches[0].clientY : e.clientY;
+
+    startX = clientX;
+    startY = clientY;
+
+    var computed = window.getComputedStyle(dock);
+    startRight = parseInt(computed.right) || 16;
+    startBottom = parseInt(computed.bottom) || 0;
+
+    isDragging = false;
+
+    if (e.type === 'mousedown') {
+      document.addEventListener('mousemove', dragMove);
+      document.addEventListener('mouseup', dragEnd);
+    } else {
+      document.addEventListener('touchmove', dragMove, { passive: false });
+      document.addEventListener('touchend', dragEnd);
+    }
+  }
+
+  function dragMove(e) {
+    var clientX = e.type === 'touchmove' ? e.touches[0].clientX : e.clientX;
+    var clientY = e.type === 'touchmove' ? e.touches[0].clientY : e.clientY;
+
+    var deltaX = startX - clientX;
+    var deltaY = startY - clientY;
+
+    if (Math.hypot(deltaX, deltaY) > 6) {
+      isDragging = true;
+      _dragBlockClick = true;
+      icon.style.cursor = 'grabbing';
+    }
+
+    if (isDragging) {
+      if (e.cancelable) e.preventDefault();
+
+      var newRight = startRight + deltaX;
+      var newBottom = startBottom + deltaY;
+
+      var maxRight = window.innerWidth - 60;
+      var maxBottom = window.innerHeight - 60;
+      if (newRight < 0) newRight = 0;
+      if (newRight > maxRight) newRight = maxRight;
+      if (newBottom < 0) newBottom = 0;
+      if (newBottom > maxBottom) newBottom = maxBottom;
+
+      dock.style.right = newRight + 'px';
+      dock.style.bottom = newBottom + 'px';
+    }
+  }
+
+  function dragEnd(e) {
+    if (e.type === 'mouseup') {
+      document.removeEventListener('mousemove', dragMove);
+      document.removeEventListener('mouseup', dragEnd);
+    } else {
+      document.removeEventListener('touchmove', dragMove);
+      document.removeEventListener('touchend', dragEnd);
+    }
+
+    icon.style.cursor = 'grab';
+
+    if (isDragging) {
+      localStorage.setItem('tc_dock_right', dock.style.right.replace('px', ''));
+      localStorage.setItem('tc_dock_bottom', dock.style.bottom.replace('px', ''));
+      setTimeout(function() {
+        _dragBlockClick = false;
+      }, 50);
+    } else {
+      _dragBlockClick = false;
+    }
+  }
 }
 
 // ── CONTACTS ──
@@ -10820,7 +11124,17 @@ function dockRenderContacts(users){
   var list = document.getElementById('dock-contacts-list');
   if(!list) return;
   if(!users.length){ list.innerHTML='<div style="padding:1rem;text-align:center;font-size:.8rem;color:var(--text-dim);">No contacts found</div>'; return; }
-  list.innerHTML = users.map(function(u){
+  // Sort: unread first, then by most recent message time
+  var sorted = users.slice().sort(function(a,b){
+    var ua=_chatUnreadMap[a.id]||0, ub=_chatUnreadMap[b.id]||0;
+    if(ua&&!ub) return -1;
+    if(!ua&&ub) return 1;
+    var ta=_chatLastMsgMap[a.id]?new Date(_chatLastMsgMap[a.id].time).getTime():0;
+    var tb=_chatLastMsgMap[b.id]?new Date(_chatLastMsgMap[b.id].time).getTime():0;
+    if(tb!==ta) return tb-ta;
+    return (a.name||'').localeCompare(b.name||'');
+  });
+  list.innerHTML = sorted.map(function(u){
     var bg=chatColor(u.name), ini=chatIni(u.name);
     var unread=_chatUnreadMap[u.id]||0;
     var last=_chatLastMsgMap[u.id];
@@ -10839,11 +11153,12 @@ function dockRenderContacts(users){
 }
 
 function dockToggleContacts(){
+  if(_dragBlockClick) return;
   if(_dockHidden){ dockRestore(); return; }
   _dockContactsOpen = !_dockContactsOpen;
   var popup = document.getElementById('chat-contacts-popup');
   if(popup) popup.classList.toggle('dock-hidden', !_dockContactsOpen);
-  if(_dockContactsOpen) dockLoadUsers();
+  if(_dockContactsOpen){ dockLoadUsers(); initSoundIcon(); }
 }
 function dockCloseContacts(){
   _dockContactsOpen = false;
@@ -10972,11 +11287,14 @@ async function dockLoadMsgs(userId){
       'or=(and(from_user_id.eq.'+myId+',to_user_id.eq.'+userId+'),and(from_user_id.eq.'+userId+',to_user_id.eq.'+myId+'))'+
       '&order=created_at.asc&limit=80&select=id,from_user_id,from_name,content,created_at,read_at,expires_at'
     );
-    dockRenderMsgs(out, rows||[], userId);
+    // Remember scroll position before re-render so polls don't yank the view
+    var wasAtBottom = (out.scrollHeight - out.scrollTop - out.clientHeight) < 60;
+    var isFirstLoad = out.innerHTML === '' || out.innerHTML.indexOf('Loading') > -1;
+    dockRenderMsgs(out, rows||[], userId, wasAtBottom || isFirstLoad);
   }catch(e){}
 }
 
-function dockRenderMsgs(out, rows, userId){
+function dockRenderMsgs(out, rows, userId, scrollToBottom){
   if(!rows.length){
     out.innerHTML='<div style="text-align:center;padding:1.5rem;font-size:.75rem;color:var(--text-dim);">🔒 Start a conversation</div>';
     return;
@@ -11000,7 +11318,11 @@ function dockRenderMsgs(out, rows, userId){
     '</div>';
   }
   out.innerHTML=html;
-  out.scrollTop=out.scrollHeight;
+  // Only scroll to bottom on first open or when already near the bottom — not on background polls
+  if(scrollToBottom !== false){
+    // rAF ensures the browser has painted the new content before we measure scrollHeight
+    requestAnimationFrame(function(){ out.scrollTop = out.scrollHeight; });
+  }
 }
 
 async function dockSend(userId, userName, bg){
@@ -11017,6 +11339,9 @@ async function dockSend(userId, userName, bg){
       content:content, created_at:now.toISOString(),
       expires_at:new Date(now.getTime()+24*3600000).toISOString()
     });
+    // Immediately update last-msg map so this contact moves to top of the list
+    _chatLastMsgMap[userId]={content:content,time:now.toISOString(),sent:true};
+    if(_dockContactsOpen) dockRenderContacts(_chatUsers);
     dockLoadMsgs(userId);
   }catch(e){ alert('Send failed: '+e.message); }
 }
@@ -11174,18 +11499,45 @@ function chatStartPolling(){
 
 // ── UNREAD + NOTIFICATIONS ──
 var _chatToastTimer=null;
+var _chatCheckUnreadRunning=false;
+var _chatCheckUnreadFirstRun=true;
 async function chatCheckUnread(){
   if(!currentUser||_isSysLevel()) return;
+  if(_chatCheckUnreadRunning) return;
+  _chatCheckUnreadRunning=true;
   try{
+    // Received unread messages
     var rows=await sbQuery('messages','to_user_id=eq.'+currentUser.id+'&read_at=is.null&select=from_user_id,content,created_at');
     _chatUnreadMap={}; _chatLastMsgMap={};
     (rows||[]).forEach(function(m){
       _chatUnreadMap[m.from_user_id]=(_chatUnreadMap[m.from_user_id]||0)+1;
-      _chatLastMsgMap[m.from_user_id]={content:m.content,time:m.created_at};
+      if(!_chatLastMsgMap[m.from_user_id]||m.created_at>_chatLastMsgMap[m.from_user_id].time){
+        _chatLastMsgMap[m.from_user_id]={content:m.content,time:m.created_at};
+      }
     });
+
+    // Also pull most recent SENT message per contact so contacts you messaged last bubble to top
+    try{
+      var sent=await sbQuery('messages','from_user_id=eq.'+currentUser.id+'&group_id=is.null&select=to_user_id,content,created_at&order=created_at.desc&limit=100');
+      (sent||[]).forEach(function(m){
+        if(!m.to_user_id) return;
+        if(!_chatLastMsgMap[m.to_user_id]||m.created_at>_chatLastMsgMap[m.to_user_id].time){
+          _chatLastMsgMap[m.to_user_id]={content:m.content,time:m.created_at,sent:true};
+        }
+      });
+    }catch(e){}
+
+    // On first run: silently seed the timestamp so pre-existing unreads don't fire sound
+    if(_chatCheckUnreadFirstRun){
+      _chatCheckUnreadFirstRun=false;
+      Object.keys(_chatLastMsgMap).forEach(function(uid){
+        var t=_chatLastMsgMap[uid].time;
+        if(!_lastNotifMsgTime||t>_lastNotifMsgTime) _lastNotifMsgTime=t;
+      });
+    }
     chatUpdateBadge();
     if(_dockContactsOpen) dockRenderContacts(_chatUsers);
-  }catch(e){}
+  }catch(e){}finally{_chatCheckUnreadRunning=false;}
 }
 
 function chatUpdateBadge(){
@@ -11205,14 +11557,19 @@ function chatUpdateBadge(){
     var badge=document.getElementById('dock-win-badge-'+uid);
     if(badge){badge.textContent=_chatUnreadMap[uid];badge.style.display='flex';}
   });
+  _lastNotifTotal=total;
 
-  if(total>_lastNotifTotal){
+  // Find the newest unread message timestamp across all senders
+  var newestTime=null, newestSender=null, newestMsg=null;
+  Object.keys(_chatLastMsgMap).forEach(function(uid){
+    var m=_chatLastMsgMap[uid];
+    if(!newestTime||m.time>newestTime){newestTime=m.time;newestSender=uid;newestMsg=m.content;}
+  });
+
+  // Only fire sound + toast if this message is genuinely newer than anything we've notified about
+  if(newestTime && (_lastNotifMsgTime===null || newestTime > _lastNotifMsgTime)){
+    _lastNotifMsgTime=newestTime;
     chatPlayMsgSound();
-    var newestSender=null,newestMsg=null,newestTime=null;
-    Object.keys(_chatLastMsgMap).forEach(function(uid){
-      var m=_chatLastMsgMap[uid];
-      if(!newestTime||m.time>newestTime){newestTime=m.time;newestSender=uid;newestMsg=m.content;}
-    });
     if(newestSender){
       var sender=(_chatUsers||[]).find(function(u){return u.id===newestSender;});
       var senderName=sender?sender.name:'Someone';
@@ -11223,7 +11580,6 @@ function chatUpdateBadge(){
       if(!winOpen) dockShowToast(newestSender,senderName,newestMsg||'',sender?chatColor(senderName):'var(--gold)');
     }
   }
-  _lastNotifTotal=total;
 }
 
 function dockShowToast(senderId,senderName,message,bg){
@@ -11416,7 +11772,12 @@ async function msgOpenConv(id,type){
       });
     }catch(e){}
     delete _chatUnreadMap[id];
+    // Sync unread=0 in the conversations array so the list re-renders correctly
+    var convEntry=(_msgAllConvs||[]).find(function(c){return c.id===id&&c.type==='dm';});
+    if(convEntry) convEntry.unread=0;
     chatUpdateBadge();
+    // Always re-render dock contact list so unread badge clears immediately
+    dockRenderContacts(_chatUsers);
   }
 
   await msgLoadMessagesForConv();
@@ -11555,6 +11916,26 @@ async function msgDeleteById(id){
   }catch(e){alert('Could not delete message: '+e.message);}
 }
 
+async function msgClearConversation(){
+  if(!_msgActiveConv)return;
+  if(!confirm('Clear all messages in this conversation permanently? This cannot be undone.'))return;
+  try{
+    var url=SUPABASE_URL+'/rest/v1/messages';
+    if(_msgActiveConv.type==='dm'){
+      var myId=currentUser.id,theirId=_msgActiveConv.id;
+      url+='?or=(and(from_user_id.eq.'+myId+',to_user_id.eq.'+theirId+'),and(from_user_id.eq.'+theirId+',to_user_id.eq.'+myId+'))&group_id=is.null';
+    } else {
+      url+='?group_id=eq.'+_msgActiveConv.id;
+    }
+    const r=await fetch(url,{method:'DELETE',headers:sbHeaders()});
+    if(!r.ok) throw new Error('Delete failed');
+    // Refresh both views
+    if(typeof chatLoadMessages==='function'&&_chatOpen&&_chatActiveUser) await chatLoadMessages();
+    await msgLoadMessagesForConv();
+    await msgLoadConversations();
+  }catch(e){alert('Could not clear conversation: '+e.message);}
+}
+
 function msgToggleEmoji(){
   var p=document.getElementById('msg-emoji-picker');
   var g=document.getElementById('msg-gif-picker');
@@ -11656,7 +12037,7 @@ async function msgSendGif(url){
 async function msgPollMessages(){
   if(!_msgActiveConv)return;
   await msgLoadMessagesForConv();
-  await chatCheckUnread();
+  // chatCheckUnread is already called by the main poll interval — do not call it again here to prevent duplicate sounds
 }
 
 // ── New Group ──
@@ -13848,6 +14229,141 @@ function pplCloseLightbox(){
   text-align:center; flex-shrink:0;
 }
 #cp-no-ai.on { display:block; }
+  /* ── Ambient Theme Canvas ── */
+  #ambient-canvas{
+    position:fixed;inset:0;pointer-events:none;z-index:2;
+    opacity:0;transition:opacity 1.8s ease;
+  }
+  #ambient-canvas.active{ opacity:1; }
+
+  /* Ambient theme picker buttons */
+  .amb-btn{
+    display:flex;flex-direction:column;align-items:center;gap:.35rem;
+    padding:.6rem .4rem;border-radius:10px;border:1.5px solid var(--navy-border);
+    background:var(--navy-hover);cursor:pointer;transition:all .18s;
+    font-family:'DM Sans',sans-serif;font-size:.72rem;color:var(--text-muted);font-weight:500;
+  }
+  .amb-btn:hover{ background:var(--navy-mid);color:var(--text-primary); }
+  .amb-btn.active{
+    border-color:rgba(76,118,168,.6);
+    background:rgba(76,118,168,.12);
+    color:var(--text-primary);font-weight:700;
+  }
+  .amb-btn.off.active{ border-color:rgba(239,73,60,.4);background:rgba(239,73,60,.08);color:var(--accent-red); }
+  .amb-btn-icon{ font-size:1.4rem;line-height:1; }
+  /* ══ EASTER EGG SYSTEM ══ */
+
+  /* Gravity */
+  .eg-gravity-el {
+    position: fixed !important;
+    transition: none !important;
+    z-index: 8000;
+    cursor: grab;
+  }
+  .eg-gravity-el:active { cursor: grabbing; }
+
+  /* Barrel roll */
+  @keyframes eg-barrel-roll {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .eg-barrel { animation: eg-barrel-roll 1s ease-in-out; }
+
+  /* Tilt */
+  .eg-tilted { transform: rotate(2.5deg) !important; transition: transform .6s ease !important; transform-origin: center center; }
+
+  /* Matrix canvas */
+  #eg-matrix-canvas {
+    position: fixed; inset: 0; z-index: 9500;
+    pointer-events: none; opacity: 0;
+    transition: opacity .5s;
+  }
+  #eg-matrix-canvas.active { opacity: 1; }
+
+  /* Rave */
+  #eg-rave-overlay {
+    position: fixed; inset: 0; z-index: 9400;
+    pointer-events: none; opacity: 0;
+    mix-blend-mode: screen;
+    transition: opacity .1s;
+  }
+
+  /* Thanos dust */
+  .eg-dust-particle {
+    position: fixed; pointer-events: none;
+    z-index: 9300; border-radius: 50%;
+    animation: eg-dust-fly var(--dur,1.2s) ease forwards;
+  }
+  @keyframes eg-dust-fly {
+    0%   { opacity:1; transform: translate(0,0) scale(1); }
+    100% { opacity:0; transform: translate(var(--tx,40px), var(--ty,-60px)) scale(0); }
+  }
+
+  /* k7diwan splash */
+  #eg-diwan-splash {
+    position: fixed; inset: 0; z-index: 9600;
+    display: none;
+    align-items: center; justify-content: center;
+    flex-direction: column; gap: 1rem;
+    background: radial-gradient(ellipse at center, rgba(10,15,40,0.97) 0%, rgba(5,8,25,0.99) 100%);
+    opacity: 0; pointer-events: none;
+    transition: opacity .6s;
+  }
+  #eg-diwan-splash.active { display: flex; opacity: 1; pointer-events: all; }
+  #eg-diwan-splash .eg-diwan-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.2rem, 6vw, 4.5rem);
+    font-weight: 700;
+    background: linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6, #06b6d4);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-size: 300% 300%;
+    animation: eg-diwan-gradient 3s ease infinite;
+    text-align: center; letter-spacing: .06em;
+  }
+  @keyframes eg-diwan-gradient {
+    0%   { background-position: 0% 50%; }
+    50%  { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+  #eg-diwan-splash .eg-diwan-sub {
+    font-size: 1rem; color: rgba(200,210,230,0.7);
+    letter-spacing: .25em; text-transform: uppercase;
+    font-family: 'DM Sans', sans-serif;
+  }
+  #eg-diwan-splash .eg-diwan-stars {
+    font-size: 1.8rem; letter-spacing: .5rem;
+    animation: eg-star-pulse 1.4s ease-in-out infinite;
+  }
+  @keyframes eg-star-pulse {
+    0%,100% { opacity:.4; transform: scale(0.95); }
+    50%     { opacity:1;  transform: scale(1.05); }
+  }
+  #eg-diwan-splash .eg-diwan-close {
+    margin-top: 1.5rem; font-size: .78rem; color: rgba(255,255,255,.3);
+    cursor: pointer; letter-spacing: .15em; font-family: 'DM Sans', sans-serif;
+  }
+  #eg-diwan-splash .eg-diwan-close:hover { color: rgba(255,255,255,.6); }
+  .eg-confetti {
+    position: fixed; pointer-events: none; z-index: 9550;
+    width: 8px; height: 8px; border-radius: 2px;
+    animation: eg-confetti-fall var(--dur,3s) ease-in forwards;
+  }
+  @keyframes eg-confetti-fall {
+    0%   { opacity:1; transform: translateY(var(--sy,0px)) rotate(0deg) translateX(0); }
+    100% { opacity:0; transform: translateY(var(--ey,600px)) rotate(var(--r,720deg)) translateX(var(--ex,80px)); }
+  }
+
+  /* Easter egg toast hint */
+  #eg-hint-toast {
+    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
+    background: rgba(15,20,45,0.92); color: rgba(200,215,240,0.9);
+    font-size: .72rem; padding: .45rem 1.1rem; border-radius: 20px;
+    border: 1px solid rgba(100,130,200,0.2); z-index: 9700;
+    font-family: 'DM Sans', sans-serif; letter-spacing: .08em;
+    opacity: 0; pointer-events: none; transition: opacity .3s;
+    white-space: nowrap;
+  }
+  #eg-hint-toast.show { opacity: 1; }
 </style>
 
 <!-- ══ Widget Root ══ -->
@@ -15662,8 +16178,10 @@ window.catToggleRefresh = async function(){
   var chk = document.getElementById('cat-global-toggle');
   var st  = document.getElementById('cat-toggle-status');
   if(chk) chk.checked = enabled;
-  if(st)  st.textContent = enabled ? '✅ ON — Cat is visible to all agents' : '🔴 OFF — Cat is hidden for all agents';
-  st.style.color = enabled ? 'var(--accent-green)' : '#ef493c';
+  if(st) {
+    st.textContent = enabled ? '✅ ON — Cat is visible to all agents' : '🔴 OFF — Cat is hidden for all agents';
+    st.style.color = enabled ? 'var(--accent-green)' : '#ef493c';
+  }
 };
 
 window.catGlobalToggle = async function(enabled){
@@ -16252,6 +16770,7 @@ async function cdLoadAll(){
   cdLoadAnnouncements();
   cdLoadAgents();
   cdLoadTm();
+  cdAmbLoadAndRender();
 }
 
 // ── Team Meet: agent create toggle ──
@@ -16531,6 +17050,984 @@ async function cdLoadAnnouncements(){
 async function cdDeleteAnnouncement(id){
   if(!confirm('Delete this announcement?')) return;
   try{ await sbDelete('announcements','id',id); cdLoadAnnouncements(); }catch(e){ alert('Error: '+e.message); }
+}
+
+
+
+//  AMBIENT THEME ENGINE
+//  Key stored in settings table: ambient_theme
+//  Values: 'off' | 'rain' | 'snow' | 'wind' | 'fog' | 'sunny' | 'night' | 'autumn'
+// ══════════════════════════════════════════════════════════
+
+var _ambKey = 'ambient_theme';
+var _ambCurrent = 'off';
+var _ambRAF = null;
+var _ambParticles = [];
+var _ambPollInterval = null;
+var _ambOpacity  = 0.70;  // 0.1 – 1.0, applied to canvas element
+var _ambSpeed    = 1.0;   // 0.2 – 2.0, multiplies all movement speeds
+var _ambDensity  = 1.0;   // 0.1 – 2.0, multiplies particle count
+var _ambCtrlKey  = 'ambient_controls'; // persisted in settings
+
+var _ambThemes = [
+  { id:'off',      label:'Off',        icon:'⭕' },
+  { id:'rain',     label:'Rain',       icon:'🌧️' },
+  { id:'thunder',  label:'Thunder',    icon:'⛈️' },
+  { id:'snow',     label:'Snow',       icon:'❄️' },
+  { id:'wind',     label:'Windy',      icon:'💨' },
+  { id:'fog',      label:'Foggy',      icon:'🌫️' },
+  { id:'sunny',    label:'Sunny',      icon:'☀️' },
+  { id:'night',    label:'Night',      icon:'🌙' },
+  { id:'autumn',   label:'Autumn',     icon:'🍂' },
+  { id:'sunset',   label:'Sunset',     icon:'🌅' },
+  { id:'womensday',label:"Women's Day",icon:'💜' },
+  { id:'christmas',label:'Christmas',  icon:'🎄' },
+  { id:'diwali',   label:'Diwali',     icon:'🪔' },
+  { id:'easter',   label:'Easter',     icon:'🐣' }
+];
+
+// ── Load theme from DB and apply ──
+async function ambLoad(){
+  try{
+    var rows = await sbQuery('settings','key=eq.'+_ambKey+'&select=value');
+    var theme = (rows&&rows.length) ? (rows[0].value||'off') : 'off';
+    ambApply(theme);
+  }catch(e){}
+}
+
+// ── Poll for theme changes every 30s (so agents see it live) ──
+function ambStartPoll(){
+  if(_ambPollInterval) clearInterval(_ambPollInterval);
+  _ambPollInterval = setInterval(ambLoad, 30000);
+  ambLoadControls();
+  ambLoad();
+  ambSchedStart();
+}
+
+// ── Apply a theme ──
+function ambApply(theme){
+  var canvas = document.getElementById('ambient-canvas');
+  if(!canvas) return;
+
+  // Stop any running animation immediately
+  if(_ambRAF){ cancelAnimationFrame(_ambRAF); _ambRAF=null; }
+  _ambParticles = [];
+  window._ambMoon = null;
+  window._ambThunder = null;
+
+  _ambCurrent = theme;
+
+  if(!theme || theme==='off'){
+    canvas.classList.remove('active');
+    canvas.style.opacity = '';   // clear inline so CSS transition takes over → fades to 0
+    // Clear canvas pixels so nothing lingers
+    var ctx = canvas.getContext('2d');
+    if(ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
+    return;
+  }
+
+  // Size canvas to window
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  canvas.style.opacity = _ambOpacity;
+  canvas.classList.add('active');
+
+  // Spawn particles and start loop
+  ambSpawn(theme, canvas);
+  ambLoop(theme, canvas);
+}
+
+// ── Resize handler ──
+window.addEventListener('resize', function(){
+  var canvas = document.getElementById('ambient-canvas');
+  if(canvas && _ambCurrent !== 'off'){
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+  }
+});
+
+// ── Spawn initial particles ──
+function ambSpawn(theme, canvas){
+  var w = canvas.width, h = canvas.height;
+  var base = { rain:180, thunder:220, snow:110, wind:80, fog:10, sunny:16, night:160, autumn:55, sunset:70, womensday:90, christmas:130, diwali:200, easter:65 }[theme] || 80;
+  var count = Math.max(5, Math.round(base * _ambDensity));
+  _ambParticles = [];
+  for(var i=0; i<count; i++){
+    _ambParticles.push(ambNewParticle(theme, w, h, true));
+  }
+}
+
+function ambNewParticle(theme, w, h, randomY){
+  var p = {};
+  var s = _ambSpeed; // speed multiplier
+  if(theme==='rain'){
+    p.x = Math.random()*w;
+    p.y = randomY ? Math.random()*h : -10;
+    p.len = 14 + Math.random()*22;
+    p.speed = (18 + Math.random()*14) * s;
+    p.alpha = 0.55 + Math.random()*0.4;
+    p.width = 1.2 + Math.random()*1.2;
+  } else if(theme==='thunder'){
+    // Heavy rain drops — same as rain but heavier + thunder state lives in window._ambThunder
+    p.x = Math.random()*w;
+    p.y = randomY ? Math.random()*h : -10;
+    p.len = 16 + Math.random()*26;
+    p.speed = (22 + Math.random()*16) * s;
+    p.alpha = 0.6 + Math.random()*0.35;
+    p.width = 1.4 + Math.random()*1.4;
+  } else if(theme==='snow'){
+    p.x = Math.random()*w;
+    p.y = randomY ? Math.random()*h : -10;
+    p.r = 2.5 + Math.random()*5;
+    p.speed = (0.9 + Math.random()*1.8) * s;
+    p.drift = (Math.random()-0.5)*0.7;
+    p.alpha = 0.75 + Math.random()*0.25;
+    p.wobble = Math.random()*Math.PI*2;
+  } else if(theme==='wind'){
+    p.x = randomY ? Math.random()*w : -20;
+    p.y = Math.random()*h;
+    p.len = 60 + Math.random()*120;
+    p.speed = (8 + Math.random()*10) * s;
+    p.alpha = 0.28 + Math.random()*0.3;
+    p.width = 1 + Math.random()*2.5;
+    p.angle = -0.1 + Math.random()*0.2;
+  } else if(theme==='fog'){
+    p.x = Math.random()*w;
+    p.y = Math.random()*h;
+    p.r = 140 + Math.random()*220;
+    p.speed = (0.2 + Math.random()*0.3) * s;
+    p.alpha = 0;
+    p.targetAlpha = 0.12 + Math.random()*0.14;
+    p.drift = (Math.random()-0.5)*0.3;
+  } else if(theme==='sunny'){
+    var angle = Math.random()*Math.PI*2;
+    p.x = w*0.82 + Math.cos(angle)*(30+Math.random()*60);
+    p.y = h*0.07 + Math.sin(angle)*(30+Math.random()*60);
+    p.len = 120 + Math.random()*200;
+    p.angle = angle;
+    p.alpha = 0.12 + Math.random()*0.14;
+    p.speed = (0.002 + Math.random()*0.003) * s;
+  } else if(theme==='night'){
+    var isShooting = Math.random() < 0.05;
+    p.isShooting = isShooting;
+    if(isShooting){
+      p.x = Math.random()*w*0.6;
+      p.y = Math.random()*h*0.3;
+      p.vx = (7 + Math.random()*9) * s;
+      p.vy = (2.5 + Math.random()*4) * s;
+      p.len = 90 + Math.random()*130;
+      p.alpha = 0;
+      p.life = 1;
+      p.fade = (0.014 + Math.random()*0.01) * Math.max(s, 0.3);
+      p.delay = Math.floor(Math.random()*600);
+    } else {
+      p.x = Math.random()*w;
+      p.y = Math.random()*h*0.75;
+      p.r = 1.0 + Math.random()*2.8;
+      p.baseAlpha = 0.5 + Math.random()*0.5;
+      p.alpha = p.baseAlpha;
+      p.twinkleSpeed = (0.006 + Math.random()*0.018) * Math.max(s, 0.5);
+      p.twinkleDir = Math.random()>0.5?1:-1;
+    }
+  } else if(theme==='autumn'){
+    p.x = Math.random()*w;
+    p.y = randomY ? Math.random()*h : -20;
+    p.r = 6 + Math.random()*8;
+    p.speed = (1.2 + Math.random()*2) * s;
+    p.drift = (Math.random()-0.5)*1.8;
+    p.rot = Math.random()*Math.PI*2;
+    p.rotSpeed = (Math.random()-0.5)*0.08 * s;
+    p.alpha = 0.8 + Math.random()*0.2;
+    p.hue = 10 + Math.floor(Math.random()*5)*10;
+  } else if(theme==='sunset'){
+    p.x = Math.random()*w;
+    p.y = randomY ? Math.random()*h : h+10;
+    p.r = 5 + Math.random()*12;
+    p.speed = -(0.5 + Math.random()*0.9) * s;
+    p.drift = (Math.random()-0.5)*0.5;
+    p.alpha = 0.35 + Math.random()*0.35;
+    p.hue = 10 + Math.random()*35;
+  } else if(theme==='womensday'){
+    p.x = Math.random()*w;
+    p.y = randomY ? Math.random()*h : h+20;
+    p.r = 5 + Math.random()*12;
+    p.speed = -(0.6 + Math.random()*1.1) * s;
+    p.drift = (Math.random()-0.5)*0.8;
+    p.alpha = 0.45 + Math.random()*0.4;
+    p.isHeart = Math.random() > 0.5;
+    p.hue = 285 + Math.random()*65;
+  } else if(theme==='christmas'){
+    p.x = Math.random()*w;
+    p.y = randomY ? Math.random()*h : -15;
+    p.isStar = Math.random() > 0.65;
+    p.r = p.isStar ? (5 + Math.random()*7) : (2.5 + Math.random()*4.5);
+    p.speed = (1.0 + Math.random()*1.8) * s;
+    p.drift = (Math.random()-0.5)*1.0;
+    p.wobble = Math.random()*Math.PI*2;
+    p.rot = Math.random()*Math.PI*2;
+    p.rotSpeed = (Math.random()-0.5)*0.06 * s;
+    p.alpha = 0.75 + Math.random()*0.25;
+  } else if(theme==='diwali'){
+    p.x = Math.random()*w;
+    p.y = randomY ? Math.random()*h*0.8 : Math.random()*h*0.8;
+    var spd = (1.5 + Math.random()*3.5) * s;
+    var ang = Math.random()*Math.PI*2;
+    p.vx = Math.cos(ang)*spd;
+    p.vy = Math.sin(ang)*spd;
+    p.r = 1.5 + Math.random()*3;
+    p.alpha = 0.85 + Math.random()*0.15;
+    p.fade = (0.007 + Math.random()*0.01) * Math.max(s, 0.3);
+    p.hue = Math.random()*80;
+    p.life = 1;
+  } else if(theme==='easter'){
+    p.x = Math.random()*w;
+    p.y = randomY ? Math.random()*h : -25;
+    p.ry = (7 + Math.random()*8) * 1.35;
+    p.rx = p.ry * 0.72;
+    p.speed = (0.8 + Math.random()*1.4) * s;
+    p.drift = (Math.random()-0.5)*0.9;
+    p.rot = (Math.random()-0.5)*0.35;
+    p.alpha = 0.7 + Math.random()*0.3;
+    var pastels = ['355,88%,72%','145,65%,68%','270,65%,74%','48,95%,70%','200,75%,72%'];
+    p.hsl = pastels[Math.floor(Math.random()*pastels.length)];
+  }
+  return p;
+}
+
+// ── Animation loop ──
+function ambLoop(theme, canvas){
+  if(_ambCurrent !== theme) return;
+  var ctx = canvas.getContext('2d');
+  var w = canvas.width, h = canvas.height;
+  ctx.clearRect(0,0,w,h);
+
+  if(theme==='rain'){
+    for(var i=0;i<_ambParticles.length;i++){
+      var p=_ambParticles[i];
+      ctx.beginPath();
+      ctx.strokeStyle='rgba(140,195,255,'+p.alpha+')';
+      ctx.lineWidth=p.width;
+      ctx.moveTo(p.x,p.y);
+      ctx.lineTo(p.x+p.len*0.2, p.y+p.len);
+      ctx.stroke();
+      p.y+=p.speed; p.x+=p.speed*0.2;
+      if(p.y>h+20||p.x>w+20){ var np=ambNewParticle(theme,w,h,false); p.x=np.x; p.y=np.y; }
+    }
+
+  } else if(theme==='thunder'){
+    // ── Dark storm overlay ──
+    ctx.fillStyle='rgba(20,25,50,0.18)'; ctx.fillRect(0,0,w,h);
+
+    // ── Heavy rain ──
+    for(var i=0;i<_ambParticles.length;i++){
+      var p=_ambParticles[i];
+      ctx.beginPath();
+      ctx.strokeStyle='rgba(130,170,220,'+p.alpha+')';
+      ctx.lineWidth=p.width;
+      ctx.moveTo(p.x,p.y);
+      ctx.lineTo(p.x+p.len*0.22, p.y+p.len);
+      ctx.stroke();
+      p.y+=p.speed; p.x+=p.speed*0.22;
+      if(p.y>h+20||p.x>w+20){ var tnp=ambNewParticle(theme,w,h,false); p.x=tnp.x; p.y=tnp.y; }
+    }
+
+    // ── Lightning system ──
+    if(!window._ambThunder){
+      window._ambThunder={ flashAlpha:0, nextFlash:60+Math.random()*180, bolt:null, rumbleAlpha:0 };
+    }
+    var T=window._ambThunder;
+    T.nextFlash--;
+
+    if(T.nextFlash<=0){
+      // Trigger a new bolt
+      var bx=w*0.15+Math.random()*w*0.7;
+      var segs=[{x:bx,y:0}];
+      var cy=0;
+      while(cy<h*0.75){
+        var step=40+Math.random()*60;
+        cy+=step;
+        bx+=(Math.random()-0.5)*90;
+        segs.push({x:bx,y:cy});
+        // Random fork
+        if(Math.random()<0.4 && cy<h*0.5){
+          var fx=bx, fy=cy;
+          for(var f=0;f<2+Math.floor(Math.random()*2);f++){
+            fx+=(Math.random()-0.3)*70; fy+=30+Math.random()*50;
+            segs.push({x:fx,y:fy,fork:true,forkStart:segs.length-1});
+          }
+        }
+      }
+      T.bolt=segs;
+      T.flashAlpha=1.0;
+      T.rumbleAlpha=1.0;
+      T.nextFlash=80+Math.random()*220;
+      // Double-flash effect
+      setTimeout(function(){ if(T){T.flashAlpha=Math.min(T.flashAlpha+0.6,1.0);} },60);
+    }
+
+    // Draw flash white-out
+    if(T.flashAlpha>0.01){
+      ctx.fillStyle='rgba(200,215,255,'+( T.flashAlpha*0.35)+')';
+      ctx.fillRect(0,0,w,h);
+      T.flashAlpha*=0.82;
+    }
+
+    // Draw lightning bolt
+    if(T.bolt && T.flashAlpha>0.05){
+      var bolt=T.bolt;
+      ctx.save();
+      ctx.shadowColor='rgba(180,210,255,0.9)';
+      ctx.shadowBlur=18;
+      // Main trunk
+      ctx.beginPath(); ctx.moveTo(bolt[0].x,bolt[0].y);
+      var forkStarts=[];
+      for(var bi=1;bi<bolt.length;bi++){
+        if(bolt[bi].fork){ forkStarts.push(bi); continue; }
+        ctx.lineTo(bolt[bi].x,bolt[bi].y);
+      }
+      ctx.strokeStyle='rgba(220,235,255,'+Math.min(T.flashAlpha*1.4,1)+')';
+      ctx.lineWidth=2.5; ctx.stroke();
+      // Bright core
+      ctx.lineWidth=1.0;
+      ctx.strokeStyle='rgba(255,255,255,'+Math.min(T.flashAlpha*1.8,1)+')';
+      ctx.stroke();
+      // Forks
+      forkStarts.forEach(function(fi){
+        ctx.beginPath(); ctx.moveTo(bolt[fi-1].x,bolt[fi-1].y);
+        for(var fj=fi;fj<bolt.length&&bolt[fj].fork;fj++) ctx.lineTo(bolt[fj].x,bolt[fj].y);
+        ctx.strokeStyle='rgba(200,220,255,'+Math.min(T.flashAlpha*0.9,1)+')';
+        ctx.lineWidth=1.2; ctx.stroke();
+      });
+      ctx.restore();
+    }
+    if(T.rumbleAlpha>0.01) T.rumbleAlpha*=0.96;
+
+  } else if(theme==='snow'){
+    for(var i=0;i<_ambParticles.length;i++){
+      var p=_ambParticles[i];
+      p.wobble+=0.022; p.x+=Math.sin(p.wobble)*p.drift; p.y+=p.speed;
+      // Draw snowflake as a circle with a soft glow
+      var sg=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*2);
+      sg.addColorStop(0,'rgba(230,242,255,'+p.alpha+')');
+      sg.addColorStop(0.5,'rgba(210,230,255,'+(p.alpha*0.6)+')');
+      sg.addColorStop(1,'rgba(210,230,255,0)');
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r*2,0,Math.PI*2);
+      ctx.fillStyle=sg; ctx.fill();
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(240,248,255,'+p.alpha+')'; ctx.fill();
+      if(p.y>h+10){ var np=ambNewParticle(theme,w,h,false); p.x=np.x; p.y=np.y; p.wobble=np.wobble; }
+    }
+
+  } else if(theme==='wind'){
+    for(var i=0;i<_ambParticles.length;i++){
+      var p=_ambParticles[i];
+      // Gradient streak — bright at head, fades to tail
+      var wx1=p.x, wy1=p.y, wx2=p.x+p.len, wy2=p.y+p.angle*p.len;
+      var wg=ctx.createLinearGradient(wx1,wy1,wx2,wy2);
+      wg.addColorStop(0,'rgba(200,220,240,0)');
+      wg.addColorStop(0.3,'rgba(200,220,240,'+p.alpha+')');
+      wg.addColorStop(1,'rgba(200,220,240,0)');
+      ctx.beginPath(); ctx.moveTo(wx1,wy1); ctx.lineTo(wx2,wy2);
+      ctx.strokeStyle=wg; ctx.lineWidth=p.width; ctx.stroke();
+      p.x+=p.speed;
+      if(p.x>w+100){ var np=ambNewParticle(theme,w,h,false); p.x=np.x; p.y=np.y; }
+    }
+
+  } else if(theme==='fog'){
+    for(var i=0;i<_ambParticles.length;i++){
+      var p=_ambParticles[i];
+      p.alpha+=(p.targetAlpha-p.alpha)*0.006;
+      p.x+=p.speed; p.y+=p.drift;
+      if(p.x>w+p.r) p.x=-p.r;
+      if(p.y>h+p.r) p.y=-p.r; if(p.y<-p.r) p.y=h+p.r;
+      var fg=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
+      fg.addColorStop(0,'rgba(190,210,230,'+p.alpha+')');
+      fg.addColorStop(1,'rgba(190,210,230,0)');
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=fg; ctx.fill();
+    }
+
+  } else if(theme==='sunny'){
+    // Wide soft rays
+    for(var i=0;i<_ambParticles.length;i++){
+      var p=_ambParticles[i];
+      p.angle+=p.speed;
+      var sx=w*0.82, sy=h*0.07;
+      var rx=sx+Math.cos(p.angle)*p.len, ry=sy+Math.sin(p.angle)*p.len;
+      var sg2=ctx.createLinearGradient(sx,sy,rx,ry);
+      sg2.addColorStop(0,'rgba(255,230,100,'+p.alpha+')');
+      sg2.addColorStop(1,'rgba(255,200,60,0)');
+      ctx.beginPath(); ctx.moveTo(sx,sy); ctx.lineTo(rx,ry);
+      ctx.strokeStyle=sg2; ctx.lineWidth=28; ctx.stroke();
+    }
+    // Big warm glow
+    var sun=ctx.createRadialGradient(w*0.82,h*0.07,0,w*0.82,h*0.07,220);
+    sun.addColorStop(0,'rgba(255,240,140,0.28)');
+    sun.addColorStop(0.4,'rgba(255,210,80,0.14)');
+    sun.addColorStop(1,'rgba(255,180,50,0)');
+    ctx.beginPath(); ctx.arc(w*0.82,h*0.07,220,0,Math.PI*2);
+    ctx.fillStyle=sun; ctx.fill();
+
+  } else if(theme==='night'){
+    // ── Full Moon ──
+    if(!window._ambMoon){
+      window._ambMoon={ x:w*0.80, y:h*0.13, r:44, glow:0, glowDir:1 };
+    }
+    var moon=window._ambMoon;
+    moon.glow+=0.007*moon.glowDir;
+    if(moon.glow>1)moon.glowDir=-1; if(moon.glow<0)moon.glowDir=1;
+    // Wide outer halo
+    var halo=ctx.createRadialGradient(moon.x,moon.y,moon.r,moon.x,moon.y,moon.r*5);
+    halo.addColorStop(0,'rgba(210,228,255,'+(0.22+moon.glow*0.10)+')');
+    halo.addColorStop(0.4,'rgba(190,215,255,'+(0.10+moon.glow*0.05)+')');
+    halo.addColorStop(1,'rgba(170,200,255,0)');
+    ctx.beginPath(); ctx.arc(moon.x,moon.y,moon.r*5,0,Math.PI*2);
+    ctx.fillStyle=halo; ctx.fill();
+    // Full bright disc
+    var disc=ctx.createRadialGradient(moon.x-moon.r*0.18,moon.y-moon.r*0.18,2,moon.x,moon.y,moon.r);
+    disc.addColorStop(0,'rgba(255,255,252,1.0)');
+    disc.addColorStop(0.45,'rgba(245,250,255,0.98)');
+    disc.addColorStop(0.80,'rgba(228,238,255,0.95)');
+    disc.addColorStop(1,'rgba(210,225,255,0.88)');
+    ctx.beginPath(); ctx.arc(moon.x,moon.y,moon.r,0,Math.PI*2);
+    ctx.fillStyle=disc; ctx.fill();
+    // Subtle crater shadows
+    ctx.save(); ctx.globalAlpha=0.10;
+    [[0.28,0.20,0.13],[-0.18,0.28,0.09],[0.08,-0.30,0.11],[-0.30,-0.16,0.07]].forEach(function(c){
+      ctx.beginPath(); ctx.arc(moon.x+c[0]*moon.r,moon.y+c[1]*moon.r,c[2]*moon.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(120,145,185,1)'; ctx.fill();
+    });
+    ctx.restore();
+    // Bright edge
+    ctx.beginPath(); ctx.arc(moon.x,moon.y,moon.r,0,Math.PI*2);
+    ctx.strokeStyle='rgba(255,255,255,0.30)'; ctx.lineWidth=1.5; ctx.stroke();
+
+    // ── Stars + shooting stars ──
+    for(var i=0;i<_ambParticles.length;i++){
+      var p=_ambParticles[i];
+      if(p.isShooting){
+        if(p.delay>0){ p.delay--; continue; }
+        p.alpha=Math.min(1, p.alpha+0.05);
+        p.life-=p.fade;
+        if(p.life<=0){ var ns=ambNewParticle(theme,w,h,true); Object.assign(p,ns); continue; }
+        var hx=p.x, hy=p.y;
+        var spd=Math.sqrt(p.vx*p.vx+p.vy*p.vy)||1;
+        var tx2=hx-p.vx*(p.len/spd), ty2=hy-p.vy*(p.len/spd);
+        var stg=ctx.createLinearGradient(tx2,ty2,hx,hy);
+        stg.addColorStop(0,'rgba(255,255,255,0)');
+        stg.addColorStop(0.6,'rgba(220,235,255,'+(p.alpha*p.life*0.6)+')');
+        stg.addColorStop(1,'rgba(255,255,255,'+(p.alpha*p.life)+')');
+        ctx.beginPath(); ctx.moveTo(tx2,ty2); ctx.lineTo(hx,hy);
+        ctx.strokeStyle=stg; ctx.lineWidth=2; ctx.stroke();
+        ctx.beginPath(); ctx.arc(hx,hy,2.5,0,Math.PI*2);
+        ctx.fillStyle='rgba(255,255,255,'+(p.alpha*p.life)+')'; ctx.fill();
+        p.x+=p.vx; p.y+=p.vy;
+        if(p.x>w+50||p.y>h+50){ var ns2=ambNewParticle(theme,w,h,true); Object.assign(p,ns2); }
+      } else {
+        // Twinkling: swing between dim and full brightness
+        p.alpha+=p.twinkleSpeed*p.twinkleDir;
+        if(p.alpha>=p.baseAlpha){ p.alpha=p.baseAlpha; p.twinkleDir=-1; }
+        if(p.alpha<=p.baseAlpha*0.12){ p.alpha=p.baseAlpha*0.12; p.twinkleDir=1; }
+        if(p.r>2.2){
+          // 4-point star shape for bigger stars
+          var arm=p.r*2.8;
+          ctx.save(); ctx.translate(p.x,p.y);
+          var sg=ctx.createRadialGradient(0,0,0,0,0,arm*2);
+          sg.addColorStop(0,'rgba(230,242,255,'+p.alpha+')');
+          sg.addColorStop(0.5,'rgba(210,228,255,'+(p.alpha*0.35)+')');
+          sg.addColorStop(1,'rgba(200,220,255,0)');
+          ctx.beginPath(); ctx.arc(0,0,arm*2,0,Math.PI*2);
+          ctx.fillStyle=sg; ctx.fill();
+          ctx.strokeStyle='rgba(245,252,255,'+p.alpha+')';
+          ctx.lineWidth=1.3;
+          ctx.beginPath(); ctx.moveTo(-arm,0); ctx.lineTo(arm,0); ctx.stroke();
+          ctx.lineWidth=0.9;
+          ctx.beginPath(); ctx.moveTo(0,-arm*0.75); ctx.lineTo(0,arm*0.75); ctx.stroke();
+          ctx.beginPath(); ctx.arc(0,0,p.r*0.8,0,Math.PI*2);
+          ctx.fillStyle='rgba(255,255,255,'+Math.min(p.alpha*1.4,1)+')'; ctx.fill();
+          ctx.restore();
+        } else {
+          var sg2=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*3);
+          sg2.addColorStop(0,'rgba(245,252,255,'+p.alpha+')');
+          sg2.addColorStop(0.5,'rgba(220,238,255,'+(p.alpha*0.4)+')');
+          sg2.addColorStop(1,'rgba(200,225,255,0)');
+          ctx.beginPath(); ctx.arc(p.x,p.y,p.r*3,0,Math.PI*2);
+          ctx.fillStyle=sg2; ctx.fill();
+          ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+          ctx.fillStyle='rgba(255,255,255,'+p.alpha+')'; ctx.fill();
+        }
+      }
+    }
+
+  } else if(theme==='autumn'){
+    for(var i=0;i<_ambParticles.length;i++){
+      var p=_ambParticles[i];
+      p.x+=p.drift; p.y+=p.speed; p.rot+=p.rotSpeed;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+      // Leaf body
+      ctx.beginPath();
+      ctx.moveTo(0,-p.r);
+      ctx.bezierCurveTo(p.r,-p.r*0.5, p.r*0.8,p.r*0.5, 0,p.r);
+      ctx.bezierCurveTo(-p.r*0.8,p.r*0.5, -p.r,-p.r*0.5, 0,-p.r);
+      ctx.fillStyle='hsla('+p.hue+',88%,48%,'+p.alpha+')';
+      ctx.fill();
+      // Vein
+      ctx.beginPath(); ctx.moveTo(0,-p.r*0.8); ctx.lineTo(0,p.r*0.8);
+      ctx.strokeStyle='hsla('+p.hue+',60%,35%,'+(p.alpha*0.6)+')';
+      ctx.lineWidth=0.8; ctx.stroke();
+      ctx.restore();
+      if(p.y>h+25){ var np=ambNewParticle(theme,w,h,false); p.x=np.x; p.y=np.y; p.rot=np.rot; }
+    }
+
+  } else if(theme==='sunset'){
+    // Vivid sky gradient wash
+    var sky=ctx.createLinearGradient(0,0,0,h);
+    sky.addColorStop(0,'rgba(255,80,20,0.18)');
+    sky.addColorStop(0.35,'rgba(255,150,40,0.13)');
+    sky.addColorStop(0.65,'rgba(255,180,60,0.10)');
+    sky.addColorStop(1,'rgba(220,60,20,0.08)');
+    ctx.fillStyle=sky; ctx.fillRect(0,0,w,h);
+    // Rising warm dust motes with glow
+    for(var i=0;i<_ambParticles.length;i++){
+      var p=_ambParticles[i];
+      p.x+=p.drift; p.y+=p.speed;
+      var dg=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*2);
+      dg.addColorStop(0,'hsla('+p.hue+',95%,62%,'+p.alpha+')');
+      dg.addColorStop(1,'hsla('+p.hue+',95%,62%,0)');
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r*2,0,Math.PI*2);
+      ctx.fillStyle=dg; ctx.fill();
+      if(p.y<-p.r*2){ var np=ambNewParticle(theme,w,h,false); p.x=np.x; p.y=np.y; }
+    }
+    // Strong horizon glow
+    var hg=ctx.createLinearGradient(0,h*0.5,0,h*0.8);
+    hg.addColorStop(0,'rgba(255,100,30,0)');
+    hg.addColorStop(0.35,'rgba(255,80,20,0.22)');
+    hg.addColorStop(0.65,'rgba(220,50,10,0.18)');
+    hg.addColorStop(1,'rgba(180,30,5,0)');
+    ctx.fillStyle=hg; ctx.fillRect(0,h*0.5,w,h*0.3);
+    // Sun disc
+    var sdg=ctx.createRadialGradient(w*0.5,h*0.62,0,w*0.5,h*0.62,60);
+    sdg.addColorStop(0,'rgba(255,220,100,0.55)');
+    sdg.addColorStop(0.5,'rgba(255,140,40,0.30)');
+    sdg.addColorStop(1,'rgba(255,80,10,0)');
+    ctx.beginPath(); ctx.arc(w*0.5,h*0.62,60,0,Math.PI*2);
+    ctx.fillStyle=sdg; ctx.fill();
+
+  } else if(theme==='womensday'){
+    // Soft purple overlay tint
+    ctx.fillStyle='rgba(180,100,230,0.04)'; ctx.fillRect(0,0,w,h);
+    for(var i=0;i<_ambParticles.length;i++){
+      var p=_ambParticles[i];
+      p.x+=p.drift; p.y+=p.speed;
+      if(p.isHeart){
+        ctx.save(); ctx.translate(p.x,p.y); ctx.scale(p.r/7,p.r/7);
+        ctx.beginPath();
+        ctx.moveTo(0,-4);
+        ctx.bezierCurveTo(5,-9,12,-4,0,7);
+        ctx.bezierCurveTo(-12,-4,-5,-9,0,-4);
+        ctx.fillStyle='hsla('+p.hue+',82%,68%,'+p.alpha+')';
+        ctx.shadowColor='hsla('+p.hue+',90%,70%,0.8)';
+        ctx.shadowBlur=8;
+        ctx.fill();
+        ctx.restore();
+      } else {
+        var bg2=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r);
+        bg2.addColorStop(0,'hsla('+p.hue+',75%,70%,'+p.alpha+')');
+        bg2.addColorStop(1,'hsla('+p.hue+',75%,70%,0)');
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle=bg2; ctx.fill();
+      }
+      if(p.y<-25){ var np=ambNewParticle(theme,w,h,false); p.x=np.x; p.y=np.y; }
+    }
+
+  } else if(theme==='christmas'){
+    for(var i=0;i<_ambParticles.length;i++){
+      var p=_ambParticles[i];
+      p.wobble+=0.018; p.x+=Math.sin(p.wobble)*p.drift; p.y+=p.speed;
+      if(p.isStar){
+        p.rot+=p.rotSpeed;
+        ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+        ctx.beginPath();
+        for(var sp=0;sp<5;sp++){
+          var sang=sp*Math.PI*2/5-Math.PI/2;
+          var sang2=sang+Math.PI/5;
+          if(sp===0) ctx.moveTo(Math.cos(sang)*p.r,Math.sin(sang)*p.r);
+          else ctx.lineTo(Math.cos(sang)*p.r,Math.sin(sang)*p.r);
+          ctx.lineTo(Math.cos(sang2)*p.r*0.42,Math.sin(sang2)*p.r*0.42);
+        }
+        ctx.closePath();
+        ctx.fillStyle='rgba(255,225,80,'+p.alpha+')';
+        ctx.shadowColor='rgba(255,200,50,0.9)';
+        ctx.shadowBlur=12;
+        ctx.fill();
+        ctx.restore();
+      } else {
+        var csg=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*1.8);
+        csg.addColorStop(0,'rgba(235,248,255,'+p.alpha+')');
+        csg.addColorStop(1,'rgba(200,230,255,0)');
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r*1.8,0,Math.PI*2);
+        ctx.fillStyle=csg; ctx.fill();
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle='rgba(240,250,255,'+p.alpha+')'; ctx.fill();
+      }
+      if(p.y>h+15){ var np=ambNewParticle(theme,w,h,false); p.x=np.x; p.y=np.y; p.wobble=np.wobble; }
+    }
+
+  } else if(theme==='diwali'){
+    for(var i=0;i<_ambParticles.length;i++){
+      var p=_ambParticles[i];
+      p.x+=p.vx; p.y+=p.vy;
+      p.life-=p.fade;
+      if(p.life<=0){
+        var np=ambNewParticle(theme,w,h,false); Object.assign(p,np);
+      } else {
+        var a=p.alpha*p.life;
+        // Glow
+        var dg2=ctx.createRadialGradient(p.x,p.y,0,p.x,p.y,p.r*4);
+        dg2.addColorStop(0,'hsla('+p.hue+',100%,68%,'+a+')');
+        dg2.addColorStop(1,'hsla('+p.hue+',100%,68%,0)');
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r*4,0,Math.PI*2);
+        ctx.fillStyle=dg2; ctx.fill();
+        // Core
+        ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+        ctx.fillStyle='rgba(255,255,200,'+Math.min(a*1.4,1)+')'; ctx.fill();
+      }
+    }
+
+  } else if(theme==='easter'){
+    for(var i=0;i<_ambParticles.length;i++){
+      var p=_ambParticles[i];
+      p.x+=p.drift; p.y+=p.speed;
+      ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.rot);
+      // Egg outline glow
+      ctx.beginPath(); ctx.ellipse(0,0,p.rx+3,p.ry+3,0,0,Math.PI*2);
+      ctx.fillStyle='hsla('+p.hsl+',0.2)'; ctx.fill();
+      // Egg fill
+      ctx.beginPath(); ctx.ellipse(0,0,p.rx,p.ry,0,0,Math.PI*2);
+      ctx.fillStyle='hsla('+p.hsl+','+p.alpha+')';
+      // Shine
+      ctx.fill();
+      ctx.beginPath(); ctx.ellipse(-p.rx*0.22,-p.ry*0.3,p.rx*0.22,p.ry*0.15,-0.4,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,255,255,0.35)'; ctx.fill();
+      ctx.restore();
+      if(p.y>h+25){ var np=ambNewParticle(theme,w,h,false); p.x=np.x; p.y=np.y; }
+    }
+  }
+
+  _ambRAF = requestAnimationFrame(function(){ ambLoop(theme, canvas); });
+}
+
+// ── Control Deck: render the theme picker grid ──
+function cdAmbRender(){
+  var grid = document.getElementById('cd-amb-grid');
+  var status = document.getElementById('cd-amb-status');
+  if(!grid) return;
+  grid.innerHTML = _ambThemes.map(function(t){
+    var isActive = _ambCurrent === t.id;
+    return '<button class="amb-btn'+(isActive?' active':'')+(t.id==='off'?' off':'')+'" onclick="cdAmbSet(\''+t.id+'\')">'+
+      '<span class="amb-btn-icon">'+t.icon+'</span>'+t.label+'</button>';
+  }).join('');
+  if(status){
+    var cur = _ambThemes.find(function(t){return t.id===_ambCurrent;});
+    status.textContent = cur && cur.id!=='off' ? cur.icon+' '+cur.label+' active' : '';
+  }
+}
+
+async function cdAmbLoadAndRender(){
+  try{
+    var rows = await sbQuery('settings','key=eq.'+_ambKey+'&select=value');
+    var theme = (rows&&rows.length) ? (rows[0].value||'off') : 'off';
+    ambApply(theme); // ambApply now sets _ambCurrent itself
+  }catch(e){}
+  // Sync sliders to current values
+  var oslider=document.getElementById('cd-amb-opacity');
+  if(oslider){ oslider.value=Math.round(_ambOpacity*100); var ov=document.getElementById('cd-amb-opacity-val'); if(ov) ov.textContent=Math.round(_ambOpacity*100)+'%'; }
+  var sslider=document.getElementById('cd-amb-speed');
+  if(sslider){ sslider.value=Math.round(_ambSpeed*100); var sv=document.getElementById('cd-amb-speed-val'); if(sv) sv.textContent=_ambSpeed.toFixed(1)+'×'; }
+  var dslider=document.getElementById('cd-amb-density');
+  if(dslider){ dslider.value=Math.round(_ambDensity*100); var dv=document.getElementById('cd-amb-density-val'); if(dv) dv.textContent=_ambDensity.toFixed(1)+'×'; }
+  cdAmbRender();
+  cdAmbSchedRenderPicker();
+  cdAmbSchedLoad();
+}
+
+async function cdAmbSet(theme){
+  var msg = document.getElementById('cd-amb-msg');
+  try{
+    var existing = await sbQuery('settings','key=eq.'+_ambKey+'&select=key');
+    if(existing&&existing.length){ await sbUpdate('settings','key',_ambKey,{value:theme}); }
+    else{ await sbInsert('settings',{key:_ambKey,value:theme}); }
+    ambApply(theme);
+    _ambSchedManualOverride = true;
+    setTimeout(function(){ _ambSchedManualOverride = false; }, 30*60*1000); // auto-release after 30min
+    if(msg){ msg.textContent='✅ Theme set to '+(theme==='off'?'Off':theme)+'. All agents will see it within 30s.'; msg.style.color='var(--accent-green)'; msg.style.display='block'; setTimeout(function(){msg.style.display='none';},3500); }
+  }catch(e){
+    if(msg){ msg.textContent='Error: '+e.message; msg.style.color='var(--accent-red)'; msg.style.display='block'; setTimeout(function(){msg.style.display='none';},3000); }
+  }
+  cdAmbRender();
+}
+
+// ── Opacity / Speed / Density controls ──
+function ambSetOpacity(val){
+  _ambOpacity = val/100;
+  var canvas=document.getElementById('ambient-canvas');
+  if(canvas) canvas.style.opacity=_ambOpacity;
+  var el=document.getElementById('cd-amb-opacity-val');
+  if(el) el.textContent=val+'%';
+  ambSaveControls();
+}
+function ambSetSpeed(val){
+  _ambSpeed = val/100;
+  var el=document.getElementById('cd-amb-speed-val');
+  if(el) el.textContent=(val/100).toFixed(1)+'×';
+  // Respawn particles so speed takes effect immediately
+  var canvas=document.getElementById('ambient-canvas');
+  if(canvas&&_ambCurrent!=='off'){
+    if(_ambRAF){cancelAnimationFrame(_ambRAF);_ambRAF=null;}
+    _ambParticles=[];
+    window._ambMoon=null;
+    ambSpawn(_ambCurrent,canvas);
+    ambLoop(_ambCurrent,canvas);
+  }
+  ambSaveControls();
+}
+function ambSetDensity(val){
+  _ambDensity = val/100;
+  var el=document.getElementById('cd-amb-density-val');
+  if(el) el.textContent=(val/100).toFixed(1)+'×';
+  // Respawn with new count
+  var canvas=document.getElementById('ambient-canvas');
+  if(canvas&&_ambCurrent!=='off'){
+    if(_ambRAF){cancelAnimationFrame(_ambRAF);_ambRAF=null;}
+    _ambParticles=[];
+    window._ambMoon=null;
+    ambSpawn(_ambCurrent,canvas);
+    ambLoop(_ambCurrent,canvas);
+  }
+  ambSaveControls();
+}
+async function ambSaveControls(){
+  try{
+    var val=JSON.stringify({opacity:_ambOpacity,speed:_ambSpeed,density:_ambDensity});
+    var ex=await sbQuery('settings','key=eq.'+_ambCtrlKey+'&select=key');
+    if(ex&&ex.length) await sbUpdate('settings','key',_ambCtrlKey,{value:val});
+    else await sbInsert('settings',{key:_ambCtrlKey,value:val});
+  }catch(e){}
+}
+async function ambLoadControls(){
+  try{
+    var rows=await sbQuery('settings','key=eq.'+_ambCtrlKey+'&select=value');
+    if(!rows||!rows.length) return;
+    var ctrl=JSON.parse(rows[0].value||'{}');
+    if(ctrl.opacity!=null) _ambOpacity=ctrl.opacity;
+    if(ctrl.speed!=null)   _ambSpeed=ctrl.speed;
+    if(ctrl.density!=null) _ambDensity=ctrl.density;
+    // Apply to canvas
+    var canvas=document.getElementById('ambient-canvas');
+    if(canvas) canvas.style.opacity=_ambOpacity;
+    // Sync sliders if CD is open
+    var oslider=document.getElementById('cd-amb-opacity');
+    if(oslider){ oslider.value=Math.round(_ambOpacity*100); var ov=document.getElementById('cd-amb-opacity-val'); if(ov) ov.textContent=Math.round(_ambOpacity*100)+'%'; }
+    var sslider=document.getElementById('cd-amb-speed');
+    if(sslider){ sslider.value=Math.round(_ambSpeed*100); var sv=document.getElementById('cd-amb-speed-val'); if(sv) sv.textContent=_ambSpeed.toFixed(1)+'×'; }
+    var dslider=document.getElementById('cd-amb-density');
+    if(dslider){ dslider.value=Math.round(_ambDensity*100); var dv=document.getElementById('cd-amb-density-val'); if(dv) dv.textContent=_ambDensity.toFixed(1)+'×'; }
+  }catch(e){}
+}
+
+//  Stored in settings table: ambient_schedules
+//  Value: JSON array of { id, theme, start, end, days }
+//  days: array of 0-6 (0=Sun ... 6=Sat)
+// ══════════════════════════════════════════════════════════
+
+var _ambSchedKey = 'ambient_schedules';
+var _ambSchedCheckInterval = null;
+var _ambSchedManualOverride = false; // true when admin manually set a theme, ignores schedule until next schedule tick
+
+function ambSchedStart(){
+  if(_ambSchedCheckInterval) clearInterval(_ambSchedCheckInterval);
+  _ambSchedCheckInterval = setInterval(ambSchedTick, 60000); // check every minute
+  ambSchedTick();
+}
+
+async function ambSchedTick(){
+  if(_ambSchedManualOverride) return;
+  try{
+    var rows = await sbQuery('settings','key=eq.'+_ambSchedKey+'&select=value');
+    if(!rows||!rows.length) return;
+    var schedules = JSON.parse(rows[0].value||'[]');
+    if(!schedules.length) return;
+    var now = new Date();
+    var day = now.getDay(); // 0=Sun
+    var hhmm = now.getHours()*60 + now.getMinutes();
+    var matched = null;
+    for(var i=0;i<schedules.length;i++){
+      var s = schedules[i];
+      if(s.days.indexOf(day) === -1) continue;
+      var start = ambTimeToMins(s.start);
+      var end   = ambTimeToMins(s.end);
+      if(end <= start) end += 1440; // overnight wrap
+      var nowAdj = hhmm;
+      if(end > 1440 && hhmm < start) nowAdj += 1440;
+      if(nowAdj >= start && nowAdj < end){ matched = s; break; }
+    }
+    var target = matched ? matched.theme : 'off';
+    if(target !== _ambCurrent){ ambApply(target); }
+  }catch(e){}
+}
+
+function ambTimeToMins(t){
+  if(!t) return 0;
+  var parts = t.split(':');
+  return parseInt(parts[0]||0)*60 + parseInt(parts[1]||0);
+}
+
+// ── Render schedule picker (called when CD opens) ──
+function cdAmbSchedRenderPicker(){
+  // Populate theme dropdown
+  var sel = document.getElementById('cd-amb-sched-theme');
+  if(sel && !sel.options.length){
+    _ambThemes.filter(function(t){return t.id!=='off';}).forEach(function(t){
+      var o = document.createElement('option');
+      o.value = t.id; o.textContent = t.icon+' '+t.label;
+      sel.appendChild(o);
+    });
+  }
+  // Populate day checkboxes
+  var daysWrap = document.getElementById('cd-amb-sched-days');
+  if(daysWrap && !daysWrap.children.length){
+    var dayNames = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+    daysWrap.innerHTML = dayNames.map(function(d,i){
+      return '<label style="display:flex;flex-direction:column;align-items:center;gap:2px;font-size:.62rem;color:var(--text-muted);cursor:pointer;">'+
+        '<input type="checkbox" value="'+i+'" class="cd-amb-day-cb" style="accent-color:var(--gold);width:13px;height:13px;" '+(i>=1&&i<=5?'checked':'')+'/>'+ d +'</label>';
+    }).join('');
+  }
+}
+
+async function cdAmbSchedLoad(){
+  var list = document.getElementById('cd-amb-sched-list');
+  if(!list) return;
+  try{
+    var rows = await sbQuery('settings','key=eq.'+_ambSchedKey+'&select=value');
+    var schedules = (rows&&rows.length) ? JSON.parse(rows[0].value||'[]') : [];
+    if(!schedules.length){
+      list.innerHTML='<div style="font-size:.78rem;color:var(--text-dim);">No schedules yet.</div>';
+      return;
+    }
+    var dayNames=['Su','Mo','Tu','We','Th','Fr','Sa'];
+    list.innerHTML = schedules.map(function(s){
+      var t = _ambThemes.find(function(x){return x.id===s.theme;})||{icon:'?',label:s.theme};
+      var daysStr = s.days.map(function(d){return dayNames[d];}).join(', ');
+      return '<div style="display:flex;align-items:center;gap:.6rem;padding:.45rem .6rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:8px;font-size:.78rem;">'+
+        '<span style="font-size:1rem;">'+t.icon+'</span>'+
+        '<span style="font-weight:600;color:var(--text-primary);min-width:80px;">'+t.label+'</span>'+
+        '<span style="color:var(--text-muted);">'+s.start+' – '+s.end+'</span>'+
+        '<span style="color:var(--text-dim);font-size:.7rem;">'+daysStr+'</span>'+
+        '<button onclick="cdAmbSchedDelete(\''+s.id+'\')" style="margin-left:auto;background:none;border:none;cursor:pointer;color:var(--accent-red);font-size:.8rem;padding:0 2px;" title="Remove">✕</button>'+
+      '</div>';
+    }).join('');
+  }catch(e){
+    if(list) list.innerHTML='<div style="font-size:.78rem;color:var(--accent-red);">Could not load schedules.</div>';
+  }
+}
+
+async function cdAmbSchedAdd(){
+  var msg = document.getElementById('cd-amb-sched-msg');
+  var theme = (document.getElementById('cd-amb-sched-theme')||{}).value;
+  var start = (document.getElementById('cd-amb-sched-start')||{}).value;
+  var end   = (document.getElementById('cd-amb-sched-end')||{}).value;
+  var dayCbs = document.querySelectorAll('.cd-amb-day-cb:checked');
+  var days = [];
+  dayCbs.forEach(function(cb){ days.push(parseInt(cb.value)); });
+
+  if(!theme||!start||!end){ if(msg){msg.textContent='Please fill in theme, start and end time.';msg.style.color='var(--accent-red)';msg.style.display='block';setTimeout(function(){msg.style.display='none';},3000);} return; }
+  if(!days.length){ if(msg){msg.textContent='Select at least one day.';msg.style.color='var(--accent-red)';msg.style.display='block';setTimeout(function(){msg.style.display='none';},3000);} return; }
+
+  try{
+    var rows = await sbQuery('settings','key=eq.'+_ambSchedKey+'&select=value');
+    var schedules = (rows&&rows.length) ? JSON.parse(rows[0].value||'[]') : [];
+    schedules.push({ id: Date.now().toString(36), theme:theme, start:start, end:end, days:days });
+    var val = JSON.stringify(schedules);
+    if(rows&&rows.length){ await sbUpdate('settings','key',_ambSchedKey,{value:val}); }
+    else { await sbInsert('settings',{key:_ambSchedKey,value:val}); }
+    if(msg){msg.textContent='✅ Schedule added.';msg.style.color='var(--accent-green)';msg.style.display='block';setTimeout(function(){msg.style.display='none';},2500);}
+    cdAmbSchedLoad();
+  }catch(e){ if(msg){msg.textContent='Error: '+e.message;msg.style.color='var(--accent-red)';msg.style.display='block';setTimeout(function(){msg.style.display='none';},3000);} }
+}
+
+async function cdAmbSchedDelete(id){
+  try{
+    var rows = await sbQuery('settings','key=eq.'+_ambSchedKey+'&select=value');
+    var schedules = (rows&&rows.length) ? JSON.parse(rows[0].value||'[]') : [];
+    schedules = schedules.filter(function(s){return s.id!==id;});
+    await sbUpdate('settings','key',_ambSchedKey,{value:JSON.stringify(schedules)});
+    cdAmbSchedLoad();
+  }catch(e){ alert('Error: '+e.message); }
+}
+
+
+
+
+var _cdPwResetUnlocked = false;
+function cdPwResetUnlock(){
+  if(_cdPwResetUnlocked) return;
+  var pinEl = document.getElementById('cd-pwreset-pin');
+  var errEl = document.getElementById('cd-pwreset-pin-err');
+  var pin = (pinEl ? pinEl.value : '').trim();
+  if(pin !== '7070'){
+    if(errEl){ errEl.style.display='inline'; setTimeout(function(){ errEl.style.display='none'; }, 2000); }
+    if(pinEl){ pinEl.value=''; pinEl.focus(); }
+    return;
+  }
+  _cdPwResetUnlocked = true;
+  var lockedDiv = document.getElementById('cd-pwreset-locked');
+  var panelDiv  = document.getElementById('cd-pwreset-panel');
+  var unlockBtn = document.getElementById('cd-pwreset-unlock-btn');
+  if(lockedDiv) lockedDiv.style.display = 'none';
+  if(panelDiv)  panelDiv.style.display  = 'block';
+  if(unlockBtn) unlockBtn.style.display = 'none';
+  cdPwResetLoad();
+}
+
+async function cdPwResetLoad(){
+  var container = document.getElementById('cd-pwreset-agents');
+  if(!container) return;
+  container.innerHTML = '<div style="color:var(--text-dim);font-size:.82rem;">Loading agents…</div>';
+  try{
+    var users = await sbQuery('users','select=id,name,email,role&order=name.asc');
+    if(!users||!users.length){ container.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;">No agents found.</div>'; return; }
+    container.innerHTML = users.map(function(u){
+      var ni=(u.name||'?').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+      return '<div style="display:flex;align-items:center;gap:.75rem;padding:.6rem .8rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:var(--radius-sm);">'+
+        '<div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dim),var(--gold));display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:#fff;flex-shrink:0;">'+ni+'</div>'+
+        '<div style="flex:1;min-width:0;">'+
+          '<div style="font-weight:600;font-size:.84rem;color:var(--text-primary);">'+esc(u.name)+'</div>'+
+          '<div style="font-size:.72rem;color:var(--text-muted);">'+esc(u.email)+'</div>'+
+        '</div>'+
+        '<input id="cd-pw-inp-'+u.id+'" type="text" placeholder="New password (min 6)" class="cd-input" style="max-width:180px;font-size:.8rem;" onkeydown="if(event.key===\'Enter\')cdPwResetSave(\''+u.id+'\',\''+esc(u.name)+'\')"/>'+
+        '<button class="xc-btn-sm" onclick="cdPwResetSave(\''+u.id+'\',\''+esc(u.name)+'\')">Set PW</button>'+
+      '</div>';
+    }).join('');
+  }catch(e){ container.innerHTML='<div style="color:var(--accent-red);font-size:.82rem;">Error: '+e.message+'</div>'; }
+}
+
+async function cdPwResetSave(userId, name){
+  var inp = document.getElementById('cd-pw-inp-'+userId);
+  var msg = document.getElementById('cd-pwreset-msg');
+  if(!inp) return;
+  var newPw = (inp.value||'').trim();
+  if(!newPw || newPw.length < 6){
+    if(msg){ msg.style.display='block'; msg.textContent='Password must be at least 6 characters.'; msg.style.color='var(--accent-red)'; setTimeout(function(){ msg.style.display='none'; }, 3000); }
+    return;
+  }
+  try{
+    var hashed = await hashPassword(newPw);
+    await sbUpdate('users','id',userId,{password:hashed});
+    inp.value = '';
+    if(msg){ msg.style.display='block'; msg.textContent='✅ Password for '+name+' reset. New password: '+newPw; msg.style.color='var(--accent-green)'; setTimeout(function(){ msg.style.display='none'; }, 5000); }
+  }catch(e){
+    if(msg){ msg.style.display='block'; msg.textContent='Error: '+e.message; msg.style.color='var(--accent-red)'; setTimeout(function(){ msg.style.display='none'; }, 4000); }
+  }
 }
 
 // ── Celebration display (shown to agents) ──
@@ -18459,9 +19956,433 @@ async function tmHandleSignal(sig){
   }
 }
 
-</script>
+// ══════════════════════════════════════════════════════════
+//  EASTER EGG SYSTEM
+//  Triggers (outside input fields only):
+//    Konami code  ↑↑↓↓←→←→BA  → Gravity
+//    k7magic      → Barrel roll
+//    k7matrix     → Matrix rain
+//    k7rave       → Rave party
+//    k7thanos     → Thanos snap
+//    k7tilt       → Tilt page  (k7straight to restore)
+//    k7diwan      → Special tribute splash
+// ══════════════════════════════════════════════════════════
 
-<!-- ═══════════════════════════════════════════════════
+(function(){
+
+  // ── Key sequence tracker ──
+  var _egBuffer = '';
+  var _egKonami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+  var _egKonamiPos = 0;
+  var _egActive = {};   // which effects are currently running
+
+  function egInInput(){
+    var t = document.activeElement;
+    if(!t) return false;
+    return t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT'||t.isContentEditable;
+  }
+
+  function egHint(msg){
+    var el = document.getElementById('eg-hint-toast');
+    if(!el) return;
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._ht);
+    el._ht = setTimeout(function(){ el.classList.remove('show'); }, 2800);
+  }
+
+  document.addEventListener('keydown', function(e){
+    // Konami code check (works even in inputs for arrow keys to not block normal use)
+    var expected = _egKonami[_egKonamiPos];
+    var key = e.key;
+    if(key === expected){
+      _egKonamiPos++;
+      if(_egKonamiPos === _egKonami.length){
+        _egKonamiPos = 0;
+        egGravity();
+      }
+    } else {
+      _egKonamiPos = (key === _egKonami[0]) ? 1 : 0;
+    }
+
+    // Text sequences — only outside inputs
+    if(egInInput()) return;
+    if(e.key === 'Escape'){
+      egEscapeAll();
+      return;
+    }
+    if(e.key.length === 1){
+      _egBuffer += e.key.toLowerCase();
+      if(_egBuffer.length > 20) _egBuffer = _egBuffer.slice(-20);
+      egCheckBuffer();
+    }
+  });
+
+  function egCheckBuffer(){
+    var b = _egBuffer;
+    if(b.endsWith('k7magic'))   { _egBuffer=''; egBarrelRoll(); }
+    else if(b.endsWith('k7matrix'))  { _egBuffer=''; egMatrix(); }
+    else if(b.endsWith('k7rave'))    { _egBuffer=''; egRave(); }
+    else if(b.endsWith('k7thanos'))  { _egBuffer=''; egThanos(); }
+    else if(b.endsWith('k7tilt'))    { _egBuffer=''; egTilt(); }
+    else if(b.endsWith('k7straight')){ _egBuffer=''; egUnTilt(); }
+    else if(b.endsWith('k7diwan'))   { _egBuffer=''; egDiwan(); }
+  }
+
+  function egEscapeAll(){
+    egGravityStop();
+    egMatrixStop();
+    egRaveStop();
+    egDiwanClose();
+    egUnTilt();
+    _egActive = {};
+  }
+
+  // ════════════════════════════
+  //  GRAVITY
+  // ════════════════════════════
+  var _egGravityBodies = [];
+  var _egGravityRAF = null;
+
+  function egGravity(){
+    if(_egActive.gravity){ egGravityStop(); return; }
+    _egActive.gravity = true;
+    egHint('🌍 Gravity activated! Click elements to throw them. Konami again to restore.');
+
+    // Grab all meaningful elements
+    var sel = '.sidebar-item, .cd-card, .main-content > div > div, .home-card, .stat-card, .topbar-msg-btn, .work-clock-wrap';
+    var els = document.querySelectorAll(sel);
+    var W = window.innerWidth, H = window.innerHeight;
+
+    els.forEach(function(el){
+      var r = el.getBoundingClientRect();
+      if(r.width < 10 || r.height < 10) return;
+
+      // Save original styles
+      var orig = {
+        position: el.style.position, left: el.style.left, top: el.style.top,
+        width: el.style.width, zIndex: el.style.zIndex,
+        transform: el.style.transform, margin: el.style.margin,
+        transition: el.style.transition
+      };
+
+      // Fix dimensions and position
+      el.style.position = 'fixed';
+      el.style.left     = r.left + 'px';
+      el.style.top      = r.top  + 'px';
+      el.style.width    = r.width + 'px';
+      el.style.zIndex   = '8000';
+      el.style.margin   = '0';
+      el.style.transition = 'none';
+      el.classList.add('eg-gravity-el');
+
+      var body = {
+        el: el, orig: orig,
+        x: r.left, y: r.top,
+        vx: (Math.random()-0.5)*2,
+        vy: -(Math.random()*1.5),
+        rot: 0, rotV: (Math.random()-0.5)*4,
+        w: r.width, h: r.height,
+        mass: Math.max(0.4, Math.min(2.0, (r.width*r.height)/40000)),
+        bounces: 0
+      };
+
+      el.addEventListener('click', function(ev){
+        if(!_egActive.gravity) return;
+        ev.stopPropagation();
+        body.vy = -(8 + Math.random()*6);
+        body.vx = (Math.random()-0.5)*10;
+        body.rotV = (Math.random()-0.5)*12;
+      }, true);
+
+      _egGravityBodies.push(body);
+    });
+
+    _egGravityRAF = requestAnimationFrame(egGravityTick);
+  }
+
+  function egGravityTick(){
+    if(!_egActive.gravity){ _egGravityRAF=null; return; }
+    var H = window.innerHeight;
+    var W = window.innerWidth;
+    var gravity = 0.45;
+
+    _egGravityBodies.forEach(function(b){
+      b.vy += gravity * b.mass;
+      b.x  += b.vx;
+      b.y  += b.vy;
+      b.rot += b.rotV;
+
+      // Floor bounce
+      if(b.y + b.h >= H){
+        b.y  = H - b.h;
+        b.vy = -(b.vy * 0.42);
+        b.vx *=  0.78;
+        b.rotV *= 0.7;
+        b.bounces++;
+        if(Math.abs(b.vy) < 0.8) b.vy = 0;
+        if(Math.abs(b.vx) < 0.2) b.vx = 0;
+      }
+      // Side walls
+      if(b.x < 0){ b.x=0; b.vx=Math.abs(b.vx)*0.5; }
+      if(b.x + b.w > W){ b.x=W-b.w; b.vx=-Math.abs(b.vx)*0.5; }
+
+      b.el.style.left      = b.x + 'px';
+      b.el.style.top       = b.y + 'px';
+      b.el.style.transform = 'rotate('+b.rot+'deg)';
+    });
+
+    _egGravityRAF = requestAnimationFrame(egGravityTick);
+  }
+
+  function egGravityStop(){
+    _egActive.gravity = false;
+    if(_egGravityRAF){ cancelAnimationFrame(_egGravityRAF); _egGravityRAF=null; }
+    _egGravityBodies.forEach(function(b){
+      b.el.classList.remove('eg-gravity-el');
+      b.el.style.position   = b.orig.position;
+      b.el.style.left       = b.orig.left;
+      b.el.style.top        = b.orig.top;
+      b.el.style.width      = b.orig.width;
+      b.el.style.zIndex     = b.orig.zIndex;
+      b.el.style.transform  = b.orig.transform;
+      b.el.style.margin     = b.orig.margin;
+      b.el.style.transition = b.orig.transition;
+    });
+    _egGravityBodies = [];
+  }
+
+  // ════════════════════════════
+  //  BARREL ROLL
+  // ════════════════════════════
+  function egBarrelRoll(){
+    if(_egActive.barrel) return;
+    _egActive.barrel = true;
+    egHint('🛢️ Do a barrel roll!');
+    var root = document.getElementById('dashboard-view') || document.body;
+    root.classList.add('eg-barrel');
+    root.addEventListener('animationend', function done(){
+      root.classList.remove('eg-barrel');
+      root.removeEventListener('animationend', done);
+      _egActive.barrel = false;
+    });
+  }
+
+  // ════════════════════════════
+  //  MATRIX RAIN
+  // ════════════════════════════
+  var _egMatrixRAF = null;
+  var _egMatrixDrops = [];
+
+  function egMatrix(){
+    if(_egActive.matrix){ egMatrixStop(); return; }
+    _egActive.matrix = true;
+    egHint('💊 There is no spoon. Type k7matrix again or Escape to exit.');
+
+    var canvas = document.getElementById('eg-matrix-canvas');
+    canvas.width  = window.innerWidth;
+    canvas.height = window.innerHeight;
+    canvas.classList.add('active');
+
+    var ctx  = canvas.getContext('2d');
+    var cols = Math.floor(canvas.width / 16);
+    _egMatrixDrops = Array(cols).fill(1);
+
+    function tick(){
+      if(!_egActive.matrix){ ctx.clearRect(0,0,canvas.width,canvas.height); return; }
+      ctx.fillStyle = 'rgba(0,0,0,0.06)';
+      ctx.fillRect(0,0,canvas.width,canvas.height);
+      ctx.fillStyle = '#00ff41';
+      ctx.font = '14px monospace';
+      _egMatrixDrops.forEach(function(y,i){
+        var ch = String.fromCharCode(0x30A0 + Math.random()*96);
+        ctx.fillStyle = y===1 ? '#fff' : '#00ff41';
+        ctx.fillText(ch, i*16, y*16);
+        if(y*16 > canvas.height && Math.random() > 0.975) _egMatrixDrops[i] = 0;
+        _egMatrixDrops[i]++;
+      });
+      _egMatrixRAF = requestAnimationFrame(tick);
+    }
+    tick();
+
+    // Auto stop after 12 seconds
+    setTimeout(function(){ if(_egActive.matrix) egMatrixStop(); }, 12000);
+  }
+
+  function egMatrixStop(){
+    _egActive.matrix = false;
+    if(_egMatrixRAF){ cancelAnimationFrame(_egMatrixRAF); _egMatrixRAF=null; }
+    var canvas = document.getElementById('eg-matrix-canvas');
+    if(canvas){
+      canvas.classList.remove('active');
+      setTimeout(function(){ var ctx=canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); }, 500);
+    }
+  }
+
+  // ════════════════════════════
+  //  RAVE
+  // ════════════════════════════
+  var _egRaveTimer = null;
+  var _egRaveInterval = null;
+
+  function egRave(){
+    if(_egActive.rave){ egRaveStop(); return; }
+    _egActive.rave = true;
+    egHint('🎉 RAVE MODE! Type k7rave again or Escape to stop.');
+
+    var overlay = document.getElementById('eg-rave-overlay');
+    var hues = [0,30,60,120,180,240,300];
+    var i = 0;
+    overlay.style.opacity = '1';
+
+    _egRaveInterval = setInterval(function(){
+      if(!_egActive.rave){ return; }
+      var h = hues[i++ % hues.length];
+      overlay.style.background = 'hsla('+h+',100%,60%,0.18)';
+      document.body.style.filter = 'hue-rotate('+h+'deg)';
+    }, 160);
+
+    // Auto stop after 8s
+    _egRaveTimer = setTimeout(function(){ if(_egActive.rave) egRaveStop(); }, 8000);
+  }
+
+  function egRaveStop(){
+    _egActive.rave = false;
+    clearInterval(_egRaveInterval);
+    clearTimeout(_egRaveTimer);
+    var overlay = document.getElementById('eg-rave-overlay');
+    if(overlay) overlay.style.opacity = '0';
+    document.body.style.filter = '';
+  }
+
+  // ════════════════════════════
+  //  THANOS SNAP
+  // ════════════════════════════
+  function egThanos(){
+    if(_egActive.thanos) return;
+    _egActive.thanos = true;
+    egHint('⚡ Perfectly balanced, as all things should be.');
+
+    var els = Array.from(document.querySelectorAll('.sidebar-item'));
+    var half = Math.floor(els.length / 2);
+    var victims = els.sort(function(){ return Math.random()-0.5; }).slice(0, half);
+
+    victims.forEach(function(el, idx){
+      setTimeout(function(){
+        var r = el.getBoundingClientRect();
+        // Spawn dust particles
+        for(var p=0; p<18; p++){
+          var d = document.createElement('div');
+          d.className = 'eg-dust-particle';
+          var hue = 20+Math.random()*40;
+          d.style.cssText =
+            'left:'+(r.left+Math.random()*r.width)+'px;'+
+            'top:'+(r.top+Math.random()*r.height)+'px;'+
+            'width:'+(3+Math.random()*5)+'px;'+
+            'height:'+(3+Math.random()*5)+'px;'+
+            'background:hsl('+hue+',80%,55%);'+
+            '--tx:'+(Math.random()-0.5)*120+'px;'+
+            '--ty:'+(-(20+Math.random()*100))+'px;'+
+            '--dur:'+(0.8+Math.random()*0.7)+'s;';
+          document.body.appendChild(d);
+          setTimeout(function(){ if(d.parentNode) d.parentNode.removeChild(d); }, 1600);
+        }
+        el.style.transition = 'opacity .6s, transform .6s';
+        el.style.opacity    = '0';
+        el.style.transform  = 'scale(0.3) translateY(-20px)';
+      }, idx * 80);
+    });
+
+    setTimeout(function(){
+      egHint('🫳 Snapped. Escape to restore.');
+      _egActive.thanos = false;
+    }, victims.length*80 + 800);
+
+    // Restore after 6s
+    setTimeout(function(){
+      victims.forEach(function(el){
+        el.style.transition = 'opacity .5s, transform .5s';
+        el.style.opacity    = '';
+        el.style.transform  = '';
+      });
+    }, 6000);
+  }
+
+  // ════════════════════════════
+  //  TILT
+  // ════════════════════════════
+  var _egTilted = false;
+
+  function egTilt(){
+    if(_egTilted) return;
+    _egTilted = true;
+    egHint('↗️ Tilted! Type k7straight to fix.');
+    var root = document.getElementById('dashboard-view') || document.body;
+    root.classList.add('eg-tilted');
+  }
+
+  function egUnTilt(){
+    if(!_egTilted) return;
+    _egTilted = false;
+    var root = document.getElementById('dashboard-view') || document.body;
+    root.classList.remove('eg-tilted');
+    egHint('✅ Back to normal.');
+  }
+
+  // ════════════════════════════
+  //  K7DIWAN TRIBUTE
+  // ════════════════════════════
+  function egDiwan(){
+    if(_egActive.diwan) return;
+    _egActive.diwan = true;
+    var splash = document.getElementById('eg-diwan-splash');
+    if(!splash) return;
+    splash.style.display = 'flex';
+    splash.style.opacity = '0';
+    void splash.offsetWidth; // force reflow so transition fires
+    splash.classList.add('active');
+
+    // Confetti burst
+    var colors = ['#f59e0b','#ef4444','#8b5cf6','#06b6d4','#10b981','#f97316','#ec4899'];
+    for(var i=0; i<80; i++){
+      (function(){
+        var c = document.createElement('div');
+        c.className = 'eg-confetti';
+        c.style.cssText =
+          'left:'+(10+Math.random()*80)+'vw;'+
+          'top:-20px;'+
+          'background:'+colors[Math.floor(Math.random()*colors.length)]+';'+
+          '--dur:'+(2+Math.random()*2)+'s;'+
+          '--ey:'+(window.innerHeight+40)+'px;'+
+          '--r:'+(360+Math.random()*720)+'deg;'+
+          '--ex:'+(Math.random()-0.5)*200+'px;';
+        document.body.appendChild(c);
+        setTimeout(function(){ if(c.parentNode) c.parentNode.removeChild(c); }, 4200);
+      })();
+    }
+  }
+
+  window.egDiwanClose = function(){
+    var splash = document.getElementById('eg-diwan-splash');
+    if(splash){
+      splash.classList.remove('active');
+      splash.style.opacity = '0';
+      setTimeout(function(){ splash.style.display = 'none'; }, 650);
+    }
+    _egActive.diwan = false;
+  };
+
+  // Hook Escape to also close diwan splash
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape' && _egActive.diwan) egDiwanClose();
+  });
+
+  // ── Init: expose egGravityStop for Escape ──
+  window._egEscapeAll = egEscapeAll;
+
+})();
+
+
      CSAT MODULE — separate maintainable files
      Edit csat_styles.css and csat_module_patch.js only.
      Never need to touch index.html for CSAT changes.
