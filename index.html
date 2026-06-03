@@ -16891,7 +16891,7 @@ async function cdTmLoadRooms(){
             '<span style="font-weight:700;font-size:.85rem;color:var(--text-primary);">🏠 '+esc(r.name||r.id)+'</span>' +
             '<span style="font-size:.7rem;color:var(--text-muted);margin-left:.5rem;">by '+esc(r.created_by_name||'Unknown')+' · since '+since+'</span>' +
           '</div>' +
-          '<button class="xc-btn-sm" onclick="cdTmTerminateRoom(''+r.id+'',''+esc(r.name||r.id)+'')" style="background:rgba(239,73,60,.12);border-color:rgba(239,73,60,.3);color:var(--accent-red);white-space:nowrap;">⛔ Terminate</button>' +
+          '<button class="xc-btn-sm cd-tm-terminate-btn" data-room-id="'+esc(r.id)+'" data-room-name="'+esc(r.name||r.id)+'" style="background:rgba(239,73,60,.12);border-color:rgba(239,73,60,.3);color:var(--accent-red);white-space:nowrap;">⛔ Terminate</button>' +
         '</div>' +
         '<div style="font-size:.74rem;color:var(--text-muted);">👥 '+parts.length+' participant'+(parts.length===1?'':'s')+': '+esc(partNames)+'</div>' +
       '</div>';
@@ -16921,6 +16921,15 @@ async function cdTmTerminateRoom(roomId, roomName){
     if(msg){ msg.textContent='Error: '+e.message; msg.style.color='var(--accent-red)'; msg.style.display='block'; setTimeout(function(){msg.style.display='none';},3500); }
   }
 }
+
+// Delegated click handler for dynamically rendered terminate buttons
+document.addEventListener('click', function(e){
+  var btn = e.target.closest('.cd-tm-terminate-btn');
+  if(!btn) return;
+  var roomId   = btn.getAttribute('data-room-id');
+  var roomName = btn.getAttribute('data-room-name');
+  if(roomId) cdTmTerminateRoom(roomId, roomName||roomId);
+});
 
 async function cdTmAgentCreateToggle(enabled){
   var msg = document.getElementById('cd-tm-msg');
