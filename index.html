@@ -4380,6 +4380,18 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
               </div>
             </div>
             <div id="cd-tm-msg" class="cd-msg" style="display:none;"></div>
+
+            <!-- Active rooms panel -->
+            <div style="margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.85rem;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.6rem;">
+                <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;">🟢 ACTIVE ROOMS</div>
+                <button class="cd-btn" onclick="cdTmLoadRooms()" style="font-size:.72rem;padding:.28rem .7rem;">↺ Refresh</button>
+              </div>
+              <div id="cd-tm-rooms-list">
+                <div style="font-size:.78rem;color:var(--text-dim);">Loading rooms…</div>
+              </div>
+              <div id="cd-tm-rooms-msg" style="font-size:.76rem;margin-top:.5rem;display:none;"></div>
+            </div>
           </div>
 
           <!-- ── Section 3: What's New / Grand Opening ── -->
@@ -16831,13 +16843,68 @@ const CD_TM_CREATE_KEY = 'tm_agent_create_enabled';
 async function cdLoadTm(){
   try{
     var rows = await sbQuery('settings','key=eq.'+CD_TM_CREATE_KEY+'&select=value');
-    var enabled = false; // default OFF — admin controls by default
+    var enabled = false;
     if(rows&&rows.length) enabled = rows[0].value === 'true';
     var chk = document.getElementById('cd-tm-toggle');
     var st  = document.getElementById('cd-tm-status');
     if(chk) chk.checked = enabled;
     if(st){ st.textContent = enabled ? '✅ Agents can create' : '🔒 Admin/TL only'; st.style.color = enabled ? '#2ec56f' : 'var(--text-muted)'; }
   }catch(e){}
+  cdTmLoadRooms();
+}
+
+async function cdTmLoadRooms(){
+  var list = document.getElementById('cd-tm-rooms-list');
+  if(!list) return;
+  list.innerHTML = '<div style="font-size:.78rem;color:var(--text-dim);">Loading…</div>';
+  try{
+    var rooms = await sbQuery('huddle_rooms','is_active=eq.true&select=id,name,created_by_name,created_at&order=created_at.desc');
+    if(!rooms||!rooms.length){
+      list.innerHTML = '<div style="font-size:.78rem;color:var(--text-dim);">No active rooms right now.</div>';
+      return;
+    }
+    var html = '';
+    for(var i=0;i<rooms.length;i++){
+      var r = rooms[i];
+      var parts = [];
+      try{ parts = await sbQuery('huddle_participants','room_id=eq.'+r.id+'&select=user_name,joined_at'); }catch(e){}
+      var partNames = parts.map(function(p){return p.user_name;}).join(', ') || '—';
+      var since = r.created_at ? new Date(r.created_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}) : '';
+      html += '<div style="display:flex;flex-direction:column;gap:.35rem;padding:.65rem .8rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:8px;margin-bottom:.45rem;">' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;">' +
+          '<div>' +
+            '<span style="font-weight:700;font-size:.85rem;color:var(--text-primary);">🏠 '+esc(r.name||r.id)+'</span>' +
+            '<span style="font-size:.7rem;color:var(--text-muted);margin-left:.5rem;">by '+esc(r.created_by_name||'Unknown')+' · since '+since+'</span>' +
+          '</div>' +
+          '<button class="xc-btn-sm" onclick="cdTmTerminateRoom(''+r.id+'',''+esc(r.name||r.id)+'')" style="background:rgba(239,73,60,.12);border-color:rgba(239,73,60,.3);color:var(--accent-red);white-space:nowrap;">⛔ Terminate</button>' +
+        '</div>' +
+        '<div style="font-size:.74rem;color:var(--text-muted);">👥 '+parts.length+' participant'+(parts.length===1?'':'s')+': '+esc(partNames)+'</div>' +
+      '</div>';
+    }
+    list.innerHTML = html;
+  }catch(e){
+    list.innerHTML = '<div style="font-size:.78rem;color:var(--accent-red);">Error: '+e.message+'</div>';
+  }
+}
+
+async function cdTmTerminateRoom(roomId, roomName){
+  if(!confirm('Terminate room "'+roomName+'"?\n\nAll participants will be kicked immediately.')) return;
+  var msg = document.getElementById('cd-tm-rooms-msg');
+  try{
+    await sbUpdate('huddle_rooms','id',roomId,{is_active:false});
+    await fetch(SUPABASE_URL+'/rest/v1/huddle_participants?room_id=eq.'+roomId,{method:'DELETE',headers:sbHeaders()});
+    await sbInsert('voice_signals',{
+      from_id: currentUser.id, from_name: currentUser.name,
+      to_id: null, to_room: 'tm:'+roomId,
+      type: 'tm_room_ended',
+      payload: JSON.stringify({reason:'terminated_by_admin',admin:currentUser.name}),
+      created_at: new Date().toISOString()
+    });
+    if(msg){ msg.textContent='✅ Room "'+roomName+'" terminated. Agents will be kicked within 2 seconds.'; msg.style.color='var(--accent-green)'; msg.style.display='block'; setTimeout(function(){msg.style.display='none';},4000); }
+    setTimeout(cdTmLoadRooms, 1500);
+  }catch(e){
+    if(msg){ msg.textContent='Error: '+e.message; msg.style.color='var(--accent-red)'; msg.style.display='block'; setTimeout(function(){msg.style.display='none';},3500); }
+  }
 }
 
 async function cdTmAgentCreateToggle(enabled){
