@@ -1760,44 +1760,70 @@ var VH = {
   ICE: null
 };
 
-// ── Get ICE config (STUN + Cloudflare TURN) ──
-// Cloudflare TURN credentials expire after 24h, so we fetch fresh ones each session
+// ── Get ICE config (STUN + TURN) ──
+// Uses free OpenRelay TURN servers so it works over the internet (not just LAN)
+// If you have Cloudflare TURN credentials, fill CF_TURN_TOKEN_ID/CF_TURN_API_TOKEN in index.html
 async function vhGetIceConfig(){
   if(VH.ICE) return VH.ICE; // cached for this session
-  // Default STUN-only fallback
-  var fallback = { iceServers:[
-    {urls:'stun:stun.l.google.com:19302'},
-    {urls:'stun:stun1.l.google.com:19302'}
-  ]};
-  if(!CF_TURN_TOKEN_ID || CF_TURN_TOKEN_ID==='YOUR_CF_TURN_TOKEN_ID'){
-    VH.ICE = fallback; return VH.ICE;
-  }
-  try{
-    var r = await fetch(
-      'https://rtc.live.cloudflare.com/v1/turn/keys/'+CF_TURN_TOKEN_ID+'/credentials/generate',
+
+  // Free public TURN via OpenRelay — works over internet, no signup needed
+  var freeTurn = {
+    iceServers: [
+      { urls: 'stun:stun.l.google.com:19302' },
+      { urls: 'stun:stun1.l.google.com:19302' },
+      { urls: 'stun:stun2.l.google.com:19302' },
+      { urls: 'stun:stun3.l.google.com:19302' },
       {
-        method:'POST',
-        headers:{'Authorization':'Bearer '+CF_TURN_API_TOKEN,'Content-Type':'application/json'},
-        body:JSON.stringify({ttl:86400})
+        urls: 'turn:openrelay.metered.ca:80',
+        username: 'openrelayproject',
+        credential: 'openrelayproject'
+      },
+      {
+        urls: 'turn:openrelay.metered.ca:443',
+        username: 'openrelayproject',
+        credential: 'openrelayproject'
+      },
+      {
+        urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+        username: 'openrelayproject',
+        credential: 'openrelayproject'
       }
-    );
-    if(!r.ok) throw new Error('CF TURN '+r.status);
-    var data = await r.json();
-    VH.ICE = {
-      iceServers:[
-        {urls:'stun:stun.l.google.com:19302'},
-        {urls:'stun:stun1.l.google.com:19302'},
+    ],
+    iceCandidatePoolSize: 10
+  };
+
+  // If Cloudflare credentials are set, fetch fresh ones (they expire every 24h)
+  if(CF_TURN_TOKEN_ID && CF_TURN_TOKEN_ID !== 'YOUR_CF_TURN_TOKEN_ID'){
+    try{
+      var r = await fetch(
+        'https://rtc.live.cloudflare.com/v1/turn/keys/'+CF_TURN_TOKEN_ID+'/credentials/generate',
         {
-          urls: data.iceServers.urls,
-          username: data.iceServers.username,
-          credential: data.iceServers.credential
+          method:'POST',
+          headers:{'Authorization':'Bearer '+CF_TURN_API_TOKEN,'Content-Type':'application/json'},
+          body:JSON.stringify({ttl:86400})
         }
-      ]
-    };
-  }catch(e){
-    console.warn('VH: Cloudflare TURN fetch failed, using STUN only:', e.message);
-    VH.ICE = fallback;
+      );
+      if(!r.ok) throw new Error('CF TURN '+r.status);
+      var data = await r.json();
+      VH.ICE = {
+        iceServers:[
+          { urls:'stun:stun.l.google.com:19302' },
+          { urls:'stun:stun1.l.google.com:19302' },
+          {
+            urls: data.iceServers.urls,
+            username: data.iceServers.username,
+            credential: data.iceServers.credential
+          }
+        ],
+        iceCandidatePoolSize: 10
+      };
+      return VH.ICE;
+    }catch(e){
+      console.warn('VH: Cloudflare TURN fetch failed, falling back to OpenRelay:', e.message);
+    }
   }
+
+  VH.ICE = freeTurn;
   return VH.ICE;
 }
 
@@ -2349,6 +2375,7 @@ async function vhLeaveRoom(){
   }
   VH.currentRoom = null;
   VH.roomMuted = true;
+  VH.ICE = null; // reset so fresh TURN credentials are fetched next time
   document.getElementById('vh-room-widget').style.display = 'none';
   vhBeep('end');
   vhLoadRooms();
@@ -3246,11 +3273,21 @@ async function tmJoinRoom(roomId, roomName){
   TM.roomCode = roomId;
   TM.roomName = roomName;
   TM.muted = true;
+  TM.joinedAt = new Date().toISOString(); // track join time for signal window
 
   // Get mic
   var stream = await tmGetMic();
   if(!stream){ TM.roomId=null; return; }
   stream.getAudioTracks().forEach(function(t){ t.enabled=false; });
+
+  // Start polls FIRST so we don't miss any offers that come back
+  clearInterval(TM.signalPollInterval);
+  clearInterval(TM.pollInterval);
+  clearInterval(TM.chatPollInterval);
+  TM.processedSignals.clear();
+  TM.signalPollInterval = setInterval(tmPollSignals, 1200);
+  TM.pollInterval = setInterval(tmUpdateRoomUI, 4000);
+  TM.chatPollInterval = setInterval(tmPollChat, 2000);
 
   // Register participant
   try{
@@ -3260,13 +3297,7 @@ async function tmJoinRoom(roomId, roomName){
     }
   }catch(e){ console.warn('TM participant insert failed:',e); }
 
-  // Signal others
-  await tmSendSignal(null, 'tm_join', {name:currentUser.name});
-
-  // Show room UI
-  tmShowActiveRoom();
-
-  // Connect to existing participants
+  // Connect to existing participants — WE are the initiator for existing members
   try{
     var parts = await sbQuery('huddle_participants','room_id=eq.'+roomId+'&user_id=neq.'+currentUser.id+'&select=user_id,user_name');
     for(var i=0;i<(parts||[]).length;i++){
@@ -3274,11 +3305,11 @@ async function tmJoinRoom(roomId, roomName){
     }
   }catch(e){}
 
-  // Start polls
-  TM.signalPollInterval = setInterval(tmPollSignals, 1500);
-  TM.pollInterval = setInterval(tmUpdateRoomUI, 4000);
-  TM.chatPollInterval = setInterval(tmPollChat, 2000);
+  // Signal others we joined — THEY will not initiate back (we already did above)
+  await tmSendSignal(null, 'tm_join', {name:currentUser.name, alreadyConnected: true});
 
+  // Show room UI
+  tmShowActiveRoom();
   tmUpdateRoomUI();
   tmPollChat();
 }
@@ -3399,7 +3430,7 @@ async function tmLeaveRoom(){
   // Close all peers
   Object.keys(TM.peers).forEach(function(pid){ if(TM.peers[pid]){TM.peers[pid].close();delete TM.peers[pid];} });
   if(TM.localStream){ TM.localStream.getTracks().forEach(function(t){t.stop();}); TM.localStream=null; }
-  TM.roomId=null; TM.roomCode=null; TM.roomName=null; TM.muted=true; TM.isCreator=false; TM.ICE=null;
+  TM.roomId=null; TM.roomCode=null; TM.roomName=null; TM.muted=true; TM.isCreator=false; TM.ICE=null; TM.joinedAt=null;
   TM.processedSignals.clear(); _tmLastChatTs=null;
   document.getElementById('tm-active-room').style.display='none';
   document.getElementById('tm-no-room').style.display='block';
@@ -3430,32 +3461,50 @@ async function tmGetMic(){
 }
 
 async function tmStartPeerConnection(peerId, isInitiator){
-  if(TM.peers[peerId]) return;
+  if(TM.peers[peerId]) return; // already exists
   var stream = TM.localStream;
   if(!stream) return;
   var iceConfig = await tmGetIceConfig();
   var pc = new RTCPeerConnection(iceConfig);
   TM.peers[peerId] = pc;
   stream.getTracks().forEach(function(t){ pc.addTrack(t, stream); });
+
   pc.ontrack = function(e){
-    var audio = new Audio();
+    // Remove stale audio element if any
+    var old = document.getElementById('tm-audio-'+peerId);
+    if(old) old.remove();
+    var audio = document.createElement('audio');
     audio.srcObject = e.streams[0];
     audio.autoplay = true;
     audio.id = 'tm-audio-'+peerId;
+    // Required for some browsers to actually play
+    audio.setAttribute('playsinline','true');
     document.body.appendChild(audio);
+    audio.play().catch(function(){});
     tmMarkSpeaking(peerId, e.streams[0]);
   };
+
   pc.onicecandidate = function(e){
-    if(e.candidate) tmSendSignal(peerId,'tm_ice',{candidate:e.candidate,for:peerId});
+    if(e.candidate){
+      tmSendSignal(peerId,'tm_ice',{candidate:e.candidate,for:peerId});
+    }
   };
+
   pc.onconnectionstatechange = function(){
-    if(pc.connectionState==='failed'||pc.connectionState==='disconnected'){
-      pc.close(); delete TM.peers[peerId];
+    console.log('TM peer '+peerId+' state: '+pc.connectionState);
+    if(pc.connectionState==='failed'){
+      pc.close();
+      delete TM.peers[peerId];
       var el=document.getElementById('tm-audio-'+peerId); if(el) el.remove();
     }
   };
+
+  pc.oniceconnectionstatechange = function(){
+    console.log('TM ICE '+peerId+': '+pc.iceConnectionState);
+  };
+
   if(isInitiator){
-    var offer = await pc.createOffer({offerToReceiveAudio:true});
+    var offer = await pc.createOffer({offerToReceiveAudio:true, iceRestart:false});
     await pc.setLocalDescription(offer);
     await tmSendSignal(peerId,'tm_offer',{sdp:pc.localDescription,for:peerId});
   }
@@ -3493,12 +3542,16 @@ async function tmSendSignal(toUserId, type, payload){
 async function tmPollSignals(){
   if(!currentUser||!TM.roomId) return;
   try{
-    var since = new Date(Date.now()-8000).toISOString();
+    // Use join time or 30s window — whichever is earlier — so we never miss signals
+    var windowMs = 30000;
+    var since = TM.joinedAt
+      ? new Date(Math.min(new Date(TM.joinedAt).getTime(), Date.now()-windowMs)).toISOString()
+      : new Date(Date.now()-windowMs).toISOString();
     var roomFilter = 'tm:'+TM.roomId;
     var rows = await sbQuery('voice_signals',
       'created_at=gt.'+encodeURIComponent(since)+
       '&or=(to_id.eq.'+currentUser.id+',to_room.eq.'+encodeURIComponent(roomFilter)+')'+
-      '&order=created_at.asc&limit=50&select=id,from_id,from_name,to_id,to_room,type,payload'
+      '&order=created_at.asc&limit=80&select=id,from_id,from_name,to_id,to_room,type,payload'
     );
     if(!rows||!rows.length) return;
     for(var i=0;i<rows.length;i++){
@@ -3506,9 +3559,21 @@ async function tmPollSignals(){
       if(sig.from_id===currentUser.id) continue;
       if(TM.processedSignals.has(sig.id)) continue;
       TM.processedSignals.add(sig.id);
-      if(TM.processedSignals.size>300) TM.processedSignals.clear();
+      if(TM.processedSignals.size>500) TM.processedSignals.clear();
       await tmHandleSignal(sig);
     }
+    // ICE restart for any failed peer connections
+    Object.keys(TM.peers).forEach(function(peerId){
+      var pc = TM.peers[peerId];
+      if(pc && (pc.connectionState==='failed' || pc.connectionState==='disconnected')){
+        console.warn('TM: peer '+peerId+' connection failed, attempting ICE restart');
+        pc.close();
+        delete TM.peers[peerId];
+        var a=document.getElementById('tm-audio-'+peerId); if(a) a.remove();
+        // Re-initiate after short delay
+        setTimeout(function(){ tmStartPeerConnection(peerId, true); }, 1000);
+      }
+    });
   }catch(e){}
 }
 
@@ -3518,8 +3583,11 @@ async function tmHandleSignal(sig){
   var from=sig.from_id;
   switch(sig.type){
     case 'tm_join':
-      // New person joined — connect to them
-      await tmStartPeerConnection(from, true);
+      // Only initiate back if they haven't already connected to us
+      // (alreadyConnected=true means they already sent us an offer)
+      if(!payload.alreadyConnected && !TM.peers[from]){
+        await tmStartPeerConnection(from, true);
+      }
       tmUpdateRoomUI();
       break;
     case 'tm_leave':
@@ -3546,10 +3614,18 @@ async function tmHandleSignal(sig){
         TM.peers[from]=pc;
         stream.getTracks().forEach(function(t){pc.addTrack(t,stream);});
         pc.ontrack=function(e){
-          var a=new Audio(); a.srcObject=e.streams[0]; a.autoplay=true; a.id='tm-audio-'+from; document.body.appendChild(a);
+          var old2=document.getElementById('tm-audio-'+from); if(old2) old2.remove();
+          var a=document.createElement('audio');
+          a.srcObject=e.streams[0]; a.autoplay=true; a.id='tm-audio-'+from;
+          a.setAttribute('playsinline','true');
+          document.body.appendChild(a); a.play().catch(function(){});
           tmMarkSpeaking(from,e.streams[0]);
         };
         pc.onicecandidate=function(e){ if(e.candidate) tmSendSignal(from,'tm_ice',{candidate:e.candidate,for:from}); };
+        pc.onconnectionstatechange=function(){
+          console.log('TM peer '+from+' state: '+pc.connectionState);
+          if(pc.connectionState==='failed'){ pc.close(); delete TM.peers[from]; var ae=document.getElementById('tm-audio-'+from); if(ae) ae.remove(); }
+        };
       }
       await pc.setRemoteDescription(new RTCSessionDescription(payload.sdp));
       var answer=await pc.createAnswer();

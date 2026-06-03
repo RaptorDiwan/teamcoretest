@@ -4948,9 +4948,38 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
 const SUPABASE_URL='https://sodvlpcjpnepohpoqicf.supabase.co';
 const SUPABASE_KEY='sb_publishable_nEbzsiR9Qhb31ZMc-Pg-cA_tJEzkmAf';
 
-// ── Cloudflare TURN credentials — fill in your own below ──
-const CF_TURN_TOKEN_ID  = 'YOUR_CF_TURN_TOKEN_ID';   // replace with your token ID
-const CF_TURN_API_TOKEN = 'YOUR_CF_TURN_API_TOKEN';  // replace with your API token
+// ── Cloudflare TURN credentials ──
+const CF_TURN_TOKEN_ID  = '8c1147a2b9ce301812a67174735d15be';
+const CF_TURN_API_TOKEN = 'df8223b259d761e0a85719db4602e94370a02b02d78bcc714377c33c0a4e3ca4';
+
+// ── ICE config with free public STUN + TURN servers ──
+// These work over the internet, no credentials needed
+// OpenRelay is a free TURN service — https://www.metered.ca/tools/openrelay/
+var FREE_ICE_CONFIG = {
+  iceServers: [
+    { urls: 'stun:stun.l.google.com:19302' },
+    { urls: 'stun:stun1.l.google.com:19302' },
+    { urls: 'stun:stun2.l.google.com:19302' },
+    { urls: 'stun:stun3.l.google.com:19302' },
+    { urls: 'stun:stun4.l.google.com:19302' },
+    {
+      urls: 'turn:openrelay.metered.ca:80',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:443',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    },
+    {
+      urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+      username: 'openrelayproject',
+      credential: 'openrelayproject'
+    }
+  ],
+  iceCandidatePoolSize: 10
+};
 
 function sbHeaders(extra){
   return Object.assign({'apikey':SUPABASE_KEY,'Authorization':'Bearer '+SUPABASE_KEY},extra||{});
@@ -6395,7 +6424,10 @@ async function recordLogin(){
   // Start polls regardless
   startSettingsPoll();
   startHeartbeat();
-  vhStartSignalPoll();
+  // Defer vhStartSignalPoll until theme-utils.js (which defines it) has loaded
+  setTimeout(function(){
+    if(typeof vhStartSignalPoll === 'function') vhStartSignalPoll();
+  }, 500);
 }
 
 // ── Heartbeat — updates last_seen every 10 min ──
