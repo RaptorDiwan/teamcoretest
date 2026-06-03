@@ -5361,7 +5361,7 @@ function showPage(id,elem){
   if(id==='moments') setTimeout(function(){_mLoadTab(_mActiveTab);},60);
   if(id==='quiz') loadAgentQuiz();
   if(id==='announcements') loadAnnouncementsAdmin();
-  if(id==='controldeck'){ _cdPwResetUnlocked=false; var lk=document.getElementById('cd-pwreset-locked'),pk=document.getElementById('cd-pwreset-panel'),ub=document.getElementById('cd-pwreset-unlock-btn'),pi=document.getElementById('cd-pwreset-pin'); if(lk)lk.style.display='flex'; if(pk)pk.style.display='none'; if(ub)ub.style.display=''; if(pi){pi.value='';} cdLoadAll(); cdLoadVHAgents(); cdVHLoadGlobalStatus(); }
+  if(id==='controldeck'){ _cdPwResetUnlocked=false; var lk=document.getElementById('cd-pwreset-locked'),pk=document.getElementById('cd-pwreset-panel'),ub=document.getElementById('cd-pwreset-unlock-btn'),pi=document.getElementById('cd-pwreset-pin'); if(lk)lk.style.display='flex'; if(pk)pk.style.display='none'; if(ub)ub.style.display=''; if(pi){pi.value='';} cdLoadAll(); _waitThemeUtils(function(){ if(typeof cdLoadVHAgents==='function') cdLoadVHAgents(); if(typeof cdVHLoadGlobalStatus==='function') cdVHLoadGlobalStatus(); }); }
   if(id==='voicehub'){ vhPageInit(); }
   if(id==='teammeet'){ tmPageInit(); }
   if(id==='assessment') loadAgentAssessment();
@@ -16827,6 +16827,21 @@ var CD_CEL_KEY = 'active_celebration';
 var CD_TS_GLOBAL_KEY = 'ts_global_enabled';
 
 // ── Load all sections on open ──
+function _waitThemeUtils(cb){
+  if(window._themeUtilsReady){ cb(); return; }
+  // theme-utils.js not ready yet — wait for it
+  window._themeUtilsReadyCb = function(){
+    window._themeUtilsReadyCb = null;
+    cb();
+  };
+  // Fallback: retry every 100ms for up to 5s
+  var tries=0;
+  var t=setInterval(function(){
+    tries++;
+    if(window._themeUtilsReady||tries>50){ clearInterval(t); if(window._themeUtilsReady&&typeof cb==='function') cb(); }
+  },100);
+}
+
 async function cdLoadAll(){
   cdLoadCat();
   cdLoadTs();
@@ -16834,7 +16849,7 @@ async function cdLoadAll(){
   cdLoadAnnouncements();
   cdLoadAgents();
   cdLoadTm();
-  cdAmbLoadAndRender();
+  _waitThemeUtils(function(){ if(typeof cdAmbLoadAndRender==='function') cdAmbLoadAndRender(); });
 }
 
 // ── Team Meet: agent create toggle ──

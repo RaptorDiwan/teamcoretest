@@ -3644,3 +3644,7 @@ async function tmHandleSignal(sig){
   }
 }
 
+
+// Signal that theme-utils.js has fully loaded
+window._themeUtilsReady = true;
+if(typeof window._themeUtilsReadyCb === 'function'){ window._themeUtilsReadyCb(); }
