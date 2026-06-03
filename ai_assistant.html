@@ -1,0 +1,1061 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orange Cat AI Assistant & Trainer</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    :root {
+      --bg: #040816;
+      --navy: #090e24;
+      --navy-card: #0e1635;
+      --navy-border: #1d2856;
+      --navy-hover: #14204d;
+      
+      --orange: #e8720f;
+      --orange-light: #ffa05c;
+      --orange-glow: rgba(232, 114, 15, 0.25);
+      --orange-glow-heavy: rgba(232, 114, 15, 0.45);
+      
+      --text-primary: #f8fafc;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --radius: 16px;
+      --radius-sm: 8px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      font-family: 'DM Sans', sans-serif;
+      color: var(--text-primary);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header Bar */
+    header {
+      background: rgba(9, 14, 36, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--navy-border);
+      padding: 1rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 70px;
+    }
+    
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    
+    .logo-badge {
+      background: var(--orange);
+      color: #fff;
+      font-size: 0.65rem;
+      font-weight: 800;
+      padding: 2px 6px;
+      border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+
+    .logo-text {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    .logo-text span {
+      color: var(--orange);
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      font-size: 0.85rem;
+    }
+    
+    .nav-links a {
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    
+    .nav-links a:hover {
+      color: var(--orange-light);
+    }
+
+    /* Layout Main Split */
+    .container {
+      display: flex;
+      flex: 1;
+      height: calc(100vh - 70px);
+      overflow: hidden;
+    }
+
+    /* Left Pane: Chat Window */
+    .chat-pane {
+      flex: 1.2;
+      border-right: 1px solid var(--navy-border);
+      display: flex;
+      flex-direction: column;
+      background: linear-gradient(180deg, var(--bg), #060b20);
+      position: relative;
+    }
+
+    .chat-header {
+      padding: 1.2rem 1.5rem;
+      border-bottom: 1px solid var(--navy-border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(14, 22, 53, 0.4);
+    }
+
+    .bot-info {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+    }
+
+    /* SVG Cat Mascot styling */
+    .cat-avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: rgba(232, 114, 15, 0.1);
+      border: 1px solid rgba(232, 114, 15, 0.25);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+    }
+    
+    .cat-avatar.thinking {
+      box-shadow: 0 0 15px var(--orange-glow-heavy);
+      border-color: var(--orange-light);
+    }
+
+    .bot-name-wrap h2 {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 600;
+    }
+
+    .bot-status {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 1px;
+    }
+
+    .status-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #2ec56f;
+      box-shadow: 0 0 8px #2ec56f;
+    }
+    
+    .status-dot.sleeping {
+      background: #94a3b8;
+      box-shadow: none;
+    }
+
+    .quick-prompts {
+      display: flex;
+      gap: 0.5rem;
+      padding: 0.75rem 1.5rem;
+      background: rgba(4, 8, 22, 0.5);
+      border-bottom: 1px solid var(--navy-border);
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    
+    .quick-prompts::-webkit-scrollbar {
+      height: 4px;
+    }
+    
+    .quick-prompts::-webkit-scrollbar-thumb {
+      background: var(--navy-border);
+      border-radius: 2px;
+    }
+
+    .prompt-chip {
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.75rem;
+      border-radius: 20px;
+      font-size: 0.76rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .prompt-chip:hover {
+      border-color: var(--orange);
+      color: var(--text-primary);
+      background: var(--navy-hover);
+    }
+
+    /* Messages Area */
+    .messages-area {
+      flex: 1;
+      padding: 1.5rem;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+    
+    .messages-area::-webkit-scrollbar {
+      width: 6px;
+    }
+    .messages-area::-webkit-scrollbar-thumb {
+      background: var(--navy-border);
+      border-radius: 3px;
+    }
+
+    .msg-bubble {
+      max-width: 80%;
+      padding: 0.9rem 1.2rem;
+      border-radius: var(--radius);
+      font-size: 0.86rem;
+      line-height: 1.5;
+      position: relative;
+    }
+
+    .msg-bubble.bot {
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      align-self: flex-start;
+      border-top-left-radius: 4px;
+      color: var(--text-primary);
+    }
+
+    .msg-bubble.user {
+      background: linear-gradient(135deg, var(--orange), #b84000);
+      align-self: flex-end;
+      border-top-right-radius: 4px;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(184, 64, 0, 0.25);
+    }
+
+    .msg-time {
+      font-size: 0.65rem;
+      color: var(--text-dim);
+      margin-top: 0.35rem;
+      display: block;
+      text-align: right;
+    }
+    .msg-bubble.user .msg-time {
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    /* Typing Indicator */
+    .typing-indicator {
+      align-self: flex-start;
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      padding: 0.75rem 1.2rem;
+      border-radius: var(--radius);
+      border-top-left-radius: 4px;
+      display: none;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .dot {
+      width: 6px;
+      height: 6px;
+      background: var(--text-muted);
+      border-radius: 50%;
+      animation: bounce 1.3s infinite ease-in-out;
+    }
+
+    .dot:nth-child(2) { animation-delay: 0.15s; }
+    .dot:nth-child(3) { animation-delay: 0.3s; }
+
+    @keyframes bounce {
+      0%, 60%, 100% { transform: translateY(0); }
+      30% { transform: translateY(-4px); }
+    }
+
+    /* Chat Input Area */
+    .input-area {
+      padding: 1.2rem 1.5rem;
+      background: rgba(9, 14, 36, 0.6);
+      border-top: 1px solid var(--navy-border);
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+    }
+
+    .chat-textarea {
+      flex: 1;
+      height: 48px;
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      border-radius: 24px;
+      padding: 0.8rem 1.2rem;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.88rem;
+      resize: none;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    .chat-textarea:focus {
+      border-color: var(--orange);
+      box-shadow: 0 0 10px var(--orange-glow);
+    }
+
+    .send-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: var(--orange);
+      border: none;
+      cursor: pointer;
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s;
+      box-shadow: 0 4px 12px var(--orange-glow);
+    }
+
+    .send-btn:hover {
+      background: var(--orange-light);
+      transform: scale(1.05);
+    }
+    
+    .send-btn:active {
+      transform: scale(0.95);
+    }
+
+    .send-btn svg {
+      width: 20px;
+      height: 20px;
+      transform: translateX(1px);
+    }
+
+    /* Right Pane: Training & Settings Panel */
+    .training-pane {
+      flex: 0.8;
+      background: #060a1d;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+    
+    .training-pane::-webkit-scrollbar {
+      width: 6px;
+    }
+    .training-pane::-webkit-scrollbar-thumb {
+      background: var(--navy-border);
+      border-radius: 3px;
+    }
+
+    .pane-section {
+      padding: 1.8rem;
+      border-bottom: 1px solid var(--navy-border);
+    }
+
+    .section-title {
+      font-family: 'Outfit', sans-serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 0.4rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .section-sub {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      margin-bottom: 1.2rem;
+      line-height: 1.4;
+    }
+
+    /* Knowledge Rule List styling */
+    .rules-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+      max-height: 380px;
+      overflow-y: auto;
+      padding-right: 0.2rem;
+      margin-bottom: 1.2rem;
+    }
+    
+    .rules-list::-webkit-scrollbar {
+      width: 4px;
+    }
+    .rules-list::-webkit-scrollbar-thumb {
+      background: var(--navy-border);
+      border-radius: 2px;
+    }
+
+    .rule-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid var(--navy-border);
+      border-radius: var(--radius-sm);
+      padding: 0.75rem 1rem;
+      font-size: 0.8rem;
+      line-height: 1.45;
+      display: flex;
+      justify-content: space-between;
+      gap: 0.8rem;
+      align-items: flex-start;
+      transition: border-color 0.2s;
+    }
+    
+    .rule-item:hover {
+      border-color: rgba(232, 114, 15, 0.3);
+    }
+
+    .rule-text {
+      color: var(--text-primary);
+      flex: 1;
+    }
+
+    .rule-delete-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+      padding: 1px 4px;
+      line-height: 1;
+    }
+
+    .rule-delete-btn:hover {
+      color: #ef493c;
+    }
+
+    /* Add Rule Form */
+    .add-rule-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+    }
+
+    .rule-input {
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.85rem;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.8rem;
+      outline: none;
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .rule-input:focus {
+      border-color: var(--orange);
+    }
+
+    .add-btn {
+      background: rgba(232, 114, 15, 0.12);
+      border: 1px solid rgba(232, 114, 15, 0.35);
+      color: var(--orange-light);
+      padding: 0.55rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+    }
+
+    .add-btn:hover {
+      background: var(--orange);
+      color: #fff;
+      border-color: var(--orange);
+    }
+
+    /* API Settings Form */
+    .settings-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 0.9rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-label {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .form-select, .form-input {
+      background: var(--navy-card);
+      border: 1px solid var(--navy-border);
+      border-radius: var(--radius-sm);
+      padding: 0.65rem 0.85rem;
+      color: var(--text-primary);
+      font-family: inherit;
+      font-size: 0.82rem;
+      outline: none;
+    }
+
+    .form-select:focus, .form-input:focus {
+      border-color: var(--orange);
+    }
+
+    .settings-btn {
+      background: var(--orange);
+      color: #fff;
+      border: none;
+      padding: 0.7rem;
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 4px 10px var(--orange-glow);
+    }
+
+    .settings-btn:hover {
+      background: var(--orange-light);
+    }
+
+    .config-status {
+      font-size: 0.72rem;
+      color: var(--text-dim);
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .config-status span {
+      font-weight: 600;
+    }
+    
+    .status-ok {
+      color: #2ec56f;
+    }
+    
+    .status-local {
+      color: var(--orange-light);
+    }
+
+    /* Formatting helper classes */
+    .kb-block {
+      border-left: 2px solid var(--orange);
+      padding-left: 0.5rem;
+      margin: 0.35rem 0;
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header Bar -->
+  <header>
+    <div class="logo-area">
+      <div class="logo-badge">K7 SUPPORT</div>
+      <div class="logo-text">OrangeCat<span>AI</span></div>
+    </div>
+    <div class="nav-links">
+      <a href="index.html">← Back to Portal</a>
+    </div>
+  </header>
+
+  <!-- Split Pane Layout -->
+  <div class="container">
+    
+    <!-- Left Pane: Chat Window -->
+    <div class="chat-pane">
+      
+      <!-- Chat Pane Header -->
+      <div class="chat-header">
+        <div class="bot-info">
+          <div class="cat-avatar" id="cat-avatar-wrap">
+            <!-- Animated sleeping/awake orange cat SVG -->
+            <svg id="mascot-svg" viewBox="0 0 50 50" width="36" height="36" fill="none">
+              <!-- ears -->
+              <polygon points="10,22 14,12 19,22" fill="#c95000"/>
+              <polygon points="11,22 14,14 18,22" fill="#ffb080" opacity=".5"/>
+              <polygon points="31,22 35,12 39,22" fill="#c95000"/>
+              <polygon points="32,22 35,14 38,22" fill="#ffb080" opacity=".5"/>
+              <!-- head -->
+              <ellipse cx="25" cy="28" rx="16" ry="15" fill="#e8720f"/>
+              <!-- sleeping eyes -->
+              <g id="m-eyes-s">
+                <path d="M19 26 Q21 24 23 26" stroke="#5a2800" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+                <path d="M27 26 Q29 24 31 26" stroke="#5a2800" stroke-width="1.6" fill="none" stroke-linecap="round"/>
+              </g>
+              <!-- open eyes -->
+              <g id="m-eyes-o" style="display:none">
+                <ellipse cx="21" cy="26" rx="3.2" ry="3.6" fill="#1a0800"/>
+                <ellipse cx="30" cy="26" rx="3.2" ry="3.6" fill="#1a0800"/>
+                <circle cx="22.2" cy="24.8" r="1.1" fill="white"/>
+                <circle cx="31.2" cy="24.8" r="1.1" fill="white"/>
+              </g>
+              <!-- nose -->
+              <ellipse cx="25" cy="31" rx="1.8" ry="1.2" fill="#b84000"/>
+              <!-- mouth -->
+              <path d="M22.5 33 Q25 35.5 27.5 33" stroke="#b84000" stroke-width="1" fill="none" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="bot-name-wrap">
+            <h2 id="mascot-title">Orange Cat</h2>
+            <div class="bot-status" id="mascot-status-bar">
+              <div class="status-dot sleeping" id="mascot-status-dot"></div>
+              <span id="mascot-status-text">Sleeping</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick prompts chips row -->
+      <div class="quick-prompts">
+        <span class="prompt-chip" onclick="sendQuickPrompt('Error 12029')">🔧 Error 12029</span>
+        <span class="prompt-chip" onclick="sendQuickPrompt('Offline Activation')">🔑 Offline Activation</span>
+        <span class="prompt-chip" onclick="sendQuickPrompt('Clean Install')">🛡️ Clean Install</span>
+        <span class="prompt-chip" onclick="sendQuickPrompt('Roster details')">📅 Roster Sync</span>
+        <span class="prompt-chip" onclick="sendQuickPrompt('Serial Key Portal')">🌐 Serial Key Access</span>
+        <span class="prompt-chip" onclick="sendQuickPrompt('High CPU')">⚡ High CPU scan</span>
+      </div>
+
+      <!-- Messages container -->
+      <div class="messages-area" id="chat-messages">
+        <!-- Messages loaded dynamically -->
+      </div>
+
+      <!-- Typing Indicator bubble -->
+      <div class="messages-area" style="flex:0; min-height:0; padding-top:0; padding-bottom:0.5rem;">
+        <div class="typing-indicator" id="typing-bubble">
+          <div class="dot"></div>
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+      </div>
+
+      <!-- Input controls panel -->
+      <div class="input-area">
+        <textarea class="chat-textarea" id="chat-inp" placeholder="Ask Orange Cat anything, Boss..." onkeydown="handleInputKey(event)"></textarea>
+        <button class="send-btn" onclick="sendChat()" title="Send message">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="22" y1="2" x2="11" y2="13"></line>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+          </svg>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- Right Pane: Training & Settings Panel -->
+    <div class="training-pane">
+      
+      <!-- Training Pane Section 1: Custom Rules Editor -->
+      <div class="pane-section">
+        <div class="section-title">🐱 AI Training & Knowledge</div>
+        <div class="section-sub">Add or delete custom rules, shortcuts, or K7 fixes below. These elements are stored locally and will be fed to the AI as context rules.</div>
+        
+        <!-- Rules List container -->
+        <div class="rules-list" id="rules-box">
+          <!-- Dynamic rules render here -->
+        </div>
+
+        <!-- Add Rule form controls -->
+        <div class="add-rule-form">
+          <textarea class="rule-input" id="new-rule-inp" placeholder="Type a new rule or support guide fact (e.g. 'CSAT reports are sorted from highest to lowest')..."></textarea>
+          <button class="add-btn" onclick="addCustomRule()">
+            <span>+</span> Add Custom Instruction
+          </button>
+        </div>
+      </div>
+
+      <!-- Training Pane Section 2: AI Connection Settings -->
+      <div class="pane-section" style="border-bottom:none;">
+        <div class="section-title">⚙️ Connection Settings</div>
+        <div class="section-sub">Configure your OpenRouter API key and model select. If not configured, the bot falls back to local rule-based smart matching.</div>
+        
+        <div class="settings-grid">
+          <div class="form-group">
+            <label class="form-label" for="api-key-inp">OpenRouter API Key</label>
+            <input type="password" class="form-input" id="api-key-inp" placeholder="sk-or-v1-..." oninput="updateConfigStatus()"/>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="model-select">AI Engine Model</label>
+            <select class="form-select" id="model-select">
+              <option value="google/gemini-2.0-flash-exp:free">Gemini 2.0 Flash (Free)</option>
+              <option value="google/gemini-flash-1.5">Gemini 1.5 Flash</option>
+              <option value="meta-llama/llama-3-8b-instruct:free">Llama 3 8B (Free)</option>
+              <option value="mistralai/mistral-7b-instruct:free">Mistral 7B (Free)</option>
+            </select>
+          </div>
+
+          <button class="settings-btn" onclick="saveSettings()">Save Connection</button>
+          
+          <div class="config-status">
+            Engine Mode: <span id="engine-status" class="status-local">Local Rule Engine</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    // System Default Knowledge facts
+    const defaultKnowledge = [
+      "Always call users 'Boss' and use cat emojis naturally.",
+      "Offline Activation: Go to the K7 website's offline activation portal with the Request Code.",
+      "Error 12029 / 12007: Open K7, go to Configure Updates, remove proxy settings, click Apply and OK.",
+      "Clean Install: Use the K7 Removal Tool first, restart, then perform a fresh installation.",
+      "High CPU Usage: Exclude the scan folder from the K7 real-time protection scan exclusions list.",
+      "Firewall Blocking: Add the K7 executables directly to the Windows Firewall exceptions.",
+      "Serial Key Portal: Accessible only from the company VPN or internal office network.",
+      "SMS Portal: Requires prior manager approval before sending manual communications.",
+      "Virus Bank Portal: Used by L2 engineers to check malware sample statuses.",
+      "Tavetal Call Portal: Inbound and outbound call handling portal for the support team.",
+      "CSAT Reports: Sorts agents from highest average score to lowest (5.0 down to 1.0).",
+      "Key Reset Report: Google Sheet used to log all processed product key resets."
+    ];
+
+    let customRules = [];
+    let chatHistory = [];
+
+    // Load initial rules and settings
+    window.onload = function() {
+      // Load custom rules
+      var storedRules = localStorage.getItem('cat_custom_rules');
+      if (storedRules) {
+        customRules = JSON.parse(storedRules);
+      } else {
+        customRules = [...defaultKnowledge];
+        localStorage.setItem('cat_custom_rules', JSON.stringify(customRules));
+      }
+
+      // Load API settings
+      var storedKey = localStorage.getItem('cat_api_key');
+      var storedModel = localStorage.getItem('cat_model');
+      if (storedKey) document.getElementById('api-key-inp').value = storedKey;
+      if (storedModel) document.getElementById('model-select').value = storedModel;
+
+      renderRules();
+      updateConfigStatus();
+      
+      // Initial Welcome Message
+      addBotMessage("Meow! I'm Orange Cat 🐾 — your standalone support helper! 🐱\nI have been preloaded with K7 Support knowledge on the right pane. Ask me anything, Boss!");
+    };
+
+    // Render training rules list
+    function renderRules() {
+      var box = document.getElementById('rules-box');
+      box.innerHTML = '';
+      customRules.forEach((rule, idx) => {
+        var item = document.createElement('div');
+        item.className = 'rule-item';
+        item.innerHTML = `
+          <div class="rule-text">${rule}</div>
+          <button class="rule-delete-btn" onclick="deleteRule(${idx})" title="Delete rule">✕</button>
+        `;
+        box.appendChild(item);
+      });
+    }
+
+    // Add custom training instruction
+    function addCustomRule() {
+      var inp = document.getElementById('new-rule-inp');
+      var val = inp.value.trim();
+      if (!val) return;
+      
+      customRules.push(val);
+      localStorage.setItem('cat_custom_rules', JSON.stringify(customRules));
+      inp.value = '';
+      
+      renderRules();
+      
+      // Bot reacts to being trained
+      addBotMessage(`Meow! Thank you Boss! I have memorized that instruction: \n"${val}" 🐾`);
+    }
+
+    // Delete a rule
+    function deleteRule(idx) {
+      customRules.splice(idx, 1);
+      localStorage.setItem('cat_custom_rules', JSON.stringify(customRules));
+      renderRules();
+    }
+
+    // Save API Connection settings
+    function saveSettings() {
+      var key = document.getElementById('api-key-inp').value.trim();
+      var model = document.getElementById('model-select').value;
+      
+      localStorage.setItem('cat_api_key', key);
+      localStorage.setItem('cat_model', model);
+      
+      updateConfigStatus();
+      
+      var modeText = key ? "Connected to Cloud AI Engine! 🐾" : "Configured to Local Rule Fallback.";
+      alert("Settings saved! " + modeText);
+    }
+
+    // Update the config status pill
+    function updateConfigStatus() {
+      var key = document.getElementById('api-key-inp').value.trim();
+      var statusSpan = document.getElementById('engine-status');
+      if (key) {
+        statusSpan.textContent = 'Cloud AI Engine';
+        statusSpan.className = 'status-ok';
+      } else {
+        statusSpan.textContent = 'Local Rule Engine';
+        statusSpan.className = 'status-local';
+      }
+    }
+
+    // Chat rendering utilities
+    function addBotMessage(text) {
+      setMascotState('wake');
+      var box = document.getElementById('chat-messages');
+      var bubble = document.createElement('div');
+      bubble.className = 'msg-bubble bot';
+      bubble.innerHTML = formatMessage(text);
+      
+      var time = document.createElement('span');
+      time.className = 'msg-time';
+      time.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      bubble.appendChild(time);
+      
+      box.appendChild(bubble);
+      box.scrollTop = box.scrollHeight;
+      
+      chatHistory.push({ role: 'assistant', content: text });
+      
+      // Go back to sleep after short delay
+      setTimeout(() => setMascotState('sleep'), 4000);
+    }
+
+    function addUserMessage(text) {
+      var box = document.getElementById('chat-messages');
+      var bubble = document.createElement('div');
+      bubble.className = 'msg-bubble user';
+      bubble.textContent = text;
+      
+      var time = document.createElement('span');
+      time.className = 'msg-time';
+      time.textContent = new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+      bubble.appendChild(time);
+      
+      box.appendChild(bubble);
+      box.scrollTop = box.scrollHeight;
+      
+      chatHistory.push({ role: 'user', content: text });
+    }
+
+    function formatMessage(text) {
+      // Escape HTML
+      let html = text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+      
+      // Formats double-newlines into paragraphs
+      html = html.split('\n\n').map(p => {
+        // Bullet list checks
+        if (p.includes('\n- ') || p.includes('\n* ')) {
+          let items = p.split(/\n[-*]\s+/);
+          let head = items.shift();
+          return `<p>${head}</p><ul style="margin-left:1.5rem;margin-top:0.4rem;">${items.map(i => `<li>${i}</li>`).join('')}</ul>`;
+        }
+        return `<p>${p.replace(/\n/g, '<br>')}</p>`;
+      }).join('');
+
+      return html;
+    }
+
+    // Manage SVGMascot States (sleep, wake, thinking)
+    function setMascotState(state) {
+      var avatarWrap = document.getElementById('cat-avatar-wrap');
+      var statusDot = document.getElementById('mascot-status-dot');
+      var statusText = document.getElementById('mascot-status-text');
+      var eyesS = document.getElementById('m-eyes-s');
+      var eyesO = document.getElementById('m-eyes-o');
+      
+      if (state === 'sleep') {
+        avatarWrap.className = 'cat-avatar';
+        statusDot.className = 'status-dot sleeping';
+        statusText.textContent = 'Sleeping';
+        eyesS.style.display = 'block';
+        eyesO.style.display = 'none';
+      } else if (state === 'wake') {
+        avatarWrap.className = 'cat-avatar';
+        statusDot.className = 'status-dot';
+        statusText.textContent = 'Online';
+        eyesS.style.display = 'none';
+        eyesO.style.display = 'block';
+      } else if (state === 'thinking') {
+        avatarWrap.className = 'cat-avatar thinking';
+        statusDot.className = 'status-dot';
+        statusText.textContent = 'Thinking...';
+        eyesS.style.display = 'none';
+        eyesO.style.display = 'block';
+      }
+    }
+
+    // Input handlers
+    function handleInputKey(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendChat();
+      }
+    }
+
+    function sendQuickPrompt(promptText) {
+      document.getElementById('chat-inp').value = promptText;
+      sendChat();
+    }
+
+    // Principal Send Action
+    function sendChat() {
+      var inp = document.getElementById('chat-inp');
+      var val = inp.value.trim();
+      if (!val) return;
+      
+      addUserMessage(val);
+      inp.value = '';
+      
+      // Trigger typing indicator and thinking state
+      document.getElementById('typing-bubble').style.display = 'flex';
+      setMascotState('thinking');
+      
+      // Calculate AI response
+      setTimeout(async () => {
+        try {
+          var response = await generateAIResponse(val);
+          document.getElementById('typing-bubble').style.display = 'none';
+          addBotMessage(response);
+        } catch(err) {
+          document.getElementById('typing-bubble').style.display = 'none';
+          addBotMessage("Meow! I got a hairball trying to process that. Could you try again? 🐾 (Error: " + err.message + ")");
+        }
+      }, 1000);
+    }
+
+    // AI Response Engine (Direct fetch to OpenRouter OR Rule-Based matching)
+    async function generateAIResponse(userMsg) {
+      var apiKey = localStorage.getItem('cat_api_key') || '';
+      var model = localStorage.getItem('cat_model') || 'google/gemini-2.0-flash-exp:free';
+      
+      // Format custom system instructions from stored rules
+      var systemPrompt = `You are Orange Cat, a witty K7 Security support assistant with a fun cat personality. Always call users Boss. Use cat emojis naturally. Keep replies concise and helpful. Refer to these custom trained guidelines to answer support tickets or queries:\n` + 
+        customRules.map((r, i) => `${i+1}. ${r}`).join('\n') + 
+        `\nIf the query is unrelated, reply using your cat personality.`;
+
+      if (apiKey) {
+        // Cloud API Engine
+        try {
+          // Format standard context
+          var messages = [
+            { role: 'system', content: systemPrompt }
+          ];
+          // Take last 8 message histories
+          var slice = chatHistory.slice(-8);
+          slice.forEach(msg => messages.push({ role: msg.role === 'assistant' ? 'assistant' : 'user', content: msg.content }));
+          
+          var r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+            method: 'POST',
+            headers: {
+              'Authorization': 'Bearer ' + apiKey,
+              'Content-Type': 'application/json',
+              'HTTP-Referer': window.location.href,
+              'X-Title': 'K7 Orange Cat Standalone'
+            },
+            body: JSON.stringify({
+              model: model,
+              messages: messages
+            })
+          });
+          
+          if (!r.ok) {
+            var errJson = await r.json().catch(() => ({}));
+            throw new Error(errJson.error?.message || 'Server error ' + r.status);
+          }
+          
+          var data = await r.json();
+          return data.choices[0].message.content;
+          
+        } catch(e) {
+          console.error("Cloud engine error, falling back to Local rules: ", e);
+          // Fallback to local rule engine
+          return getLocalRuleMatch(userMsg) + "\n\n*(Note: Cloud AI failed; fell back to Local Roster brain)*";
+        }
+      } else {
+        // Local Smart Rules engine
+        return getLocalRuleMatch(userMsg);
+      }
+    }
+
+    // Local Rule-Based Keyword Matcher
+    function getLocalRuleMatch(msg) {
+      var n = msg.toLowerCase().trim();
+      
+      // Check keywords matching custom rules
+      for (var rule of customRules) {
+        var ruleLower = rule.toLowerCase();
+        // Split rule into important words/concepts
+        if (ruleLower.includes('activation') && n.includes('activation')) return "Boss, regarding activation:\n" + rule + " 🐱";
+        if (ruleLower.includes('12029') && (n.includes('12029') || n.includes('12007') || n.includes('proxy'))) return "Meow Boss! About the proxy error:\n" + rule + " 🐾";
+        if (ruleLower.includes('removal tool') && (n.includes('removal') || n.includes('uninstall') || n.includes('clean install'))) return "Here is what I know about clean installs, Boss:\n" + rule + " 🛡️";
+        if (ruleLower.includes('cpu') && (n.includes('cpu') || n.includes('high usage') || n.includes('slow'))) return "Boss, if your CPU is maxed out:\n" + rule + " ⚡";
+        if (ruleLower.includes('firewall') && n.includes('firewall')) return "Meow! Windows Firewall issue?\n" + rule + " 🐾";
+        if (ruleLower.includes('vpn') && (n.includes('vpn') || n.includes('key portal'))) return "Regarding portal access, Boss:\n" + rule + " 🌐";
+        if (ruleLower.includes('sms') && n.includes('sms')) return "Wait, Boss! Don't do that yet:\n" + rule + " 📱";
+        if (ruleLower.includes('tavetal') && (n.includes('tavetal') || n.includes('call portal'))) return "About the call system, Boss:\n" + rule + " 🎧";
+        if (ruleLower.includes('csat') && n.includes('csat')) return "Boss! Average CSAT info:\n" + rule + " 📊";
+        if (ruleLower.includes('reset') && n.includes('reset')) return "Boss, regarding key resets:\n" + rule + " 🔑";
+      }
+
+      // Default conversational fallbacks
+      if (n.includes('hello') || n.includes('hi') || n.includes('hey')) {
+        return "Hello Boss! Orange Cat at your service 🐾 What support knowledge can I look up for you today?";
+      }
+      if (n.includes('how are you') || n.includes('status')) {
+        return "I am purring with excitement to help you, Boss! Roster is synced, and my database has " + customRules.length + " instructions ready! 🐱";
+      }
+      if (n.includes('roster') || n.includes('shift') || n.includes('leave')) {
+        return "Meow! Roster is managed in the main portal, Boss. But I have recorded that the Serial Key Portal is VPN-only and the SMS portal requires approval! 🐾";
+      }
+      
+      return "Meow Boss! I couldn't match a specific instruction for that. Add it to my training on the right panel so I can learn it! 🐱🐾";
+    }
+  </script>
+</body>
+</html>

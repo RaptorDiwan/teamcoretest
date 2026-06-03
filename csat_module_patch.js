@@ -898,9 +898,21 @@ function csatBuildControlCard() {
             <label class="cat-toggle-wrap"><input type="checkbox" id="cd-csat-dsat-toggle" ${CSAT_SETTINGS.dsatVisible!==false?'checked':''} onchange="cdCsatDsatToggle(this.checked)"/><span class="cat-toggle-slider"></span></label>
           </div>
         </div>
-        <div style="margin-top:.25rem;">
-          <div style="font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.09em;margin-bottom:.5rem;text-transform:uppercase;">Upload Access — per agent</div>
-          <div id="cd-csat-upload-agents"><div style="color:var(--text-dim);font-size:.8rem;">Loading agents…</div></div>
+        
+        <!-- Per-agent list — collapsed by default -->
+        <div style="margin-top:.9rem;border-top:1px solid var(--navy-border);padding-top:.9rem;">
+          <div style="display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none;" onclick="cdToggleAgentList('cd-csat-agents-wrap','cd-csat-agents-arrow')">
+            <div style="font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;">UPLOAD ACCESS — PER AGENT</div>
+            <div style="display:flex;align-items:center;gap:.5rem;">
+              <span id="cd-csat-agents-count" style="font-size:.72rem;color:var(--text-dim);"></span>
+              <span id="cd-csat-agents-arrow" style="font-size:.7rem;color:var(--gold);transition:transform .2s;transform:rotate(-90deg);">▼</span>
+            </div>
+          </div>
+          <div id="cd-csat-agents-wrap" style="display:none;margin-top:.65rem;">
+            <div id="cd-csat-upload-agents" style="display:flex;flex-direction:column;gap:.35rem;">
+              <div style="color:var(--text-dim);font-size:.8rem;">Loading agents…</div>
+            </div>
+          </div>
         </div>
       </div>
       <div id="cd-csat-msg" class="cd-msg" style="display:none;margin-top:.5rem;"></div>
@@ -933,6 +945,10 @@ async function cdLoadCsatUploadAgents() {
   try {
     var agents=await sbQuery('users','select=id,name,role&order=name.asc');
     if (!agents||agents.length===0){wrap.innerHTML='<div style="color:var(--text-dim);font-size:.8rem;">No agents found.</div>';return;}
+    
+    var countEl = document.getElementById('cd-csat-agents-count');
+    if(countEl) countEl.textContent = agents.length+' agent'+(agents.length!==1?'s':'');
+
     wrap.innerHTML=agents.map(function(u){
       var checked=CSAT_SETTINGS.uploadAccess[u.id]===true;
       return `<div class="cd-agent-row">
