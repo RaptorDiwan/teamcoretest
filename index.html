@@ -1820,6 +1820,50 @@ body.dark .ts-input { background:#111827;border-color:#2D3748;color:#F1F5F9; }
   .rem-sidebar{width:200px;flex-shrink:0;background:var(--navy-sidebar,var(--navy-card));border-right:1px solid var(--navy-border);padding:1rem 0 1.4rem;display:flex;flex-direction:column;gap:1px;}
   .rem-sidebar-section{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);padding:.8rem 1rem .4rem;}
   .rem-sidebar-item{display:flex;align-items:center;gap:.75rem;padding:.58rem 1rem;cursor:pointer;border-radius:10px;margin:0 .4rem;transition:background .15s;font-size:.83rem;font-weight:500;color:var(--text-muted);}
+
+  /* ══ PILOT CHECKLIST ══ */
+  .pcl-wrap{padding:2rem 2.5rem;overflow-y:auto;max-width:820px;}
+  .pcl-head{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:1.4rem;gap:1rem;flex-wrap:wrap;}
+  .pcl-title{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:700;color:var(--text-primary);}
+  .pcl-sub{font-size:.75rem;color:var(--text-dim);margin-top:.15rem;}
+  .pcl-prog-card{background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius);padding:.85rem 1.1rem;margin-bottom:1.1rem;display:flex;align-items:center;gap:1rem;}
+  .pcl-prog-outer{flex:1;height:7px;background:var(--navy-hover);border-radius:4px;overflow:hidden;}
+  .pcl-prog-inner{height:100%;border-radius:4px;background:var(--accent-green);transition:width .35s;}
+  .pcl-prog-label{font-size:.8rem;font-weight:700;color:var(--text-primary);white-space:nowrap;}
+  .pcl-prog-pct{font-size:.72rem;color:var(--text-dim);white-space:nowrap;}
+  .pcl-list{display:flex;flex-direction:column;gap:.45rem;}
+  .pcl-item{background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius);padding:.8rem 1rem;display:flex;align-items:center;gap:.8rem;cursor:pointer;transition:background .12s;user-select:none;}
+  .pcl-item:hover{background:var(--navy-hover);}
+  .pcl-item.done{opacity:.65;}
+  .pcl-item.done .pcl-item-title{text-decoration:line-through;color:var(--text-dim);}
+  .pcl-chk{width:22px;height:22px;border-radius:6px;border:2px solid var(--navy-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .13s;}
+  .pcl-item.done .pcl-chk{background:var(--accent-green);border-color:var(--accent-green);}
+  .pcl-chk svg{opacity:0;transition:opacity .13s;}
+  .pcl-item.done .pcl-chk svg{opacity:1;}
+  .pcl-item-body{flex:1;min-width:0;}
+  .pcl-item-title{font-size:.86rem;font-weight:600;color:var(--text-primary);line-height:1.3;}
+  .pcl-item-desc{font-size:.72rem;color:var(--text-dim);margin-top:.1rem;}
+  .pcl-item-ts{font-size:.68rem;font-weight:600;color:var(--accent-green);white-space:nowrap;flex-shrink:0;}
+  .pcl-item-ts.pending{color:var(--text-dim);font-weight:400;}
+  /* Admin section */
+  .pcl-admin-section{margin-top:1.75rem;padding-top:1.25rem;border-top:1px solid var(--navy-border);}
+  .pcl-admin-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);margin-bottom:.85rem;}
+  .pcl-admin-row{background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:var(--radius-sm);padding:.5rem .85rem;display:flex;align-items:center;gap:.65rem;font-size:.81rem;}
+  .pcl-admin-row-name{flex:1.2;font-weight:500;color:var(--text-primary);}
+  .pcl-admin-row-desc{flex:2;color:var(--text-dim);font-size:.73rem;}
+  .pcl-add-form{background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:var(--radius-sm);padding:.8rem .95rem;display:flex;gap:.6rem;flex-wrap:wrap;align-items:flex-end;}
+  .pcl-overview-row{display:flex;align-items:center;gap:.7rem;padding:.42rem .7rem;border-radius:var(--radius-sm);}
+  .pcl-ov-av{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.56rem;font-weight:700;color:#fff;flex-shrink:0;}
+  /* Warning modal */
+  #pcl-warn-overlay{display:none;position:fixed;inset:0;background:rgba(7,13,45,.75);backdrop-filter:blur(6px);z-index:9600;align-items:center;justify-content:center;}
+  .pcl-warn-box{background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius);max-width:410px;width:92%;padding:2rem 1.75rem 1.75rem;box-shadow:0 28px 72px rgba(7,13,45,.35);text-align:center;}
+  .pcl-warn-icon{width:50px;height:50px;border-radius:50%;background:rgba(239,149,30,.12);border:1px solid rgba(239,149,30,.3);display:flex;align-items:center;justify-content:center;margin:0 auto .9rem;}
+  .pcl-warn-title{font-family:'Cormorant Garamond',serif;font-size:1.2rem;font-weight:700;color:var(--text-primary);margin-bottom:.45rem;}
+  .pcl-warn-sub{font-size:.82rem;color:var(--text-muted);line-height:1.65;margin-bottom:.85rem;}
+  .pcl-warn-list{text-align:left;background:rgba(239,149,30,.07);border:1px solid rgba(239,149,30,.18);border-radius:var(--radius-sm);padding:.65rem .9rem;margin-bottom:1.25rem;display:flex;flex-direction:column;gap:.3rem;}
+  .pcl-warn-item{font-size:.8rem;color:var(--text-primary);display:flex;align-items:center;gap:.5rem;}
+  .pcl-warn-item::before{content:'';width:5px;height:5px;border-radius:50%;background:#EF951E;flex-shrink:0;}
+  .pcl-warn-btns{display:flex;gap:.6rem;}
   .rem-sidebar-item:hover{background:var(--navy-hover,rgba(255,255,255,.05));}
   .rem-list-active{background:rgba(239,73,60,.1)!important;color:var(--text-primary)!important;}
   .rem-sidebar-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -2211,7 +2255,7 @@ body.dark .ts-input { background:#111827;border-color:#2D3748;color:#F1F5F9; }
   .chat-conv-hname{font-size:.95rem;font-weight:700;color:var(--text-primary);flex:1;letter-spacing:-0.01em;}
   .chat-e2e-bar{padding:.35rem 1rem;background:rgba(49,162,76,.08);border-bottom:1px solid rgba(49,162,76,.15);font-size:.68rem;color:#31A24C;display:flex;align-items:center;justify-content:center;gap:.35rem;font-weight:600;}
   
-  .chat-messages{flex:1;overflow-y:auto;padding:.9rem 1.2rem;display:flex;flex-direction:column;gap:3px;scroll-behavior:smooth;background:var(--navy);background-image:radial-gradient(rgba(255,255,255,0.015) 1px, transparent 0), radial-gradient(rgba(255,255,255,0.015) 1px, transparent 0);background-size:24px 24px;background-position:0 0, 12px 12px;}
+  .chat-messages{flex:1;overflow-y:auto;padding:.9rem 1.2rem;display:flex;flex-direction:column;gap:3px;background:var(--navy);background-image:radial-gradient(rgba(255,255,255,0.015) 1px, transparent 0), radial-gradient(rgba(255,255,255,0.015) 1px, transparent 0);background-size:24px 24px;background-position:0 0, 12px 12px;}
   .chat-messages::-webkit-scrollbar{width:4px;}
   .chat-messages::-webkit-scrollbar-thumb{background:var(--navy-border);border-radius:4px;}
   
@@ -2675,7 +2719,7 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
   .msg-e2e-bar { font-size: .72rem; color: #31A24C; background: rgba(49,162,76,.08); border-bottom: 1px solid rgba(49,162,76,.15); padding: .4rem 1rem; text-align: center; flex-shrink: 0; font-weight: 600; }
   
   /* Message area pattern */
-  .msg-messages-area { flex: 1; overflow-y: auto; padding: 1.2rem 1.5rem; display: flex; flex-direction: column; gap: 3px; scroll-behavior: smooth; background: var(--navy); background-image: radial-gradient(rgba(255,255,255,0.012) 1px, transparent 0), radial-gradient(rgba(255,255,255,0.012) 1px, transparent 0); background-size: 28px 28px; background-position: 0 0, 14px 14px; }
+  .msg-messages-area { flex: 1; overflow-y: auto; padding: 1.2rem 1.5rem; display: flex; flex-direction: column; gap: 3px; background: var(--navy); background-image: radial-gradient(rgba(255,255,255,0.012) 1px, transparent 0), radial-gradient(rgba(255,255,255,0.012) 1px, transparent 0); background-size: 28px 28px; background-position: 0 0, 14px 14px; }
   .msg-messages-area::-webkit-scrollbar{width:4px;}
   .msg-messages-area::-webkit-scrollbar-thumb{background:var(--navy-border);border-radius:4px;}
   
@@ -3057,6 +3101,16 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
         </svg>
         Reminders
         <span class="sidebar-badge" id="rem-badge" style="display:none;background:var(--gold);color:#fff;margin-left:auto;">0</span>
+      </div>
+
+      <div class="sidebar-item" id="sidebar-checklist" onclick="showPage('checklist', this)">
+        <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/>
+          <rect x="9" y="3" width="6" height="4" rx="1"/>
+          <path d="M9 12l2 2 4-4M9 17l2 2 4-4"/>
+        </svg>
+        Daily Ops Checklist
+        <span id="pcl-badge" style="display:none;min-width:18px;height:18px;padding:0 4px;border-radius:20px;background:#EF951E;color:#fff;font-size:.6rem;font-weight:800;margin-left:auto;display:none;align-items:center;justify-content:center;">0</span>
       </div>
 
       <div class="sidebar-section">Account</div>
@@ -3968,9 +4022,9 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
 
             <!-- Detail bar shown when input focused -->
             <div class="rem-detail-bar" id="rem-detail-bar" style="display:none;">
-              <input type="date" class="rem-date-input" id="rem-date-input" title="Date"/>
-              <input type="time" class="rem-date-input" id="rem-time-input" title="Time"/>
-              <select class="rem-date-input" id="rem-pri-select" style="max-width:130px;">
+              <input type="date" class="rem-date-input" id="rem-date-input" title="Date" onblur="remInlineBlur()"/>
+              <input type="time" class="rem-date-input" id="rem-time-input" title="Time" onblur="remInlineBlur()"/>
+              <select class="rem-date-input" id="rem-pri-select" style="max-width:130px;" onblur="remInlineBlur()">
                 <option value="none">No Priority</option>
                 <option value="low">🔵 Low</option>
                 <option value="medium">🟡 Medium</option>
@@ -3986,6 +4040,85 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
 
             <!-- List -->
             <ul class="rem-ul" id="rem-ul"></ul>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── PILOT CHECKLIST PAGE ── -->
+      <div class="page" id="page-checklist">
+        <div class="pcl-wrap">
+          <div class="pcl-head">
+            <div>
+              <div class="pcl-title">📋 Daily Ops Checklist</div>
+              <div class="pcl-sub" id="pcl-date-sub">Today's shift checklist</div>
+            </div>
+            <div id="pcl-pending-pill" style="display:none;padding:.32rem .85rem;border-radius:20px;font-size:.75rem;font-weight:700;background:rgba(239,149,30,.1);color:#EF951E;border:1px solid rgba(239,149,30,.22);align-self:flex-start;margin-top:.3rem;"></div>
+          </div>
+
+          <!-- progress bar -->
+          <div class="pcl-prog-card">
+            <div class="pcl-prog-outer"><div class="pcl-prog-inner" id="pcl-prog-bar" style="width:0%;"></div></div>
+            <div class="pcl-prog-label" id="pcl-prog-label">0 / 0</div>
+            <div class="pcl-prog-pct" id="pcl-prog-pct">0% done</div>
+          </div>
+
+          <!-- checklist items -->
+          <div class="pcl-list" id="pcl-list">
+            <div style="color:var(--text-dim);font-size:.82rem;padding:1rem 0;text-align:center;">Loading checklist…</div>
+          </div>
+
+          <!-- ADMIN SECTION — only visible to admin/TL -->
+          <div class="pcl-admin-section admin-only" id="pcl-admin-wrap">
+            <div class="pcl-admin-label">Manage checklist items</div>
+
+            <!-- existing items -->
+            <div id="pcl-admin-list" style="display:flex;flex-direction:column;gap:.35rem;margin-bottom:.85rem;">
+              <div style="color:var(--text-dim);font-size:.78rem;">Loading…</div>
+            </div>
+
+            <!-- add new item form -->
+            <div class="pcl-add-form">
+              <div style="flex:1.4;min-width:140px;">
+                <div style="font-size:.67rem;font-weight:700;color:var(--text-dim);margin-bottom:.25rem;letter-spacing:.07em;">TITLE *</div>
+                <input id="pcl-new-title" class="xc-input" placeholder="e.g. Cases reviewed" style="width:100%;"/>
+              </div>
+              <div style="flex:2;min-width:150px;">
+                <div style="font-size:.67rem;font-weight:700;color:var(--text-dim);margin-bottom:.25rem;letter-spacing:.07em;">DESCRIPTION (optional)</div>
+                <input id="pcl-new-desc" class="xc-input" placeholder="Short note for agents" style="width:100%;"/>
+              </div>
+              <div style="flex:1.5;min-width:120px;">
+                <div style="font-size:.67rem;font-weight:700;color:var(--text-dim);margin-bottom:.25rem;letter-spacing:.07em;">ASSIGN TO</div>
+                <select id="pcl-new-assign" class="xc-input" style="width:100%;">
+                  <option value="all">Everyone</option>
+                </select>
+              </div>
+              <button class="xc-btn" onclick="pclAddItem()">+ Add</button>
+            </div>
+            <div id="pcl-add-msg" style="font-size:.73rem;color:var(--accent-red);margin-top:.35rem;display:none;"></div>
+
+            <!-- today's overview per agent -->
+            <div style="margin-top:1.4rem;border-top:1px solid var(--navy-border);padding-top:1.1rem;">
+              <div class="pcl-admin-label">Today's completion — all agents</div>
+              <div id="pcl-overview" style="display:flex;flex-direction:column;gap:.38rem;">
+                <div style="color:var(--text-dim);font-size:.78rem;">Loading…</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── CHECKLIST PENDING WARNING MODAL ── -->
+      <div id="pcl-warn-overlay">
+        <div class="pcl-warn-box">
+          <div class="pcl-warn-icon">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#EF951E" stroke-width="2" stroke-linecap="round"><path d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1"/><path d="M9 12l2 2 4-4"/></svg>
+          </div>
+          <div class="pcl-warn-title">Checklist items still pending</div>
+          <div class="pcl-warn-sub">These items are not yet completed. Please go back and mark them before ending your shift.</div>
+          <div class="pcl-warn-list" id="pcl-warn-list"></div>
+          <div class="pcl-warn-btns">
+            <button onclick="pclWarnBack()" style="flex:1.3;padding:.62rem .5rem;background:var(--gold);border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.84rem;font-weight:700;cursor:pointer;color:#fff;">← Go to Checklist</button>
+            <button onclick="pclWarnProceed()" style="flex:1;padding:.62rem .5rem;background:transparent;border:1px solid var(--navy-border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.84rem;font-weight:600;cursor:pointer;color:var(--text-muted);">End Shift Anyway</button>
           </div>
         </div>
       </div>
@@ -4268,6 +4401,23 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
               <h2 class="cd-title">⚙️ Control Deck</h2>
               <p class="cd-sub">Manage team features, celebrations and announcements.</p>
             </div>
+          </div>
+
+          <!-- ── Section: Daily Ops Checklist ── -->
+          <div class="cd-card">
+            <div class="cd-card-header">
+              <span class="cd-card-icon" style="background:rgba(239,149,30,.12);">✈️</span>
+              <div>
+                <div class="cd-card-title">Daily Ops Checklist</div>
+                <div class="cd-card-sub">Enable or disable the daily checklist for all agents</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:.8rem;margin-left:auto;">
+                <span id="cd-pcl-status" style="font-size:.8rem;color:var(--text-muted);">Loading…</span>
+                <label class="cat-toggle-wrap"><input type="checkbox" id="cd-pcl-toggle" onchange="cdPCLToggle(this.checked)"/><span class="cat-toggle-slider"></span></label>
+              </div>
+            </div>
+            <div id="cd-pcl-msg" class="cd-msg" style="display:none;"></div>
+            <div style="margin-top:.6rem;font-size:.75rem;color:var(--text-dim);line-height:1.55;">When enabled, agents see the Daily Ops Checklist in their sidebar. You control which items appear and who they're assigned to.</div>
           </div>
 
           <!-- ── Section 1: Orange Cat AI ── -->
@@ -5134,6 +5284,7 @@ function enterDashboard(){
   setTimeout(loadLiveDashboard,400);
   setTimeout(loadAnnouncements,600);
   setTimeout(checkWorkClockOnLoad,500);
+  setTimeout(pclLoad, 1400); // load checklist silently — needed for End Work check
   setTimeout(xcSyncCfg, 800);
   // Update quiz badge on login
   setTimeout(updateQuizBadge, 1500);
@@ -5263,7 +5414,7 @@ function showPage(id,elem){
   if(id==='moments') setTimeout(function(){_mLoadTab(_mActiveTab);},60);
   if(id==='quiz') loadAgentQuiz();
   if(id==='announcements') loadAnnouncementsAdmin();
-  if(id==='controldeck'){ _cdPwResetUnlocked=false; var lk=document.getElementById('cd-pwreset-locked'),pk=document.getElementById('cd-pwreset-panel'),ub=document.getElementById('cd-pwreset-unlock-btn'),pi=document.getElementById('cd-pwreset-pin'); if(lk)lk.style.display='flex'; if(pk)pk.style.display='none'; if(ub)ub.style.display=''; if(pi){pi.value='';} cdLoadAll(); cdLoadVHAgents(); cdVHLoadGlobalStatus(); }
+  if(id==='controldeck'){ _cdPwResetUnlocked=false; var lk=document.getElementById('cd-pwreset-locked'),pk=document.getElementById('cd-pwreset-panel'),ub=document.getElementById('cd-pwreset-unlock-btn'),pi=document.getElementById('cd-pwreset-pin'); if(lk)lk.style.display='flex'; if(pk)pk.style.display='none'; if(ub)ub.style.display=''; if(pi){pi.value='';} cdLoadAll(); cdLoadVHAgents(); cdVHLoadGlobalStatus(); cdPCLLoadStatus(); }
   if(id==='voicehub'){ vhPageInit(); }
   if(id==='teammeet'){ tmPageInit(); }
   if(id==='assessment') loadAgentAssessment();
@@ -5273,6 +5424,7 @@ function showPage(id,elem){
   if(id==='timesheet') tsInit();
   if(id==='messages') msgInit();
   if(id==='about') aboutLoadItems();
+  if(id==='checklist') pclPageInit();
 }
 
 function isAdminUser(){return currentUser&&(currentUser.role==='admin'||currentUser.role==='tl'||currentUser.role==='syslevel');}
@@ -8896,6 +9048,7 @@ async function loadAssessmentBuilderList(){
             '<button class="qa-toggle-btn" onclick="editAssessmentDetails(\''+a.id+'\')">&#9998; Edit</button>'+
             '<button class="qa-toggle-btn'+(a.review_enabled?' on':'')+'" onclick="toggleAssessmentReview(\''+a.id+'\','+a.review_enabled+')" >&#128065; Review '+(a.review_enabled?'ON':'OFF')+'</button>'+
             '<button class="qa-toggle-btn" onclick="showAssessmentQuestions(\''+a.id+'\',\''+a.title.replace(/'/g,"\\'")+'\')">&#10010; Questions</button>'+
+            '<button class="qa-toggle-btn" onclick="showAssessmentResponses(\''+a.id+'\')">&#128202; Responses</button>'+
             '<button class="qa-del-btn" onclick="deleteAssessment(\''+a.id+'\')">Delete</button>'+
           '</div>'+
         '</div>'+
@@ -8916,6 +9069,7 @@ async function loadAssessmentBuilderList(){
           '</div>'+
         '</div>'+
         '<div id="aq-panel-'+a.id+'" style="display:none;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--navy-border);"></div>'+
+        '<div id="ar-panel-'+a.id+'" style="display:none;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--navy-border);"></div>'+
       '</div>';
     }).join('');
   }catch(e){list.innerHTML='<div style="color:var(--accent-red);padding:1rem;">Error: '+e.message+'</div>';}
@@ -8962,6 +9116,36 @@ async function deleteAssessment(id){
     await sbDelete('assessments','id',id);
     loadAssessmentBuilderList();
   }catch(e){alert('Delete failed.');}
+}
+
+async function showAssessmentResponses(id){
+  var panel=document.getElementById('ar-panel-'+id);
+  if(!panel)return;
+  if(panel.style.display==='block'){panel.style.display='none';return;}
+  panel.style.display='block';
+  panel.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;">Loading responses...</div>';
+  try{
+    var responses=await sbQuery('assessment_responses',
+      'assessment_id=eq.'+id+'&order=submitted_at.asc&select=id,user_name,score,total_questions,submitted_at,malpractice');
+    if(!responses||!responses.length){
+      panel.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;padding:.5rem 0;">No submissions yet.</div>';
+      return;
+    }
+    var html='<div style="font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-bottom:.6rem;">SUBMISSIONS</div>'+
+      responses.map(function(r){
+        var pct=r.total_questions>0?Math.round((r.score||0)/r.total_questions*100):0;
+        var isMalp=r.malpractice===true||r.malpractice==='true';
+        var scoreColor=pct>=80?'var(--accent-green)':pct>=50?'var(--gold)':'var(--accent-red)';
+        var time=r.submitted_at?new Date(r.submitted_at).toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'—';
+        return '<div style="display:flex;align-items:center;gap:.75rem;padding:.5rem .7rem;background:var(--navy-hover);border-radius:6px;margin-bottom:.3rem;'+(isMalp?'border-left:3px solid var(--accent-red);':'')+'">'+
+          '<div style="flex:1;font-size:.82rem;font-weight:600;color:var(--text-primary);">'+esc(r.user_name)+'</div>'+
+          '<div style="font-size:.78rem;font-weight:700;color:'+scoreColor+';">'+( r.score!==null?(r.score+'/'+r.total_questions+' ('+pct+'%)'):'Essay')+'</div>'+
+          '<div style="font-size:.72rem;color:var(--text-dim);">'+time+'</div>'+
+          (isMalp?'<span style="font-size:.68rem;font-weight:700;background:rgba(239,73,60,.12);color:var(--accent-red);padding:2px 8px;border-radius:20px;flex-shrink:0;">🚫 Malpractice</span>':'')+
+        '</div>';
+      }).join('');
+    panel.innerHTML=html;
+  }catch(e){panel.innerHTML='<div style="color:var(--accent-red);font-size:.82rem;">Error: '+e.message+'</div>';}
 }
 
 async function showAssessmentQuestions(id, title){
@@ -9062,6 +9246,10 @@ async function deleteAssessmentQuestion(qId, assessmentId, title){
 
 // ── AGENT ASSESSMENT VIEW ──
 var _assData=null, _assQuestions=[], _assAnswers={}, _assCurrentQ=0, _assTimerInterval=null, _assSecondsLeft=0;
+// ── Proctoring state ──
+var _assProctoring=false;   // true only while an assessment is in progress
+var _assViolations=0;       // count of tab-switch / blur events
+var _assBlurTimer=null;     // grace-period timer to avoid false positives
 
 async function loadAgentAssessment(){
   var content=document.getElementById('assessment-agent-content');
@@ -9104,7 +9292,7 @@ async function renderAgentAssessment(){
   }
 
   // Check attempts
-  var attempts=await sbQuery('assessment_responses','assessment_id=eq.'+_assData.id+'&user_id=eq.'+currentUser.id+'&select=id,answers,submitted_at,score');
+  var attempts=await sbQuery('assessment_responses','assessment_id=eq.'+_assData.id+'&user_id=eq.'+currentUser.id+'&select=id,answers,submitted_at,score,malpractice');
   var attemptCount=attempts?attempts.length:0;
   var lastAttempt=attempts&&attempts.length?attempts[attempts.length-1]:null;
 
@@ -9130,6 +9318,8 @@ async function renderAgentAssessment(){
       '<div class="quiz-result-banner '+(lastAttempt?'pass':'review')+'">'+
         (lastAttempt?'&#9989; Submitted'+(score!==null?' — Score: '+score+'/'+_assQuestions.length:''):'&#128274; Not attempted')+
       '</div>'+
+      (lastAttempt&&(lastAttempt.malpractice===true||lastAttempt.malpractice==='true')?
+        '<div style="margin:.75rem 0;padding:.65rem 1rem;background:rgba(239,73,60,.08);border:1px solid rgba(239,73,60,.25);border-radius:8px;font-size:.82rem;color:var(--accent-red);font-weight:600;">🚫 This submission was flagged for malpractice. Please speak to your Team Leader.</div>':'')+ 
       (reviewHtml||(!lastAttempt?'':(lastAttempt&&!_assData.review_enabled?'<div class="quiz-review-note">Review will be available when your admin enables it.</div>':'')))+
     '</div>';
     return;
@@ -9138,6 +9328,8 @@ async function renderAgentAssessment(){
   // Start assessment
   _assAnswers={}; _assCurrentQ=0;
   _assSecondsLeft=(_assData.time_limit_minutes||30)*60;
+  _assViolations=0;
+  _assProctoring=true;
   renderAssessmentQuestion();
   startAssessmentTimer();
 }
@@ -9233,8 +9425,93 @@ function selectAssessmentOption(val,qId){
 function jumpAssessmentQ(i){ _assCurrentQ=i; }
 function navAssessmentQ(dir){ _assCurrentQ=Math.max(0,Math.min(_assQuestions.length-1,_assCurrentQ+dir)); }
 
-async function submitAssessment(autoSubmit){
-  if(!autoSubmit){
+// ════════════════════════════════════════════════════════
+//  ASSESSMENT PROCTORING — tab/window switch detection
+// ════════════════════════════════════════════════════════
+function assHandleViolation(reason){
+  if(!_assProctoring) return;
+  _assViolations++;
+  if(_assViolations===1){
+    // First violation — show warning overlay, give chance to continue
+    assShowWarning(reason);
+  } else {
+    // Second violation — terminate immediately
+    assTerminate(reason);
+  }
+}
+
+function assShowWarning(reason){
+  // Remove any existing warning
+  var old=document.getElementById('ass-proctor-warn');
+  if(old) old.remove();
+
+  var overlay=document.createElement('div');
+  overlay.id='ass-proctor-warn';
+  overlay.style.cssText='position:fixed;inset:0;background:rgba(7,13,45,.82);z-index:9950;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(6px);';
+  overlay.innerHTML=
+    '<div style="background:var(--navy-card);border:1.5px solid rgba(239,73,60,.4);border-radius:var(--radius);max-width:400px;width:92%;padding:2rem;text-align:center;box-shadow:0 24px 72px rgba(0,0,0,.4);">'+
+      '<div style="font-size:2.2rem;margin-bottom:.6rem;">⚠️</div>'+
+      '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.2rem;font-weight:700;color:var(--accent-red);margin-bottom:.5rem;">Warning — Malpractice Detected</div>'+
+      '<div style="font-size:.85rem;color:var(--text-muted);line-height:1.7;margin-bottom:.4rem;">'+
+        'You switched away from the assessment window.<br>'+
+        '<strong style="color:var(--text-primary);">This is your first and only warning.</strong>'+
+      '</div>'+
+      '<div style="font-size:.82rem;background:rgba(239,73,60,.08);border:1px solid rgba(239,73,60,.2);border-radius:8px;padding:.65rem 1rem;color:var(--accent-red);font-weight:600;margin-bottom:1.4rem;">'+
+        '🚫 A second violation will auto-submit and flag your assessment.'+
+      '</div>'+
+      '<button onclick="assWarnDismiss()" style="padding:.65rem 2rem;background:var(--gold);border:none;border-radius:8px;font-family:\'DM Sans\',sans-serif;font-size:.9rem;font-weight:700;color:#fff;cursor:pointer;">I Understand — Continue</button>'+
+    '</div>';
+  document.body.appendChild(overlay);
+}
+
+function assWarnDismiss(){
+  var w=document.getElementById('ass-proctor-warn');
+  if(w) w.remove();
+}
+
+function assTerminate(reason){
+  _assProctoring=false;
+  clearTimeout(_assBlurTimer);
+  var w=document.getElementById('ass-proctor-warn');
+  if(w) w.remove();
+  submitAssessment(true, true); // auto-submit with malpractice=true
+}
+
+// ── Visibility change (tab switch, minimise) ──
+document.addEventListener('visibilitychange', function(){
+  if(!_assProctoring) return;
+  if(document.visibilityState==='hidden'){
+    // Small grace period — some browsers fire this on popups, print dialogs etc.
+    _assBlurTimer=setTimeout(function(){
+      assHandleViolation('tab_hidden');
+    }, 400);
+  } else {
+    // Returned — cancel grace period if they came back fast
+    clearTimeout(_assBlurTimer);
+  }
+});
+
+// ── Window blur (Alt+Tab, clicking another app) ──
+window.addEventListener('blur', function(){
+  if(!_assProctoring) return;
+  // Longer grace period for blur — browser devtools, OS notifications etc.
+  _assBlurTimer=setTimeout(function(){
+    // Double-check visibility — if tab is still visible, this was a minor focus loss
+    if(document.visibilityState==='visible'){
+      assHandleViolation('window_blur');
+    }
+  }, 600);
+});
+
+window.addEventListener('focus', function(){
+  // Cancel pending blur violation if they returned fast enough
+  clearTimeout(_assBlurTimer);
+});
+
+async function submitAssessment(autoSubmit, malpractice){
+  _assProctoring=false; // stop proctoring regardless
+  clearTimeout(_assBlurTimer);
+  if(!autoSubmit && !malpractice){
     var unanswered=_assQuestions.filter(function(q){return!_assAnswers[q.id];}).length;
     if(unanswered>0&&!confirm(unanswered+' question(s) unanswered. Submit anyway?'))return;
   }
@@ -9244,9 +9521,27 @@ async function submitAssessment(autoSubmit){
     await sbInsert('assessment_responses',{
       assessment_id:_assData.id, user_id:currentUser.id, user_name:currentUser.name,
       answers:JSON.stringify(_assAnswers), score:score,
-      total_questions:_assQuestions.length, submitted_at:new Date().toISOString(), date:todayStr()
+      total_questions:_assQuestions.length, submitted_at:new Date().toISOString(), date:todayStr(),
+      malpractice: malpractice ? true : false
     });
-    renderAgentAssessment();
+    if(malpractice){
+      // Show lockout screen — don't call renderAgentAssessment (would reload)
+      var content=document.getElementById('assessment-agent-content');
+      if(content){
+        content.innerHTML=
+          '<div class="quiz-lock-screen" style="padding:2.5rem 2rem;">'+
+            '<div style="font-size:3rem;margin-bottom:.75rem;">🚫</div>'+
+            '<div class="quiz-lock-title" style="color:var(--accent-red);font-size:1.15rem;">Assessment Terminated</div>'+
+            '<div class="quiz-lock-sub" style="margin-top:.6rem;line-height:1.7;max-width:360px;color:var(--text-muted);">'+
+              'Malpractice detected — you navigated away from the assessment window '+_assViolations+' time'+(+_assViolations!==1?'s':'')+'.'+
+              '<br><br>Your answers have been auto-submitted and flagged for admin review.'+
+              '<br><br>Please contact your Team Leader if you believe this was a mistake.'+
+            '</div>'+
+          '</div>';
+      }
+    } else {
+      renderAgentAssessment();
+    }
   }catch(e){alert('Submit failed: '+e.message);}
 }
 
@@ -9616,11 +9911,22 @@ async function workClockIn(){
 
 function workClockOut(){
   if(!_wclockAttendance){ alert('No active work session found.'); return; }
-  // Show custom confirmation modal instead of plain confirm()
+
+  // ── Checklist check: only for non-admin agents with active items ──
+  if(!isAdminUser() && typeof pclGetPending==='function'){
+    var pending = pclGetPending();
+    if(pending.length){
+      pclShowWarning(function(){ _pclShowEndWorkModal(); });
+      return;
+    }
+  }
+  _pclShowEndWorkModal();
+}
+
+function _pclShowEndWorkModal(){
   var overlay = document.getElementById('end-work-modal-overlay');
-  var btn = document.getElementById('end-work-confirm-btn');
+  var btn     = document.getElementById('end-work-confirm-btn');
   if(overlay) overlay.style.display='flex';
-  // Disable confirm button for 2 seconds
   if(btn){
     btn.disabled=true; btn.style.opacity='.5'; btn.style.cursor='not-allowed';
     btn.textContent='End Shift (2s)';
@@ -9628,11 +9934,7 @@ function workClockOut(){
     var countdown=setInterval(function(){
       t--;
       if(t>0){ btn.textContent='End Shift ('+t+'s)'; }
-      else {
-        clearInterval(countdown);
-        btn.disabled=false; btn.style.opacity='1'; btn.style.cursor='pointer';
-        btn.textContent='Yes, End Shift';
-      }
+      else{ clearInterval(countdown); btn.disabled=false; btn.style.opacity='1'; btn.style.cursor='pointer'; btn.textContent='Yes, End Shift'; }
     },1000);
   }
 }
@@ -14046,7 +14348,7 @@ function pplCloseLightbox(){
 /* messages */
 #cp-msgs {
   flex:1; overflow-y:auto; padding:13px 12px;
-  display:flex; flex-direction:column; gap:9px; scroll-behavior:smooth;
+  display:flex; flex-direction:column; gap:9px;
   min-height:0;
 }
 #cp-msgs::-webkit-scrollbar { width:3px; }
@@ -16175,6 +16477,369 @@ window.catGlobalToggle = async function(enabled){
   var _origXcTab = typeof xcTabSwitch==='function' ? xcTabSwitch : null;
 })();
 
+// ══════════════════════════════════════════════════════════════
+//  PILOT CHECKLIST SYSTEM
+//  DB tables required:
+//    checklist_items:
+//      id uuid PK, title text, description text,
+//      order_num int, active bool, assign_to text (user_id or 'all'),
+//      assign_name text, created_at timestamptz
+//    checklist_completions:
+//      id uuid PK, user_id uuid, user_name text,
+//      item_id uuid, date date, done_at timestamptz,
+//      UNIQUE(user_id, item_id, date)
+//  Control key in settings table:
+//      key='pcl_enabled', value='true'/'false'
+// ══════════════════════════════════════════════════════════════
+
+var _pclItems     = [];   // active items assigned to this user (or 'all')
+var _pclDone      = {};   // { item_id: done_at_iso } for today
+var _pclEnabled   = false;// controlled by admin via settings
+var _pclWarnCb    = null; // callback after warning modal
+
+// ── Helpers ──
+function pclTodayStr(){
+  var d=new Date();
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
+function pclFmtTime(iso){
+  if(!iso)return'';
+  var d=new Date(iso);
+  return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+
+// ── Check if checklist is enabled (admin-controlled) ──
+async function pclCheckEnabled(){
+  try{
+    var rows=await sbQuery('settings','key=eq.pcl_enabled&select=value');
+    _pclEnabled = rows&&rows.length ? rows[0].value==='true' : false;
+  }catch(e){ _pclEnabled=false; }
+  // Update sidebar visibility
+  var sb=document.getElementById('sidebar-checklist');
+  if(sb) sb.style.display = (_pclEnabled||isAdminUser()) ? 'flex' : 'none';
+}
+
+// ── Load items + today's completions for current user ──
+async function pclLoad(){
+  if(!currentUser) return;
+  await pclCheckEnabled();
+  if(!_pclEnabled && !isAdminUser()) return; // silently skip if disabled
+
+  try{
+    // Items assigned to this user OR to 'all'
+    var allItems = await sbQuery('checklist_items',
+      'active=eq.true&order=order_num.asc,created_at.asc&select=id,title,description,order_num,assign_to');
+    _pclItems = (allItems||[]).filter(function(it){
+      return it.assign_to==='all' || it.assign_to===currentUser.id;
+    });
+  }catch(e){ _pclItems=[]; }
+
+  try{
+    var comps = await sbQuery('checklist_completions',
+      'user_id=eq.'+currentUser.id+'&date=eq.'+pclTodayStr()+'&select=item_id,done_at');
+    _pclDone={};
+    (comps||[]).forEach(function(c){ _pclDone[c.item_id]=c.done_at||new Date().toISOString(); });
+  }catch(e){ _pclDone={}; }
+
+  pclUpdateBadge();
+}
+
+// ── Render the page ──
+function pclRender(){
+  var listEl = document.getElementById('pcl-list');
+  if(!listEl) return;
+
+  var d=new Date();
+  var days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  var months=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  var subEl=document.getElementById('pcl-date-sub');
+  if(subEl) subEl.textContent=days[d.getDay()]+', '+months[d.getMonth()]+' '+d.getDate()+' · Shift checklist';
+
+  if(!_pclEnabled && !isAdminUser()){
+    listEl.innerHTML='<div style="text-align:center;padding:2.5rem 1rem;color:var(--text-dim);font-size:.85rem;">Checklist is not enabled by your admin yet.</div>';
+    pclUpdateProgress(0,0);
+    return;
+  }
+
+  if(!_pclItems.length){
+    listEl.innerHTML='<div style="text-align:center;padding:2rem 1rem;color:var(--text-dim);font-size:.82rem;">'+(isAdminUser()?'No items yet — add items in the admin section below.':'No checklist items assigned to you.')+'</div>';
+    pclUpdateProgress(0,0);
+    return;
+  }
+
+  var doneCount=_pclItems.filter(function(it){return !!_pclDone[it.id];}).length;
+  pclUpdateProgress(doneCount, _pclItems.length);
+
+  listEl.innerHTML=_pclItems.map(function(item){
+    var done=!!_pclDone[item.id];
+    var ts=done?pclFmtTime(_pclDone[item.id]):'';
+    return '<div class="pcl-item'+(done?' done':'')+'" onclick="pclToggle(\''+item.id+'\')" id="pcl-item-row-'+item.id+'">'+
+      '<div class="pcl-chk">'+
+        '<svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">'+
+          '<polyline points="1.5,7 5,10.5 11.5,2.5"/>'+
+        '</svg>'+
+      '</div>'+
+      '<div class="pcl-item-body">'+
+        '<div class="pcl-item-title">'+esc(item.title)+'</div>'+
+        (item.description?'<div class="pcl-item-desc">'+esc(item.description)+'</div>':'')+
+      '</div>'+
+      '<div class="pcl-item-ts'+(done?'':' pending')+'">'+(done?'✓ '+ts:'Pending')+'</div>'+
+    '</div>';
+  }).join('');
+
+  // Admin section
+  if(isAdminUser()){
+    pclLoadAdminItems();
+    pclLoadOverview();
+  }
+}
+
+function pclUpdateProgress(done, total){
+  var pct=total>0?Math.round((done/total)*100):0;
+  var bar=document.getElementById('pcl-prog-bar');
+  var lbl=document.getElementById('pcl-prog-label');
+  var pctEl=document.getElementById('pcl-prog-pct');
+  var pill=document.getElementById('pcl-pending-pill');
+  if(bar) bar.style.width=pct+'%';
+  if(lbl) lbl.textContent=done+' / '+total;
+  if(pctEl) pctEl.textContent=pct+'% done';
+  var pending=total-done;
+  if(pill){
+    if(pending>0){ pill.textContent=pending+' pending'; pill.style.display='block'; }
+    else { pill.style.display='none'; }
+  }
+}
+
+// ── Toggle item done/undone ──
+async function pclToggle(itemId){
+  if(!currentUser) return;
+  var wasDone=!!_pclDone[itemId];
+  if(wasDone){
+    delete _pclDone[itemId];
+    try{
+      var rows=await sbQuery('checklist_completions',
+        'user_id=eq.'+currentUser.id+'&date=eq.'+pclTodayStr()+'&item_id=eq.'+itemId+'&select=id');
+      if(rows&&rows.length) await sbDelete('checklist_completions','id',rows[0].id);
+    }catch(e){}
+  } else {
+    var nowIso=new Date().toISOString();
+    _pclDone[itemId]=nowIso;
+    try{
+      await sbInsert('checklist_completions',{
+        user_id:currentUser.id, user_name:currentUser.name,
+        item_id:itemId, date:pclTodayStr(), done_at:nowIso
+      });
+    }catch(e){ console.warn('PCL toggle:', e.message); }
+  }
+  pclRender();
+  pclUpdateBadge();
+}
+
+// ── Sidebar badge ──
+function pclUpdateBadge(){
+  var badge=document.getElementById('pcl-badge');
+  if(!badge) return;
+  var pending=_pclItems.filter(function(it){return !_pclDone[it.id];}).length;
+  if(pending>0){ badge.textContent=pending; badge.style.cssText='display:inline-flex;min-width:18px;height:18px;padding:0 4px;border-radius:20px;background:#EF951E;color:#fff;font-size:.6rem;font-weight:800;margin-left:auto;align-items:center;justify-content:center;'; }
+  else { badge.style.display='none'; }
+}
+
+// ── Get pending items list ──
+function pclGetPending(){
+  return _pclItems.filter(function(it){ return !_pclDone[it.id]; });
+}
+
+// ── Warning modal ──
+function pclShowWarning(onProceed){
+  var pending=pclGetPending();
+  if(!pending.length){ onProceed(); return; }
+  _pclWarnCb=onProceed;
+  var listEl=document.getElementById('pcl-warn-list');
+  if(listEl) listEl.innerHTML=pending.map(function(it){
+    return '<div class="pcl-warn-item">'+esc(it.title)+'</div>';
+  }).join('');
+  var ov=document.getElementById('pcl-warn-overlay');
+  if(ov) ov.style.display='flex';
+}
+function pclWarnBack(){
+  var ov=document.getElementById('pcl-warn-overlay');
+  if(ov) ov.style.display='none';
+  _pclWarnCb=null;
+  showPage('checklist', document.getElementById('sidebar-checklist'));
+}
+function pclWarnProceed(){
+  var ov=document.getElementById('pcl-warn-overlay');
+  if(ov) ov.style.display='none';
+  if(typeof _pclWarnCb==='function') _pclWarnCb();
+  _pclWarnCb=null;
+}
+
+// ── Admin: load template items list ──
+async function pclLoadAdminItems(){
+  var el=document.getElementById('pcl-admin-list');
+  if(!el) return;
+  try{
+    var items=await sbQuery('checklist_items',
+      'order=order_num.asc,created_at.asc&select=id,title,description,assign_name,active');
+    if(!items||!items.length){
+      el.innerHTML='<div style="color:var(--text-dim);font-size:.78rem;padding:.2rem 0;">No items yet.</div>';
+      return;
+    }
+    el.innerHTML=items.map(function(it){
+      return '<div class="pcl-admin-row">'+
+        '<span class="pcl-admin-row-name">'+esc(it.title)+'</span>'+
+        '<span class="pcl-admin-row-desc">'+esc(it.description||'')+'</span>'+
+        '<span style="font-size:.72rem;color:var(--text-dim);flex-shrink:0;">'+esc(it.assign_name||'Everyone')+'</span>'+
+        '<label style="font-size:.73rem;color:var(--text-dim);display:flex;align-items:center;gap:.3rem;cursor:pointer;flex-shrink:0;">'+
+          '<input type="checkbox" '+(it.active?'checked':'')+' onchange="pclToggleActive(\''+it.id+'\',this.checked)" style="accent-color:var(--accent-green);"/>Active</label>'+
+        '<button onclick="pclDeleteItem(\''+it.id+'\')" style="padding:.22rem .55rem;background:transparent;border:1px solid rgba(239,73,60,.3);border-radius:5px;color:var(--accent-red);font-size:.7rem;cursor:pointer;flex-shrink:0;">✕</button>'+
+      '</div>';
+    }).join('');
+  }catch(e){ if(el) el.innerHTML='<div style="color:var(--accent-red);font-size:.78rem;">'+esc(e.message)+'</div>'; }
+}
+
+// ── Admin: populate assign dropdown with agents (always fresh, includes self) ──
+async function pclPopulateAssignSelect(){
+  var sel=document.getElementById('pcl-new-assign');
+  if(!sel) return;
+  // Always rebuild — clear everything except the first "Everyone" option
+  while(sel.options.length > 1) sel.remove(1);
+  try{
+    // Fetch all users (including admins/TLs — they need items assigned to them too)
+    var users=await sbQuery('users','role=neq.syslevel&select=id,name,role&order=name.asc');
+    if(!users||!users.length){
+      var o=document.createElement('option');
+      o.disabled=true; o.textContent='No users found';
+      sel.appendChild(o);
+      return;
+    }
+    // Put current user (yourself) first, labelled clearly
+    var selfFirst=[];
+    var rest=[];
+    (users||[]).forEach(function(u){
+      if(currentUser && u.id===currentUser.id) selfFirst.push(u);
+      else rest.push(u);
+    });
+    selfFirst.concat(rest).forEach(function(u){
+      var o=document.createElement('option');
+      o.value=u.id;
+      var isSelf=currentUser&&u.id===currentUser.id;
+      var roleLabel=u.role==='admin'||u.role==='tl'?' ('+u.role.toUpperCase()+')':'';
+      o.textContent=(isSelf?'👤 Me — ':'')+u.name+roleLabel;
+      sel.appendChild(o);
+    });
+  }catch(e){
+    var o=document.createElement('option');
+    o.disabled=true; o.textContent='Error loading users: '+e.message;
+    sel.appendChild(o);
+    console.warn('pclPopulateAssignSelect error:', e.message);
+  }
+}
+
+async function pclAddItem(){
+  var titleEl=document.getElementById('pcl-new-title');
+  var descEl=document.getElementById('pcl-new-desc');
+  var assignEl=document.getElementById('pcl-new-assign');
+  var msgEl=document.getElementById('pcl-add-msg');
+  var title=(titleEl&&titleEl.value||'').trim();
+  if(!title){ if(msgEl){msgEl.textContent='Title is required.';msgEl.style.display='block';} return; }
+  if(msgEl) msgEl.style.display='none';
+  var assignTo=assignEl?assignEl.value:'all';
+  var assignName=assignEl?(assignEl.options[assignEl.selectedIndex]||{}).text||'Everyone':'Everyone';
+  try{
+    var existing=await sbQuery('checklist_items','order=order_num.desc&limit=1&select=order_num');
+    var nextOrder=(existing&&existing.length?(existing[0].order_num||0):0)+1;
+    await sbInsert('checklist_items',{
+      title:title,
+      description:(descEl&&descEl.value||'').trim()||null,
+      order_num:nextOrder, active:true,
+      assign_to:assignTo, assign_name:assignName,
+      created_at:new Date().toISOString()
+    });
+    if(titleEl) titleEl.value='';
+    if(descEl) descEl.value='';
+    pclLoadAdminItems();
+    pclLoad().then(function(){ pclRender(); });
+  }catch(e){ if(msgEl){msgEl.textContent='Error: '+e.message;msgEl.style.display='block';} }
+}
+
+async function pclToggleActive(id, active){
+  try{ await sbUpdate('checklist_items','id',id,{active:active}); pclLoad().then(pclRender); }
+  catch(e){ alert('Error: '+e.message); }
+}
+
+async function pclDeleteItem(id){
+  if(!confirm('Remove this item? Past completions are kept.')) return;
+  try{ await sbDelete('checklist_items','id',id); pclLoadAdminItems(); pclLoad().then(pclRender); }
+  catch(e){ alert('Error: '+e.message); }
+}
+
+// ── Admin: all-agent completion overview ──
+async function pclLoadOverview(){
+  var el=document.getElementById('pcl-overview');
+  if(!el) return;
+  try{
+    var users=await sbQuery('users','role=neq.syslevel&select=id,name&order=name.asc');
+    var comps=await sbQuery('checklist_completions','date=eq.'+pclTodayStr()+'&select=user_id,item_id');
+    // Count only active items per user (assigned to them or 'all')
+    var allItems=await sbQuery('checklist_items','active=eq.true&select=id,assign_to');
+    var compMap={};
+    (comps||[]).forEach(function(c){ if(!compMap[c.user_id])compMap[c.user_id]=0; compMap[c.user_id]++; });
+    el.innerHTML=(users||[]).map(function(u){
+      var myItems=(allItems||[]).filter(function(it){ return it.assign_to==='all'||it.assign_to===u.id; });
+      var total=myItems.length;
+      if(!total) return '';
+      var done=compMap[u.id]||0;
+      var pct=Math.round((done/total)*100);
+      var col=pct===100?'var(--accent-green)':pct>=60?'#EF951E':'var(--accent-red)';
+      var bg=pct===100?'rgba(46,197,111,.08)':pct>=60?'rgba(239,149,30,.07)':'rgba(239,73,60,.05)';
+      var ini=(u.name||'?').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
+      return '<div class="pcl-overview-row" style="background:'+bg+';">'+
+        '<div class="pcl-ov-av" style="background:'+col+';">'+ini+'</div>'+
+        '<div style="flex:1;font-size:.8rem;font-weight:600;color:var(--text-primary);">'+esc(u.name)+'</div>'+
+        '<div style="width:70px;height:5px;background:var(--navy-hover);border-radius:3px;overflow:hidden;flex-shrink:0;">'+
+          '<div style="width:'+pct+'%;height:100%;background:'+col+';border-radius:3px;"></div>'+
+        '</div>'+
+        '<div style="font-size:.73rem;font-weight:700;color:'+col+';min-width:30px;text-align:right;">'+done+'/'+total+'</div>'+
+      '</div>';
+    }).join('');
+  }catch(e){ if(el) el.innerHTML='<div style="color:var(--text-dim);font-size:.78rem;">Could not load overview.</div>'; }
+}
+
+// ── Page init ──
+async function pclPageInit(){
+  await pclLoad();
+  pclRender();
+  if(isAdminUser()) pclPopulateAssignSelect(); // always refresh dropdown
+}
+
+// ══════════════════════════════════════════════════════════════
+//  Control Deck: enable/disable checklist globally
+//  Called from cdQLToggle pattern — add cdPCLLoadStatus + cdPCLToggle
+// ══════════════════════════════════════════════════════════════
+async function cdPCLLoadStatus(){
+  try{
+    var rows=await sbQuery('settings','key=eq.pcl_enabled&select=value');
+    var on=rows&&rows.length?rows[0].value==='true':false;
+    var tog=document.getElementById('cd-pcl-toggle');
+    var st=document.getElementById('cd-pcl-status');
+    if(tog) tog.checked=on;
+    if(st) st.textContent=on?'Enabled':'Disabled';
+  }catch(e){}
+}
+async function cdPCLToggle(on){
+  var st=document.getElementById('cd-pcl-status');
+  var msg=document.getElementById('cd-pcl-msg');
+  if(st) st.textContent=on?'Enabled':'Disabled';
+  try{
+    var ex=await sbQuery('settings','key=eq.pcl_enabled&select=key');
+    if(ex&&ex.length){ await sbUpdate('settings','key','pcl_enabled',{value:on?'true':'false'}); }
+    else { await sbInsert('settings',{key:'pcl_enabled',value:on?'true':'false'}); }
+    if(msg){ msg.style.display='block'; msg.textContent=on?'📋 Daily Ops Checklist enabled for all agents':'🔒 Daily Ops Checklist disabled'; setTimeout(function(){msg.style.display='none';},3000); }
+    pclCheckEnabled();
+  }catch(e){ alert('Error: '+e.message); }
+}
+
 window.catShowWidget=function(){
   // Check global ON/OFF setting before showing
   catLoadGlobalState().then(function(enabled){
@@ -16531,10 +17196,19 @@ function remInlineBlur(){
   // Small delay to allow clicking detail bar without losing content
   setTimeout(function(){
     var inp=document.getElementById('rem-inline-input');
-    if(inp&&inp.value.trim()) remCommitInline();
     var db=document.getElementById('rem-detail-bar');
-    if(db&&document.activeElement&&!db.contains(document.activeElement)) db.style.display='none';
-  },200);
+    
+    // Check if the focus has moved to something inside the detail bar, or back to the input
+    var isFocusingInput = document.activeElement === inp;
+    var isFocusingDetailBar = db && db.contains(document.activeElement);
+    
+    if (isFocusingInput || isFocusingDetailBar) {
+      return; // User is still interacting with the reminder creator
+    }
+    
+    if(inp&&inp.value.trim()) remCommitInline();
+    if(db) db.style.display='none';
+  },250);
 }
 
 function remCommitInline(){
