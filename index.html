@@ -5349,6 +5349,7 @@ async function doLogin(){
       currentUser={id:'syslevel',name:'System',email:APP_SYNC_ID,role:'syslevel'};
       saveSession(currentUser);
       statusEl.style.display='none';btn.disabled=false;btn.textContent='Sign In';
+      siCaptureSession(currentUser);
       enterDashboard();
       return;
     }
@@ -5661,6 +5662,10 @@ function updateAdminVisibility(){
   if(tsItem){
     var canSeeTs=isAdminUser()||(currentUser&&currentUser.timesheetEnabled);
     tsItem.style.display=canSeeTs?'flex':'none';
+  }
+  // K7 Radar: update visibility based on global toggle
+  if(typeof window.radarUpdateSidebarVisibility === 'function'){
+    window.radarUpdateSidebarVisibility();
   }
 }
 function openSimulation(){window.open('simulation.html','_blank');}
@@ -21062,6 +21067,8 @@ async function siLoadLogs(){
   function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
   function radarIsEnabled(){
+    // If the feature is disabled under Control Deck, it is off for everyone.
+    if(window._radarEnabled !== true) return false;
     // Admin/TL always have access; others need the toggle enabled
     if(typeof isAdminUser === 'function' && isAdminUser()) return true;
     return window._radarEnabled === true;
@@ -21437,6 +21444,10 @@ async function siLoadLogs(){
   (function(){
     var _sp = showPage;
     showPage = function(id, elem){
+      if(id === 'radar' && !radarIsEnabled()){
+        _sp('home', document.querySelector('.sidebar-item'));
+        return;
+      }
       _sp(id, elem);
       if(id === 'radar') radarInitPage();
     };
@@ -21740,6 +21751,10 @@ async function siLoadLogs(){
   document.addEventListener('DOMContentLoaded', function(){
     setTimeout(radarLoadCdToggleState, 1200);
   });
+
+  // Expose functions to window so they can be called from outside this IIFE
+  window.radarIsEnabled = radarIsEnabled;
+  window.radarUpdateSidebarVisibility = radarUpdateSidebarVisibility;
 
 })();
 
