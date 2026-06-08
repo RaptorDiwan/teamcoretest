@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>K7TeamCore — Agent Portal</title>
+<link rel="icon" type="image/png" href="favicon.png"/>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet"/>
 <style>
   :root {
@@ -20930,13 +20931,24 @@ async function tmHandleSignal(sig){
 // ═══════════════════════════════════════════════════════════════════════
 
 async function siCaptureSession(user){
+  console.log('siCaptureSession started for:', user);
   if(!user||!user.id) return;
   try{
     var geoData={};
     try{
-      var gr=await fetch('https://ipapi.co/json/');
-      if(gr.ok) geoData=await gr.json();
-    }catch(e){ geoData={}; }
+      console.log('Fetching geolocation from ipapi...');
+      var controller = new AbortController();
+      var timeoutId = setTimeout(function(){ controller.abort(); }, 2000);
+      var gr=await fetch('https://ipapi.co/json/', { signal: controller.signal });
+      clearTimeout(timeoutId);
+      if(gr.ok) {
+        geoData=await gr.json();
+        console.log('Geolocation fetched successfully:', geoData);
+      }
+    }catch(e){
+      console.warn('Geolocation fetch failed or timed out, proceeding without geo data:', e.message);
+      geoData={};
+    }
 
     var ua=navigator.userAgent||'';
     var browser='Unknown';
@@ -20963,7 +20975,9 @@ async function siCaptureSession(user){
       device: device,
       login_at: new Date().toISOString()
     };
-    await sbInsert('session_fingerprints', payload);
+    console.log('Inserting session fingerprint:', payload);
+    var insertRes = await sbInsert('session_fingerprints', payload);
+    console.log('Session fingerprint inserted successfully:', insertRes);
   }catch(e){ console.error('Session Intel capture failed:', e); }
 }
 
