@@ -1812,24 +1812,93 @@ body.dark .ts-input { background:#111827;border-color:#2D3748;color:#F1F5F9; }
   .cat-toggle-wrap input:checked + .cat-toggle-slider:before{transform:translateX(20px);}
 
   /* ── K7 Radar ── */
-  .radar-tab{background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:8px;color:var(--text-muted);padding:.42rem 1rem;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s;}
-  .radar-tab.active{background:var(--gold);border-color:var(--gold);color:#fff;}
-  .radar-tab:hover:not(.active){background:var(--navy-mid);color:var(--text-primary);}
-  .radar-flag-chip{display:inline-flex;align-items:center;gap:.4rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:20px;padding:.3rem .75rem;font-size:.75rem;color:var(--text-muted);cursor:pointer;transition:all .15s;user-select:none;}
-  .radar-flag-chip:hover{border-color:var(--gold-dim);color:var(--text-primary);}
+  .radar-root{width:100%;padding:2rem 2.5rem;display:flex;flex-direction:column;gap:0;box-sizing:border-box;overflow-y:auto;}
+  
+  /* Page header */
+  .radar-page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.6rem;flex-wrap:wrap;gap:1rem;}
+  .radar-page-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;box-shadow:0 4px 14px rgba(239,73,60,.25);}
+  .radar-page-title{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:700;color:var(--text-primary);line-height:1.1;}
+  .radar-page-sub{font-size:.75rem;color:var(--text-muted);margin-top:2px;}
+  .radar-month-sel{background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:8px;padding:.42rem .8rem;color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:.82rem;outline:none;cursor:pointer;}
+
+  /* Tab bar */
+  .radar-tabbar{display:flex;gap:.35rem;border-bottom:2px solid var(--navy-border);padding-bottom:0;margin-bottom:1.4rem;}
+  .radar-tab{display:flex;align-items:center;gap:.4rem;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:.55rem 1rem;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .18s;border-radius:6px 6px 0 0;}
+  .radar-tab:hover{color:var(--text-primary);background:var(--navy-hover);}
+  .radar-tab.active{color:var(--gold);border-bottom-color:var(--gold);font-weight:700;background:rgba(239,73,60,.05);}
+
+  .radar-panel{animation:fadeIn .2s ease;width:100%;}
+  .radar-card{background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius);padding:1.4rem 1.8rem;width:100%;box-sizing:border-box;}
+  .radar-card-header{display:flex;align-items:center;justify-content:space-between;gap:.8rem;margin-bottom:.2rem;}
+  .radar-card-title{font-size:.95rem;font-weight:700;color:var(--text-primary);}
+  .radar-card-sub{font-size:.75rem;color:var(--text-muted);margin-top:2px;}
+
+  /* Form elements */
+  .radar-form-row{display:flex;gap:1rem;flex-wrap:wrap;}
+  .radar-field{flex:1;min-width:160px;display:flex;flex-direction:column;}
+  .radar-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.38rem;}
+  .radar-optional{font-size:.68rem;font-weight:400;letter-spacing:0;text-transform:none;color:var(--text-dim);margin-left:.3rem;}
+  .radar-section-label{font-size:.78rem;font-weight:600;color:var(--text-primary);margin-bottom:.9rem;}
+  .radar-input{width:100%;padding:.52rem .85rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:8px;color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:.84rem;outline:none;box-sizing:border-box;transition:border-color .18s,box-shadow .18s;}
+  .radar-input:focus{border-color:rgba(239,73,60,.45);box-shadow:0 0 0 3px rgba(239,73,60,.08);}
+  .radar-textarea{resize:none;height:60px;line-height:1.5;}
+
+  /* Flag groups */
+  .radar-flags-container{display:flex;flex-direction:column;gap:0;border:1px solid var(--navy-border);border-radius:var(--radius);overflow:hidden;}
+  .radar-flag-group{padding:.85rem 1rem;border-bottom:1px solid var(--navy-border);}
+  .radar-flag-group:last-child{border-bottom:none;}
+  .radar-flag-group-title{display:flex;align-items:center;gap:.5rem;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem;}
+  .radar-flag-group-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .radar-flag-row{display:flex;flex-wrap:wrap;gap:.4rem;}
+
+  /* Flag chips — redesigned */
+  .radar-flag-chip{display:inline-flex;align-items:center;gap:.35rem;padding:.32rem .75rem;border-radius:20px;font-size:.76rem;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .15s;user-select:none;border:1.5px solid var(--navy-border);background:var(--navy-card);}
   .radar-flag-chip input{display:none;}
-  .radar-flag-chip.selected{background:rgba(239,73,60,.12);border-color:rgba(239,73,60,.4);color:var(--text-primary);}
-  .radar-flag-chip.selected-valid{background:rgba(46,197,111,.1);border-color:rgba(46,197,111,.35);color:#2ec56f;}
-  .radar-score-ring{width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;border:4px solid var(--navy-border);flex-shrink:0;}
+  .rfc-icon{font-size:.72rem;}
+  .rfc-pts{font-size:.68rem;font-weight:700;opacity:.5;margin-left:.1rem;}
+  .radar-flag-chip:hover{border-color:rgba(239,73,60,.3);color:var(--text-primary);background:var(--navy-hover);}
+  /* Selected states by severity */
+  .radar-flag-chip.selected.rfg-neutral{background:rgba(46,197,111,.1);border-color:rgba(46,197,111,.4);color:#1a7a45;}
+  .radar-flag-chip.selected.rfg-neutral .rfc-pts{opacity:1;color:#1a7a45;}
+  .radar-flag-chip.selected.rfg-warn{background:rgba(239,149,30,.1);border-color:rgba(239,149,30,.45);color:#b5690d;}
+  .radar-flag-chip.selected.rfg-warn .rfc-pts{opacity:1;color:#b5690d;}
+  .radar-flag-chip.selected.rfg-bad{background:rgba(239,73,60,.1);border-color:rgba(239,73,60,.4);color:#c0291e;}
+  .radar-flag-chip.selected.rfg-bad .rfc-pts{opacity:1;color:#c0291e;}
+
+  /* Deduction bar */
+  .radar-entry-footer{margin-top:1.2rem;display:flex;flex-direction:column;gap:.85rem;padding-top:1.1rem;border-top:1px solid var(--navy-border);}
+  .radar-deduction-bar{display:flex;align-items:center;justify-content:space-between;padding:.65rem 1rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:8px;}
+  .radar-deduction-val{font-size:1rem;font-weight:800;color:var(--text-dim);transition:color .2s;}
+  .radar-deduction-val.has-deduction{color:var(--accent-red);}
+
+  /* Buttons */
+  .radar-btn-primary{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1.25rem;background:var(--gold);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:opacity .18s,transform .1s;white-space:nowrap;}
+  .radar-btn-primary:hover{opacity:.88;}
+  .radar-btn-primary:active{transform:scale(.97);}
+  .radar-btn-ghost{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem 1rem;background:transparent;color:var(--text-muted);border:1px solid var(--navy-border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;}
+  .radar-btn-ghost:hover{background:var(--navy-hover);color:var(--text-primary);}
+  .radar-submit-row{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;}
+
+  /* Tables */
   .radar-table{width:100%;border-collapse:collapse;font-size:.8rem;}
-  .radar-table th{font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.07em;text-transform:uppercase;padding:.5rem .7rem;border-bottom:1px solid var(--navy-border);text-align:left;}
-  .radar-table td{padding:.55rem .7rem;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text-primary);vertical-align:middle;}
-  .radar-table tr:hover td{background:var(--navy-hover);}
-  .radar-badge{display:inline-block;padding:.2rem .6rem;border-radius:20px;font-size:.72rem;font-weight:700;}
-  .radar-badge.excellent{background:rgba(46,197,111,.15);color:#2ec56f;}
-  .radar-badge.good{background:rgba(239,149,30,.15);color:#ef951e;}
-  .radar-badge.average{background:rgba(239,73,60,.12);color:#ef493c;}
-  .radar-badge.poor{background:rgba(239,73,60,.22);color:#ef493c;}
+  .radar-table th{font-size:.67rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;padding:.5rem .8rem;border-bottom:2px solid var(--navy-border);text-align:left;white-space:nowrap;}
+  .radar-table td{padding:.6rem .8rem;border-bottom:1px solid rgba(0,0,0,.04);color:var(--text-primary);vertical-align:middle;}
+  body.dark .radar-table td{border-bottom-color:rgba(255,255,255,.04);}
+  .radar-table tr:last-child td{border-bottom:none;}
+  .radar-table tbody tr:hover td{background:var(--navy-hover);}
+
+  /* Rating badges */
+  .radar-badge{display:inline-flex;align-items:center;padding:.22rem .65rem;border-radius:20px;font-size:.72rem;font-weight:700;white-space:nowrap;}
+  .radar-badge.excellent{background:rgba(46,197,111,.12);color:#1a7a45;}
+  .radar-badge.good{background:rgba(239,149,30,.12);color:#b5690d;}
+  .radar-badge.average{background:rgba(239,73,60,.1);color:#c0291e;}
+  .radar-badge.poor{background:rgba(239,73,60,.2);color:#9b1a12;}
+
+  /* Score ring */
+  .radar-score-ring{width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;border:3px solid var(--navy-border);flex-shrink:0;}
+
+  /* Empty state */
+  .radar-empty{color:var(--text-dim);font-size:.82rem;padding:.4rem 0;}
 
   /* ═══════════════════════════════════════
      REMINDERS (Apple iCloud style)
@@ -2111,21 +2180,21 @@ body.dark .ts-input { background:#111827;border-color:#2D3748;color:#F1F5F9; }
   }
   /* Call controls bar */
   .dock-call-controls{
-    padding:.5rem .6rem; border-top:1px solid var(--navy-border);
-    display:flex; align-items:center; justify-content:center; gap:.5rem;
+    padding:.75rem .6rem; border-top:1px solid var(--navy-border);
+    display:flex; align-items:center; justify-content:center; gap:.9rem;
     background:var(--navy-card); flex-shrink:0;
   }
   .dock-call-ctrl-btn{
-    width:34px; height:34px; border-radius:50%; border:none; cursor:pointer;
-    display:flex; align-items:center; justify-content:center; font-size:.85rem;
-    transition:all .15s; flex-shrink:0;
+    width:40px; height:40px; border-radius:50%; border:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    transition:all .18s; flex-shrink:0; outline:none;
   }
-  .dock-call-ctrl-btn.mute-off{ background:rgba(76,118,168,.2); color:var(--accent-blue); }
-  .dock-call-ctrl-btn.mute-on { background:rgba(239,73,60,.15); color:#ef493c; }
-  .dock-call-ctrl-btn.cam-off { background:rgba(76,118,168,.2); color:var(--accent-blue); }
-  .dock-call-ctrl-btn.cam-on  { background:rgba(239,73,60,.15); color:#ef493c; }
-  .dock-call-ctrl-btn.end-btn { background:#ef493c; color:#fff; width:38px; height:38px; }
-  .dock-call-ctrl-btn:hover{ filter:brightness(1.2); transform:scale(1.08); }
+  .dock-call-ctrl-btn.mute-off{ background:rgba(76,118,168,.15); color:var(--accent-blue); box-shadow:0 2px 8px rgba(76,118,168,.15); }
+  .dock-call-ctrl-btn.mute-on { background:rgba(239,73,60,.15); color:#ef493c; box-shadow:0 2px 8px rgba(239,73,60,.15); }
+  .dock-call-ctrl-btn.cam-off { background:rgba(76,118,168,.15); color:var(--accent-blue); box-shadow:0 2px 8px rgba(76,118,168,.15); }
+  .dock-call-ctrl-btn.cam-on  { background:rgba(239,73,60,.15); color:#ef493c; box-shadow:0 2px 8px rgba(239,73,60,.15); }
+  .dock-call-ctrl-btn.end-btn { background:linear-gradient(135deg,#ef493c,#d43226); color:#fff; width:44px; height:44px; box-shadow:0 4px 14px rgba(239,73,60,.4); }
+  .dock-call-ctrl-btn:hover{ filter:brightness(1.12); transform:scale(1.1); }
   /* Ringing / calling state */
   .dock-call-ringing{
     flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -4785,209 +4854,267 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
 
       <!-- ══ K7 RADAR PAGE ══ -->
       <div class="page" id="page-radar">
-        <div class="cd-wrap">
-          <div class="cd-header">
-            <div>
-              <h2 class="cd-title">🎯 K7 Radar</h2>
-              <p class="cd-sub">L1 Engineer Performance Tracking</p>
-            </div>
-            <div style="margin-left:auto;display:flex;gap:.6rem;align-items:center;">
-              <select id="radar-month-filter" class="cd-input" style="font-size:.8rem;padding:.3rem .6rem;" onchange="radarRefreshAll()"><!-- filled by JS --></select>
-            </div>
-          </div>
+        <div class="radar-root">
 
-          <!-- Tab Bar -->
-          <div style="display:flex;gap:.4rem;margin-bottom:1.2rem;border-bottom:1px solid var(--navy-border);padding-bottom:.6rem;" id="radar-tabs">
-            <button class="radar-tab active" id="radar-tab-log" onclick="radarTab('log')">📝 Log Entry</button>
-            <button class="radar-tab" id="radar-tab-report" onclick="radarTab('report')">📊 Global Report</button>
-            <button class="radar-tab" id="radar-tab-mine" onclick="radarTab('mine')">👤 My Rating</button>
-            <button class="radar-tab" id="radar-tab-data" onclick="radarTab('data')" style="display:none;">📦 Data</button>
-          </div>
-
-          <!-- ── TAB: LOG ENTRY ── -->
-          <div id="radar-panel-log">
-            <div class="cd-card">
-              <div class="cd-card-header">
-                <span class="cd-card-icon" style="background:rgba(239,73,60,.12);">📝</span>
-                <div><div class="cd-card-title">New Entry</div><div class="cd-card-sub">Log a performance observation against an L1 agent</div></div>
+          <!-- ── Page Header ── -->
+          <div class="radar-page-header">
+            <div style="display:flex;align-items:center;gap:1rem;">
+              <div class="radar-page-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="22" height="22">
+                  <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+                  <line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/>
+                  <line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/>
+                </svg>
               </div>
-              <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.85rem;">
-
-                <div style="display:flex;gap:.8rem;flex-wrap:wrap;">
-                  <div style="flex:1;min-width:160px;">
-                    <label class="cd-label">Agent</label>
-                    <select id="radar-agent-sel" class="cd-input"></select>
-                  </div>
-                  <div style="flex:1;min-width:160px;">
-                    <label class="cd-label">Ticket ID <span style="color:var(--text-dim);font-weight:400;">(optional)</span></label>
-                    <input type="text" id="radar-ticket-id" class="cd-input" placeholder="e.g. #45231"/>
-                  </div>
-                </div>
-
-                <div>
-                  <label class="cd-label">Flags <span style="color:var(--text-dim);font-weight:400;">(select all that apply)</span></label>
-                  <div id="radar-flags-wrap" style="display:flex;flex-direction:column;gap:.5rem;margin-top:.4rem;">
-
-                    <div style="font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-top:.2rem;">📞 ESCALATION</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
-                      <label class="radar-flag-chip" data-pts="0"><input type="checkbox" value="valid_escalation" data-pts="0"> ✅ Valid Escalation</label>
-                      <label class="radar-flag-chip" data-pts="-1"><input type="checkbox" value="partial_miss" data-pts="-1"> ⚠️ Partial Miss</label>
-                      <label class="radar-flag-chip" data-pts="-3"><input type="checkbox" value="avoidable_escalation" data-pts="-3"> ❌ Avoidable Escalation</label>
-                    </div>
-
-                    <div style="font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-top:.4rem;">🧠 TECHNICAL COMPETENCY</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
-                      <label class="radar-flag-chip" data-pts="-2"><input type="checkbox" value="should_have_known" data-pts="-2"> ❌ Should Have Known</label>
-                      <label class="radar-flag-chip" data-pts="-2"><input type="checkbox" value="no_proactive_thinking" data-pts="-2"> ❌ No Proactive Thinking</label>
-                      <label class="radar-flag-chip" data-pts="-2"><input type="checkbox" value="missed_obvious_step" data-pts="-2"> ❌ Missed Obvious Step</label>
-                      <label class="radar-flag-chip" data-pts="-2"><input type="checkbox" value="wrong_troubleshooting" data-pts="-2"> ❌ Wrong Troubleshooting</label>
-                    </div>
-
-                    <div style="font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-top:.4rem;">💬 BEHAVIOR</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
-                      <label class="radar-flag-chip" data-pts="-1"><input type="checkbox" value="asked_unnecessary_doubt" data-pts="-1"> ⚠️ Asked Unnecessary Doubt</label>
-                      <label class="radar-flag-chip" data-pts="-1"><input type="checkbox" value="didnt_attempt_first" data-pts="-1"> ⚠️ Didn't Attempt First</label>
-                      <label class="radar-flag-chip" data-pts="-2"><input type="checkbox" value="repeated_same_mistake" data-pts="-2"> ⚠️ Repeated Same Mistake</label>
-                    </div>
-
-                    <div style="font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-top:.4rem;">⏱️ EFFICIENCY</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
-                      <label class="radar-flag-chip" data-pts="-1"><input type="checkbox" value="high_aht" data-pts="-1"> ⚠️ High AHT</label>
-                      <label class="radar-flag-chip" data-pts="-1"><input type="checkbox" value="delayed_response" data-pts="-1"> ⚠️ Delayed Response</label>
-                    </div>
-
-                    <div style="font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-top:.4rem;">📋 PROCESS</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
-                      <label class="radar-flag-chip" data-pts="-2"><input type="checkbox" value="didnt_follow_sop" data-pts="-2"> ❌ Didn't Follow SOP</label>
-                      <label class="radar-flag-chip" data-pts="-3"><input type="checkbox" value="wrong_info_to_customer" data-pts="-3"> ❌ Wrong Info Given to Customer</label>
-                      <label class="radar-flag-chip" data-pts="-1"><input type="checkbox" value="escalated_without_notes" data-pts="-1"> ❌ Escalated Without Proper Notes</label>
-                    </div>
-
-                    <div style="font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-top:.4rem;">📝 COMMUNICATION QUALITY</div>
-                    <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
-                      <label class="radar-flag-chip" data-pts="-1"><input type="checkbox" value="template_without_modification" data-pts="-1"> ⚠️ Used Template Without Modification</label>
-                      <label class="radar-flag-chip" data-pts="-2"><input type="checkbox" value="robotic_ai_text" data-pts="-2"> ❌ Robotic / AI Generated Text</label>
-                      <label class="radar-flag-chip" data-pts="-1"><input type="checkbox" value="unprofessional_tone" data-pts="-1"> ⚠️ Unprofessional Tone</label>
-                    </div>
-
-                  </div>
-                </div>
-
-                <div style="display:flex;align-items:center;gap:.8rem;padding:.6rem .8rem;background:rgba(239,73,60,.07);border:1px solid rgba(239,73,60,.18);border-radius:8px;">
-                  <span style="font-size:.8rem;color:var(--text-muted);">Deduction for this entry:</span>
-                  <span id="radar-deduction-preview" style="font-size:1.1rem;font-weight:700;color:var(--accent-red);">0 pts</span>
-                </div>
-
-                <div>
-                  <label class="cd-label">Notes <span style="color:var(--text-dim);font-weight:400;">(optional)</span></label>
-                  <textarea id="radar-notes" class="cd-input" rows="2" style="resize:none;" placeholder="Brief context about this entry…"></textarea>
-                </div>
-
-                <div style="display:flex;gap:.7rem;align-items:center;">
-                  <button class="cd-btn" onclick="radarSubmitEntry()">Submit Entry</button>
-                  <button class="cd-btn-sec" onclick="radarClearForm()">Clear</button>
-                  <span id="radar-entry-msg" style="font-size:.8rem;display:none;"></span>
-                </div>
+              <div>
+                <div class="radar-page-title">K7 Radar</div>
+                <div class="radar-page-sub">L1 Engineer Performance Tracking</div>
               </div>
+            </div>
+            <div style="margin-left:auto;display:flex;align-items:center;gap:.7rem;">
+              <select id="radar-month-filter" class="radar-month-sel" onchange="radarRefreshAll()"><!-- filled by JS --></select>
             </div>
           </div>
 
-          <!-- ── TAB: GLOBAL REPORT ── -->
-          <div id="radar-panel-report" style="display:none;">
-            <div class="cd-card">
-              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;flex-wrap:wrap;gap:.5rem;">
-                <div class="cd-card-title">📊 Team Escalation Overview</div>
-                <button class="cd-btn-sec" onclick="radarLoadReport()" style="font-size:.76rem;">↺ Refresh</button>
+          <!-- ── Tab Bar ── -->
+          <div class="radar-tabbar" id="radar-tabs">
+            <button class="radar-tab active" id="radar-tab-log" onclick="radarTab('log')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+              Log Entry
+            </button>
+            <button class="radar-tab" id="radar-tab-report" onclick="radarTab('report')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+              Global Report
+            </button>
+            <button class="radar-tab" id="radar-tab-mine" onclick="radarTab('mine')">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+              My Rating
+            </button>
+            <button class="radar-tab" id="radar-tab-data" onclick="radarTab('data')" style="display:none;">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+              Data
+            </button>
+          </div>
+
+          <!-- ══ TAB: LOG ENTRY ══ -->
+          <div id="radar-panel-log" class="radar-panel">
+
+            <div class="radar-card">
+              <!-- Agent + Ticket row -->
+              <div class="radar-form-row">
+                <div class="radar-field">
+                  <label class="radar-label">Agent</label>
+                  <select id="radar-agent-sel" class="radar-input"></select>
+                </div>
+                <div class="radar-field">
+                  <label class="radar-label">Ticket ID <span class="radar-optional">optional</span></label>
+                  <input type="text" id="radar-ticket-id" class="radar-input" placeholder="e.g. #45231"/>
+                </div>
               </div>
-              <div id="radar-global-table" style="overflow-x:auto;">
-                <div style="color:var(--text-dim);font-size:.82rem;">Loading…</div>
+
+              <!-- Flags section -->
+              <div style="margin-top:1.4rem;">
+                <div class="radar-section-label">Select Flags <span class="radar-optional">all that apply — multiple allowed</span></div>
+
+                <div id="radar-flags-wrap" class="radar-flags-container">
+
+                  <div class="radar-flag-group">
+                    <div class="radar-flag-group-title">
+                      <span class="radar-flag-group-dot" style="background:rgba(76,118,168,.6);"></span>
+                      Escalation
+                    </div>
+                    <div class="radar-flag-row">
+                      <label class="radar-flag-chip rfg-neutral" data-pts="0"><input type="checkbox" value="valid_escalation" data-pts="0"><span class="rfc-icon">✅</span> Valid Escalation <span class="rfc-pts">+0</span></label>
+                      <label class="radar-flag-chip rfg-warn" data-pts="-1"><input type="checkbox" value="partial_miss" data-pts="-1"><span class="rfc-icon">⚠️</span> Partial Miss <span class="rfc-pts">−1</span></label>
+                      <label class="radar-flag-chip rfg-bad" data-pts="-3"><input type="checkbox" value="avoidable_escalation" data-pts="-3"><span class="rfc-icon">❌</span> Avoidable Escalation <span class="rfc-pts">−3</span></label>
+                    </div>
+                  </div>
+
+                  <div class="radar-flag-group">
+                    <div class="radar-flag-group-title">
+                      <span class="radar-flag-group-dot" style="background:rgba(239,73,60,.7);"></span>
+                      Technical Competency
+                    </div>
+                    <div class="radar-flag-row">
+                      <label class="radar-flag-chip rfg-bad" data-pts="-2"><input type="checkbox" value="should_have_known" data-pts="-2"><span class="rfc-icon">❌</span> Should Have Known <span class="rfc-pts">−2</span></label>
+                      <label class="radar-flag-chip rfg-bad" data-pts="-2"><input type="checkbox" value="no_proactive_thinking" data-pts="-2"><span class="rfc-icon">❌</span> No Proactive Thinking <span class="rfc-pts">−2</span></label>
+                      <label class="radar-flag-chip rfg-bad" data-pts="-2"><input type="checkbox" value="missed_obvious_step" data-pts="-2"><span class="rfc-icon">❌</span> Missed Obvious Step <span class="rfc-pts">−2</span></label>
+                      <label class="radar-flag-chip rfg-bad" data-pts="-2"><input type="checkbox" value="wrong_troubleshooting" data-pts="-2"><span class="rfc-icon">❌</span> Wrong Troubleshooting <span class="rfc-pts">−2</span></label>
+                    </div>
+                  </div>
+
+                  <div class="radar-flag-group">
+                    <div class="radar-flag-group-title">
+                      <span class="radar-flag-group-dot" style="background:rgba(239,149,30,.7);"></span>
+                      Behavior
+                    </div>
+                    <div class="radar-flag-row">
+                      <label class="radar-flag-chip rfg-warn" data-pts="-1"><input type="checkbox" value="asked_unnecessary_doubt" data-pts="-1"><span class="rfc-icon">⚠️</span> Asked Unnecessary Doubt <span class="rfc-pts">−1</span></label>
+                      <label class="radar-flag-chip rfg-warn" data-pts="-1"><input type="checkbox" value="didnt_attempt_first" data-pts="-1"><span class="rfc-icon">⚠️</span> Didn't Attempt First <span class="rfc-pts">−1</span></label>
+                      <label class="radar-flag-chip rfg-warn" data-pts="-2"><input type="checkbox" value="repeated_same_mistake" data-pts="-2"><span class="rfc-icon">⚠️</span> Repeated Same Mistake <span class="rfc-pts">−2</span></label>
+                    </div>
+                  </div>
+
+                  <div class="radar-flag-group">
+                    <div class="radar-flag-group-title">
+                      <span class="radar-flag-group-dot" style="background:rgba(239,149,30,.5);"></span>
+                      Efficiency
+                    </div>
+                    <div class="radar-flag-row">
+                      <label class="radar-flag-chip rfg-warn" data-pts="-1"><input type="checkbox" value="high_aht" data-pts="-1"><span class="rfc-icon">⚠️</span> High AHT <span class="rfc-pts">−1</span></label>
+                      <label class="radar-flag-chip rfg-warn" data-pts="-1"><input type="checkbox" value="delayed_response" data-pts="-1"><span class="rfc-icon">⚠️</span> Delayed Response <span class="rfc-pts">−1</span></label>
+                    </div>
+                  </div>
+
+                  <div class="radar-flag-group">
+                    <div class="radar-flag-group-title">
+                      <span class="radar-flag-group-dot" style="background:rgba(239,73,60,.5);"></span>
+                      Process
+                    </div>
+                    <div class="radar-flag-row">
+                      <label class="radar-flag-chip rfg-bad" data-pts="-2"><input type="checkbox" value="didnt_follow_sop" data-pts="-2"><span class="rfc-icon">❌</span> Didn't Follow SOP <span class="rfc-pts">−2</span></label>
+                      <label class="radar-flag-chip rfg-bad" data-pts="-3"><input type="checkbox" value="wrong_info_to_customer" data-pts="-3"><span class="rfc-icon">❌</span> Wrong Info to Customer <span class="rfc-pts">−3</span></label>
+                      <label class="radar-flag-chip rfg-bad" data-pts="-1"><input type="checkbox" value="escalated_without_notes" data-pts="-1"><span class="rfc-icon">❌</span> Escalated Without Notes <span class="rfc-pts">−1</span></label>
+                    </div>
+                  </div>
+
+                  <div class="radar-flag-group">
+                    <div class="radar-flag-group-title">
+                      <span class="radar-flag-group-dot" style="background:rgba(76,118,168,.5);"></span>
+                      Communication Quality
+                    </div>
+                    <div class="radar-flag-row">
+                      <label class="radar-flag-chip rfg-warn" data-pts="-1"><input type="checkbox" value="template_without_modification" data-pts="-1"><span class="rfc-icon">⚠️</span> Template Without Modification <span class="rfc-pts">−1</span></label>
+                      <label class="radar-flag-chip rfg-bad" data-pts="-2"><input type="checkbox" value="robotic_ai_text" data-pts="-2"><span class="rfc-icon">❌</span> Robotic / AI Text <span class="rfc-pts">−2</span></label>
+                      <label class="radar-flag-chip rfg-warn" data-pts="-1"><input type="checkbox" value="unprofessional_tone" data-pts="-1"><span class="rfc-icon">⚠️</span> Unprofessional Tone <span class="rfc-pts">−1</span></label>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+              <!-- Deduction bar + Notes + Submit -->
+              <div class="radar-entry-footer">
+                <div class="radar-deduction-bar">
+                  <div style="display:flex;align-items:center;gap:.6rem;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="color:var(--text-dim);flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    <span style="font-size:.8rem;color:var(--text-muted);">Deduction for this entry</span>
+                  </div>
+                  <span id="radar-deduction-preview" class="radar-deduction-val">0 pts</span>
+                </div>
+
+                <div class="radar-field" style="margin-top:.3rem;">
+                  <label class="radar-label">Notes <span class="radar-optional">optional</span></label>
+                  <textarea id="radar-notes" class="radar-input radar-textarea" placeholder="Brief context about this entry…"></textarea>
+                </div>
+
+                <div class="radar-submit-row">
+                  <button class="radar-btn-primary" onclick="radarSubmitEntry()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
+                    Submit Entry
+                  </button>
+                  <button class="radar-btn-ghost" onclick="radarClearForm()">Clear</button>
+                  <span id="radar-entry-msg" style="font-size:.8rem;display:none;margin-left:.2rem;"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ══ TAB: GLOBAL REPORT ══ -->
+          <div id="radar-panel-report" class="radar-panel" style="display:none;">
+
+            <div class="radar-card">
+              <div class="radar-card-header">
+                <div class="radar-card-title">Team Overview</div>
+                <button class="radar-btn-ghost" onclick="radarLoadReport()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="13" height="13"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+                  Refresh
+                </button>
+              </div>
+              <div id="radar-global-table" style="overflow-x:auto;margin-top:.2rem;">
+                <div class="radar-empty">Loading…</div>
               </div>
             </div>
 
-            <div class="cd-card" style="margin-top:.8rem;">
-              <div class="cd-card-title" style="margin-bottom:.8rem;">🔍 Agent Drilldown</div>
-              <div style="display:flex;gap:.7rem;align-items:center;flex-wrap:wrap;margin-bottom:.9rem;">
-                <select id="radar-drill-agent" class="cd-input" style="flex:1;min-width:160px;"></select>
-                <button class="cd-btn" onclick="radarLoadDrilldown()">View Details</button>
+            <div class="radar-card" style="margin-top:.9rem;">
+              <div class="radar-card-header">
+                <div class="radar-card-title">Agent Drilldown</div>
+              </div>
+              <div style="display:flex;gap:.7rem;align-items:center;flex-wrap:wrap;margin:.8rem 0;">
+                <select id="radar-drill-agent" class="radar-input" style="flex:1;min-width:180px;"></select>
+                <button class="radar-btn-primary" onclick="radarLoadDrilldown()">View Full Log</button>
               </div>
               <div id="radar-drilldown-wrap">
-                <div style="color:var(--text-dim);font-size:.82rem;">Select an agent above to view their full log.</div>
+                <div class="radar-empty">Select an agent above to view their full log.</div>
               </div>
             </div>
           </div>
 
-          <!-- ── TAB: MY RATING ── -->
-          <div id="radar-panel-mine" style="display:none;">
-            <div class="cd-card" id="radar-mine-card">
-              <div style="color:var(--text-dim);font-size:.82rem;">Loading your rating…</div>
+          <!-- ══ TAB: MY RATING ══ -->
+          <div id="radar-panel-mine" class="radar-panel" style="display:none;">
+            <div class="radar-card" id="radar-mine-card">
+              <div class="radar-empty">Loading your rating…</div>
             </div>
           </div>
 
-          <!-- ── TAB: DATA MANAGEMENT ── -->
-          <div id="radar-panel-data" style="display:none;">
+          <!-- ══ TAB: DATA MANAGEMENT ══ -->
+          <div id="radar-panel-data" class="radar-panel" style="display:none;">
 
-            <!-- Export Backup -->
-            <div class="cd-card">
-              <div class="cd-card-header">
-                <span class="cd-card-icon" style="background:rgba(46,197,111,.12);">⬇️</span>
+            <div class="radar-card">
+              <div class="radar-card-header">
                 <div>
-                  <div class="cd-card-title">Export Backup</div>
-                  <div class="cd-card-sub">Download K7 Radar entries as Excel. All columns included — nothing missed.</div>
+                  <div class="radar-card-title">Export Backup</div>
+                  <div class="radar-card-sub">Download as Excel — all 14 columns, nothing missed</div>
                 </div>
               </div>
-              <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.8rem;">
-                <div style="display:flex;gap:.7rem;align-items:flex-end;flex-wrap:wrap;">
-                  <div style="flex:1;min-width:160px;">
-                    <label class="cd-label">Month</label>
-                    <select id="radar-export-month" class="cd-input"></select>
-                  </div>
-                  <button class="cd-btn" onclick="radarExportMonth()" style="white-space:nowrap;">⬇️ Download Month</button>
-                  <button class="cd-btn-sec" onclick="radarExportAll()" style="white-space:nowrap;">⬇️ Download All Data</button>
+              <div style="display:flex;gap:.7rem;align-items:flex-end;flex-wrap:wrap;margin-top:1rem;">
+                <div style="flex:1;min-width:160px;">
+                  <label class="radar-label">Month</label>
+                  <select id="radar-export-month" class="radar-input"></select>
                 </div>
-                <div id="radar-export-msg" style="font-size:.78rem;display:none;"></div>
+                <button class="radar-btn-primary" onclick="radarExportMonth()">⬇ Download Month</button>
+                <button class="radar-btn-ghost" onclick="radarExportAll()">⬇ All Data</button>
               </div>
+              <div id="radar-export-msg" style="font-size:.78rem;margin-top:.6rem;display:none;"></div>
             </div>
 
-            <!-- Delete Records -->
-            <div class="cd-card" style="margin-top:.8rem;">
-              <div class="cd-card-header">
-                <span class="cd-card-icon" style="background:rgba(239,73,60,.12);">🗑️</span>
+            <div class="radar-card" style="margin-top:.9rem;">
+              <div class="radar-card-header">
                 <div>
-                  <div class="cd-card-title">Delete Records</div>
-                  <div class="cd-card-sub">Permanently remove entries to free up database space. Export a backup first.</div>
+                  <div class="radar-card-title">Delete Records</div>
+                  <div class="radar-card-sub">Free up database space — export a backup first</div>
                 </div>
               </div>
-              <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.8rem;">
-                <div style="display:flex;gap:.7rem;align-items:flex-end;flex-wrap:wrap;">
-                  <div style="flex:1;min-width:160px;">
-                    <label class="cd-label">Month to Delete</label>
-                    <select id="radar-delete-month" class="cd-input"></select>
-                  </div>
-                  <button class="cd-btn-danger" onclick="radarDeleteMonth()" style="white-space:nowrap;">🗑️ Delete Month</button>
+              <div style="display:flex;gap:.7rem;align-items:flex-end;flex-wrap:wrap;margin-top:1rem;">
+                <div style="flex:1;min-width:160px;">
+                  <label class="radar-label">Month to Delete</label>
+                  <select id="radar-delete-month" class="radar-input"></select>
                 </div>
-                <div style="padding:.8rem 1rem;background:rgba(239,73,60,.06);border:1px solid rgba(239,73,60,.2);border-radius:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.7rem;">
-                  <div>
-                    <div style="font-size:.82rem;font-weight:700;color:#ef493c;">⚠️ Delete All Records</div>
-                    <div style="font-size:.74rem;color:var(--text-dim);margin-top:2px;">Permanently wipes every K7 Radar entry across all months. Cannot be undone.</div>
-                  </div>
-                  <button class="cd-btn-danger" onclick="radarDeleteAll()" style="white-space:nowrap;">🗑️ Delete All</button>
-                </div>
-                <div id="radar-delete-msg" style="font-size:.78rem;display:none;"></div>
+                <button class="cd-btn-danger" onclick="radarDeleteMonth()" style="white-space:nowrap;flex-shrink:0;">🗑 Delete Month</button>
               </div>
+              <div style="margin-top:.9rem;padding:.85rem 1rem;background:rgba(239,73,60,.05);border:1px solid rgba(239,73,60,.18);border-radius:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.7rem;">
+                <div>
+                  <div style="font-size:.82rem;font-weight:700;color:#ef493c;">⚠ Delete All Records</div>
+                  <div style="font-size:.74rem;color:var(--text-dim);margin-top:3px;">Permanently wipes every entry across all months. Cannot be undone.</div>
+                </div>
+                <button class="cd-btn-danger" onclick="radarDeleteAll()" style="white-space:nowrap;flex-shrink:0;">🗑 Delete All</button>
+              </div>
+              <div id="radar-delete-msg" style="font-size:.78rem;margin-top:.6rem;display:none;"></div>
             </div>
 
-            <!-- Record Count Summary -->
-            <div class="cd-card" style="margin-top:.8rem;">
-              <div class="cd-card-header">
-                <span class="cd-card-icon" style="background:rgba(76,118,168,.12);">📊</span>
+            <div class="radar-card" style="margin-top:.9rem;">
+              <div class="radar-card-header">
                 <div>
-                  <div class="cd-card-title">Storage Summary</div>
-                  <div class="cd-card-sub">Current record counts by month</div>
+                  <div class="radar-card-title">Storage Summary</div>
+                  <div class="radar-card-sub">Record counts by month</div>
                 </div>
-                <button class="cd-btn-sec" onclick="radarLoadStorageSummary()" style="margin-left:auto;font-size:.75rem;">↺ Refresh</button>
+                <button class="radar-btn-ghost" onclick="radarLoadStorageSummary()">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="13" height="13"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
+                  Refresh
+                </button>
               </div>
               <div id="radar-storage-summary" style="margin-top:.8rem;">
-                <div style="color:var(--text-dim);font-size:.82rem;">Loading…</div>
+                <div class="radar-empty">Loading…</div>
               </div>
             </div>
 
@@ -11511,6 +11638,8 @@ var _dragBlockClick = false;
 
 function chatInit(){
   if(!currentUser||_isSysLevel()) return;
+  if(window._chatInitDone) return; // prevent double-init
+  window._chatInitDone = true;
   var icon = document.getElementById('chat-dock-icon');
   if(icon) icon.classList.add('visible');
   if(_dockHidden){ dockApplyHidden(true, false); }
@@ -11555,6 +11684,8 @@ function makeDockDraggable() {
   var icon = document.getElementById('chat-dock-icon');
   var dock = document.getElementById('chat-dock');
   if (!icon || !dock) return;
+  if (icon._dragBound) return; // already bound — don't double-attach
+  icon._dragBound = true;
 
   var isDragging = false;
   var startX, startY;
@@ -20222,9 +20353,9 @@ async function dcDeclineCall(fromId){
 
 // ── Show active call UI ──
 function dcShowActiveCallPanel(peerId, isVideo){
-  var muteIcon = '<svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>';
-  var camIcon  = '<svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>';
-  var endIcon  = '<svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.12 1.19 2 2 0 012.12.01h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14.92z"/></svg>';
+  var muteIcon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v4M8 23h8"/></svg>';
+  var camIcon  = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>';
+  var endIcon  = '<svg viewBox="0 0 24 24" fill="currentColor" width="17" height="17"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1-9.4 0-17-7.6-17-17 0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1L6.6 10.8z"/></svg>';
 
   var videoArea = '';
   if(isVideo){
@@ -21611,11 +21742,13 @@ async function siLoadLogs(){
   // ── Populate agent dropdowns ──
   async function radarLoadAgents(){
     try{
-      var rows = await sbQuery('users','role=eq.agent&select=id,name&order=name.asc');
+      // Load all non-syslevel users so no one gets missed
+      var rows = await sbQuery('users','role=neq.syslevel&select=id,name,role&order=name.asc');
       var sel  = document.getElementById('radar-agent-sel');
       var dril = document.getElementById('radar-drill-agent');
       var opts = '<option value="">— Select Agent —</option>';
-      (rows||[]).forEach(function(u){
+      // Show agents and TLs (L1s could be either role in some setups)
+      (rows||[]).filter(function(u){ return u.role !== 'admin' && u.role !== 'syslevel'; }).forEach(function(u){
         opts += '<option value="'+esc(u.id)+'">'+esc(u.name)+'</option>';
       });
       if(sel)  sel.innerHTML  = opts;
@@ -21630,9 +21763,7 @@ async function siLoadLogs(){
         var cb = chip.querySelector('input[type=checkbox]');
         if(!cb) return;
         cb.checked = !cb.checked;
-        var isValid = cb.value === 'valid_escalation';
-        chip.classList.toggle('selected', cb.checked && !isValid);
-        chip.classList.toggle('selected-valid', cb.checked && isValid);
+        chip.classList.toggle('selected', cb.checked);
         radarUpdateDeductionPreview();
       });
     });
@@ -21647,7 +21778,7 @@ async function siLoadLogs(){
     var el = document.getElementById('radar-deduction-preview');
     if(!el) return;
     el.textContent = total === 0 ? '0 pts' : total + ' pts';
-    el.style.color = total < 0 ? 'var(--accent-red)' : '#2ec56f';
+    el.classList.toggle('has-deduction', total < 0);
   }
 
   // ── Submit entry ──
@@ -21703,7 +21834,7 @@ async function siLoadLogs(){
     if(ticketEl) ticketEl.value = '';
     if(notesEl)  notesEl.value  = '';
     document.querySelectorAll('#radar-flags-wrap input[type=checkbox]').forEach(function(cb){ cb.checked = false; });
-    document.querySelectorAll('.radar-flag-chip').forEach(function(c){ c.classList.remove('selected','selected-valid'); });
+    document.querySelectorAll('.radar-flag-chip').forEach(function(c){ c.classList.remove('selected'); });
     radarUpdateDeductionPreview();
   };
 
