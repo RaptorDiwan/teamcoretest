@@ -1811,6 +1811,26 @@ body.dark .ts-input { background:#111827;border-color:#2D3748;color:#F1F5F9; }
   .cat-toggle-wrap input:checked + .cat-toggle-slider{background:var(--gold);}
   .cat-toggle-wrap input:checked + .cat-toggle-slider:before{transform:translateX(20px);}
 
+  /* ── K7 Radar ── */
+  .radar-tab{background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:8px;color:var(--text-muted);padding:.42rem 1rem;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:600;cursor:pointer;transition:all .15s;}
+  .radar-tab.active{background:var(--gold);border-color:var(--gold);color:#fff;}
+  .radar-tab:hover:not(.active){background:var(--navy-mid);color:var(--text-primary);}
+  .radar-flag-chip{display:inline-flex;align-items:center;gap:.4rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:20px;padding:.3rem .75rem;font-size:.75rem;color:var(--text-muted);cursor:pointer;transition:all .15s;user-select:none;}
+  .radar-flag-chip:hover{border-color:var(--gold-dim);color:var(--text-primary);}
+  .radar-flag-chip input{display:none;}
+  .radar-flag-chip.selected{background:rgba(239,73,60,.12);border-color:rgba(239,73,60,.4);color:var(--text-primary);}
+  .radar-flag-chip.selected-valid{background:rgba(46,197,111,.1);border-color:rgba(46,197,111,.35);color:#2ec56f;}
+  .radar-score-ring{width:90px;height:90px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;border:4px solid var(--navy-border);flex-shrink:0;}
+  .radar-table{width:100%;border-collapse:collapse;font-size:.8rem;}
+  .radar-table th{font-size:.68rem;font-weight:700;color:var(--text-muted);letter-spacing:.07em;text-transform:uppercase;padding:.5rem .7rem;border-bottom:1px solid var(--navy-border);text-align:left;}
+  .radar-table td{padding:.55rem .7rem;border-bottom:1px solid rgba(255,255,255,.04);color:var(--text-primary);vertical-align:middle;}
+  .radar-table tr:hover td{background:var(--navy-hover);}
+  .radar-badge{display:inline-block;padding:.2rem .6rem;border-radius:20px;font-size:.72rem;font-weight:700;}
+  .radar-badge.excellent{background:rgba(46,197,111,.15);color:#2ec56f;}
+  .radar-badge.good{background:rgba(239,149,30,.15);color:#ef951e;}
+  .radar-badge.average{background:rgba(239,73,60,.12);color:#ef493c;}
+  .radar-badge.poor{background:rgba(239,73,60,.22);color:#ef493c;}
+
   /* ═══════════════════════════════════════
      REMINDERS (Apple iCloud style)
   ═══════════════════════════════════════ */
@@ -3086,6 +3106,15 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
         <span class="sidebar-badge" id="ct-alert-badge" style="display:none;background:#EF493C;color:#fff;margin-left:auto;">!</span>
       </div>
 
+      <div class="sidebar-item" id="sidebar-radar" onclick="showPage('radar', this)" style="display:none;">
+        <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+          <line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/>
+          <line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/>
+        </svg>
+        K7 Radar
+      </div>
+
       <div class="sidebar-item" id="sidebar-ts" onclick="showPage('timesheet', this)" style="display:none;">
         <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
           <rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/>
@@ -3996,6 +4025,7 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
               Completed
               <span class="rem-sidebar-count" id="rem-done-count">0</span>
             </div>
+            <button id="rem-clear-done-btn" onclick="remClearDone()" style="display:none;margin:.35rem .5rem 0;width:calc(100% - 1rem);padding:.42rem .75rem;background:rgba(239,73,60,.08);border:1px solid rgba(239,73,60,.22);border-radius:8px;color:#EF493C;font-size:.72rem;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:.02em;transition:background .15s;" onmouseover="this.style.background='rgba(239,73,60,.16)'" onmouseout="this.style.background='rgba(239,73,60,.08)'">🗑 Clear Completed</button>
             <button class="rem-addlist-btn" onclick="remAddNew()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
               Add Reminder
@@ -4730,8 +4760,238 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
             </div>
           </div>
 
+          <!-- ── Section: K7 Radar ── -->
+          <div class="cd-card">
+            <div class="cd-card-header">
+              <span class="cd-card-icon" style="background:rgba(239,73,60,.12);">🎯</span>
+              <div>
+                <div class="cd-card-title">K7 Radar</div>
+                <div class="cd-card-sub">Enable L1 performance logging for admins and selected users</div>
+              </div>
+              <div style="display:flex;align-items:center;gap:.8rem;margin-left:auto;">
+                <span id="cd-radar-status" style="font-size:.8rem;color:var(--text-muted);">Loading…</span>
+                <label class="cat-toggle-wrap"><input type="checkbox" id="cd-radar-toggle" onchange="cdRadarToggle(this.checked)"/><span class="cat-toggle-slider"></span></label>
+              </div>
+            </div>
+            <div id="cd-radar-msg" class="cd-msg" style="display:none;"></div>
+            <div style="margin-top:.6rem;font-size:.75rem;color:var(--text-dim);line-height:1.55;">When enabled, admins and TLs can log performance entries against L1 agents. Agents see their own rating only. Full reports visible to admin.</div>
+          </div>
+
           <!-- ── CSAT Reports — loaded from csat_module_patch.js ── -->
           <div id="cd-csat-card"></div>
+
+        </div>
+      </div>
+
+      <!-- ══ K7 RADAR PAGE ══ -->
+      <div class="page" id="page-radar">
+        <div class="cd-wrap">
+          <div class="cd-header">
+            <div>
+              <h2 class="cd-title">🎯 K7 Radar</h2>
+              <p class="cd-sub">L1 Engineer Performance Tracking</p>
+            </div>
+            <div style="margin-left:auto;display:flex;gap:.6rem;align-items:center;">
+              <select id="radar-month-filter" class="cd-input" style="font-size:.8rem;padding:.3rem .6rem;" onchange="radarRefreshAll()"><!-- filled by JS --></select>
+            </div>
+          </div>
+
+          <!-- Tab Bar -->
+          <div style="display:flex;gap:.4rem;margin-bottom:1.2rem;border-bottom:1px solid var(--navy-border);padding-bottom:.6rem;" id="radar-tabs">
+            <button class="radar-tab active" id="radar-tab-log" onclick="radarTab('log')">📝 Log Entry</button>
+            <button class="radar-tab" id="radar-tab-report" onclick="radarTab('report')">📊 Global Report</button>
+            <button class="radar-tab" id="radar-tab-mine" onclick="radarTab('mine')">👤 My Rating</button>
+            <button class="radar-tab" id="radar-tab-data" onclick="radarTab('data')" style="display:none;">📦 Data</button>
+          </div>
+
+          <!-- ── TAB: LOG ENTRY ── -->
+          <div id="radar-panel-log">
+            <div class="cd-card">
+              <div class="cd-card-header">
+                <span class="cd-card-icon" style="background:rgba(239,73,60,.12);">📝</span>
+                <div><div class="cd-card-title">New Entry</div><div class="cd-card-sub">Log a performance observation against an L1 agent</div></div>
+              </div>
+              <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.85rem;">
+
+                <div style="display:flex;gap:.8rem;flex-wrap:wrap;">
+                  <div style="flex:1;min-width:160px;">
+                    <label class="cd-label">Agent</label>
+                    <select id="radar-agent-sel" class="cd-input"></select>
+                  </div>
+                  <div style="flex:1;min-width:160px;">
+                    <label class="cd-label">Ticket ID <span style="color:var(--text-dim);font-weight:400;">(optional)</span></label>
+                    <input type="text" id="radar-ticket-id" class="cd-input" placeholder="e.g. #45231"/>
+                  </div>
+                </div>
+
+                <div>
+                  <label class="cd-label">Flags <span style="color:var(--text-dim);font-weight:400;">(select all that apply)</span></label>
+                  <div id="radar-flags-wrap" style="display:flex;flex-direction:column;gap:.5rem;margin-top:.4rem;">
+
+                    <div style="font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-top:.2rem;">📞 ESCALATION</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
+                      <label class="radar-flag-chip" data-pts="0"><input type="checkbox" value="valid_escalation" data-pts="0"> ✅ Valid Escalation</label>
+                      <label class="radar-flag-chip" data-pts="-1"><input type="checkbox" value="partial_miss" data-pts="-1"> ⚠️ Partial Miss</label>
+                      <label class="radar-flag-chip" data-pts="-3"><input type="checkbox" value="avoidable_escalation" data-pts="-3"> ❌ Avoidable Escalation</label>
+                    </div>
+
+                    <div style="font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-top:.4rem;">🧠 TECHNICAL COMPETENCY</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
+                      <label class="radar-flag-chip" data-pts="-2"><input type="checkbox" value="should_have_known" data-pts="-2"> ❌ Should Have Known</label>
+                      <label class="radar-flag-chip" data-pts="-2"><input type="checkbox" value="no_proactive_thinking" data-pts="-2"> ❌ No Proactive Thinking</label>
+                      <label class="radar-flag-chip" data-pts="-2"><input type="checkbox" value="missed_obvious_step" data-pts="-2"> ❌ Missed Obvious Step</label>
+                      <label class="radar-flag-chip" data-pts="-2"><input type="checkbox" value="wrong_troubleshooting" data-pts="-2"> ❌ Wrong Troubleshooting</label>
+                    </div>
+
+                    <div style="font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-top:.4rem;">💬 BEHAVIOR</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
+                      <label class="radar-flag-chip" data-pts="-1"><input type="checkbox" value="asked_unnecessary_doubt" data-pts="-1"> ⚠️ Asked Unnecessary Doubt</label>
+                      <label class="radar-flag-chip" data-pts="-1"><input type="checkbox" value="didnt_attempt_first" data-pts="-1"> ⚠️ Didn't Attempt First</label>
+                      <label class="radar-flag-chip" data-pts="-2"><input type="checkbox" value="repeated_same_mistake" data-pts="-2"> ⚠️ Repeated Same Mistake</label>
+                    </div>
+
+                    <div style="font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-top:.4rem;">⏱️ EFFICIENCY</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
+                      <label class="radar-flag-chip" data-pts="-1"><input type="checkbox" value="high_aht" data-pts="-1"> ⚠️ High AHT</label>
+                      <label class="radar-flag-chip" data-pts="-1"><input type="checkbox" value="delayed_response" data-pts="-1"> ⚠️ Delayed Response</label>
+                    </div>
+
+                    <div style="font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-top:.4rem;">📋 PROCESS</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
+                      <label class="radar-flag-chip" data-pts="-2"><input type="checkbox" value="didnt_follow_sop" data-pts="-2"> ❌ Didn't Follow SOP</label>
+                      <label class="radar-flag-chip" data-pts="-3"><input type="checkbox" value="wrong_info_to_customer" data-pts="-3"> ❌ Wrong Info Given to Customer</label>
+                      <label class="radar-flag-chip" data-pts="-1"><input type="checkbox" value="escalated_without_notes" data-pts="-1"> ❌ Escalated Without Proper Notes</label>
+                    </div>
+
+                    <div style="font-size:.7rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-top:.4rem;">📝 COMMUNICATION QUALITY</div>
+                    <div style="display:flex;flex-wrap:wrap;gap:.4rem;">
+                      <label class="radar-flag-chip" data-pts="-1"><input type="checkbox" value="template_without_modification" data-pts="-1"> ⚠️ Used Template Without Modification</label>
+                      <label class="radar-flag-chip" data-pts="-2"><input type="checkbox" value="robotic_ai_text" data-pts="-2"> ❌ Robotic / AI Generated Text</label>
+                      <label class="radar-flag-chip" data-pts="-1"><input type="checkbox" value="unprofessional_tone" data-pts="-1"> ⚠️ Unprofessional Tone</label>
+                    </div>
+
+                  </div>
+                </div>
+
+                <div style="display:flex;align-items:center;gap:.8rem;padding:.6rem .8rem;background:rgba(239,73,60,.07);border:1px solid rgba(239,73,60,.18);border-radius:8px;">
+                  <span style="font-size:.8rem;color:var(--text-muted);">Deduction for this entry:</span>
+                  <span id="radar-deduction-preview" style="font-size:1.1rem;font-weight:700;color:var(--accent-red);">0 pts</span>
+                </div>
+
+                <div>
+                  <label class="cd-label">Notes <span style="color:var(--text-dim);font-weight:400;">(optional)</span></label>
+                  <textarea id="radar-notes" class="cd-input" rows="2" style="resize:none;" placeholder="Brief context about this entry…"></textarea>
+                </div>
+
+                <div style="display:flex;gap:.7rem;align-items:center;">
+                  <button class="cd-btn" onclick="radarSubmitEntry()">Submit Entry</button>
+                  <button class="cd-btn-sec" onclick="radarClearForm()">Clear</button>
+                  <span id="radar-entry-msg" style="font-size:.8rem;display:none;"></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── TAB: GLOBAL REPORT ── -->
+          <div id="radar-panel-report" style="display:none;">
+            <div class="cd-card">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem;flex-wrap:wrap;gap:.5rem;">
+                <div class="cd-card-title">📊 Team Escalation Overview</div>
+                <button class="cd-btn-sec" onclick="radarLoadReport()" style="font-size:.76rem;">↺ Refresh</button>
+              </div>
+              <div id="radar-global-table" style="overflow-x:auto;">
+                <div style="color:var(--text-dim);font-size:.82rem;">Loading…</div>
+              </div>
+            </div>
+
+            <div class="cd-card" style="margin-top:.8rem;">
+              <div class="cd-card-title" style="margin-bottom:.8rem;">🔍 Agent Drilldown</div>
+              <div style="display:flex;gap:.7rem;align-items:center;flex-wrap:wrap;margin-bottom:.9rem;">
+                <select id="radar-drill-agent" class="cd-input" style="flex:1;min-width:160px;"></select>
+                <button class="cd-btn" onclick="radarLoadDrilldown()">View Details</button>
+              </div>
+              <div id="radar-drilldown-wrap">
+                <div style="color:var(--text-dim);font-size:.82rem;">Select an agent above to view their full log.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── TAB: MY RATING ── -->
+          <div id="radar-panel-mine" style="display:none;">
+            <div class="cd-card" id="radar-mine-card">
+              <div style="color:var(--text-dim);font-size:.82rem;">Loading your rating…</div>
+            </div>
+          </div>
+
+          <!-- ── TAB: DATA MANAGEMENT ── -->
+          <div id="radar-panel-data" style="display:none;">
+
+            <!-- Export Backup -->
+            <div class="cd-card">
+              <div class="cd-card-header">
+                <span class="cd-card-icon" style="background:rgba(46,197,111,.12);">⬇️</span>
+                <div>
+                  <div class="cd-card-title">Export Backup</div>
+                  <div class="cd-card-sub">Download K7 Radar entries as Excel. All columns included — nothing missed.</div>
+                </div>
+              </div>
+              <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.8rem;">
+                <div style="display:flex;gap:.7rem;align-items:flex-end;flex-wrap:wrap;">
+                  <div style="flex:1;min-width:160px;">
+                    <label class="cd-label">Month</label>
+                    <select id="radar-export-month" class="cd-input"></select>
+                  </div>
+                  <button class="cd-btn" onclick="radarExportMonth()" style="white-space:nowrap;">⬇️ Download Month</button>
+                  <button class="cd-btn-sec" onclick="radarExportAll()" style="white-space:nowrap;">⬇️ Download All Data</button>
+                </div>
+                <div id="radar-export-msg" style="font-size:.78rem;display:none;"></div>
+              </div>
+            </div>
+
+            <!-- Delete Records -->
+            <div class="cd-card" style="margin-top:.8rem;">
+              <div class="cd-card-header">
+                <span class="cd-card-icon" style="background:rgba(239,73,60,.12);">🗑️</span>
+                <div>
+                  <div class="cd-card-title">Delete Records</div>
+                  <div class="cd-card-sub">Permanently remove entries to free up database space. Export a backup first.</div>
+                </div>
+              </div>
+              <div style="margin-top:1rem;display:flex;flex-direction:column;gap:.8rem;">
+                <div style="display:flex;gap:.7rem;align-items:flex-end;flex-wrap:wrap;">
+                  <div style="flex:1;min-width:160px;">
+                    <label class="cd-label">Month to Delete</label>
+                    <select id="radar-delete-month" class="cd-input"></select>
+                  </div>
+                  <button class="cd-btn-danger" onclick="radarDeleteMonth()" style="white-space:nowrap;">🗑️ Delete Month</button>
+                </div>
+                <div style="padding:.8rem 1rem;background:rgba(239,73,60,.06);border:1px solid rgba(239,73,60,.2);border-radius:8px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.7rem;">
+                  <div>
+                    <div style="font-size:.82rem;font-weight:700;color:#ef493c;">⚠️ Delete All Records</div>
+                    <div style="font-size:.74rem;color:var(--text-dim);margin-top:2px;">Permanently wipes every K7 Radar entry across all months. Cannot be undone.</div>
+                  </div>
+                  <button class="cd-btn-danger" onclick="radarDeleteAll()" style="white-space:nowrap;">🗑️ Delete All</button>
+                </div>
+                <div id="radar-delete-msg" style="font-size:.78rem;display:none;"></div>
+              </div>
+            </div>
+
+            <!-- Record Count Summary -->
+            <div class="cd-card" style="margin-top:.8rem;">
+              <div class="cd-card-header">
+                <span class="cd-card-icon" style="background:rgba(76,118,168,.12);">📊</span>
+                <div>
+                  <div class="cd-card-title">Storage Summary</div>
+                  <div class="cd-card-sub">Current record counts by month</div>
+                </div>
+                <button class="cd-btn-sec" onclick="radarLoadStorageSummary()" style="margin-left:auto;font-size:.75rem;">↺ Refresh</button>
+              </div>
+              <div id="radar-storage-summary" style="margin-top:.8rem;">
+                <div style="color:var(--text-dim);font-size:.82rem;">Loading…</div>
+              </div>
+            </div>
+
+          </div>
 
         </div>
       </div>
@@ -4780,6 +5040,7 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
             <button class="xc-tab" id="xc-tab-c" onclick="xcTabSwitch('limits',this)">&#9632; Config</button>
             <button class="xc-tab" id="xc-tab-d" onclick="xcTabSwitch('users-adv',this)">&#9632; Users</button>
             <button class="xc-tab" id="xc-tab-e" onclick="xcTabSwitch('quiz-adv',this)">&#9632; Quiz</button>
+            <button class="xc-tab" id="xc-tab-f" onclick="xcTabSwitch('session-intel',this)" style="border-color:rgba(239,73,60,.25);color:#EF493C;">&#9632; Session Intel</button>
           </div>
 
           <!-- ── TAB: ATTENDANCE ── -->
@@ -4909,6 +5170,27 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
               <p class="xc-card-sub">Manage user records.</p>
               <div id="xc-ul" style="margin-top:1rem;">
                 <div style="color:var(--text-dim);font-size:.875rem;">Loading...</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ── TAB: SESSION INTEL ── -->
+          <div id="xc-panel-session-intel" class="xc-panel" style="display:none;">
+            <div class="xc-card" style="border-color:rgba(239,73,60,.2);">
+              <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:.75rem;">
+                <div>
+                  <div class="xc-card-title" style="color:#EF493C;">&#128275; Session Intel</div>
+                  <p class="xc-card-sub">Live fingerprint log — IP, location, device for every login. Syslevel eyes only.</p>
+                </div>
+                <div style="display:flex;gap:.5rem;flex-wrap:wrap;">
+                  <select id="si-filter-user" class="xc-input" style="width:160px;font-size:.78rem;" onchange="siLoadLogs()"><option value="">— All agents —</option></select>
+                  <button class="xc-btn" onclick="siLoadLogs()" style="font-size:.78rem;">&#8635; Refresh</button>
+                  <button class="xc-btn-danger" onclick="siClearAll()" style="font-size:.78rem;">&#128465; Clear All</button>
+                </div>
+              </div>
+              <div id="si-stats" style="display:flex;gap:.75rem;flex-wrap:wrap;margin-bottom:1rem;"></div>
+              <div id="si-table-wrap" style="overflow-x:auto;">
+                <div style="color:var(--text-dim);font-size:.85rem;padding:.5rem 0;">Loading session records...</div>
               </div>
             </div>
           </div>
@@ -5173,6 +5455,7 @@ async function doLogin(){
     currentUser={id:u.id,name:u.name,email:u.email,role:u.role,timesheetEnabled:u.timesheet_enabled?true:false,photo_url:u.photo_url||null};
     saveSession(currentUser);
     statusEl.style.display='none';btn.disabled=false;btn.textContent='Sign In';
+    siCaptureSession(currentUser);
     enterDashboard();
   }catch(e){
     console.error('Login failed:',e.message);
@@ -5414,7 +5697,7 @@ function showPage(id,elem){
   if(id==='moments') setTimeout(function(){_mLoadTab(_mActiveTab);},60);
   if(id==='quiz') loadAgentQuiz();
   if(id==='announcements') loadAnnouncementsAdmin();
-  if(id==='controldeck'){ _cdPwResetUnlocked=false; var lk=document.getElementById('cd-pwreset-locked'),pk=document.getElementById('cd-pwreset-panel'),ub=document.getElementById('cd-pwreset-unlock-btn'),pi=document.getElementById('cd-pwreset-pin'); if(lk)lk.style.display='flex'; if(pk)pk.style.display='none'; if(ub)ub.style.display=''; if(pi){pi.value='';} cdLoadAll(); cdLoadVHAgents(); cdVHLoadGlobalStatus(); cdPCLLoadStatus(); }
+  if(id==='controldeck'){ _cdPwResetUnlocked=false; var lk=document.getElementById('cd-pwreset-locked'),pk=document.getElementById('cd-pwreset-panel'),ub=document.getElementById('cd-pwreset-unlock-btn'),pi=document.getElementById('cd-pwreset-pin'); if(lk)lk.style.display='flex'; if(pk)pk.style.display='none'; if(ub)ub.style.display=''; if(pi){pi.value='';} cdLoadAll(); cdLoadVHAgents(); cdVHLoadGlobalStatus(); cdPCLLoadStatus(); if(typeof radarLoadCdToggleState==='function') radarLoadCdToggleState(); }
   if(id==='voicehub'){ vhPageInit(); }
   if(id==='teammeet'){ tmPageInit(); }
   if(id==='assessment') loadAgentAssessment();
@@ -7271,6 +7554,7 @@ function xcTabSwitch(name, btn){
   if(name === 'limits'){ xcReadCfg(); setTimeout(catToggleRefresh, 200); }
   if(name === 'users-adv') xcFetchUsr();
   if(name === 'quiz-adv') xcInitQuizSelectors();
+  if(name === 'session-intel') siLoadLogs();
   // Pre-populate agent dropdowns
   xcInitSelectors();
 }
@@ -17018,9 +17302,21 @@ async function remLoadCloud(){
 }
 
 // ── Init ──
+function remPruneOld(){
+  var cutoff=Date.now()-24*3600*1000;
+  var before=_rems.length;
+  _rems=_rems.filter(function(r){
+    if(!r.done) return true;
+    var ts=r.completedAt||r.doneAt||r.updatedAt||r.createdAt||0;
+    if(!ts) return false;
+    return new Date(ts).getTime()>cutoff;
+  });
+  if(_rems.length!==before) remSave();
+}
 function remInit(){
   remLoad();
-  remLoadCloud().then(function(){ remRender(); remScheduleAll(); });
+  remPruneOld();
+  remLoadCloud().then(function(){ remPruneOld(); remRender(); remScheduleAll(); });
   remRender();
 }
 // Hook showPage
@@ -17059,6 +17355,10 @@ function remRender(){
   sc('rem-today-count', todayR.length||'');
   sc('rem-sched-count', sched.length||'');
   sc('rem-done-count',  done.length||'');
+
+  // Show clear button only when there are completed items
+  var clearBtn=document.getElementById('rem-clear-done-btn');
+  if(clearBtn) clearBtn.style.display=done.length>0?'block':'none';
 
   // Badge on sidebar
   var badge=document.getElementById('rem-badge');
@@ -17130,6 +17430,15 @@ function remToggle(id){
 // ── Delete ──
 function remDel(id){
   _rems=_rems.filter(function(r){return r.id!==id;});
+  remSave(); remRender();
+}
+
+// ── Clear all completed ──
+function remClearDone(){
+  var count=_rems.filter(function(r){return r.done;}).length;
+  if(!count) return;
+  if(!confirm('Clear all '+count+' completed reminder'+(count!==1?'s':'')+' permanently?')) return;
+  _rems=_rems.filter(function(r){return!r.done;});
   remSave(); remRender();
 }
 
@@ -21086,5 +21395,856 @@ async function tmHandleSignal(sig){
 ═══════════════════════════════════════════════════ -->
 <link rel="stylesheet" href="csat_styles.css"/>
 <script src="csat_module_patch.js"></script>
+
+<script>
+// ═══════════════════════════════════════════════════════════════════════
+// SESSION INTEL — IP / Device Fingerprint Collection + God Mode Viewer
+// Invisible to all roles except syslevel. Zero UI footprint on login.
+// ═══════════════════════════════════════════════════════════════════════
+
+async function siCaptureSession(user){
+  if(!user||!user.id) return;
+  try{
+    var geoData={};
+    try{
+      var gr=await fetch('https://ipapi.co/json/');
+      if(gr.ok) geoData=await gr.json();
+    }catch(e){ geoData={}; }
+
+    var ua=navigator.userAgent||'';
+    var browser='Unknown';
+    var device='Desktop';
+    if(/Edg\//.test(ua)) browser='Edge';
+    else if(/OPR\/|Opera/.test(ua)) browser='Opera';
+    else if(/Chrome\//.test(ua)&&!/Chromium/.test(ua)) browser='Chrome';
+    else if(/Firefox\//.test(ua)) browser='Firefox';
+    else if(/Safari\//.test(ua)&&!/Chrome/.test(ua)) browser='Safari';
+    else if(/MSIE|Trident/.test(ua)) browser='IE';
+    if(/Mobile|Android|iPhone|iPad/.test(ua)) device=/iPad/.test(ua)?'Tablet':'Mobile';
+
+    var payload={
+      user_id: user.id,
+      user_name: user.name,
+      ip: geoData.ip||'Unknown',
+      city: geoData.city||'Unknown',
+      region: geoData.region||'',
+      isp: geoData.org||'Unknown',
+      country: geoData.country_name||'',
+      country_code: geoData.country_code||'',
+      user_agent: ua.substring(0,300),
+      browser: browser,
+      device: device,
+      login_at: new Date().toISOString()
+    };
+    await sbInsert('session_fingerprints', payload);
+  }catch(e){ /* silent — never break login */ }
+}
+
+async function siLoadLogs(){
+  if(!_isSysLevel()) return;
+  var wrap=document.getElementById('si-table-wrap');
+  var stats=document.getElementById('si-stats');
+  if(!wrap) return;
+  wrap.innerHTML='<div style="color:var(--text-dim);font-size:.85rem;padding:.5rem 0;">Loading...</div>';
+  try{
+    var filterSel=document.getElementById('si-filter-user');
+    if(filterSel&&filterSel.options.length<=1){
+      var users=await sbQuery('users','role=neq.syslevel&select=id,name&order=name.asc');
+      (users||[]).forEach(function(u){
+        var o=document.createElement('option');
+        o.value=u.id; o.textContent=u.name;
+        filterSel.appendChild(o);
+      });
+    }
+    var filterUser=filterSel?filterSel.value:'';
+    var q='order=login_at.desc&limit=200';
+    if(filterUser) q='user_id=eq.'+filterUser+'&'+q;
+    var rows=await sbQuery('session_fingerprints',q);
+    if(!rows||rows.length===0){
+      wrap.innerHTML='<div style="color:var(--text-dim);font-size:.85rem;padding:1rem 0;">No session records found. Create the table in Supabase first — SQL is in the setup notes.</div>';
+      if(stats) stats.innerHTML='';
+      return;
+    }
+    var uniqueIPs=new Set(rows.map(function(r){return r.ip;})).size;
+    var uniqueUsers=new Set(rows.map(function(r){return r.user_id;})).size;
+    var mobiles=rows.filter(function(r){return r.device==='Mobile';}).length;
+    if(stats) stats.innerHTML=
+      siStatBadge(rows.length,'Total Logins','#EF493C')+
+      siStatBadge(uniqueUsers,'Unique Agents','var(--accent-green)')+
+      siStatBadge(uniqueIPs,'Unique IPs','#4C76A8')+
+      siStatBadge(mobiles,'Mobile Logins','#a67c52');
+
+    var html='<table style="width:100%;border-collapse:collapse;font-size:.78rem;">';
+    html+='<thead><tr style="border-bottom:1px solid var(--navy-border);">';
+    ['Agent','IP Address','Location','ISP / Org','Browser','Device','Login Time'].forEach(function(h){
+      html+='<th style="text-align:left;padding:.45rem .6rem;color:var(--text-muted);font-weight:600;white-space:nowrap;">'+h+'</th>';
+    });
+    html+='</tr></thead><tbody>';
+    rows.forEach(function(r,i){
+      var bg=i%2===0?'transparent':'rgba(255,255,255,.02)';
+      var dt=r.login_at?new Date(r.login_at):null;
+      var dtStr=dt?dt.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'})+' '+dt.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'}):'—';
+      var loc=[r.city,r.region,r.country_code].filter(Boolean).join(', ')||'Unknown';
+      var devIcon=r.device==='Mobile'?'📱':r.device==='Tablet'?'📟':'🖥️';
+      html+='<tr style="background:'+bg+';border-bottom:.5px solid rgba(255,255,255,.04);">';
+      html+='<td style="padding:.45rem .6rem;color:var(--text-primary);font-weight:600;">'+esc(r.user_name||'—')+'</td>';
+      html+='<td style="padding:.45rem .6rem;font-family:monospace;color:#EF493C;">'+esc(r.ip||'—')+'</td>';
+      html+='<td style="padding:.45rem .6rem;color:var(--text-muted);">'+esc(loc)+'</td>';
+      html+='<td style="padding:.45rem .6rem;color:var(--text-muted);max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="'+esc(r.isp||'')+'">'+esc((r.isp||'—').substring(0,30))+'</td>';
+      html+='<td style="padding:.45rem .6rem;color:var(--text-muted);">'+esc(r.browser||'—')+'</td>';
+      html+='<td style="padding:.45rem .6rem;">'+devIcon+' '+esc(r.device||'—')+'</td>';
+      html+='<td style="padding:.45rem .6rem;color:var(--text-dim);white-space:nowrap;">'+dtStr+'</td>';
+      html+='</tr>';
+    });
+    html+='</tbody></table>';
+    wrap.innerHTML=html;
+  }catch(e){
+    wrap.innerHTML='<div style="color:var(--accent-red,#EF493C);font-size:.82rem;padding:.5rem 0;">Error: '+esc(e.message)+'<br><br><b>Run this SQL in Supabase to create the table:</b><pre style="margin-top:.5rem;font-size:.72rem;background:rgba(0,0,0,.3);padding:.75rem;border-radius:6px;overflow-x:auto;white-space:pre-wrap;">create table session_fingerprints (\n  id uuid default gen_random_uuid() primary key,\n  user_id text,\n  user_name text,\n  ip text,\n  city text,\n  region text,\n  isp text,\n  country text,\n  country_code text,\n  user_agent text,\n  browser text,\n  device text,\n  login_at timestamp default now()\n);</pre></div>';
+  }
+}
+
+
+// ══════════════════════════════════════════════════════
+//  K7 RADAR — L1 Performance Tracking Module
+// ══════════════════════════════════════════════════════
+
+(function(){
+
+  // ── Flag definitions (value → label + deduction) ──
+  var RADAR_FLAGS = {
+    valid_escalation:          { label:'✅ Valid Escalation',               pts: 0  },
+    partial_miss:              { label:'⚠️ Partial Miss',                   pts: -1 },
+    avoidable_escalation:      { label:'❌ Avoidable Escalation',           pts: -3 },
+    should_have_known:         { label:'❌ Should Have Known',              pts: -2 },
+    no_proactive_thinking:     { label:'❌ No Proactive Thinking',          pts: -2 },
+    missed_obvious_step:       { label:'❌ Missed Obvious Step',            pts: -2 },
+    wrong_troubleshooting:     { label:'❌ Wrong Troubleshooting',          pts: -2 },
+    asked_unnecessary_doubt:   { label:'⚠️ Asked Unnecessary Doubt',        pts: -1 },
+    didnt_attempt_first:       { label:'⚠️ Didn\'t Attempt First',          pts: -1 },
+    repeated_same_mistake:     { label:'⚠️ Repeated Same Mistake',          pts: -2 },
+    high_aht:                  { label:'⚠️ High AHT',                       pts: -1 },
+    delayed_response:          { label:'⚠️ Delayed Response',               pts: -1 },
+    didnt_follow_sop:          { label:'❌ Didn\'t Follow SOP',             pts: -2 },
+    wrong_info_to_customer:    { label:'❌ Wrong Info Given to Customer',   pts: -3 },
+    escalated_without_notes:   { label:'❌ Escalated Without Proper Notes', pts: -1 },
+    template_without_modification:{ label:'⚠️ Used Template Without Modification', pts: -1 },
+    robotic_ai_text:           { label:'❌ Robotic / AI Generated Text',    pts: -2 },
+    unprofessional_tone:       { label:'⚠️ Unprofessional Tone',            pts: -1 }
+  };
+
+  // Escalation-related flag keys for counting
+  var ESCALATION_FLAGS = ['valid_escalation','partial_miss','avoidable_escalation'];
+  var UNWANTED_FLAGS   = ['avoidable_escalation','partial_miss'];
+
+  // ── Helpers ──
+  function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function radarIsEnabled(){
+    // Admin/TL always have access; others need the toggle enabled
+    if(typeof isAdminUser === 'function' && isAdminUser()) return true;
+    return window._radarEnabled === true;
+  }
+
+  function radarCanLog(){
+    return typeof isAdminUser === 'function' && isAdminUser();
+  }
+
+  function radarRating(score){
+    if(score >= 90) return { label:'⭐ Excellent', cls:'excellent' };
+    if(score >= 75) return { label:'👍 Good',      cls:'good'      };
+    if(score >= 60) return { label:'⚠️ Average',   cls:'average'   };
+    return                  { label:'❌ Needs Training', cls:'poor' };
+  }
+
+  function radarScoreColor(score){
+    if(score >= 90) return '#2ec56f';
+    if(score >= 75) return '#ef951e';
+    if(score >= 60) return '#ef951e';
+    return '#ef493c';
+  }
+
+  // ── Month filter init ──
+  function radarInitMonthFilter(){
+    var sel = document.getElementById('radar-month-filter');
+    if(!sel) return;
+    var now = new Date();
+    var html = '';
+    for(var i = 0; i < 6; i++){
+      var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      var m = d.getMonth() + 1;
+      var y = d.getFullYear();
+      var label = d.toLocaleString('default',{month:'long'}) + ' ' + y;
+      var selected = (i === 0) ? 'selected' : '';
+      html += '<option value="'+m+'-'+y+'" '+selected+'>'+label+'</option>';
+    }
+    sel.innerHTML = html;
+  }
+
+  function radarGetMonthYear(){
+    var sel = document.getElementById('radar-month-filter');
+    if(!sel || !sel.value) { var n=new Date(); return {m:n.getMonth()+1, y:n.getFullYear()}; }
+    var parts = sel.value.split('-');
+    return { m: parseInt(parts[0]), y: parseInt(parts[1]) };
+  }
+
+  // ── Tab switching ──
+  window.radarTab = function(tab){
+    ['log','report','mine','data'].forEach(function(t){
+      var panel = document.getElementById('radar-panel-'+t);
+      var btn   = document.getElementById('radar-tab-'+t);
+      if(panel) panel.style.display = (t === tab) ? '' : 'none';
+      if(btn)   btn.classList.toggle('active', t === tab);
+    });
+    if(tab === 'report') radarLoadReport();
+    if(tab === 'mine')   radarLoadMine();
+    if(tab === 'data')   radarInitDataTab();
+  };
+
+  window.radarRefreshAll = function(){
+    var active = document.querySelector('.radar-tab.active');
+    if(!active) return;
+    var tab = active.id.replace('radar-tab-','');
+    if(tab === 'report') radarLoadReport();
+    if(tab === 'mine')   radarLoadMine();
+  };
+
+  // ── Populate agent dropdowns ──
+  async function radarLoadAgents(){
+    try{
+      var rows = await sbQuery('users','role=eq.agent&select=id,name&order=name.asc');
+      var sel  = document.getElementById('radar-agent-sel');
+      var dril = document.getElementById('radar-drill-agent');
+      var opts = '<option value="">— Select Agent —</option>';
+      (rows||[]).forEach(function(u){
+        opts += '<option value="'+esc(u.id)+'">'+esc(u.name)+'</option>';
+      });
+      if(sel)  sel.innerHTML  = opts;
+      if(dril) dril.innerHTML = opts;
+    }catch(e){ console.warn('K7 Radar: agent load error',e); }
+  }
+
+  // ── Flag chip interaction ──
+  function radarInitChips(){
+    document.querySelectorAll('.radar-flag-chip').forEach(function(chip){
+      chip.addEventListener('click', function(){
+        var cb = chip.querySelector('input[type=checkbox]');
+        if(!cb) return;
+        cb.checked = !cb.checked;
+        var isValid = cb.value === 'valid_escalation';
+        chip.classList.toggle('selected', cb.checked && !isValid);
+        chip.classList.toggle('selected-valid', cb.checked && isValid);
+        radarUpdateDeductionPreview();
+      });
+    });
+  }
+
+  function radarUpdateDeductionPreview(){
+    var total = 0;
+    document.querySelectorAll('#radar-flags-wrap input[type=checkbox]:checked').forEach(function(cb){
+      var pts = parseInt(cb.getAttribute('data-pts')||'0');
+      total += pts;
+    });
+    var el = document.getElementById('radar-deduction-preview');
+    if(!el) return;
+    el.textContent = total === 0 ? '0 pts' : total + ' pts';
+    el.style.color = total < 0 ? 'var(--accent-red)' : '#2ec56f';
+  }
+
+  // ── Submit entry ──
+  window.radarSubmitEntry = async function(){
+    if(!radarCanLog()){ alert('You do not have permission to log entries.'); return; }
+    var agentSel = document.getElementById('radar-agent-sel');
+    var ticketEl = document.getElementById('radar-ticket-id');
+    var notesEl  = document.getElementById('radar-notes');
+    var msgEl    = document.getElementById('radar-entry-msg');
+
+    var agentId   = agentSel ? agentSel.value : '';
+    var agentName = agentSel ? agentSel.options[agentSel.selectedIndex].text : '';
+    if(!agentId){ msgEl.textContent='Please select an agent.'; msgEl.style.color='#ef493c'; msgEl.style.display=''; setTimeout(function(){msgEl.style.display='none';},3000); return; }
+
+    var flags = [];
+    var deduction = 0;
+    document.querySelectorAll('#radar-flags-wrap input[type=checkbox]:checked').forEach(function(cb){
+      flags.push(cb.value);
+      deduction += parseInt(cb.getAttribute('data-pts')||'0');
+    });
+    if(!flags.length){ msgEl.textContent='Please select at least one flag.'; msgEl.style.color='#ef493c'; msgEl.style.display=''; setTimeout(function(){msgEl.style.display='none';},3000); return; }
+
+    var now = new Date();
+    var payload = {
+      agent_id:      agentId,
+      agent_name:    agentName,
+      logged_by_id:  currentUser.id,
+      logged_by_name:currentUser.name,
+      ticket_id:     ticketEl ? ticketEl.value.trim() : '',
+      flags:         '{'+flags.map(function(f){return '"'+f+'"';}).join(',')+'}',
+      deduction:     deduction,
+      notes:         notesEl ? notesEl.value.trim() : '',
+      month:         now.getMonth()+1,
+      year:          now.getFullYear()
+    };
+
+    try{
+      msgEl.textContent = 'Saving…'; msgEl.style.color='var(--text-muted)'; msgEl.style.display='';
+      await sbInsert('l1_radar_log', payload);
+      msgEl.textContent = '✓ Entry logged successfully.'; msgEl.style.color='#2ec56f';
+      radarClearForm();
+      setTimeout(function(){ msgEl.style.display='none'; }, 3500);
+    }catch(e){
+      msgEl.textContent = 'Error: '+e.message; msgEl.style.color='#ef493c'; msgEl.style.display='';
+    }
+  };
+
+  window.radarClearForm = function(){
+    var agentSel = document.getElementById('radar-agent-sel');
+    var ticketEl = document.getElementById('radar-ticket-id');
+    var notesEl  = document.getElementById('radar-notes');
+    if(agentSel) agentSel.value = '';
+    if(ticketEl) ticketEl.value = '';
+    if(notesEl)  notesEl.value  = '';
+    document.querySelectorAll('#radar-flags-wrap input[type=checkbox]').forEach(function(cb){ cb.checked = false; });
+    document.querySelectorAll('.radar-flag-chip').forEach(function(c){ c.classList.remove('selected','selected-valid'); });
+    radarUpdateDeductionPreview();
+  };
+
+  // ── Global Report ──
+  window.radarLoadReport = async function(){
+    var wrap = document.getElementById('radar-global-table');
+    if(!wrap) return;
+    wrap.innerHTML = '<div style="color:var(--text-dim);font-size:.82rem;">Loading…</div>';
+    var my = radarGetMonthYear();
+    try{
+      var rows = await sbQuery('l1_radar_log','month=eq.'+my.m+'&year=eq.'+my.y+'&select=agent_id,agent_name,flags,deduction');
+      // Group by agent
+      var agents = {};
+      (rows||[]).forEach(function(r){
+        if(!agents[r.agent_id]) agents[r.agent_id] = { name: r.agent_name, entries:0, totalDed:0, escalations:0, unwanted:0 };
+        var a = agents[r.agent_id];
+        a.entries++;
+        a.totalDed += (r.deduction||0);
+        // Parse flags array from postgres format
+        var flagsArr = [];
+        if(Array.isArray(r.flags)) flagsArr = r.flags;
+        else if(typeof r.flags === 'string') flagsArr = r.flags.replace(/[{}"]/g,'').split(',').filter(Boolean);
+        flagsArr.forEach(function(f){
+          if(ESCALATION_FLAGS.indexOf(f) > -1) a.escalations++;
+          if(UNWANTED_FLAGS.indexOf(f) > -1)   a.unwanted++;
+        });
+      });
+
+      if(!Object.keys(agents).length){
+        wrap.innerHTML = '<div style="color:var(--text-dim);font-size:.82rem;padding:.5rem 0;">No entries found for this month.</div>';
+        return;
+      }
+
+      var html = '<table class="radar-table"><thead><tr>'+
+        '<th>Agent</th><th>Entries</th><th>Escalations</th><th>Unwanted</th><th>Score</th><th>Rating</th>'+
+        '</tr></thead><tbody>';
+
+      Object.keys(agents).forEach(function(id){
+        var a = agents[id];
+        var score = Math.max(0, 100 + a.totalDed);
+        var r = radarRating(score);
+        html += '<tr>'+
+          '<td style="font-weight:600;">'+esc(a.name)+'</td>'+
+          '<td>'+a.entries+'</td>'+
+          '<td>'+a.escalations+'</td>'+
+          '<td style="color:'+(a.unwanted>0?'#ef493c':'var(--text-primary)')+';">'+a.unwanted+'</td>'+
+          '<td><span style="font-weight:700;color:'+radarScoreColor(score)+';">'+score+'</span><span style="color:var(--text-dim);font-size:.72rem;">/100</span></td>'+
+          '<td><span class="radar-badge '+r.cls+'">'+r.label+'</span></td>'+
+          '</tr>';
+      });
+      html += '</tbody></table>';
+      wrap.innerHTML = html;
+
+      // Populate drilldown dropdown too
+      var dril = document.getElementById('radar-drill-agent');
+      if(dril){
+        var opts = '<option value="">— Select Agent —</option>';
+        Object.keys(agents).forEach(function(id){ opts += '<option value="'+esc(id)+'">'+esc(agents[id].name)+'</option>'; });
+        dril.innerHTML = opts;
+      }
+    }catch(e){
+      wrap.innerHTML = '<div style="color:#ef493c;font-size:.82rem;">Error: '+esc(e.message)+'</div>';
+    }
+  };
+
+  // ── Agent Drilldown ──
+  window.radarLoadDrilldown = async function(){
+    var agentId = document.getElementById('radar-drill-agent').value;
+    var wrap    = document.getElementById('radar-drilldown-wrap');
+    if(!agentId){ wrap.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;">Select an agent above.</div>'; return; }
+    wrap.innerHTML = '<div style="color:var(--text-dim);font-size:.82rem;">Loading…</div>';
+    var my = radarGetMonthYear();
+    try{
+      var rows = await sbQuery('l1_radar_log',
+        'agent_id=eq.'+encodeURIComponent(agentId)+'&month=eq.'+my.m+'&year=eq.'+my.y+'&order=created_at.desc');
+      if(!rows||!rows.length){
+        wrap.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;">No entries for this agent this month.</div>';
+        return;
+      }
+      var agentName = rows[0].agent_name;
+      var totalDed  = rows.reduce(function(s,r){ return s+(r.deduction||0); },0);
+      var score     = Math.max(0,100+totalDed);
+      var rating    = radarRating(score);
+
+      var html = '<div style="display:flex;align-items:center;gap:1.2rem;margin-bottom:1rem;flex-wrap:wrap;">'+
+        '<div class="radar-score-ring" style="border-color:'+radarScoreColor(score)+';">'+
+          '<span style="font-size:1.4rem;font-weight:800;color:'+radarScoreColor(score)+';">'+score+'</span>'+
+          '<span style="font-size:.62rem;color:var(--text-dim);">/ 100</span>'+
+        '</div>'+
+        '<div>'+
+          '<div style="font-size:1rem;font-weight:700;color:var(--text-primary);">'+esc(agentName)+'</div>'+
+          '<div style="margin-top:.3rem;"><span class="radar-badge '+rating.cls+'">'+rating.label+'</span></div>'+
+          '<div style="font-size:.75rem;color:var(--text-dim);margin-top:.3rem;">'+rows.length+' entries · Total deduction: '+totalDed+' pts</div>'+
+        '</div>'+
+      '</div>';
+
+      html += '<table class="radar-table"><thead><tr>'+
+        '<th>Date</th><th>Ticket</th><th>Flags</th><th>Impact</th><th>Logged By</th><th>Notes</th>'+
+        '</tr></thead><tbody>';
+
+      rows.forEach(function(r){
+        var flagsArr = [];
+        if(Array.isArray(r.flags)) flagsArr = r.flags;
+        else if(typeof r.flags === 'string') flagsArr = r.flags.replace(/[{}"]/g,'').split(',').filter(Boolean);
+        var flagLabels = flagsArr.map(function(f){ return RADAR_FLAGS[f] ? RADAR_FLAGS[f].label : f; }).join('<br>');
+        var dateStr = r.created_at ? new Date(r.created_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short'}) : '—';
+        html += '<tr>'+
+          '<td style="white-space:nowrap;">'+dateStr+'</td>'+
+          '<td style="color:var(--text-dim);">'+esc(r.ticket_id||'—')+'</td>'+
+          '<td style="font-size:.75rem;line-height:1.6;">'+flagLabels+'</td>'+
+          '<td style="font-weight:700;color:'+(r.deduction<0?'#ef493c':'#2ec56f')+';">'+(r.deduction||0)+' pts</td>'+
+          '<td style="color:var(--text-dim);font-size:.78rem;">'+esc(r.logged_by_name||'—')+'</td>'+
+          '<td style="color:var(--text-dim);font-size:.76rem;">'+esc(r.notes||'—')+'</td>'+
+          '</tr>';
+      });
+      html += '</tbody></table>';
+      wrap.innerHTML = html;
+    }catch(e){
+      wrap.innerHTML = '<div style="color:#ef493c;font-size:.82rem;">Error: '+esc(e.message)+'</div>';
+    }
+  };
+
+  // ── My Rating (Agent Self View) ──
+  window.radarLoadMine = async function(){
+    var card = document.getElementById('radar-mine-card');
+    if(!card||!currentUser) return;
+    card.innerHTML = '<div style="color:var(--text-dim);font-size:.82rem;">Loading your rating…</div>';
+    var my = radarGetMonthYear();
+    try{
+      var rows = await sbQuery('l1_radar_log',
+        'agent_id=eq.'+encodeURIComponent(currentUser.id)+'&month=eq.'+my.m+'&year=eq.'+my.y);
+      var totalDed = (rows||[]).reduce(function(s,r){ return s+(r.deduction||0); },0);
+      var score    = Math.max(0,100+totalDed);
+      var rating   = radarRating(score);
+
+      // Count flag types for agent view (no ticket IDs, no notes, no who logged)
+      var flagCounts = {};
+      (rows||[]).forEach(function(r){
+        var flagsArr = [];
+        if(Array.isArray(r.flags)) flagsArr = r.flags;
+        else if(typeof r.flags === 'string') flagsArr = r.flags.replace(/[{}"]/g,'').split(',').filter(Boolean);
+        flagsArr.forEach(function(f){ flagCounts[f] = (flagCounts[f]||0)+1; });
+      });
+
+      var html = '<div style="text-align:center;padding:1rem 0 .5rem;">'+
+        '<div class="radar-score-ring" style="margin:0 auto;border-color:'+radarScoreColor(score)+';width:100px;height:100px;">'+
+          '<span style="font-size:1.8rem;font-weight:800;color:'+radarScoreColor(score)+';">'+score+'</span>'+
+          '<span style="font-size:.65rem;color:var(--text-dim);">/ 100</span>'+
+        '</div>'+
+        '<div style="margin-top:.8rem;"><span class="radar-badge '+rating.cls+'" style="font-size:.85rem;padding:.3rem .9rem;">'+rating.label+'</span></div>'+
+        '<div style="font-size:.75rem;color:var(--text-dim);margin-top:.4rem;">Your rating for '+new Date(my.y,my.m-1,1).toLocaleString('default',{month:'long'})+' '+my.y+'</div>'+
+      '</div>';
+
+      if(rows && rows.length){
+        html += '<div style="margin-top:1rem;border-top:1px solid var(--navy-border);padding-top:.9rem;">'+
+          '<div style="font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-bottom:.6rem;">ENTRIES THIS MONTH ('+rows.length+')</div>'+
+          '<div style="display:flex;flex-wrap:wrap;gap:.4rem;">';
+        Object.keys(flagCounts).forEach(function(f){
+          var def = RADAR_FLAGS[f];
+          if(!def) return;
+          html += '<div style="background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:20px;padding:.25rem .7rem;font-size:.74rem;color:var(--text-muted);">'+
+            esc(def.label)+' <span style="font-weight:700;color:var(--text-primary);">×'+flagCounts[f]+'</span></div>';
+        });
+        html += '</div>'+
+          '<div style="margin-top:.8rem;font-size:.75rem;color:var(--text-dim);font-style:italic;">Details will be discussed in your 1:1 session.</div>'+
+        '</div>';
+      } else {
+        html += '<div style="text-align:center;font-size:.8rem;color:#2ec56f;margin-top:.8rem;">✓ No entries logged this month. Keep it up!</div>';
+      }
+      card.innerHTML = html;
+    }catch(e){
+      card.innerHTML = '<div style="color:#ef493c;font-size:.82rem;">Error: '+esc(e.message)+'</div>';
+    }
+  };
+
+  // ── Control Deck toggle ──
+  window.cdRadarToggle = async function(val){
+    var msgEl = document.getElementById('cd-radar-msg');
+    var statEl= document.getElementById('cd-radar-status');
+    try{
+      var ex = await sbQuery('settings','key=eq.radar_enabled&select=key');
+      if(ex && ex.length){ await sbUpdate('settings','key','radar_enabled',{value:val?'true':'false'}); }
+      else { await sbInsert('settings',{key:'radar_enabled',value:val?'true':'false'}); }
+      window._radarEnabled = val;
+      if(statEl) statEl.textContent = val ? 'Enabled' : 'Disabled';
+      if(msgEl){ msgEl.textContent = val ? '✓ K7 Radar enabled.' : '✓ K7 Radar disabled.'; msgEl.style.display=''; setTimeout(function(){msgEl.style.display='none';},2500); }
+      radarUpdateSidebarVisibility();
+    }catch(e){
+      if(msgEl){ msgEl.textContent='Error: '+e.message; msgEl.style.display=''; }
+    }
+  };
+
+  async function radarLoadCdToggleState(){
+    try{
+      var rows = await sbQuery('settings','key=eq.radar_enabled&select=value');
+      var enabled = rows && rows[0] && rows[0].value === 'true';
+      window._radarEnabled = enabled;
+      var tog  = document.getElementById('cd-radar-toggle');
+      var stat = document.getElementById('cd-radar-status');
+      if(tog)  tog.checked = enabled;
+      if(stat) stat.textContent = enabled ? 'Enabled' : 'Disabled';
+      radarUpdateSidebarVisibility();
+    }catch(e){ console.warn('K7 Radar: cd toggle state error',e); }
+  }
+
+  function radarUpdateSidebarVisibility(){
+    var sidebarItem = document.getElementById('sidebar-radar');
+    if(!sidebarItem) return;
+    var show = radarIsEnabled();
+    sidebarItem.style.display = show ? 'flex' : 'none';
+  }
+
+  // ── showPage hook ──
+  (function(){
+    var _sp = showPage;
+    showPage = function(id, elem){
+      _sp(id, elem);
+      if(id === 'radar') radarInitPage();
+    };
+  })();
+
+  function radarInitPage(){
+    radarInitMonthFilter();
+    radarInitChips();
+    radarLoadAgents();
+    // Show/hide tabs based on role
+    var logTab    = document.getElementById('radar-tab-log');
+    var reportTab = document.getElementById('radar-tab-report');
+    var dataTab   = document.getElementById('radar-tab-data');
+    var logPanel  = document.getElementById('radar-panel-log');
+    var isAdmin   = typeof isAdminUser === 'function' && isAdminUser();
+    if(logTab)    logTab.style.display    = isAdmin ? '' : 'none';
+    if(reportTab) reportTab.style.display = isAdmin ? '' : 'none';
+    if(dataTab)   dataTab.style.display   = isAdmin ? '' : 'none';
+    if(logPanel)  logPanel.style.display  = isAdmin ? '' : 'none';
+    if(!isAdmin){
+      radarTab('mine');
+      if(document.getElementById('radar-tab-mine')) document.getElementById('radar-tab-mine').classList.add('active');
+    }
+    radarUpdateDeductionPreview();
+  }
+
+  // ── Data tab month dropdowns ──
+  function radarInitDataDropdowns(){
+    var now = new Date();
+    var html = '';
+    for(var i = 0; i < 12; i++){
+      var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      var m = d.getMonth()+1;
+      var y = d.getFullYear();
+      var label = d.toLocaleString('default',{month:'long'})+' '+y;
+      html += '<option value="'+m+'-'+y+'">'+label+'</option>';
+    }
+    var expSel = document.getElementById('radar-export-month');
+    var delSel = document.getElementById('radar-delete-month');
+    if(expSel) expSel.innerHTML = html;
+    if(delSel) delSel.innerHTML = html;
+  }
+
+  function radarInitDataTab(){
+    radarInitDataDropdowns();
+    radarLoadStorageSummary();
+  }
+
+  // ── Fetch all rows helper ──
+  async function radarFetchRows(extraFilter){
+    var filter = 'order=created_at.desc';
+    if(extraFilter) filter = extraFilter + '&' + filter;
+    var rows = await sbQuery('l1_radar_log', filter + '&select=id,created_at,month,year,agent_id,agent_name,logged_by_id,logged_by_name,ticket_id,flags,deduction,notes');
+    return rows || [];
+  }
+
+  // ── Compute per-agent monthly scores for export ──
+  function radarComputeScores(rows){
+    // key: agentId-month-year → totalDed
+    var map = {};
+    rows.forEach(function(r){
+      var key = r.agent_id+'-'+r.month+'-'+r.year;
+      if(!map[key]) map[key] = 0;
+      map[key] += (r.deduction||0);
+    });
+    return map;
+  }
+
+  // ── Build Excel via SheetJS ──
+  function radarBuildExcel(rows, filename){
+    if(!rows.length){ return false; }
+    var scoreMap = radarComputeScores(rows);
+
+    var headers = [
+      'Entry ID','Date & Time','Month','Year',
+      'Agent Name','Agent ID',
+      'Ticket ID',
+      'Flags',
+      'Total Deduction (pts)',
+      'Notes',
+      'Logged By','Logged By ID',
+      'Agent Monthly Score','Agent Monthly Rating'
+    ];
+
+    var data = [headers];
+    rows.forEach(function(r){
+      var flagsArr = [];
+      if(Array.isArray(r.flags)) flagsArr = r.flags;
+      else if(typeof r.flags === 'string') flagsArr = r.flags.replace(/[{}"]/g,'').split(',').filter(Boolean);
+      var flagLabels = flagsArr.map(function(f){ return RADAR_FLAGS[f] ? RADAR_FLAGS[f].label : f; }).join(', ');
+      var key = r.agent_id+'-'+r.month+'-'+r.year;
+      var monthScore = Math.max(0, 100 + (scoreMap[key]||0));
+      var rating = radarRating(monthScore);
+      var dateStr = r.created_at ? new Date(r.created_at).toLocaleString('en-IN') : '';
+      data.push([
+        r.id||'',
+        dateStr,
+        r.month||'',
+        r.year||'',
+        r.agent_name||'',
+        r.agent_id||'',
+        r.ticket_id||'',
+        flagLabels,
+        r.deduction||0,
+        r.notes||'',
+        r.logged_by_name||'',
+        r.logged_by_id||'',
+        monthScore,
+        rating.label.replace(/[⭐👍⚠️❌]/g,'').trim()
+      ]);
+    });
+
+    // Use SheetJS if available, else CSV fallback
+    if(typeof XLSX !== 'undefined'){
+      var wb = XLSX.utils.book_new();
+      var ws = XLSX.utils.aoa_to_sheet(data);
+      // Column widths
+      ws['!cols'] = [
+        {wch:36},{wch:20},{wch:8},{wch:6},
+        {wch:18},{wch:36},
+        {wch:14},{wch:60},{wch:12},
+        {wch:30},{wch:18},{wch:36},
+        {wch:14},{wch:18}
+      ];
+      XLSX.utils.book_append_sheet(wb, ws, 'K7 Radar');
+      XLSX.writeFile(wb, filename+'.xlsx');
+    } else {
+      // CSV fallback
+      var csv = data.map(function(row){
+        return row.map(function(cell){
+          var s = String(cell||'').replace(/"/g,'""');
+          return '"'+s+'"';
+        }).join(',');
+      }).join('\n');
+      var blob = new Blob([csv], {type:'text/csv'});
+      var a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = filename+'.csv';
+      a.click();
+    }
+    return true;
+  }
+
+  // ── Export month ──
+  window.radarExportMonth = async function(){
+    var sel = document.getElementById('radar-export-month');
+    var msg = document.getElementById('radar-export-msg');
+    if(!sel) return;
+    var parts = sel.value.split('-');
+    var m = parseInt(parts[0]), y = parseInt(parts[1]);
+    var label = sel.options[sel.selectedIndex].text;
+    msg.textContent = 'Fetching data…'; msg.style.color='var(--text-muted)'; msg.style.display='';
+    try{
+      // Load SheetJS if not loaded
+      await radarEnsureXLSX();
+      var rows = await radarFetchRows('month=eq.'+m+'&year=eq.'+y);
+      if(!rows.length){ msg.textContent='No entries found for '+label+'.'; msg.style.color='#ef493c'; return; }
+      var ok = radarBuildExcel(rows, 'K7_Radar_'+label.replace(' ','_'));
+      if(ok){ msg.textContent='✓ Downloaded '+rows.length+' entries for '+label+'.'; msg.style.color='#2ec56f'; }
+    }catch(e){ msg.textContent='Error: '+e.message; msg.style.color='#ef493c'; }
+    setTimeout(function(){ msg.style.display='none'; }, 4000);
+  };
+
+  // ── Export all ──
+  window.radarExportAll = async function(){
+    var msg = document.getElementById('radar-export-msg');
+    msg.textContent = 'Fetching all data…'; msg.style.color='var(--text-muted)'; msg.style.display='';
+    try{
+      await radarEnsureXLSX();
+      var rows = await radarFetchRows(null);
+      if(!rows.length){ msg.textContent='No entries found.'; msg.style.color='#ef493c'; return; }
+      var ok = radarBuildExcel(rows, 'K7_Radar_Full_Backup_'+new Date().toISOString().slice(0,10));
+      if(ok){ msg.textContent='✓ Downloaded all '+rows.length+' entries.'; msg.style.color='#2ec56f'; }
+    }catch(e){ msg.textContent='Error: '+e.message; msg.style.color='#ef493c'; }
+    setTimeout(function(){ msg.style.display='none'; }, 4000);
+  };
+
+  // ── Delete month ──
+  window.radarDeleteMonth = async function(){
+    var sel = document.getElementById('radar-delete-month');
+    var msg = document.getElementById('radar-delete-msg');
+    if(!sel) return;
+    var parts = sel.value.split('-');
+    var m = parseInt(parts[0]), y = parseInt(parts[1]);
+    var label = sel.options[sel.selectedIndex].text;
+    if(!confirm('Delete ALL K7 Radar entries for '+label+'?\n\nThis cannot be undone. Make sure you have downloaded a backup first.')) return;
+    msg.textContent = 'Deleting…'; msg.style.color='var(--text-muted)'; msg.style.display='';
+    try{
+      var r = await fetch(SUPABASE_URL+'/rest/v1/l1_radar_log?month=eq.'+m+'&year=eq.'+y,
+        {method:'DELETE', headers:sbHeaders({})});
+      if(!r.ok){ var t=await r.text(); throw new Error(t); }
+      msg.textContent='✓ All entries for '+label+' deleted.'; msg.style.color='#2ec56f';
+      radarLoadStorageSummary();
+    }catch(e){ msg.textContent='Error: '+e.message; msg.style.color='#ef493c'; }
+    setTimeout(function(){ msg.style.display='none'; }, 4000);
+  };
+
+  // ── Delete all ──
+  window.radarDeleteAll = async function(){
+    var msg = document.getElementById('radar-delete-msg');
+    if(!confirm('⚠️ DELETE ALL K7 Radar records?\n\nThis will permanently remove every entry across all months and cannot be undone.\n\nAre you absolutely sure?')) return;
+    msg.textContent = 'Deleting all records…'; msg.style.color='var(--text-muted)'; msg.style.display='';
+    try{
+      var r = await fetch(SUPABASE_URL+'/rest/v1/l1_radar_log?id=neq.00000000-0000-0000-0000-000000000000',
+        {method:'DELETE', headers:sbHeaders({})});
+      if(!r.ok){ var t=await r.text(); throw new Error(t); }
+      msg.textContent='✓ All K7 Radar records deleted.'; msg.style.color='#2ec56f';
+      radarLoadStorageSummary();
+    }catch(e){ msg.textContent='Error: '+e.message; msg.style.color='#ef493c'; }
+    setTimeout(function(){ msg.style.display='none'; }, 4000);
+  };
+
+  // ── Storage Summary ──
+  window.radarLoadStorageSummary = async function(){
+    var wrap = document.getElementById('radar-storage-summary');
+    if(!wrap) return;
+    wrap.innerHTML = '<div style="color:var(--text-dim);font-size:.82rem;">Loading…</div>';
+    try{
+      var rows = await sbQuery('l1_radar_log','select=month,year');
+      if(!rows||!rows.length){ wrap.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;">No records found.</div>'; return; }
+      // Group by month-year
+      var counts = {};
+      rows.forEach(function(r){
+        var key = r.year+'-'+(r.month<10?'0':'')+r.month;
+        var label = new Date(r.year, r.month-1, 1).toLocaleString('default',{month:'long'})+' '+r.year;
+        if(!counts[key]) counts[key] = {label:label, count:0};
+        counts[key].count++;
+      });
+      var keys = Object.keys(counts).sort().reverse();
+      var html = '<table class="radar-table"><thead><tr><th>Month</th><th>Entries</th><th>Actions</th></tr></thead><tbody>';
+      keys.forEach(function(k){
+        var c = counts[k];
+        var parts = k.split('-');
+        var y = parts[0], m = parseInt(parts[1]);
+        html += '<tr>'+
+          '<td style="font-weight:600;">'+esc(c.label)+'</td>'+
+          '<td>'+c.count+' entries</td>'+
+          '<td><button class="cd-btn-sec" style="font-size:.72rem;padding:.22rem .6rem;" onclick="radarQuickExport('+m+','+y+',\''+esc(c.label)+'\')">⬇️ Export</button> '+
+          '<button class="cd-btn-danger" style="font-size:.72rem;padding:.22rem .6rem;" onclick="radarQuickDelete('+m+','+y+',\''+esc(c.label)+'\')">🗑️ Delete</button></td>'+
+          '</tr>';
+      });
+      html += '</tbody></table>';
+      html += '<div style="margin-top:.6rem;font-size:.75rem;color:var(--text-dim);">Total: <strong style="color:var(--text-primary);">'+rows.length+' entries</strong> across '+keys.length+' month(s)</div>';
+      wrap.innerHTML = html;
+    }catch(e){
+      wrap.innerHTML='<div style="color:#ef493c;font-size:.82rem;">Error: '+esc(e.message)+'</div>';
+    }
+  };
+
+  // ── Quick export from summary table ──
+  window.radarQuickExport = async function(m, y, label){
+    var msg = document.getElementById('radar-delete-msg');
+    msg.textContent='Fetching…'; msg.style.color='var(--text-muted)'; msg.style.display='';
+    try{
+      await radarEnsureXLSX();
+      var rows = await radarFetchRows('month=eq.'+m+'&year=eq.'+y);
+      radarBuildExcel(rows, 'K7_Radar_'+label.replace(' ','_'));
+      msg.textContent='✓ Exported '+rows.length+' entries for '+label; msg.style.color='#2ec56f';
+    }catch(e){ msg.textContent='Error: '+e.message; msg.style.color='#ef493c'; }
+    setTimeout(function(){ msg.style.display='none'; },3500);
+  };
+
+  // ── Quick delete from summary table ──
+  window.radarQuickDelete = async function(m, y, label){
+    var msg = document.getElementById('radar-delete-msg');
+    if(!confirm('Delete all entries for '+label+'? Cannot be undone.')) return;
+    msg.textContent='Deleting…'; msg.style.color='var(--text-muted)'; msg.style.display='';
+    try{
+      var r = await fetch(SUPABASE_URL+'/rest/v1/l1_radar_log?month=eq.'+m+'&year=eq.'+y,
+        {method:'DELETE',headers:sbHeaders({})});
+      if(!r.ok){ var t=await r.text(); throw new Error(t); }
+      msg.textContent='✓ Entries for '+label+' deleted.'; msg.style.color='#2ec56f';
+      radarLoadStorageSummary();
+    }catch(e){ msg.textContent='Error: '+e.message; msg.style.color='#ef493c'; }
+    setTimeout(function(){ msg.style.display='none'; },3500);
+  };
+
+  // ── Lazy load SheetJS ──
+  function radarEnsureXLSX(){
+    return new Promise(function(resolve, reject){
+      if(typeof XLSX !== 'undefined'){ resolve(); return; }
+      var s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+      s.onload = resolve;
+      s.onerror = function(){ reject(new Error('Failed to load Excel library. Check your internet connection.')); };
+      document.head.appendChild(s);
+    });
+  }
+
+  // ── sbUpsert helper (if not already defined) ──
+  if(typeof sbUpsert === 'undefined'){
+    window.sbUpsert = async function(table, data, onConflict){
+      var url = SUPABASE_URL+'/rest/v1/'+table+(onConflict?'?on_conflict='+onConflict:'');
+      var r = await fetch(url,{method:'POST',headers:sbHeaders({'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=representation'}),body:JSON.stringify(data)});
+      if(!r.ok){ var t=await r.text(); throw new Error(t); }
+      return r.json();
+    };
+  }
+
+  // ── Init on load ──
+  document.addEventListener('DOMContentLoaded', function(){
+    setTimeout(radarLoadCdToggleState, 1200);
+  });
+
+})();
+
+  return '<div style="background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:8px;padding:.5rem .9rem;min-width:90px;">'+
+    '<div style="font-size:1.2rem;font-weight:700;color:'+color+';">'+val+'</div>'+
+    '<div style="font-size:.7rem;color:var(--text-dim);margin-top:1px;">'+label+'</div>'+
+  '</div>';
+}
+
+async function siClearAll(){
+  if(!_isSysLevel()) return;
+  var filterSel=document.getElementById('si-filter-user');
+  var filterUser=filterSel?filterSel.value:'';
+  var target=filterUser?'records for selected agent':'ALL session fingerprint records';
+  if(!confirm('Permanently delete '+target+'? This cannot be undone.')) return;
+  try{
+    var q=filterUser?'user_id=eq.'+filterUser:'id=neq.00000000-0000-0000-0000-000000000000';
+    await fetch(SUPABASE_URL+'/rest/v1/session_fingerprints?'+q,{method:'DELETE',headers:sbHeaders({})});
+    siLoadLogs();
+  }catch(e){ alert('Error: '+e.message); }
+}
+</script>
+
 
 
