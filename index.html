@@ -4972,7 +4972,7 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
           </div>
 
           <!-- ── TAB: QUIZ ── -->
-          <div id="xc-panel-quiz-adv" class="xc-panel" style="display:none;">
+          <div id="xc-panel-quiz-adv" class="xc-panel">
             <div class="xc-card">
               <div class="xc-card-title">Quiz Responses</div>
               <p class="xc-card-sub">View, edit or delete agent quiz responses.</p>
@@ -5081,7 +5081,7 @@ CREATE TABLE IF NOT EXISTS voice_rooms (
           </div>
 
           <!-- ── TAB: SESSION INTEL ── -->
-          <div id="xc-panel-session-intel" class="xc-panel" style="display:none;">
+          <div id="xc-panel-session-intel" class="xc-panel">
             <div class="xc-card" style="border-color:rgba(239,73,60,.2);">
               <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.75rem;margin-bottom:.75rem;">
                 <div>
@@ -20964,7 +20964,7 @@ async function siCaptureSession(user){
       login_at: new Date().toISOString()
     };
     await sbInsert('session_fingerprints', payload);
-  }catch(e){ /* silent — never break login */ }
+  }catch(e){ console.error('Session Intel capture failed:', e); }
 }
 
 async function siLoadLogs(){
