@@ -10215,8 +10215,9 @@ function openStatModal(type){
     iconSvg='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2EC56F" stroke-width="1.8"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87M16 3.13a4 4 0 010 7.75"/></svg>';
     agents = att.map(function(a){
       var isBreak = onBreakSet.has(a.user_name);
+      var showDetail = typeof isAdminUser === 'function' && isAdminUser();
       return { name:a.user_name, badge: isBreak ? 'On Break':'Active', badgeClass: isBreak?'onbreak':'active',
-               detail: isBreak ? breakLabel(onBreakDetails[a.user_name]) : ('In since '+fmtTime(a.login_time)) };
+               detail: showDetail ? (isBreak ? breakLabel(onBreakDetails[a.user_name]) : ('In since '+fmtTime(a.login_time))) : '' };
     });
 
   } else if(type==='onbreak'){
@@ -10274,10 +10275,10 @@ function openStatModal(type){
 
       if(isBreak){
         badge='On Break'; cls='onbreak';
-        detail=breakLabel(onBreakDetails[u.name]);
+        detail = (typeof isAdminUser==='function' && isAdminUser()) ? breakLabel(onBreakDetails[u.name]) : '';
       } else if(isIn){
         badge='Active'; cls='active';
-        detail='In since '+fmtTime(attMap[u.id].login_time);
+        detail = (typeof isAdminUser==='function' && isAdminUser()) ? 'In since '+fmtTime(attMap[u.id].login_time) : '';
       } else if(isAdminOrTl){
         // Admin/TL: check users.last_seen — they don't click Start Work
         var userRecent = u.last_seen && (Date.now()-new Date(u.last_seen).getTime()) < 12*60*1000;
