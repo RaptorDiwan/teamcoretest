@@ -1078,8 +1078,12 @@
   .lightbox-box{background:var(--navy-card);border:1px solid var(--navy-border);border-radius:18px;overflow:hidden;max-width:920px;width:100%;max-height:90vh;display:flex;flex-direction:row;box-shadow:0 32px 80px rgba(4,8,30,.5);position:relative;animation:fadeUp .25s ease;}
   .lightbox-close{position:absolute;top:.9rem;right:.9rem;background:rgba(7,13,45,.55);border:none;color:#fff;width:32px;height:32px;border-radius:50%;font-size:.85rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:10;transition:background .2s;}
   .lightbox-close:hover{background:var(--gold);}
-  .lightbox-media{flex:1;min-width:0;background:#0a0f24;display:flex;align-items:center;justify-content:center;overflow:hidden;max-height:90vh;}
-  .lightbox-media img{max-width:100%;max-height:90vh;object-fit:contain;display:block;}
+  .lightbox-media{flex:1;min-width:0;background:#0a0f24;display:flex;align-items:center;justify-content:center;overflow:hidden;max-height:90vh;position:relative;}
+  .lightbox-media img{max-width:100%;max-height:90vh;object-fit:contain;display:block;cursor:zoom-in;transition:transform .25s ease;}
+  .lightbox-media img.zoomed{cursor:zoom-out;transform:scale(2.2);}
+  .lb-zoom-hint{position:absolute;bottom:14px;left:50%;transform:translateX(-50%);background:rgba(255,255,255,.14);color:#fff;font-size:.62rem;font-weight:500;letter-spacing:.1em;text-transform:uppercase;padding:.4rem 1rem;border-radius:30px;backdrop-filter:blur(6px);pointer-events:none;opacity:1;transition:opacity .4s;white-space:nowrap;z-index:5;font-family:'DM Sans',sans-serif;}
+  .lb-zoom-hint.hide{opacity:0;}
+  @media(max-width:700px){.lb-zoom-hint{font-size:.56rem;padding:.32rem .8rem;}}
   .lightbox-info{width:290px;flex-shrink:0;display:flex;flex-direction:column;padding:1.4rem;overflow-y:auto;max-height:90vh;}
   .lightbox-meta{display:flex;align-items:center;gap:.6rem;margin-bottom:.8rem;}
   .lightbox-tag-badge{font-size:.62rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;padding:.18rem .55rem;border-radius:20px;background:rgba(239,73,60,.12);color:var(--gold);border:1px solid rgba(239,73,60,.2);}
@@ -3759,7 +3763,7 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
           <div class="lightbox-overlay" id="lightbox-overlay" onclick="closeLightbox()">
             <div class="lightbox-box" onclick="event.stopPropagation()">
               <button class="lightbox-close" onclick="closeLightbox()">&#10005;</button>
-              <div class="lightbox-media"><img id="lightbox-img" src="" alt="moment"/></div>
+              <div class="lightbox-media"><img id="lightbox-img" src="" alt="moment" onclick="toggleMomentZoom(event)" onmousemove="momentPanZoom(event)"/><div class="lb-zoom-hint" id="lb-zoom-hint">&#128269; Tap image to zoom</div></div>
               <div class="lightbox-info">
                 <div class="lightbox-meta">
                   <span class="lightbox-tag-badge" id="lightbox-tag-badge"></span>
@@ -6768,8 +6772,40 @@ function openMomentLightbox(safe){
   _mRenderComments(safe);
   document.getElementById('lightbox-overlay').classList.add('open');
   document.body.style.overflow='hidden';
+  resetMomentZoom();
 }
-function closeLightbox(){document.getElementById('lightbox-overlay').classList.remove('open');document.body.style.overflow='';_mLightboxId=null;}
+function closeLightbox(){document.getElementById('lightbox-overlay').classList.remove('open');document.body.style.overflow='';_mLightboxId=null;resetMomentZoom();}
+
+// ── Click-to-zoom in moments lightbox (2.2x, pans toward cursor/tap) ──
+function _mSetZoomOrigin(img,e){
+  var rect=img.getBoundingClientRect();
+  var x=((e.clientX-rect.left)/rect.width)*100;
+  var y=((e.clientY-rect.top)/rect.height)*100;
+  img.style.transformOrigin=x+'% '+y+'%';
+}
+function toggleMomentZoom(e){
+  var img=e.target;
+  if(img.classList.contains('zoomed')){
+    img.classList.remove('zoomed');
+    img.style.transformOrigin='center center';
+  }else{
+    _mSetZoomOrigin(img,e);
+    img.classList.add('zoomed');
+  }
+  var hint=document.getElementById('lb-zoom-hint');
+  if(hint)hint.classList.add('hide');
+  e.stopPropagation();
+}
+function momentPanZoom(e){
+  var img=e.target;
+  if(img.classList.contains('zoomed'))_mSetZoomOrigin(img,e);
+}
+function resetMomentZoom(){
+  var img=document.getElementById('lightbox-img');
+  if(img){img.classList.remove('zoomed');img.style.transformOrigin='center center';}
+  var hint=document.getElementById('lb-zoom-hint');
+  if(hint)hint.classList.remove('hide');
+}
 function _mRenderComments(safe){var list=document.getElementById('comments-list');var items=_mcomments[safe]||[];if(!items.length){list.innerHTML='<div class="no-comments">No comments yet - be the first!</div>';return;}list.innerHTML=items.map(function(c){return'<div class="comment-item"><div class="comment-avatar">'+c.initials+'</div><div class="comment-body"><div class="comment-author">'+c.author+'</div><div class="comment-text">'+c.text+'</div><div class="comment-time">'+_mTimeAgo(c.ts)+'</div></div></div>';}).join('');list.scrollTop=list.scrollHeight;}
 function submitComment(){var input=document.getElementById('comment-input');var text=(input.value||'').trim();if(!text||!_mLightboxId)return;var safe=_mLightboxId;if(!_mcomments[safe])_mcomments[safe]=[];var author=currentUser?currentUser.name:'Agent';_mcomments[safe].push({author:author,initials:_mInitials(author),text:text,ts:Date.now()});input.value='';_mRenderComments(safe);}
 
