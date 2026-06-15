@@ -5894,6 +5894,10 @@ window.addEventListener('DOMContentLoaded',function(){
 });
 
 function showPage(id,elem){
+  if(id==='audit'){
+    window.open('audit.html','_blank');
+    return;
+  }
   if(id==='kb'){
   var kbWin=window.open('kbsection.html','_blank');
   // When KB opens, it will set window.opener._kbArticles

@@ -10,6 +10,21 @@
     --gold: #EF493C;
     --gold-light: #FF6658;
     --gold-dim: #C9352B;
+    --navy: #DCE7F5;
+    --navy-mid: #CAD5E3;
+    --navy-card: #F9FBFF;
+    --navy-border: #C5D1E1;
+    --navy-hover: #EDF4FD;
+    --text-primary: #070D2D;
+    --text-muted: #445168;
+    --text-dim: #7B8799;
+    --accent-green: #2EC56F;
+    --accent-red: #EF493C;
+    --accent-blue: #4C76A8;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+  body.dark {
     --navy: #111827;
     --navy-mid: #1F2937;
     --navy-card: #1A2236;
@@ -18,18 +33,17 @@
     --text-primary: #F1F5F9;
     --text-muted: #94A3B8;
     --text-dim: #64748B;
-    --accent-green: #2EC56F;
-    --accent-red: #EF493C;
-    --accent-blue: #4C76A8;
-    --radius: 12px;
-    --radius-sm: 8px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'DM Sans', sans-serif;
-    background: linear-gradient(145deg, #0F172A 0%, #111827 46%, #0D1321 100%);
+    background: linear-gradient(145deg, #EAF2FC 0%, #DCE7F5 46%, #C8D3E1 100%);
     color: var(--text-primary);
     min-height: 100vh;
+    transition: background 0.22s ease, color 0.22s ease;
+  }
+  body.dark {
+    background: linear-gradient(145deg, #0F172A 0%, #111827 46%, #0D1321 100%);
   }
   .wrap { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem 5rem; display:flex; flex-direction:column; gap:1.5rem; }
   .aud-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
@@ -48,7 +62,7 @@
   .qa-form-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; margin-bottom:1rem; }
   .qa-field { display:flex; flex-direction:column; gap:.35rem; }
   .qa-field label { font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); font-weight:500; }
-  .qa-field input, .qa-field select, .qa-field textarea { padding:.65rem .9rem; background:#1e293b; border:1px solid var(--navy-border); border-radius:var(--radius-sm); font-family:'DM Sans',sans-serif; font-size:.875rem; color:var(--text-primary); outline:none; transition:border-color .2s; }
+  .qa-field input, .qa-field select, .qa-field textarea { padding:.65rem .9rem; background:var(--navy-hover); border:1px solid var(--navy-border); border-radius:var(--radius-sm); font-family:'DM Sans',sans-serif; font-size:.875rem; color:var(--text-primary); outline:none; transition:border-color .2s, background-color .2s; }
   .qa-field input:focus, .qa-field select:focus, .qa-field textarea:focus { border-color:var(--gold-dim); box-shadow:0 0 0 3px rgba(239,73,60,.1); }
   .qa-field textarea { resize:vertical; min-height:140px; font-family:'DM Sans',sans-serif; line-height:1.5; }
 
@@ -98,6 +112,44 @@
   .aud-review-badge.review{background:rgba(239,73,60,.12);color:var(--accent-red);}
   .aud-review-badge.ok{background:rgba(46,197,111,.1);color:#2ec56f;}
   .aud-batch-summary{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;}
+
+  /* Settings and Toggle Buttons */
+  .ts-btn-sec {
+    padding: .5rem 1.2rem;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--navy-border);
+    border-radius: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .82rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+  }
+  .ts-btn-sec:hover {
+    background: var(--navy-hover);
+    color: var(--text-primary);
+    border-color: var(--gold-dim);
+  }
+  .dark-toggle {
+    background: transparent;
+    border: 1px solid var(--navy-border);
+    color: var(--text-muted);
+    border-radius: 6px;
+    width: 38px;
+    height: 38px;
+    font-size: 1.05rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.18s, color 0.18s, border-color 0.18s;
+  }
+  .dark-toggle:hover {
+    background: var(--navy-hover);
+    color: var(--text-primary);
+    border-color: var(--gold-dim);
+  }
 </style>
 </head>
 <body>
@@ -113,6 +165,7 @@
         <label>Your Name (Auditor)</label>
         <input type="text" id="aud-auditor-name" placeholder="e.g. Diwan" oninput="localStorage.setItem('aud_auditor_name', this.value)"/>
       </div>
+      <button class="dark-toggle" id="dark-toggle-btn" onclick="toggleDarkMode()" title="Toggle theme" style="height:38px; width:38px; display:flex; align-items:center; justify-content:center;">&#9790;</button>
       <button class="ts-btn-sec" onclick="audOpenSettingsPin()" style="height:38px;">&#9881;&#65039; Settings</button>
     </div>
   </div>
@@ -335,7 +388,7 @@ async function audInitApiKeyStatus(){
 
 // ── Settings PIN gate (keeps the Gemini key tucked away) ──
 // To change the PIN, just ask Claude to update this value.
-var AUD_SETTINGS_PIN='4521';
+var AUD_SETTINGS_PIN='7070';
 // A call/chat/email is flagged "Needs Review" if it has any flags, OR scores below this %.
 var AUD_REVIEW_THRESHOLD_PCT=70;
 
@@ -403,9 +456,11 @@ function audBuildPrompt(type){
     'If the agent skipped a necessary step from the matched article AND the issue was left unresolved, add a flag with type "Missed KB Step" naming the article id/title and exactly which step was skipped and why it mattered.\n'+
     'If no KB article is clearly relevant, set "kb_match" to null — do not force a match.\n\n'+
     '--- K7 KNOWLEDGE BASE ---\n'+K7_KB_TEXT+'\n--- END KNOWLEDGE BASE ---\n\n';
+  var issueInstruction = 'First, in 1-2 plain sentences, summarize what the CUSTOMER\'s actual issue or request was in this '+typeLabel+' — write this as "customer_issue" regardless of whether it matches a KB article or whether it was resolved. Be specific (e.g. "Customer\'s K7 Total Security license expired on a formatted PC and they needed it reactivated" rather than just "activation issue").\n\n';
   return 'You are a strict but fair quality auditor for a technical support team (K7 Computing SOC). '+
     'You are reviewing a '+typeLabel+' between a support agent and a customer.\n\n'+
     transcriptInstruction+
+    issueInstruction+
     'Score the AGENT\'s performance only (do not score the customer) against these criteria:\n'+criteriaText+'\n\n'+
     'Total possible score: '+maxTotal+'.\n\n'+
     'Also identify "flags" — specific moments where the agent was rude, unprofessional or condescending; made a factual or technical mistake; violated process/compliance (e.g. skipped required verification or disclaimers); missed a chance to resolve the issue; or made a policy violation (promised something not allowed). '+
@@ -414,6 +469,7 @@ function audBuildPrompt(type){
     'Respond with ONLY a single JSON object (no markdown, no code fences, no commentary) matching exactly this schema:\n'+
     '{'+
       (type==='call' ? '"transcript": "string", ' : '')+
+      '"customer_issue": "string (1-2 sentence summary of what the customer\'s issue/request was)", '+
       '"overall_score": number, "max_score": '+maxTotal+', '+
       '"criteria": [{"name": "string", "score": number, "max": number, "comment": "string"}], '+
       '"flags": [{"type": "string", "excerpt": "string", "comment": "string"}], '+
@@ -432,9 +488,28 @@ function audFileToBase64(file){
   });
 }
 
+// ── Get standard audio MIME type based on file extension and/or type ──
+function audGetMimeType(file){
+  var mime = file.type || '';
+  if(!mime){
+    var ext=String(file.name||'').split('.').pop().toLowerCase();
+    if(ext==='mp3') mime = 'audio/mp3';
+    else if(ext==='wav') mime = 'audio/wav';
+    else if(ext==='m4a') mime = 'audio/m4a';
+    else if(ext==='ogg') mime = 'audio/ogg';
+    else if(ext==='webm') mime = 'audio/webm';
+    else if(ext==='flac') mime = 'audio/flac';
+    else if(ext==='aac') mime = 'audio/aac';
+    else mime = 'audio/mpeg';
+  }
+  if(mime==='audio/x-wav' || mime==='audio/vnd.wave') mime='audio/wav';
+  if(mime==='audio/x-m4a' || mime==='audio/x-mp4') mime='audio/m4a';
+  return mime;
+}
+
 // ── Prepare the audio part for Gemini: inline base64 for small files, File API for larger ones ──
 async function audPrepareAudioPart(file, apiKey, msg){
-  var mimeType = file.type || 'audio/mpeg';
+  var mimeType = audGetMimeType(file);
   if(file.size <= 14*1024*1024){
     var b64 = await audFileToBase64(file);
     return {inline_data:{mime_type:mimeType, data:b64}};
@@ -449,15 +524,14 @@ async function audPrepareAudioPart(file, apiKey, msg){
       'X-Goog-Upload-Header-Content-Type':mimeType,
       'Content-Type':'application/json'
     },
-    body:JSON.stringify({file:{display_name:file.name}})
+    body:JSON.stringify({file:{displayName:file.name}})
   });
   if(!startRes.ok) throw new Error('Upload init failed ('+startRes.status+')');
   var uploadUrl=startRes.headers.get('x-goog-upload-url')||startRes.headers.get('X-Goog-Upload-URL');
   if(!uploadUrl) throw new Error('No upload URL returned from Gemini');
   var uploadRes=await fetch(uploadUrl,{
-    method:'POST',
+    method:'PUT',
     headers:{
-      'Content-Length':String(file.size),
       'X-Goog-Upload-Offset':'0',
       'X-Goog-Upload-Command':'upload, finalize'
     },
@@ -469,13 +543,14 @@ async function audPrepareAudioPart(file, apiKey, msg){
   if(!f||!f.uri) throw new Error('No file URI returned from Gemini');
   if(msg){ msg.textContent='Processing audio...'; }
   var tries=0;
-  while(f.state==='PROCESSING' && tries<25){
+  while((f.state==='PROCESSING' || f.state==='STATE_UNSPECIFIED') && tries<30){
     await new Promise(function(r){ setTimeout(r,2000); });
     var chk=await fetch('https://generativelanguage.googleapis.com/v1beta/'+f.name+'?key='+apiKey);
     f=await chk.json();
     tries++;
   }
   if(f.state==='FAILED') throw new Error('Gemini failed to process the audio file');
+  if(f.state!=='ACTIVE') throw new Error('Audio file processing timed out');
   return {file_data:{mime_type:f.mimeType||mimeType, file_uri:f.uri}};
 }
 
@@ -486,7 +561,11 @@ async function audCallGemini(parts, apiKey){
     headers:{'Content-Type':'application/json'},
     body:JSON.stringify({
       contents:[{parts:parts}],
-      generationConfig:{responseMimeType:'application/json', temperature:0.2}
+      generationConfig:{
+        responseMimeType:'application/json',
+        temperature:0.2,
+        maxOutputTokens:8192
+      }
     })
   });
   if(!r.ok){
@@ -499,9 +578,25 @@ async function audCallGemini(parts, apiKey){
   var textOut='';
   (cand.content&&cand.content.parts||[]).forEach(function(p){ if(p.text) textOut+=p.text; });
   if(!textOut) throw new Error('Empty response from Gemini');
-  textOut=textOut.trim().replace(/^```json\s*/i,'').replace(/^```\s*/,'').replace(/```\s*$/,'');
-  try{ return JSON.parse(textOut); }
-  catch(e){ throw new Error('Could not parse Gemini\'s response as JSON'); }
+  // Extract JSON robustly
+  var jsonText = textOut.trim();
+  var match = jsonText.match(/```(?:json)?\s*([\s\S]*?)\s*```/i);
+  if(match){
+    jsonText = match[1].trim();
+  }
+  jsonText = jsonText.replace(/^```json\s*/i, '').replace(/```\s*$/, '');
+  var start = jsonText.indexOf('{');
+  var end = jsonText.lastIndexOf('}');
+  if(start !== -1 && end !== -1 && end > start){
+    jsonText = jsonText.slice(start, end + 1);
+  }
+  try{ return JSON.parse(jsonText); }
+  catch(e){
+    console.error('Failed to parse JSON. Raw text:', textOut);
+    var err = new Error('Could not parse Gemini\'s response as JSON');
+    err.rawResponse = textOut;
+    throw err;
+  }
 }
 
 // ── Main entry point: run an audit for 'call' | 'chat' | 'email' ──
@@ -517,8 +612,10 @@ async function runAudit(type){
   var agentId=agentSel.value;
   var agentName=agentSel.options[agentSel.selectedIndex]?agentSel.options[agentSel.selectedIndex].text:'';
   var date=dateInp.value;
+  var auditorName=(document.getElementById('aud-auditor-name').value||'').trim();
 
   msg.style.display='block';
+  if(!auditorName){ msg.style.color='var(--accent-red)'; msg.textContent='Please enter Your Name (Auditor) in the box at the top right.'; return; }
   if(!agentId){ msg.style.color='var(--accent-red)'; msg.textContent='Please select an agent.'; return; }
   if(!date){ msg.style.color='var(--accent-red)'; msg.textContent='Please select a date.'; return; }
 
@@ -546,6 +643,9 @@ async function runAudit(type){
     });
   }catch(e){
     msg.style.color='var(--accent-red)'; msg.textContent='Audit failed: '+e.message;
+    if(e.rawResponse){
+      resultDiv.innerHTML = '<div class="qa-builder-card" style="margin-top:1rem;border-color:var(--accent-red);"><div style="color:var(--accent-red);font-size:.85rem;">&#9888; ' + esc(e.message) + '</div><pre style="background:rgba(239,73,60,.05);padding:.6rem .8rem;border-radius:6px;font-size:.74rem;white-space:pre-wrap;margin-top:.5rem;max-height:180px;overflow-y:auto;border:1px solid rgba(239,73,60,.15);color:var(--text-muted);text-align:left;line-height:1.4;">' + esc(e.rawResponse) + '</pre></div>';
+    }
   }finally{
     btn.disabled=false; btn.textContent=origBtnText;
   }
@@ -583,8 +683,10 @@ async function runCallBatch(){
   var agentId=agentSel.value;
   var agentName=agentSel.options[agentSel.selectedIndex]?agentSel.options[agentSel.selectedIndex].text:'';
   var date=dateInp.value;
+  var auditorName=(document.getElementById('aud-auditor-name').value||'').trim();
 
   msg.style.display='block';
+  if(!auditorName){ msg.style.color='var(--accent-red)'; msg.textContent='Please enter Your Name (Auditor) in the box at the top right.'; return; }
   if(!agentId){ msg.style.color='var(--accent-red)'; msg.textContent='Please select an agent.'; return; }
   if(!date){ msg.style.color='var(--accent-red)'; msg.textContent='Please select a date.'; return; }
   if(!fileInp.files||!fileInp.files.length){ msg.style.color='var(--accent-red)'; msg.textContent='Please choose at least one recording.'; return; }
@@ -622,7 +724,8 @@ async function runCallBatch(){
       await audSaveResultData('call', meta, result);
       batchResults.push({fileName:file.name, result:result});
     }catch(e){
-      wrap.innerHTML='<div class="qa-builder-card" style="margin-top:1rem;border-color:var(--accent-red);"><div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.25rem;">'+esc(file.name)+'</div><div style="color:var(--accent-red);font-size:.85rem;">&#9888; '+esc(e.message)+'</div></div>';
+      var detail = e.rawResponse ? '<pre style="background:rgba(239,73,60,.05);padding:.6rem .8rem;border-radius:6px;font-size:.74rem;white-space:pre-wrap;margin-top:.5rem;max-height:180px;overflow-y:auto;border:1px solid rgba(239,73,60,.15);color:var(--text-muted);text-align:left;line-height:1.4;">' + esc(e.rawResponse) + '</pre>' : '';
+      wrap.innerHTML='<div class="qa-builder-card" style="margin-top:1rem;border-color:var(--accent-red);"><div style="font-size:.82rem;color:var(--text-muted);margin-bottom:.25rem;">'+esc(file.name)+'</div><div style="color:var(--accent-red);font-size:.85rem;">&#9888; '+esc(e.message)+'</div>'+detail+'</div>';
       batchResults.push({fileName:file.name, error:e.message});
     }
 
@@ -715,9 +818,16 @@ function audRenderResult(containerId, result, type, meta, savedId, displayTitle)
   var kbMatchHtml = (result.kb_match&&result.kb_match.id)
     ? '<div style="font-size:.76rem;color:var(--accent-blue);margin-top:.4rem;">&#128214; Related KB: ['+esc(result.kb_match.id)+'] '+esc(result.kb_match.title||'')+'</div>'
     : '';
+  var issueHtml = result.customer_issue
+    ? '<div style="background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:var(--radius-sm);padding:.6rem .9rem;margin-bottom:1rem;">'+
+        '<div style="font-size:.66rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.2rem;">&#128172; Customer Issue</div>'+
+        '<div style="font-size:.85rem;color:var(--text-primary);line-height:1.5;">'+esc(result.customer_issue)+'</div>'+
+      '</div>'
+    : '';
 
   container.innerHTML='<div class="qa-builder-card" style="margin-top:1rem;'+(needsReview?'border-color:rgba(239,73,60,.35);':'')+'">'+
     titleLine+
+    issueHtml+
     '<div style="display:flex;gap:1.25rem;align-items:center;flex-wrap:wrap;">'+
       '<div class="aud-score-circle '+cls+'"><div class="aud-score-num">'+overall+'</div><div class="aud-score-max">/ '+max+'</div></div>'+
       '<div style="flex:1;min-width:200px;">'+
@@ -760,6 +870,7 @@ function audBuildAuditPayload(type, meta, result){
     transcript: type==='call' ? (result.transcript||null) : null,
     source_text: type!=='call' ? (meta.sourceText||null) : null,
     summary:result.summary||null,
+    customer_issue:result.customer_issue||null,
     kb_match: result.kb_match||null,
     file_name: meta.fileName||null,
     created_at:new Date().toISOString()
@@ -768,7 +879,27 @@ function audBuildAuditPayload(type, meta, result){
 
 // ── Save directly (used by the batch call audit, which auto-saves everything) ──
 async function audSaveResultData(type, meta, result){
-  return sbInsert('audits', audBuildAuditPayload(type, meta, result));
+  var payload = audBuildAuditPayload(type, meta, result);
+  try {
+    return await sbInsert('audits', payload);
+  } catch (e) {
+    if (e.message && (e.message.indexOf('kb_match') !== -1 || e.message.indexOf('PGRST204') !== -1)) {
+      delete payload.kb_match;
+      try {
+        return await sbInsert('audits', payload);
+      } catch (e2) {
+        if (e2.message && e2.message.indexOf('file_name') !== -1) {
+          delete payload.file_name;
+          return await sbInsert('audits', payload);
+        }
+        throw e2;
+      }
+    } else if (e.message && e.message.indexOf('file_name') !== -1) {
+      delete payload.file_name;
+      return await sbInsert('audits', payload);
+    }
+    throw e;
+  }
 }
 
 // ── Save a freshly-generated single audit result to the audits table (Chat/Email "Save to History" button) ──
@@ -781,7 +912,29 @@ async function audSaveResult(containerId, type){
   var origText=btn.textContent;
   btn.disabled=true; btn.textContent='Saving…';
   try{
-    await sbInsert('audits', audBuildAuditPayload(type, d.meta, d.result));
+    var payload = audBuildAuditPayload(type, d.meta, d.result);
+    try {
+      await sbInsert('audits', payload);
+    } catch(dbErr) {
+      if (dbErr.message && (dbErr.message.indexOf('kb_match') !== -1 || dbErr.message.indexOf('PGRST204') !== -1)) {
+        delete payload.kb_match;
+        try {
+          await sbInsert('audits', payload);
+        } catch (dbErr2) {
+          if (dbErr2.message && dbErr2.message.indexOf('file_name') !== -1) {
+            delete payload.file_name;
+            await sbInsert('audits', payload);
+          } else {
+            throw dbErr2;
+          }
+        }
+      } else if (dbErr.message && dbErr.message.indexOf('file_name') !== -1) {
+        delete payload.file_name;
+        await sbInsert('audits', payload);
+      } else {
+        throw dbErr;
+      }
+    }
     btn.textContent='✅ Saved';
     if(msgEl){msgEl.style.display='inline';msgEl.style.color='var(--accent-green)';msgEl.textContent='Saved to History.';}
   }catch(e){
@@ -835,6 +988,7 @@ async function audViewHistoryDetail(id){
       criteria:assParseJSON(r.breakdown,[]),
       flags:assParseJSON(r.flags,[]),
       summary:r.summary,
+      customer_issue:r.customer_issue,
       transcript:r.transcript,
       kb_match:assParseJSON(r.kb_match,null)
     };
@@ -851,9 +1005,36 @@ async function audViewHistoryDetail(id){
   }catch(e){ detailEl.innerHTML='<div style="color:var(--accent-red);font-size:.85rem;">Error: '+e.message+'</div>'; }
 }
 
+function toggleDarkMode(){
+  var isDark = document.body.classList.toggle('dark');
+  localStorage.setItem('tc_dark', isDark ? '1' : '0');
+  var btn = document.getElementById('dark-toggle-btn');
+  if(btn) btn.innerHTML = isDark ? '&#9728;' : '&#9790;';
+}
+
 // ── Init ──
 (function(){
+  var isDark = localStorage.getItem('tc_dark') === '1' || localStorage.getItem('tc_dark') === null;
+  if(isDark){
+    document.body.classList.add('dark');
+    var btn = document.getElementById('dark-toggle-btn');
+    if(btn) btn.innerHTML = '&#9728;';
+  } else {
+    document.body.classList.remove('dark');
+    var btn = document.getElementById('dark-toggle-btn');
+    if(btn) btn.innerHTML = '&#9790;';
+  }
+
   var savedName=localStorage.getItem('aud_auditor_name');
+  if(!savedName){
+    try {
+      var session=JSON.parse(localStorage.getItem('tc_v2')||'{}');
+      if(session&&session.name){
+        savedName=session.name;
+        localStorage.setItem('aud_auditor_name', savedName);
+      }
+    } catch(e) {}
+  }
   if(savedName) document.getElementById('aud-auditor-name').value=savedName;
   loadAuditAgents();
   audInitApiKeyStatus();
