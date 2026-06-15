@@ -10,21 +10,6 @@
     --gold: #EF493C;
     --gold-light: #FF6658;
     --gold-dim: #C9352B;
-    --navy: #DCE7F5;
-    --navy-mid: #CAD5E3;
-    --navy-card: #F9FBFF;
-    --navy-border: #C5D1E1;
-    --navy-hover: #EDF4FD;
-    --text-primary: #070D2D;
-    --text-muted: #445168;
-    --text-dim: #7B8799;
-    --accent-green: #2EC56F;
-    --accent-red: #EF493C;
-    --accent-blue: #4C76A8;
-    --radius: 12px;
-    --radius-sm: 8px;
-  }
-  body.dark {
     --navy: #111827;
     --navy-mid: #1F2937;
     --navy-card: #1A2236;
@@ -33,35 +18,20 @@
     --text-primary: #F1F5F9;
     --text-muted: #94A3B8;
     --text-dim: #64748B;
+    --accent-green: #2EC56F;
+    --accent-red: #EF493C;
+    --accent-blue: #4C76A8;
+    --radius: 12px;
+    --radius-sm: 8px;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     font-family: 'DM Sans', sans-serif;
-    background: linear-gradient(145deg, #EAF2FC 0%, #DCE7F5 46%, #C8D3E1 100%);
+    background: linear-gradient(145deg, #0F172A 0%, #111827 46%, #0D1321 100%);
     color: var(--text-primary);
     min-height: 100vh;
-    transition: background .25s ease, color .25s ease;
   }
-  body.dark {
-    background: linear-gradient(145deg, #0F172A 0%, #111827 46%, #0D1321 100%);
-  }
-  .wrap { max-width: 920px; margin: 0 auto; padding: 1.25rem 1.5rem 5rem; display:flex; flex-direction:column; gap:1.5rem; }
-
-  /* ── TOP BAR ── */
-  .aud-topbar { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding-bottom:.5rem; }
-  .aud-brand { display:flex; align-items:center; gap:.55rem; text-decoration:none; color:var(--text-primary); transition:opacity .15s; }
-  .aud-brand:hover { opacity:.8; }
-  .aud-brand-ring { width:32px; height:32px; border-radius:9px; background:linear-gradient(135deg,var(--gold),var(--gold-dim)); display:flex; align-items:center; justify-content:center; flex-shrink:0; box-shadow:0 4px 12px rgba(239,73,60,.2); }
-  .aud-brand-ring svg { width:17px; height:17px; stroke:#fff; fill:none; stroke-width:1.8; }
-  .aud-brand-text { font-family:'Cormorant Garamond',serif; font-size:1.15rem; font-weight:600; line-height:1.1; }
-  .aud-brand-text span { color:var(--gold); }
-  .aud-brand-sub { font-size:.62rem; color:var(--text-muted); letter-spacing:.12em; text-transform:uppercase; margin-top:1px; }
-  .aud-topbar-controls { display:flex; align-items:center; gap:.5rem; }
-  .aud-icon-btn { width:38px; height:38px; border-radius:var(--radius-sm); background:var(--navy-card); border:1px solid var(--navy-border); color:var(--text-primary); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .15s; flex-shrink:0; }
-  .aud-icon-btn:hover { background:var(--navy-hover); border-color:var(--gold-dim); }
-  .aud-icon-btn svg { width:18px; height:18px; stroke:currentColor; fill:none; stroke-width:1.8; }
-  .ts-btn-sec { padding:.5rem 1.2rem; background:var(--navy-card); color:var(--text-primary); border:1px solid var(--navy-border); border-radius:6px; font-family:'DM Sans',sans-serif; font-size:.82rem; font-weight:600; cursor:pointer; transition:all .18s; white-space:nowrap; }
-  .ts-btn-sec:hover { background:var(--navy-hover); }
+  .wrap { max-width: 920px; margin: 0 auto; padding: 2rem 1.5rem 5rem; display:flex; flex-direction:column; gap:1.5rem; }
   .aud-header { display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:1rem; }
   .aud-title { font-family:'Cormorant Garamond',serif; font-size:1.9rem; font-weight:600; color:var(--text-primary); }
   .aud-sub { color:var(--text-muted); font-size:.875rem; margin-top:.25rem; }
@@ -78,7 +48,7 @@
   .qa-form-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr)); gap:1rem; margin-bottom:1rem; }
   .qa-field { display:flex; flex-direction:column; gap:.35rem; }
   .qa-field label { font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; color:var(--text-muted); font-weight:500; }
-  .qa-field input, .qa-field select, .qa-field textarea { padding:.65rem .9rem; background:var(--navy-hover); border:1px solid var(--navy-border); border-radius:var(--radius-sm); font-family:'DM Sans',sans-serif; font-size:.875rem; color:var(--text-primary); outline:none; transition:border-color .2s; }
+  .qa-field input, .qa-field select, .qa-field textarea { padding:.65rem .9rem; background:#1e293b; border:1px solid var(--navy-border); border-radius:var(--radius-sm); font-family:'DM Sans',sans-serif; font-size:.875rem; color:var(--text-primary); outline:none; transition:border-color .2s; }
   .qa-field input:focus, .qa-field select:focus, .qa-field textarea:focus { border-color:var(--gold-dim); box-shadow:0 0 0 3px rgba(239,73,60,.1); }
   .qa-field textarea { resize:vertical; min-height:140px; font-family:'DM Sans',sans-serif; line-height:1.5; }
 
@@ -133,34 +103,17 @@
 <body>
 <div class="wrap">
 
-  <div class="aud-topbar">
-    <a class="aud-brand" href="index.html">
-      <div class="aud-brand-ring">
-        <svg viewBox="0 0 24 24"><path d="M12 1a3 3 0 00-3 3v4a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 9v1a7 7 0 01-14 0V9M12 17v4M8 21h8"/></svg>
-      </div>
-      <div>
-        <div class="aud-brand-text">K7Team<span>Core</span></div>
-        <div class="aud-brand-sub">&larr; Back to Portal</div>
-      </div>
-    </a>
-    <div class="aud-topbar-controls">
-      <button class="aud-icon-btn" id="aud-theme-btn" onclick="audToggleTheme()" title="Toggle light/dark mode">
-        <svg id="aud-theme-icon" viewBox="0 0 24 24"></svg>
-      </button>
-      <button class="aud-icon-btn" onclick="audOpenSettingsPin()" title="Settings">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 11-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 11-4 0v-.09A1.65 1.65 0 008.6 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H2a2 2 0 110-4h.09A1.65 1.65 0 003.6 8.6a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06a1.65 1.65 0 001.82.33H8a1.65 1.65 0 001-1.51V2a2 2 0 114 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V8a1.65 1.65 0 001.51 1H21a2 2 0 110 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
-      </button>
-    </div>
-  </div>
-
   <div class="aud-header">
     <div>
       <div class="aud-title">&#127911; K7 Quality Audit</div>
       <div class="aud-sub">AI-assisted scoring for calls, chats &amp; emails &mdash; transcribes, scores against a rubric, and flags issues. Admin/TL use only.</div>
     </div>
-    <div class="auditor-field">
-      <label>Your Name (Auditor)</label>
-      <input type="text" id="aud-auditor-name" placeholder="e.g. Diwan" oninput="localStorage.setItem('aud_auditor_name', this.value)"/>
+    <div style="display:flex;align-items:flex-end;gap:.75rem;">
+      <div class="auditor-field">
+        <label>Your Name (Auditor)</label>
+        <input type="text" id="aud-auditor-name" placeholder="e.g. Diwan" oninput="localStorage.setItem('aud_auditor_name', this.value)"/>
+      </div>
+      <button class="ts-btn-sec" onclick="audOpenSettingsPin()" style="height:38px;">&#9881;&#65039; Settings</button>
     </div>
   </div>
 
@@ -382,7 +335,7 @@ async function audInitApiKeyStatus(){
 
 // ── Settings PIN gate (keeps the Gemini key tucked away) ──
 // To change the PIN, just ask Claude to update this value.
-var AUD_SETTINGS_PIN='7070';
+var AUD_SETTINGS_PIN='4521';
 // A call/chat/email is flagged "Needs Review" if it has any flags, OR scores below this %.
 var AUD_REVIEW_THRESHOLD_PCT=70;
 
@@ -899,29 +852,9 @@ async function audViewHistoryDetail(id){
 }
 
 // ── Init ──
-// ── Light / dark theme toggle ──
-var AUD_MOON_ICON='<path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>';
-var AUD_SUN_ICON='<circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/>';
-function audApplyTheme(theme){
-  var icon=document.getElementById('aud-theme-icon');
-  if(theme==='light'){
-    document.body.classList.remove('dark');
-    if(icon) icon.innerHTML=AUD_MOON_ICON;
-  }else{
-    document.body.classList.add('dark');
-    if(icon) icon.innerHTML=AUD_SUN_ICON;
-  }
-}
-function audToggleTheme(){
-  var next = document.body.classList.contains('dark') ? 'light' : 'dark';
-  localStorage.setItem('aud_theme', next);
-  audApplyTheme(next);
-}
-
 (function(){
   var savedName=localStorage.getItem('aud_auditor_name');
   if(savedName) document.getElementById('aud-auditor-name').value=savedName;
-  audApplyTheme(localStorage.getItem('aud_theme')||'dark');
   loadAuditAgents();
   audInitApiKeyStatus();
 })();
