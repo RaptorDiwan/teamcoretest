@@ -15062,7 +15062,13 @@ var ROSTER_MONTHS = {
   'Mar': { label:'Mar 2026', gid:'576729577'  },
   'Apr': { label:'Apr 2026', gid:'1780653272' },
   'May': { label:'May 2026', gid:'574438143'  },
-  'Jun': { label:'Jun 2026', gid:'914934387'  }
+  'Jun': { label:'Jun 2026', gid:'914934387'  },
+  'Jul': { label:'Jul 2026', gid:''           },
+  'Aug': { label:'Aug 2026', gid:''           },
+  'Sep': { label:'Sep 2026', gid:''           },
+  'Oct': { label:'Oct 2026', gid:''           },
+  'Nov': { label:'Nov 2026', gid:''           },
+  'Dec': { label:'Dec 2026', gid:''           }
 };
 
 var _rosterBaseUrl = '2PACX-1vTGmLIzXLioRQFdy7h19uyav3E_LTEmmrde08fAwrCdPNfdV3sBR9EtV6AO8LjJocAz22Y_LDu4GQjM';
@@ -15080,22 +15086,25 @@ function initRosterMonthTabs(){
   // Load custom URLs from Supabase settings if available
   loadRosterMonthSettings().then(function(){
     var today = new Date();
-    var monthKeys = ['Jan','Feb','Mar','Apr','May','Jun'];
-    var currentMonthKey = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][today.getMonth()];
+    var ALL_KEYS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var currentMonthKey = ALL_KEYS[today.getMonth()];
+    // Show all months from Jan up to and including the current month
+    var monthKeys = ALL_KEYS.slice(0, today.getMonth() + 1);
 
     var html = '<span style="font-size:.72rem;color:var(--text-muted);margin-right:.3rem;align-self:center;">Month:</span>';
     monthKeys.forEach(function(key){
-      var isActive = key === currentMonthKey || (!currentMonthKey && key === 'Jun');
+      var cfg = ROSTER_MONTHS[key];
+      if(!cfg) return;
+      var isActive = key === currentMonthKey;
       html += '<button class="roster-month-btn'+(isActive?' active':'')+'" '+
         'onclick="switchRosterMonth(\''+key+'\')" id="rmb-'+key+'">'+
-        ROSTER_MONTHS[key].label+'</button>';
+        cfg.label+'</button>';
     });
     container.innerHTML = html;
 
     // Load current month — always use loadRosterData for spinner support
-    var activeKey = monthKeys.indexOf(currentMonthKey) > -1 ? currentMonthKey : 'Jun';
-    _rosterActiveMonth = activeKey;
-    switchRosterMonth(activeKey, false); // false = trigger load
+    _rosterActiveMonth = currentMonthKey;
+    switchRosterMonth(currentMonthKey, false); // false = trigger load
   });
 }
 
@@ -15105,8 +15114,10 @@ async function loadRosterMonthSettings(){
     var rows = await sbQuery('settings','key=like.roster_url_%&select=key,value');
     if(rows && rows.length){
       rows.forEach(function(r){
-        var key = r.key.replace('roster_url_','').charAt(0).toUpperCase()+r.key.replace('roster_url_','').slice(1);
-        if(ROSTER_MONTHS[key] && r.value){
+        var rawKey = r.key.replace('roster_url_','');
+        var key = rawKey.charAt(0).toUpperCase()+rawKey.slice(1);
+        if(r.value){
+          if(!ROSTER_MONTHS[key]) ROSTER_MONTHS[key] = { label: key+' 2026', gid: '' };
           ROSTER_MONTHS[key].customUrl = r.value;
         }
       });
@@ -15117,7 +15128,7 @@ async function loadRosterMonthSettings(){
 function switchRosterMonth(key, silent){
   _rosterActiveMonth = key;
   // Update active button
-  ['Jan','Feb','Mar','Apr','May','Jun'].forEach(function(k){
+  ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'].forEach(function(k){
     var btn = document.getElementById('rmb-'+k);
     if(btn) btn.classList.toggle('active', k === key);
   });
