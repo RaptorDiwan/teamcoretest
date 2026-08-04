@@ -40,7 +40,6 @@
   }
   body.dark { background: linear-gradient(145deg, #0F172A 0%, #111827 46%, #0D1321 100%); }
   body.dark::before { opacity: 0.4; }
-  body.dark .login-box { background: #1A2236; border-color: #2D3748; }
   body.dark .field-group input { background: #111827; border-color: #2D3748; color: #F1F5F9; }
   body.dark .field-group input::placeholder { color: #475569; }
   body.dark .comment-body { background: #1F2937; }
@@ -219,122 +218,97 @@
   .view.active { display: flex; }
 
   /* ══════════════════════════════
-     LOGIN PAGE
+     LOGIN PAGE — Split Editorial
+     (scoped under #login-view; does NOT touch
+      shared classes like .field-group used elsewhere)
   ══════════════════════════════ */
   #login-view {
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
+    align-items: stretch;
+    justify-content: flex-start;
+    padding: 0;
     overflow-y: auto;
   }
 
-  .login-box {
-    background: var(--navy-card);
-    border: 1px solid var(--navy-border);
-    border-radius: 20px;
-    padding: 3rem 3.5rem;
-    width: 100%;
-    max-width: 440px;
+  .li-brand {
+    flex: 1.05;
     position: relative;
+    background: linear-gradient(160deg, #1c2340 0%, #2a1f3d 55%, #401f28 100%);
+    display: flex; flex-direction: column; justify-content: space-between;
+    padding: 3rem;
     overflow: hidden;
-    box-shadow: 0 24px 70px rgba(7, 13, 45, 0.16);
-    animation: fadeUp 0.6s ease forwards;
+    color: #fff;
+    min-height: 100%;
   }
-
-  .login-box::before {
-    content: '';
-    position: absolute;
-    top: -1px; left: 20%; right: 20%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, var(--gold), transparent);
-    border-radius: 2px;
+  .li-brand::before, .li-brand::after {
+    content: ''; position: absolute; border-radius: 50%;
+    background: radial-gradient(circle, rgba(255,91,61,0.35), transparent 70%);
   }
+  .li-brand::before { width: 500px; height: 500px; top: -160px; right: -160px; animation: liFloat1 14s ease-in-out infinite; }
+  .li-brand::after { width: 380px; height: 380px; bottom: -140px; left: -100px; background: radial-gradient(circle, rgba(120,140,255,0.28), transparent 70%); animation: liFloat2 16s ease-in-out infinite; }
+  @keyframes liFloat1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-30px,30px); } }
+  @keyframes liFloat2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(25px,-25px); } }
 
-  .login-logo {
-    text-align: center;
-    margin-bottom: 2.5rem;
+  .li-brand-top { position: relative; z-index: 2; display: flex; align-items: center; gap: 9px; }
+  .li-brand-word { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 600; letter-spacing: .02em; }
+  .li-brand-word span { color: #ff7a5c; }
+
+  .li-brand-mid { position: relative; z-index: 2; max-width: 420px; }
+  .li-eyebrow { font-size: .68rem; letter-spacing: .22em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-bottom: 1.1rem; }
+  .li-brand-mid h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.6rem; font-weight: 600; line-height: 1.25; color: #fff; }
+  .li-brand-mid h1 .li-accent { color: #ff8a6a; font-style: italic; }
+  .li-brand-mid p { font-size: .9rem; color: rgba(255,255,255,0.65); margin-top: 1.1rem; line-height: 1.7; }
+
+  .li-brand-bottom { position: relative; z-index: 2; display: flex; gap: 2.4rem; }
+  .li-stat .n { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 600; color: #ff8a6a; }
+  .li-stat .l { font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-top: .2rem; }
+
+  .li-panel {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    padding: 2rem;
+    position: relative;
+    background: linear-gradient(90deg, #f7ece6 0%, #fbf6f3 45%, #ffffff 100%);
   }
+  .li-form-wrap { width: 100%; max-width: 380px; }
 
-  .login-logo .wordmark {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 2.6rem;
-    font-weight: 600;
-    letter-spacing: 0.04em;
-    color: var(--text-primary);
-    line-height: 1;
+  .li-form-head { margin-bottom: 2.2rem; text-align: left; }
+  .li-form-head h2 { font-size: 1.5rem; font-weight: 600; color: #14172b; font-family: 'DM Sans', sans-serif; }
+  .li-form-head p { font-size: .85rem; color: #8a8f9f; margin-top: .35rem; }
+
+  .li-field { margin-bottom: 1.35rem; }
+  .li-field label {
+    display: block; font-size: .72rem; font-weight: 600; letter-spacing: .06em;
+    text-transform: uppercase; color: #6b7080; margin-bottom: .5rem;
   }
-
-  .login-logo .wordmark span {
-    color: var(--gold);
+  .li-field .li-wrap { position: relative; }
+  .li-field input {
+    width: 100%; padding: .85rem 1rem;
+    background: #fff;
+    border: 1.5px solid #e6e7ee; border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: .92rem; color: #14172b;
+    outline: none; transition: border-color .2s, box-shadow .2s;
   }
+  .li-field input:focus { border-color: #ff5b3d; box-shadow: 0 0 0 4px rgba(255,91,61,0.1); }
+  .li-field input::placeholder { color: #b3b7c4; }
 
-  .login-logo .tagline {
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    margin-top: 0.4rem;
-    font-weight: 400;
+  .li-pwd-toggle {
+    position: absolute; right: .9rem; top: 50%; transform: translateY(-50%);
+    font-size: .68rem; font-weight: 700; color: #9a9fae; background: none;
+    border: none; cursor: pointer; letter-spacing: .04em;
   }
+  .li-pwd-toggle:hover { color: #ff5b3d; }
 
-  .field-group {
-    margin-bottom: 1.2rem;
+  .li-row-check {
+    display: flex; align-items: center; gap: .45rem;
+    font-size: .78rem; color: #6b7080; cursor: pointer;
+    margin: .3rem 0 1.1rem;
   }
-
-  .field-group label {
-    display: block;
-    font-size: 0.72rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-muted);
-    margin-bottom: 0.5rem;
-    font-weight: 500;
-  }
-
-  .field-group input {
-    width: 100%;
-    padding: 0.8rem 1rem;
-    background: #F1F6FD;
-    border: 1px solid var(--navy-border);
-    border-radius: var(--radius-sm);
-    color: var(--text-primary);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.95rem;
-    outline: none;
-    transition: border-color var(--transition);
-  }
-
-  .field-group input:focus {
-    border-color: var(--gold-dim);
-    box-shadow: 0 0 0 3px rgba(239,73,60,0.12);
-  }
-
-  .field-group input::placeholder { color: var(--text-dim); }
-
-  .login-btn {
-    width: 100%;
-    padding: 0.9rem;
-    margin-top: 1.8rem;
-    background: linear-gradient(135deg, var(--gold), var(--gold-light));
-    border: none;
-    border-radius: var(--radius-sm);
-    color: #FFFFFF;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 0.9rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: background var(--transition), transform var(--transition);
-  }
-
-  .login-btn:hover { background: linear-gradient(135deg, #DE3E32, var(--gold-light)); transform: translateY(-1px); }
-  .login-btn:active { transform: translateY(0); }
+  .li-row-check input { accent-color: #ff5b3d; width: 15px; height: 15px; }
 
   .login-error,
   .login-status {
     font-size: 0.82rem;
-    margin-top: 0.8rem;
+    margin: 0 0 0.8rem;
     display: none;
     justify-content: center;
     align-items: center;
@@ -343,7 +317,7 @@
 
   .login-error { color: var(--accent-red); text-align: center; }
   .login-status {
-    color: var(--text-dim);
+    color: #8a8f9f;
     text-align: center;
     display: flex;
   }
@@ -352,8 +326,8 @@
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    border: 2px solid rgba(17,17,17,0.12);
-    border-top-color: var(--gold);
+    border: 2px solid rgba(20,23,43,0.12);
+    border-top-color: #ff5b3d;
     animation: spin 0.9s linear infinite;
   }
 
@@ -361,11 +335,107 @@
     to { transform: rotate(360deg); }
   }
 
+  .login-btn {
+    width: 100%;
+    padding: .95rem;
+    margin-top: .2rem;
+    border: none; border-radius: 10px;
+    background: #ff5b3d;
+    color: #fff;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .88rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: background .2s, transform .2s;
+  }
+
+  .login-btn:hover { background: #e84a2e; transform: translateY(-1px); }
+  .login-btn:active { transform: translateY(0); }
+  .login-btn:disabled { opacity: .75; cursor: default; transform: none; }
+
+  .li-fp-link { font-size: .72rem; color: #ff5b3d; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; font-weight: 600; }
+  .li-fp-msg { font-size: .72rem; color: #a0a4b2; }
+
   .login-footer {
-    margin-top: 2rem;
+    margin-top: 1.8rem;
     text-align: center;
-    font-size: 0.75rem;
-    color: var(--text-dim);
+    font-size: 0.72rem;
+    color: #a0a4b2;
+  }
+
+  .li-new-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .3rem;
+    font-size: .62rem;
+    font-weight: 700;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    color: #ff5b3d;
+    background: rgba(255,91,61,0.1);
+    border: 1px solid rgba(255,91,61,0.28);
+    border-radius: 20px;
+    padding: .12rem .5rem .12rem .4rem;
+    vertical-align: middle;
+  }
+  .li-new-badge::before {
+    content: '';
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #ff5b3d;
+    animation: liNewPulse 1.8s ease-in-out infinite;
+  }
+  @keyframes liNewPulse {
+    0%, 100% { opacity: 1; box-shadow: 0 0 0 0 rgba(255,91,61,0.5); }
+    50% { opacity: .6; box-shadow: 0 0 0 3px rgba(255,91,61,0); }
+  }
+
+  /* UI dissolving into particles: the two login panels fade + scale down
+     while the magnetic particle convergence plays on the canvas above them.
+     Also applies to the dashboard so the same effect works in reverse on
+     logout (dashboard dissolves, login panels reform underneath). */
+  body.li-transitioning .li-brand,
+  body.li-transitioning .li-panel,
+  body.li-transitioning #dashboard-view {
+    transition: transform .8s cubic-bezier(.65,0,.35,1), filter .8s ease, opacity .8s cubic-bezier(.65,0,.35,1);
+    transform: scale(0.96);
+    filter: blur(4px);
+    opacity: 0;
+  }
+
+  /* Magnetic particle convergence canvas */
+  .li-wipe {
+    position: fixed; inset: 0; z-index: 999;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity .25s ease;
+  }
+  .li-wipe.show { opacity: 1; pointer-events: all; }
+
+  /* Brand mark that condenses into being at the convergence point, then
+     bursts away (success) or is simply dismissed (failure/reverse) */
+  .li-wipe-logo {
+    position: fixed; top: 0; left: 0; z-index: 1000;
+    width: 42px; height: 42px;
+    transform: translate(-50%,-50%) scale(0.4);
+    opacity: 0;
+    pointer-events: none;
+    filter: drop-shadow(0 0 18px rgba(255,91,61,0.8));
+    transition: opacity .35s ease, transform .35s cubic-bezier(.34,1.56,.64,1), filter .35s ease;
+  }
+  .li-wipe-logo svg { width: 100%; height: 100%; display: block; }
+  .li-wipe-logo.show { opacity: 1; transform: translate(-50%,-50%) scale(1); }
+  .li-wipe-logo.burst { opacity: 0; transform: translate(-50%,-50%) scale(2.1); filter: drop-shadow(0 0 34px rgba(255,91,61,0)); }
+
+  /* Lightweight local particle burst for small in-page actions (Start/End
+     Work) — always transparent when idle, never dims the screen or blocks
+     clicks, unlike the full-screen login/logout transition above. */
+  .li-burst { position: fixed; inset: 0; z-index: 500; pointer-events: none; }
+
+  @media (max-width: 860px) {
+    #login-view { flex-direction: column; }
+    .li-brand { min-height: 260px; padding: 2rem; }
+    .li-brand-mid h1 { font-size: 2rem; }
   }
 
   /* ══════════════════════════════
@@ -546,6 +616,215 @@
   #page-about.active { display: flex !important; flex-direction: column; }
 
   /* ─── HOME PAGE ─── */
+  /* ── Weather Widget + World Clock Dropdown ── */
+  .wx-widget {
+    display: inline-flex; align-items: center; gap: .4rem;
+    background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.13);
+    border-radius: 30px; padding: .28rem .65rem .28rem .48rem;
+    cursor: pointer; transition: background .18s;
+    font-family: 'DM Sans', sans-serif;
+    white-space: nowrap; flex-shrink: 0;
+    color: inherit; outline: none;
+  }
+  .wx-widget:hover, .wx-widget.open { background: rgba(255,255,255,.16); border-color: rgba(255,255,255,.22); }
+  .wx-icon { font-size: 1rem; line-height: 1; flex-shrink: 0; }
+  .wx-temp { font-size: .76rem; font-weight: 700; color: rgba(255,255,255,.92); }
+  .wx-city-pill { font-size: .72rem; font-weight: 500; color: rgba(255,255,255,.7); }
+  .wx-pill-sep { font-size: .6rem; color: rgba(255,255,255,.25); }
+  .wx-globe { font-size: .78rem; line-height: 1; }
+  .wx-arrow { font-size: .6rem; color: rgba(255,255,255,.45); margin-left: .1rem; transition: transform .18s; }
+  .wx-widget.open .wx-arrow { transform: rotate(180deg); }
+
+  /* Dropdown */
+  .wx-dropdown {
+    position: absolute; top: calc(100% + 10px); left: 0;
+    width: 520px; max-width: calc(100vw - 2rem);
+    background: #111827;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 20px; padding: 0;
+    box-shadow: 0 32px 80px rgba(0,0,0,.7), 0 0 0 0.5px rgba(255,255,255,.06);
+    z-index: 9999; overflow: hidden;
+    max-height: calc(100vh - 80px); overflow-y: auto;
+    animation: wxFadeIn .2s cubic-bezier(.16,1,.3,1);
+  }
+  body:not(.dark) .wx-dropdown {
+    background: #1e293b;
+    border-color: rgba(255,255,255,.12);
+    box-shadow: 0 32px 80px rgba(0,0,0,.45), 0 0 0 0.5px rgba(255,255,255,.08);
+  }
+  @keyframes wxFadeIn { from { opacity:0; transform:translateY(-8px) scale(.98); } to { opacity:1; transform:translateY(0) scale(1); } }
+
+  .wx-drop-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: .85rem 1.1rem .6rem;
+    border-bottom: 0.5px solid rgba(255,255,255,.07);
+  }
+  .wx-drop-header-left { display: flex; align-items: center; gap: .5rem; }
+  .wx-drop-htitle {
+    font-size: .72rem; font-weight: 600; letter-spacing: .1em;
+    text-transform: uppercase; color: rgba(255,255,255,.4);
+    font-family: 'DM Sans', sans-serif;
+  }
+  .wx-beta-tag {
+    font-size: .55rem; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; color: rgba(239,73,60,.9);
+    background: rgba(239,73,60,.12); border: 1px solid rgba(239,73,60,.25);
+    border-radius: 4px; padding: 1px 5px;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .wx-drop-lastupd {
+    font-size: .62rem; color: rgba(255,255,255,.22);
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .wx-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 0; padding: .5rem;
+  }
+  .wx-city-card {
+    display: flex; align-items: center; gap: .7rem;
+    padding: .7rem .85rem; border-radius: 12px;
+    transition: background .15s; cursor: default;
+    position: relative; overflow: hidden;
+  }
+  .wx-city-card:hover { background: rgba(255,255,255,.06); }
+  .wx-city-card.work-hours { background: rgba(46,197,111,.04); }
+  .wx-city-card.work-hours:hover { background: rgba(46,197,111,.08); }
+
+  /* Subtle separator lines between rows */
+  .wx-city-card:nth-child(odd):not(:nth-last-child(-n+2)) {
+    border-bottom: 0.5px solid rgba(255,255,255,.04);
+  }
+
+  .wx-work-dot {
+    width: 5px; height: 5px; border-radius: 50%; flex-shrink: 0;
+    background: rgba(255,255,255,.15); position: absolute; top: .7rem; right: .75rem;
+  }
+  .wx-work-dot.active { background: #2EC56F; box-shadow: 0 0 6px rgba(46,197,111,.7); }
+
+  .wx-city-flag { width:28px; height:20px; border-radius:3px; flex-shrink:0; object-fit:cover; display:block; }
+  .wx-city-body { flex: 1; min-width: 0; }
+  .wx-city-name {
+    font-size: .7rem; font-weight: 500; color: rgba(255,255,255,.5);
+    font-family: 'DM Sans',sans-serif; margin-bottom: 1px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .wx-city-time {
+    font-size: 1.05rem; font-weight: 700; color: rgba(255,255,255,.95);
+    font-family: 'DM Sans',sans-serif; font-variant-numeric: tabular-nums;
+    letter-spacing: -.01em; line-height: 1.1;
+  }
+  .wx-city-ampm {
+    font-size: .65rem; font-weight: 500; color: rgba(255,255,255,.4);
+    font-family: 'DM Sans',sans-serif; margin-left: 2px;
+  }
+  .wx-city-date {
+    font-size: .62rem; color: rgba(255,255,255,.25);
+    font-family: 'DM Sans',sans-serif; margin-top: 1px;
+  }
+  .wx-city-wx { text-align: right; flex-shrink: 0; min-width: 36px; }
+  .wx-city-wicon { font-size: 1.3rem; display: block; line-height: 1; }
+  .wx-city-wtemp {
+    font-size: .65rem; font-weight: 600; color: rgba(255,255,255,.45);
+    font-family: 'DM Sans',sans-serif; display: block; text-align: center;
+    margin-top: 1px;
+  }
+  .wx-drop-footer {
+    padding: .5rem 1.1rem .65rem;
+    border-top: 0.5px solid rgba(255,255,255,.06);
+    font-size: .62rem; color: rgba(255,255,255,.2);
+    font-family: 'DM Sans',sans-serif;
+    display: flex; align-items: center; gap: .4rem;
+  }
+  @media (max-width: 600px) {
+    .wx-dropdown { width: calc(100vw - 1rem); left: auto; right: -1rem; border-radius: 16px; }
+    .wx-grid { grid-template-columns: 1fr; }
+    .wx-city-pill, .wx-pill-sep, .wx-globe { display: none; }
+  }
+
+  /* ── Focus Score Pill ── */
+  .focus-pill {
+    position: relative; width: 38px; height: 38px;
+    background: none; border: none; cursor: pointer;
+    padding: 0; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+  }
+  .focus-ring-svg { position: absolute; top: 0; left: 0; }
+  .focus-ring-num {
+    position: relative; z-index: 1;
+    font-size: .62rem; font-weight: 700; color: #fff;
+    font-family: 'DM Sans', sans-serif; font-variant-numeric: tabular-nums;
+    line-height: 1;
+  }
+  .focus-pill:hover .focus-ring-num { color: rgba(255,255,255,.85); }
+
+  /* Focus dropdown */
+  .focus-dropdown {
+    position: absolute; top: calc(100% + 10px); right: 0;
+    width: 320px; max-width: calc(100vw - 2rem);
+    background: #111827;
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 20px; padding: 0;
+    box-shadow: 0 32px 80px rgba(0,0,0,.7), 0 0 0 0.5px rgba(255,255,255,.06);
+    z-index: 9999; overflow: hidden;
+    max-height: calc(100vh - 80px); overflow-y: auto;
+    animation: wxFadeIn .2s cubic-bezier(.16,1,.3,1);
+  }
+  body:not(.dark) .focus-dropdown {
+    background: #1e293b;
+    border-color: rgba(255,255,255,.12);
+    box-shadow: 0 32px 80px rgba(0,0,0,.45), 0 0 0 0.5px rgba(255,255,255,.08);
+  }
+  .wx-dropdown::-webkit-scrollbar,
+  .focus-dropdown::-webkit-scrollbar { width: 4px; }
+  .wx-dropdown::-webkit-scrollbar-track,
+  .focus-dropdown::-webkit-scrollbar-track { background: transparent; }
+  .wx-dropdown::-webkit-scrollbar-thumb,
+  .focus-dropdown::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 4px; }
+  .wx-dropdown::-webkit-scrollbar-thumb:hover,
+  .focus-dropdown::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.28); }
+  .focus-drop-header {
+    padding: .85rem 1.1rem .7rem;
+    border-bottom: 0.5px solid rgba(255,255,255,.07);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .focus-drop-title-row { display: flex; align-items: center; gap: .5rem; }
+  .focus-drop-title { font-size: .72rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.4); font-family: 'DM Sans',sans-serif; }
+  .focus-big-score { display: flex; align-items: center; gap: .75rem; margin: .9rem 1.1rem .6rem; }
+  .focus-big-ring { position: relative; width: 56px; height: 56px; flex-shrink: 0; }
+  .focus-big-ring svg { position: absolute; top: 0; left: 0; }
+  .focus-big-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: .95rem; font-weight: 700; font-family: 'DM Sans',sans-serif; }
+  .focus-big-label h3 { font-size: .92rem; font-weight: 600; color: rgba(255,255,255,.9); font-family: 'DM Sans',sans-serif; }
+  .focus-big-label p { font-size: .72rem; color: rgba(255,255,255,.4); font-family: 'DM Sans',sans-serif; margin-top: 2px; }
+  .focus-status-badge { font-size: .6rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; padding: 3px 8px; border-radius: 20px; margin-top: 4px; display: inline-block; }
+
+  .focus-factors { padding: .4rem .75rem .75rem; display: flex; flex-direction: column; gap: .3rem; }
+  .focus-factor {
+    display: flex; align-items: center; gap: .6rem;
+    padding: .5rem .6rem; border-radius: 10px;
+    background: rgba(255,255,255,.04);
+    transition: background .15s;
+  }
+  .focus-factor:hover { background: rgba(255,255,255,.07); }
+  .focus-f-icon { font-size: .95rem; flex-shrink: 0; width: 22px; text-align: center; }
+  .focus-f-body { flex: 1; min-width: 0; }
+  .focus-f-name { font-size: .72rem; font-weight: 500; color: rgba(255,255,255,.7); font-family: 'DM Sans',sans-serif; }
+  .focus-f-bar { height: 3px; background: rgba(255,255,255,.08); border-radius: 3px; margin-top: 4px; overflow: hidden; }
+  .focus-f-fill { height: 100%; border-radius: 3px; transition: width .6s ease; }
+  .focus-f-pts { font-size: .7rem; font-weight: 600; font-family: 'DM Sans',sans-serif; flex-shrink: 0; }
+
+  .focus-insight {
+    margin: 0 .75rem .75rem; padding: .65rem .85rem;
+    border-radius: 10px; font-size: .72rem; line-height: 1.5;
+    font-family: 'DM Sans',sans-serif;
+  }
+  .focus-drop-footer {
+    padding: .5rem 1.1rem .65rem;
+    border-top: 0.5px solid rgba(255,255,255,.06);
+    font-size: .62rem; color: rgba(255,255,255,.2);
+    font-family: 'DM Sans',sans-serif;
+    display: flex; align-items: center; gap: .4rem;
+  }
+
   .home-greeting {
     margin-bottom: 2.5rem;
   }
@@ -1020,6 +1299,13 @@
     transition:all var(--transition); flex-shrink:0;
   }
   .um-del-btn:hover { background:rgba(239,73,60,0.18); }
+  .um-relieve-btn {
+    background:rgba(139,92,246,0.08); border:1px solid rgba(139,92,246,0.25);
+    color:#8b5cf6; padding:0.35rem 0.85rem; border-radius:6px;
+    font-size:0.78rem; font-weight:600; cursor:pointer; font-family:'DM Sans',sans-serif;
+    transition:all var(--transition); flex-shrink:0;
+  }
+  .um-relieve-btn:hover { background:rgba(139,92,246,0.18); }
   .um-empty { color:var(--text-dim); font-size:0.875rem; padding:2rem; text-align:center;
     background:var(--navy-card); border:1px solid var(--navy-border); border-radius:var(--radius); }
   .cp-wrap { max-width:520px; }
@@ -1491,9 +1777,13 @@
     .sidebar { display: none; }
     .main-content { padding: 1rem 1rem 7rem 1rem; overflow-y: visible; }
 
-    /* ── BOTTOM NAV ── */
-    .mobile-bottom-nav { display: flex !important; }
-    .mob-nav-more-panel.open { display: block; }
+    /* ── BOTTOM NAV ──
+       Gated on body.logged-in (same pattern already used for #chat-dock-icon
+       etc.) — without this, the bottom nav (with Reports/Quiz/etc. shortcuts)
+       would render on top of the login page too, since it lives outside the
+       #dashboard-view container and isn't hidden by the view-switching logic. */
+    body.logged-in .mobile-bottom-nav { display: flex !important; }
+    body.logged-in .mob-nav-more-panel.open { display: block; }
 
     /* ── BREAK BAR ── */
     .break-bar { left: 0; padding: .5rem .75rem; flex-direction: column; gap: .4rem; bottom: 56px; }
@@ -1530,7 +1820,7 @@
 
     /* ── FORMS ── */
     .field-group input, .field-group select, .field-group textarea { width: 100%; box-sizing: border-box; }
-    .login-card { padding: 2rem 1.25rem; margin: 1rem; }
+    .li-form-wrap { padding: 0 .25rem; }
   }
 
   /* Hide bottom nav on desktop — shown only via media query above */
@@ -1733,6 +2023,22 @@ body.dark .ts-input { background:#111827;border-color:#2D3748;color:#F1F5F9; }
   .ppl-card-edit{position:absolute;top:.6rem;right:.6rem;padding:.25rem .55rem;font-size:.68rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:5px;cursor:pointer;color:var(--text-muted);display:none;}
   .ppl-card:hover .ppl-card-edit{display:block;}
 
+  /* Alumni / In Our Hearts tribute section */
+  .ppl-alumni-divider{display:flex;align-items:center;gap:.8rem;margin:1.4rem 0 .1rem;}
+  .ppl-alumni-divider::before,.ppl-alumni-divider::after{content:'';flex:1;height:1px;background:var(--navy-border);}
+  .ppl-alumni-title{font-family:'Cormorant Garamond',serif;font-size:1.15rem;font-weight:600;color:var(--text-muted);white-space:nowrap;display:flex;align-items:center;gap:.4rem;}
+  .ppl-alumni-sub{font-size:.72rem;color:var(--text-dim);text-align:center;margin:.2rem 0 .9rem;}
+  .ppl-alumni-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1.1rem;}
+  .ppl-alumni-card{background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:var(--radius);padding:1.5rem 1.1rem 1.1rem;text-align:center;position:relative;opacity:.82;transition:opacity .2s;}
+  .ppl-alumni-card:hover{opacity:1;}
+  .ppl-alumni-card .ppl-card-avatar,.ppl-alumni-card .ppl-card-initials{filter:grayscale(70%) sepia(12%);}
+  .ppl-alumni-card .ppl-card-name{color:var(--text-primary);}
+  .ppl-alumni-badge{display:inline-flex;align-items:center;gap:.3rem;font-size:.66rem;font-weight:600;padding:3px 10px;border-radius:20px;background:rgba(239,73,60,.1);color:var(--accent-red);margin-top:.5rem;}
+  .ppl-alumni-date{font-size:.63rem;color:var(--text-dim);margin-top:.35rem;}
+  .ppl-alumni-restore{position:absolute;top:.55rem;right:.55rem;background:none;border:none;font-size:.64rem;color:var(--text-dim);cursor:pointer;opacity:0;transition:opacity .15s;font-family:'DM Sans',sans-serif;}
+  .ppl-alumni-card:hover .ppl-alumni-restore{opacity:1;}
+  .ppl-alumni-restore:hover{color:var(--text-primary);}
+
   /* Profile modal */
   .ppl-modal-hero{padding:2rem 1.5rem 1.2rem;text-align:center;border-bottom:1px solid var(--navy-border);}
   .ppl-modal-avatar{width:88px;height:88px;border-radius:50%;margin:0 auto .9rem;overflow:hidden;}
@@ -1900,75 +2206,6 @@ body.dark .ts-input { background:#111827;border-color:#2D3748;color:#F1F5F9; }
 
   /* Empty state */
   .radar-empty{color:var(--text-dim);font-size:.82rem;padding:.4rem 0;}
-
-  /* ═══════════════════════════════════════
-     REMINDERS (Apple iCloud style)
-  ═══════════════════════════════════════ */
-  .rem-root{display:flex;height:calc(100vh - 60px);overflow:hidden;}
-
-  /* Sidebar — matches portal sidebar */
-  .rem-sidebar{width:200px;flex-shrink:0;background:var(--navy-sidebar,var(--navy-card));border-right:1px solid var(--navy-border);padding:1rem 0 1.4rem;display:flex;flex-direction:column;gap:1px;}
-  .rem-sidebar-section{font-size:.62rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);padding:.8rem 1rem .4rem;}
-  .rem-sidebar-item{display:flex;align-items:center;gap:.75rem;padding:.58rem 1rem;cursor:pointer;border-radius:10px;margin:0 .4rem;transition:background .15s;font-size:.83rem;font-weight:500;color:var(--text-muted);}
-
-  .rem-sidebar-item:hover{background:var(--navy-hover,rgba(255,255,255,.05));}
-  .rem-list-active{background:rgba(239,73,60,.1)!important;color:var(--text-primary)!important;}
-  .rem-sidebar-icon{width:26px;height:26px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-  .rem-sidebar-count{margin-left:auto;font-size:.7rem;font-weight:700;color:var(--text-dim);background:var(--navy-deep,rgba(0,0,0,.2));padding:1px 7px;border-radius:10px;min-width:18px;text-align:center;}
-  .rem-addlist-btn{margin:auto .8rem 0;display:flex;align-items:center;gap:.5rem;background:none;border:1px dashed var(--navy-border);border-radius:8px;color:var(--text-muted);font-size:.78rem;cursor:pointer;padding:.5rem .8rem;transition:all .15s;font-family:'DM Sans',sans-serif;width:calc(100% - 1.6rem);}
-  .rem-addlist-btn:hover{border-color:var(--gold-dim,rgba(239,73,60,.35));color:var(--text-primary);}
-
-  /* Main */
-  .rem-main{flex:1;display:flex;flex-direction:column;overflow:hidden;background:var(--navy-bg,var(--navy));padding:1.6rem 2rem 1rem;}
-  .rem-main-header{margin-bottom:1rem;flex-shrink:0;}
-  .rem-main-title{font-size:1.7rem;font-weight:700;color:var(--gold,#ef493c);font-family:'DM Sans',sans-serif;letter-spacing:-.5px;}
-
-  .rem-empty{text-align:center;padding:3rem 1rem;flex-shrink:0;}
-  .rem-empty-icon{font-size:2.2rem;opacity:.25;margin-bottom:.6rem;}
-  .rem-empty-title{font-size:.9rem;font-weight:600;color:var(--text-muted);}
-  .rem-empty-sub{font-size:.73rem;color:var(--text-dim);margin-top:.3rem;}
-
-  /* List */
-  .rem-ul{list-style:none;overflow-y:auto;flex:1;padding-bottom:1rem;}
-  .rem-ul::-webkit-scrollbar{width:4px;}
-  .rem-ul::-webkit-scrollbar-thumb{background:var(--navy-border);border-radius:4px;}
-
-  .rem-item{display:flex;align-items:flex-start;gap:.85rem;padding:.75rem .2rem;border-bottom:1px solid var(--navy-border);cursor:default;transition:background .12s;}
-  .rem-item:hover{background:var(--navy-hover,rgba(255,255,255,.02));border-radius:6px;}
-  .rem-item.done{opacity:.35;}
-  .rem-item.done .rem-item-text{text-decoration:line-through;color:var(--text-dim);}
-  @keyframes remIn{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-  .rem-item{animation:remIn .17s ease;}
-
-  .rem-check{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--text-dim);flex-shrink:0;margin-top:2px;cursor:pointer;transition:all .18s;display:flex;align-items:center;justify-content:center;background:transparent;}
-  .rem-check:hover{border-color:var(--accent-green,#1a7a45);}
-  .rem-item.done .rem-check{background:var(--accent-green,#1a7a45);border-color:var(--accent-green,#1a7a45);}
-  .rem-item.done .rem-check::after{content:'';width:4px;height:8px;border:1.5px solid white;border-top:none;border-left:none;transform:rotate(45deg) translateY(-1px);display:block;}
-  .rem-check-new{border-style:dashed;opacity:.35;cursor:default;pointer-events:none;}
-
-  .rem-item-body{flex:1;min-width:0;}
-  .rem-item-text{font-size:.87rem;color:var(--text-primary);line-height:1.5;word-break:break-word;outline:none;border-radius:3px;}
-  .rem-item-text:focus{background:rgba(255,255,255,.03);padding:0 3px;margin:0 -3px;}
-  .rem-item-meta{font-size:.67rem;color:var(--text-muted);margin-top:3px;display:flex;gap:7px;flex-wrap:wrap;align-items:center;}
-  .rem-overdue{color:var(--accent-red,#ef493c)!important;font-weight:600;}
-  .rem-pri-badge{font-size:.6rem;padding:1px 6px;border-radius:10px;font-weight:600;}
-  .rem-pri-low{background:rgba(76,118,168,.18);color:#7aadff;}
-  .rem-pri-medium{background:rgba(239,170,50,.15);color:#ffb833;}
-  .rem-pri-high{background:rgba(239,73,60,.18);color:#ff7070;}
-
-  .rem-item-del{background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:.82rem;padding:2px 5px;border-radius:5px;opacity:0;transition:all .14s;flex-shrink:0;margin-top:1px;}
-  .rem-item:hover .rem-item-del{opacity:1;}
-  .rem-item-del:hover{color:var(--accent-red,#ef493c);background:rgba(239,73,60,.08);}
-
-  /* New row — at TOP */
-  .rem-new-row{display:flex;align-items:center;gap:.85rem;padding:.75rem .2rem;border-bottom:2px solid var(--navy-border);flex-shrink:0;margin-bottom:.5rem;}
-  .rem-inline-input{flex:1;background:transparent;border:none;outline:none;color:var(--text-primary);font-size:.87rem;font-family:'DM Sans',sans-serif;padding:0;}
-  .rem-inline-input::placeholder{color:var(--text-dim);font-style:italic;}
-
-  /* Detail bar */
-  .rem-detail-bar{display:flex;gap:.5rem;padding:.55rem 0 .7rem;flex-shrink:0;flex-wrap:wrap;align-items:center;border-bottom:1px solid var(--navy-border);margin-bottom:.4rem;}
-  .rem-date-input{background:var(--navy-card);border:1px solid var(--navy-border);border-radius:7px;padding:.3rem .65rem;color:var(--text-primary);font-size:.74rem;font-family:'DM Sans',sans-serif;outline:none;min-width:0;transition:border-color .18s;}
-  .rem-date-input:focus{border-color:var(--gold-dim,rgba(239,73,60,.35));}
 
 /* ═══════════════════════════════════════
      CHAT SYSTEM — Facebook Bottom Dock
@@ -2878,52 +3115,75 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
 </head>
 <body>
 
-<!-- ══════════ LOGIN VIEW ══════════ -->
+<!-- ══════════ LOGIN VIEW — Split Editorial ══════════ -->
 <canvas id="ambient-canvas"></canvas>
-<canvas id="eg-matrix-canvas"></canvas>
-<div id="eg-rave-overlay"></div>
-<div id="eg-diwan-splash">
-  <div class="eg-diwan-stars">✦ ✦ ✦ ✦ ✦</div>
-  <div class="eg-diwan-title">Diwan Chowthry</div>
-  <div class="eg-diwan-sub">The Architect of K7TeamCore</div>
-  <div class="eg-diwan-stars">✦ ✦ ✦ ✦ ✦</div>
-  <div class="eg-diwan-close" onclick="egDiwanClose()">— Press Escape or click to close —</div>
-</div>
-<div id="eg-hint-toast"></div>
 <div id="login-view" class="view active">
-  <div class="login-box">
-    <div class="login-logo">
-      <div class="wordmark">K7Team<span>Core</span></div>
-      <div class="tagline">Agent Operations Portal</div>
-    </div>
 
-    <div class="field-group">
-      <label>Email</label>
-      <input id="username" type="text" placeholder="Enter your email" autocomplete="email"/>
+  <div class="li-brand">
+    <div class="li-brand-top">
+      <svg width="22" height="22" viewBox="0 0 200 120" style="flex-shrink:0;">
+        <polygon points="10,18 60,56 110,18 64,110" fill="#ff7a5c"/>
+        <text x="74" y="100" font-family="Arial, sans-serif" font-weight="700" font-size="100" fill="#fff">7</text>
+      </svg>
+      <div class="li-brand-word">K7Team<span>Core</span></div>
     </div>
+    <div class="li-brand-mid">
+      <div class="li-eyebrow">Agent Operations Portal</div>
+      <h1>Built by us,<br/><span class="li-accent">Run by us.</span></h1>
+    </div>
+    <div class="li-brand-bottom">
+      <div class="li-stat"><div class="n">24/7</div><div class="l">Coverage</div></div>
+      <div class="li-stat"><div class="n">100%</div><div class="l">Team owned</div></div>
+      <div class="li-stat"><div class="n">40+</div><div class="l">Ideas shipped by the team</div></div>
+    </div>
+  </div>
 
-    <div class="field-group">
-      <label>Password</label>
-      <div class="pwd-wrap">
-        <input id="password" type="password" placeholder="••••••••"/>
-        <button type="button" class="pwd-show-btn" id="pwd-toggle" onclick="togglePwd()">Show</button>
+  <div class="li-panel">
+    <div class="li-form-wrap" id="li-form-wrap">
+      <div class="li-form-head">
+        <h2>Sign in</h2>
+        <p>Enter your details to access your dashboard.</p>
       </div>
+
+      <div class="li-field">
+        <label>Email</label>
+        <div class="li-wrap"><input id="username" type="text" placeholder="Enter your email" autocomplete="email"/></div>
+      </div>
+
+      <div class="li-field">
+        <label>Password</label>
+        <div class="li-wrap pwd-wrap">
+          <input id="password" type="password" placeholder="••••••••"/>
+          <button type="button" class="li-pwd-toggle" id="pwd-toggle" onclick="togglePwd()">Show</button>
+        </div>
+      </div>
+
+      <label class="li-row-check"><input type="checkbox" id="keep-logged-in" checked/> Keep me logged in</label>
+
+      <div class="login-error" id="login-error">Invalid email or password. Please try again.</div>
+      <div class="login-status" id="login-status" style="display:none;"><span class="login-loader"></span><span class="login-status-text">Signing in…</span></div>
+
+      <button class="login-btn" id="login-btn" onclick="doLogin()">Sign In</button>
+
+      <div style="text-align:center;margin-top:1rem;">
+        <span id="fp-link" class="li-fp-link" onclick="document.getElementById('fp-link').style.display='none';document.getElementById('fp-msg').style.display='block';">Forgot your password?</span>
+        <span id="fp-msg" class="li-fp-msg" style="display:none;">Contact your admin to reset it.</span>
+      </div>
+
+      <div class="login-footer">TeamCore v7.0 <span class="li-new-badge">New</span> &nbsp;·&nbsp; For internal use only</div>
     </div>
-
-    <div class="login-error" id="login-error">Invalid email or password. Please try again.</div>
-    <div class="login-status" id="login-status" style="display:none;"><span class="login-loader"></span><span class="login-status-text">Signing in…</span></div>
-    <label class="keep-logged-in-label"><input type="checkbox" id="keep-logged-in" checked/> Keep me logged in</label>
-
-    <button class="login-btn" id="login-btn" onclick="doLogin()">Sign In</button>
-
-    <div style="text-align:center;margin-top:.75rem;">
-      <span id="fp-link" style="font-size:.72rem;color:var(--accent-blue);cursor:pointer;text-decoration:underline;text-underline-offset:2px;" onclick="document.getElementById('fp-link').style.display='none';document.getElementById('fp-msg').style.display='block';">Forgot your password?</span>
-      <span id="fp-msg" style="font-size:.72rem;color:var(--text-dim);display:none;">Contact your admin to reset it.</span>
-    </div>
-
-    <div class="login-footer">TeamCore v5.0 &nbsp;·&nbsp; For internal use only</div>
   </div>
 </div>
+
+<!-- Magnetic particle convergence transition played while credentials are verified -->
+<canvas class="li-wipe" id="li-wipe" aria-hidden="true"></canvas>
+<div class="li-wipe-logo" id="liWipeLogo">
+  <svg viewBox="0 0 200 120">
+    <polygon points="10,18 60,56 110,18 64,110" fill="#fff"/>
+    <text x="74" y="100" font-family="Arial, sans-serif" font-weight="700" font-size="100" fill="#ff5b3d">7</text>
+  </svg>
+</div>
+<canvas id="li-burst" class="li-burst" aria-hidden="true"></canvas>
 
 <!-- ══════════ DASHBOARD VIEW ══════════ -->
 <div id="dashboard-view" class="view" style="flex-direction:column;">
@@ -2932,6 +3192,18 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
   <div class="topbar">
     <div class="topbar-brand">K7Team<span>Core</span></div>
     <div class="topbar-right">
+      <!-- Live Weather World Clock (left of work clock) -->
+      <div id="wx-wrap" style="position:relative;display:none;">
+        <button id="wx-widget" class="wx-widget" onclick="wxToggleDropdown(event)" aria-label="World clock and weather">
+          <span class="wx-icon" id="wx-icon">🌤️</span>
+          <span class="wx-temp" id="wx-temp">--°</span>
+          <span class="wx-city-pill" id="wx-city-pill">Chennai</span>
+          <span class="wx-pill-sep">·</span>
+          <span class="wx-globe">🌐</span>
+          <span class="wx-arrow">▾</span>
+        </button>
+        <div id="wx-dropdown" class="wx-dropdown" style="display:none;"></div>
+      </div>
       <!-- Work Clock -->
       <div class="work-clock-wrap" id="work-clock-wrap">
         <span class="work-clock-time" id="work-clock-display">Not Started</span>
@@ -2981,11 +3253,23 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
         <span class="topbar-msg-badge" id="topbar-msg-badge" style="display:none;">0</span>
       </button>
       <button class="dark-toggle" id="dark-toggle-btn" onclick="toggleDarkMode()" title="Toggle dark mode">&#9790;</button>
+      <!-- Focus Score -->
+      <div id="focus-wrap" style="position:relative;display:none;">
+        <button class="focus-pill" id="focus-pill" onclick="focusToggleDropdown(event)" title="Focus Score">
+          <svg class="focus-ring-svg" viewBox="0 0 38 38" width="38" height="38">
+            <circle cx="19" cy="19" r="15" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="3"/>
+            <circle id="focus-ring-arc" cx="19" cy="19" r="15" fill="none" stroke="#22c55e" stroke-width="3" stroke-linecap="round"
+              stroke-dasharray="94.25" stroke-dashoffset="14.14" style="transform:rotate(-90deg);transform-origin:50% 50%;transition:stroke-dashoffset .6s ease,stroke .4s ease;"/>
+          </svg>
+          <span class="focus-ring-num" id="focus-ring-num">85</span>
+        </button>
+        <div id="focus-dropdown" class="focus-dropdown" style="display:none;"></div>
+      </div>
       <div class="agent-badge">
         <div class="avatar" id="avatar-initials">AG</div>
         <div class="agent-name" id="agent-display">Agent</div>
       </div>
-      <button class="logout-btn" onclick="doLogout()">Log Out</button>
+      <button class="logout-btn" id="logout-btn" onclick="doLogout()">Log Out</button>
     </div>
   </div>
 
@@ -3144,15 +3428,6 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
         </svg>
         Timesheet
       </div>
-
-      <div class="sidebar-item" id="sidebar-reminders" onclick="showPage('reminders', this)">
-        <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/>
-        </svg>
-        Reminders
-        <span class="sidebar-badge" id="rem-badge" style="display:none;background:var(--gold);color:#fff;margin-left:auto;">0</span>
-      </div>
-
 
       <div class="sidebar-section">Account</div>
 
@@ -4094,87 +4369,6 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
 
       </div>
 
-      <!-- ── REMINDERS PAGE ── -->
-      <div class="page" id="page-reminders">
-        <div class="rem-root">
-          <!-- Sidebar (Apple-style) -->
-          <div class="rem-sidebar">
-            <div class="rem-sidebar-item rem-list-active" id="rem-tab-all" onclick="remSetTab('all',this)">
-              <span class="rem-sidebar-icon" style="background:#ef493c;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-              </span>
-              Reminders
-              <span class="rem-sidebar-count" id="rem-all-count">0</span>
-            </div>
-            <div class="rem-sidebar-item" id="rem-tab-today" onclick="remSetTab('today',this)">
-              <span class="rem-sidebar-icon" style="background:#2563eb;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><path d="M8 14h.01M12 14h.01M16 14h.01"/></svg>
-              </span>
-              Today
-              <span class="rem-sidebar-count" id="rem-today-count">0</span>
-            </div>
-            <div class="rem-sidebar-item" id="rem-tab-scheduled" onclick="remSetTab('scheduled',this)">
-              <span class="rem-sidebar-icon" style="background:#6d28d9;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
-              </span>
-              Scheduled
-              <span class="rem-sidebar-count" id="rem-sched-count">0</span>
-            </div>
-            <div class="rem-sidebar-item" id="rem-tab-done" onclick="remSetTab('done',this)">
-              <span class="rem-sidebar-icon" style="background:#059669;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>
-              </span>
-              Completed
-              <span class="rem-sidebar-count" id="rem-done-count">0</span>
-            </div>
-            <button id="rem-clear-done-btn" onclick="remClearDone()" style="display:none;margin:.35rem .5rem 0;width:calc(100% - 1rem);padding:.42rem .75rem;background:rgba(239,73,60,.08);border:1px solid rgba(239,73,60,.22);border-radius:8px;color:#EF493C;font-size:.72rem;font-weight:600;cursor:pointer;font-family:inherit;letter-spacing:.02em;transition:background .15s;" onmouseover="this.style.background='rgba(239,73,60,.16)'" onmouseout="this.style.background='rgba(239,73,60,.08)'">🗑 Clear Completed</button>
-            <button class="rem-addlist-btn" onclick="remAddNew()">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-              Add Reminder
-            </button>
-          </div>
-
-          <!-- Main content -->
-          <div class="rem-main">
-            <div class="rem-main-header">
-              <h1 class="rem-main-title" id="rem-main-title">Reminders</h1>
-            </div>
-
-            <!-- New reminder row — at TOP like Apple -->
-            <div class="rem-new-row" id="rem-new-row">
-              <div class="rem-check rem-check-new"></div>
-              <input class="rem-inline-input" id="rem-inline-input"
-                placeholder="New Reminder..."
-                maxlength="300"
-                autocomplete="off"
-                onkeydown="remInlineKey(event)"
-                onfocus="remShowDetailBar()"
-                onblur="remInlineBlur()"/>
-            </div>
-
-            <!-- Detail bar shown when input focused -->
-            <div class="rem-detail-bar" id="rem-detail-bar" style="display:none;">
-              <input type="date" class="rem-date-input" id="rem-date-input" title="Date" onblur="remInlineBlur()"/>
-              <input type="time" class="rem-date-input" id="rem-time-input" title="Time" onblur="remInlineBlur()"/>
-              <select class="rem-date-input" id="rem-pri-select" style="max-width:130px;" onblur="remInlineBlur()">
-                <option value="none">No Priority</option>
-                <option value="low">🔵 Low</option>
-                <option value="medium">🟡 Medium</option>
-                <option value="high">🔴 High</option>
-              </select>
-            </div>
-
-            <div class="rem-empty" id="rem-empty" style="display:none;">
-              <div class="rem-empty-icon">☑️</div>
-              <div class="rem-empty-title">No reminders yet</div>
-              <div class="rem-empty-sub">Type above and press Enter to add</div>
-            </div>
-
-            <!-- List -->
-            <ul class="rem-ul" id="rem-ul"></ul>
-          </div>
-        </div>
-      </div>
 
       <!-- ══ K7 INTERCOM PAGE ══ -->
       <div class="page" id="page-intercom" style="padding:2rem 2.5rem;overflow-y:auto;">
@@ -5200,6 +5394,13 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
           <div class="ppl-grid" id="ppl-grid">
             <div class="ppl-loading">Loading team...</div>
           </div>
+
+          <!-- Alumni / In Our Hearts — relieved teammates, kept as a tribute -->
+          <div id="ppl-alumni-wrap" style="display:none;">
+            <div class="ppl-alumni-divider"><span class="ppl-alumni-title">🕊️ Alumni · In Our Hearts</span></div>
+            <div class="ppl-alumni-sub">Team members who've moved on — but always part of our story</div>
+            <div class="ppl-alumni-grid" id="ppl-alumni-grid"></div>
+          </div>
         </div>
 
         <!-- Profile Modal -->
@@ -5446,6 +5647,317 @@ async function rlLogFailedAttempt(emailTried){
   }catch(e){ /* silent — logging failure must never affect UX */ }
 }
 
+// ═══════════════════════════════════════════════════════════════
+//  LOGIN TRANSITION — magnetic particle convergence.
+//  Purely cosmetic; does not touch auth, validation, or rate-limit
+//  logic in doLogin(). Call sites (liStartWipe / liFinishWipe /
+//  liWaitForCover) are unchanged from the previous version.
+// ═══════════════════════════════════════════════════════════════
+var _liCanvas = null, _liCtx = null;
+var _liParticles = [];
+var _liAnimRAF = null;
+var _liPhase = null;          // 'converge' | 'hold' | 'burst' | 'reverse'
+var _liPhaseStart = 0;
+var _liTarget = {x:0, y:0};
+var _liConvergeDone = false;
+
+// Resolves once particles have fully converged — used to guarantee the
+// dashboard is never swapped in while the dissolve is still mid-flight.
+var _liCoverResolve = null;
+var _liCoverPromise = null;
+function liWaitForCover(){
+  return _liCoverPromise || Promise.resolve();
+}
+
+var LI_CONVERGE_MS = 800;
+var LI_BURST_MS = 650;
+var LI_REVERSE_MS = 750;
+
+function liEaseOutCubic(t){ return 1 - Math.pow(1 - t, 3); }
+
+function liResizeCanvas(){
+  if(!_liCanvas) return;
+  // Cap the backing-buffer pixel ratio — modern phones report DPR 3, which
+  // would triple the canvas fill cost for no visible benefit on a glow effect.
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  _liCanvas.width = Math.round(window.innerWidth * dpr);
+  _liCanvas.height = Math.round(window.innerHeight * dpr);
+  _liCanvas.style.width = window.innerWidth + 'px';
+  _liCanvas.style.height = window.innerHeight + 'px';
+  if(_liCtx) _liCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+}
+
+// Particles spawn from random points across whichever panels are actually
+// visible right now — the login card (brand + form) when signing in, or the
+// full viewport when triggered from the dashboard (e.g. on logout), since
+// the login panels are display:none (zero-sized) at that point.
+function liSpawnParticles(){
+  var particles = [];
+  var sources = [];
+  var brand = document.querySelector('.li-brand');
+  var panel = document.querySelector('.li-panel');
+  if(brand){ var br = brand.getBoundingClientRect(); if(br.width > 0 && br.height > 0) sources.push({ r: br, h1: 8,  h2: 22 }); }
+  if(panel){ var pr = panel.getBoundingClientRect(); if(pr.width > 0 && pr.height > 0) sources.push({ r: pr, h1: 14, h2: 34 }); }
+  if(!sources.length){ sources.push({ r: {left:0, top:0, width:window.innerWidth, height:window.innerHeight}, h1: 14, h2: 30 }); }
+
+  // Fewer particles on smaller/likely-lower-powered screens — the sprite-based
+  // glow below is cheap, but this keeps things comfortable on older phones too.
+  var count = window.innerWidth < 480 ? 60 : (window.innerWidth < 700 ? 90 : 200);
+  for(var i = 0; i < count; i++){
+    var s = sources[i % sources.length];
+    var x = s.r.left + Math.random() * s.r.width;
+    var y = s.r.top + Math.random() * s.r.height;
+    particles.push({
+      sx: x, sy: y, x: x, y: y,
+      size: 1.4 + Math.random() * 2.6,
+      hue: s.h1 + Math.random() * (s.h2 - s.h1),
+      delay: Math.random() * 0.18,           // staggered convergence start
+      orbitA: Math.random() * Math.PI * 2,   // gentle hold-phase orbit
+      orbitR: 3 + Math.random() * 10,
+      orbitSpeed: 0.5 + Math.random() * 0.9,
+      burstAngle: Math.random() * Math.PI * 2,
+      burstDist: 60 + Math.random() * Math.max(window.innerWidth, window.innerHeight) * 0.6
+    });
+  }
+  return particles;
+}
+
+// A single pre-rendered radial-gradient sprite, reused via drawImage for every
+// particle on every frame. This avoids ctx.shadowBlur (expensive, largely
+// software-rendered on mobile) and avoids building a fresh gradient per
+// particle per frame — drawImage blits are cheap and consistent across devices.
+var _liGlowSprite = null;
+function liGetGlowSprite(){
+  if(_liGlowSprite) return _liGlowSprite;
+  var s = 48;
+  var c = document.createElement('canvas');
+  c.width = s; c.height = s;
+  var g = c.getContext('2d');
+  var grad = g.createRadialGradient(s/2, s/2, 0, s/2, s/2, s/2);
+  grad.addColorStop(0, 'rgba(255,150,100,0.9)');
+  grad.addColorStop(0.45, 'rgba(255,110,70,0.35)');
+  grad.addColorStop(1, 'rgba(255,90,60,0)');
+  g.fillStyle = grad;
+  g.beginPath();
+  g.arc(s/2, s/2, s/2, 0, Math.PI * 2);
+  g.fill();
+  _liGlowSprite = c;
+  return c;
+}
+
+function liDrawDot(ctx, x, y, size, hue, alpha){
+  var a = Math.max(0, Math.min(1, alpha));
+  var sprite = liGetGlowSprite();
+  var glowSize = size * 7;
+  ctx.globalAlpha = a;
+  ctx.drawImage(sprite, x - glowSize/2, y - glowSize/2, glowSize, glowSize);
+  ctx.fillStyle = 'hsl(' + hue + ',85%,68%)';
+  ctx.beginPath();
+  ctx.arc(x, y, size * 0.75, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.globalAlpha = 1;
+}
+
+// ═══════════════════════════════════════════════════════════════
+//  LOCAL BUTTON BURST — lightweight particle "confirm" flourish for small
+//  in-page actions (Start Work / End Work). Deliberately NOT the full-screen
+//  login/logout treatment: no backdrop dimming, no blocked input, no view
+//  swap — just a quick, proportionate acknowledgment right at the button.
+//  Reuses liDrawDot/liEaseOutCubic/liGetGlowSprite from the engine above.
+// ═══════════════════════════════════════════════════════════════
+var _lbCanvas = null, _lbCtx = null, _lbParticles = [], _lbRAF = null, _lbStart = 0;
+var LB_DURATION_MS = 550;
+
+function liButtonBurst(btnId, hue1, hue2){
+  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(reducedMotion) return;
+  var canvas = document.getElementById('li-burst');
+  var btn = document.getElementById(btnId);
+  if(!canvas || !btn || typeof canvas.getContext !== 'function') return;
+
+  _lbCanvas = canvas;
+  _lbCtx = canvas.getContext('2d');
+  var dpr = Math.min(window.devicePixelRatio || 1, 2);
+  _lbCanvas.width = Math.round(window.innerWidth * dpr);
+  _lbCanvas.height = Math.round(window.innerHeight * dpr);
+  _lbCanvas.style.width = window.innerWidth + 'px';
+  _lbCanvas.style.height = window.innerHeight + 'px';
+  _lbCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+  var r = btn.getBoundingClientRect();
+  var cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+  var count = window.innerWidth < 480 ? 16 : 26;
+  _lbParticles = [];
+  for(var i = 0; i < count; i++){
+    var angle = (Math.PI * 2 * i / count) + (Math.random() * 0.4 - 0.2);
+    var dist = Math.max(r.width, r.height) * 0.4 + Math.random() * 40;
+    _lbParticles.push({
+      cx: cx, cy: cy, angle: angle, dist: dist,
+      size: 1.2 + Math.random() * 2,
+      hue: hue1 + Math.random() * (hue2 - hue1)
+    });
+  }
+
+  if(_lbRAF){ cancelAnimationFrame(_lbRAF); }
+  _lbStart = performance.now();
+  _lbRAF = requestAnimationFrame(liBurstLoop);
+}
+
+function liBurstLoop(now){
+  var elapsed = now - _lbStart;
+  var p = Math.min(1, elapsed / LB_DURATION_MS);
+  var e = liEaseOutCubic(p);
+  _lbCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  for(var i = 0; i < _lbParticles.length; i++){
+    var pt = _lbParticles[i];
+    var x = pt.cx + Math.cos(pt.angle) * pt.dist * e;
+    var y = pt.cy + Math.sin(pt.angle) * pt.dist * e;
+    liDrawDot(_lbCtx, x, y, pt.size, pt.hue, (1 - p) * 0.9);
+  }
+  if(p < 1){
+    _lbRAF = requestAnimationFrame(liBurstLoop);
+  } else {
+    _lbCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+    _lbRAF = null;
+  }
+}
+
+function liDraw(elapsed){
+  if(!_liCtx || !_liCanvas) return;
+  var ctx = _liCtx, w = window.innerWidth, h = window.innerHeight;
+  ctx.clearRect(0, 0, w, h);
+  var tx = _liTarget.x, ty = _liTarget.y, i, p;
+
+  if(_liPhase === 'converge'){
+    p = Math.min(1, elapsed / LI_CONVERGE_MS);
+    ctx.fillStyle = 'rgba(28,20,30,' + (0.72 * liEaseOutCubic(p)) + ')';
+    ctx.fillRect(0, 0, w, h);
+    for(i = 0; i < _liParticles.length; i++){
+      var pt = _liParticles[i];
+      var lp = Math.max(0, Math.min(1, (p - pt.delay) / (1 - pt.delay)));
+      var e = liEaseOutCubic(lp);
+      pt.x = pt.sx + (tx - pt.sx) * e;
+      pt.y = pt.sy + (ty - pt.sy) * e;
+      liDrawDot(ctx, pt.x, pt.y, pt.size * (0.6 + 0.4 * e), pt.hue, 0.25 + 0.65 * e);
+    }
+  } else if(_liPhase === 'hold'){
+    ctx.fillStyle = 'rgba(28,20,30,0.78)';
+    ctx.fillRect(0, 0, w, h);
+    var t = elapsed / 1000;
+    for(i = 0; i < _liParticles.length; i++){
+      var pp = _liParticles[i];
+      var ang = pp.orbitA + t * pp.orbitSpeed;
+      liDrawDot(ctx, tx + Math.cos(ang) * pp.orbitR, ty + Math.sin(ang) * pp.orbitR, pp.size, pp.hue, 0.85);
+    }
+  } else if(_liPhase === 'burst'){
+    p = Math.min(1, elapsed / LI_BURST_MS);
+    var eb = liEaseOutCubic(p);
+    ctx.fillStyle = 'rgba(28,20,30,' + (0.78 * (1 - p)) + ')';
+    ctx.fillRect(0, 0, w, h);
+    for(i = 0; i < _liParticles.length; i++){
+      var bpt = _liParticles[i];
+      var bx = tx + Math.cos(bpt.burstAngle) * bpt.burstDist * eb;
+      var by = ty + Math.sin(bpt.burstAngle) * bpt.burstDist * eb;
+      liDrawDot(ctx, bx, by, bpt.size, bpt.hue, (1 - p) * 0.9);
+    }
+  } else if(_liPhase === 'reverse'){
+    p = Math.min(1, elapsed / LI_REVERSE_MS);
+    var er = liEaseOutCubic(p);
+    ctx.fillStyle = 'rgba(28,20,30,' + (0.78 * (1 - p)) + ')';
+    ctx.fillRect(0, 0, w, h);
+    for(i = 0; i < _liParticles.length; i++){
+      var rpt = _liParticles[i];
+      rpt.x = tx + (rpt.sx - tx) * er;
+      rpt.y = ty + (rpt.sy - ty) * er;
+      liDrawDot(ctx, rpt.x, rpt.y, rpt.size, rpt.hue, 0.9 * (1 - er) + 0.15);
+    }
+  }
+}
+
+function liLoop(now){
+  var elapsed = now - _liPhaseStart;
+  liDraw(elapsed);
+
+  if(_liPhase === 'converge' && elapsed >= LI_CONVERGE_MS){
+    _liPhase = 'hold';
+    _liPhaseStart = now;
+    if(!_liConvergeDone){
+      _liConvergeDone = true;
+      var logo = document.getElementById('liWipeLogo');
+      if(logo){
+        logo.style.left = _liTarget.x + 'px';
+        logo.style.top = _liTarget.y + 'px';
+        logo.classList.add('show');
+      }
+      if(_liCoverResolve) _liCoverResolve();
+    }
+  } else if((_liPhase === 'burst' && elapsed >= LI_BURST_MS) || (_liPhase === 'reverse' && elapsed >= LI_REVERSE_MS)){
+    liEndAnimation();
+    return;
+  }
+  _liAnimRAF = requestAnimationFrame(liLoop);
+}
+
+function liEndAnimation(){
+  if(_liAnimRAF){ cancelAnimationFrame(_liAnimRAF); _liAnimRAF = null; }
+  var overlay = document.getElementById('li-wipe');
+  if(overlay) overlay.classList.remove('show');
+  var logo = document.getElementById('liWipeLogo');
+  if(logo) logo.classList.remove('show', 'burst');
+  document.body.classList.remove('li-transitioning');
+  if(_liCtx) _liCtx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+  _liPhase = null;
+  _liConvergeDone = false;
+}
+
+function liStartWipe(targetId){
+  var overlay = document.getElementById('li-wipe');
+  var btn = document.getElementById(targetId || 'login-btn');
+  // Respect the OS-level "reduce motion" accessibility setting (common on
+  // iOS) — login/logout still work identically, it just skips the particle show.
+  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!overlay || typeof overlay.getContext !== 'function' || reducedMotion){ _liCoverPromise = Promise.resolve(); return; }
+
+  if(_liAnimRAF){ cancelAnimationFrame(_liAnimRAF); _liAnimRAF = null; }
+  _liConvergeDone = false;
+
+  _liCanvas = overlay;
+  _liCtx = overlay.getContext('2d');
+  liResizeCanvas();
+
+  var r = btn ? btn.getBoundingClientRect() : null;
+  _liTarget = r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+  _liParticles = liSpawnParticles();
+
+  overlay.classList.add('show');
+  document.body.classList.add('li-transitioning');
+
+  _liCoverPromise = new Promise(function(resolve){ _liCoverResolve = resolve; });
+
+  _liPhase = 'converge';
+  _liPhaseStart = performance.now();
+  _liAnimRAF = requestAnimationFrame(liLoop);
+}
+
+function liFinishWipe(success){
+  function begin(){
+    var logo = document.getElementById('liWipeLogo');
+    if(success){
+      if(logo) logo.classList.add('burst');
+      _liPhase = 'burst';
+    } else {
+      if(logo) logo.classList.remove('show');
+      _liPhase = 'reverse';
+    }
+    _liPhaseStart = performance.now();
+  }
+  // Guard: if particles haven't finished converging yet (a very fast
+  // network response), wait for that moment before exiting, so the
+  // burst/reverse motion always looks intentional rather than jumpy.
+  if(_liConvergeDone){ begin(); }
+  else { liWaitForCover().then(begin); }
+}
+
 async function doLogin(){
   const email=(document.getElementById('username').value||'').trim().toLowerCase();
   const pwd=document.getElementById('password').value||'';
@@ -5457,6 +5969,7 @@ async function doLogin(){
   if(rlIsLocked()){ rlShowLockout(); return; }
   if(!email||!pwd){errEl.textContent='Please enter your email and password.';errEl.style.display='block';return;}
   btn.disabled=true;btn.textContent='Signing in...';statusEl.style.display='flex';
+  liStartWipe();
   try{
     const hashed=await hashPassword(pwd);
 
@@ -5465,9 +5978,11 @@ async function doLogin(){
       if(hashed!==APP_SYNC_TOKEN) throw new Error('invalid');
       currentUser={id:'syslevel',name:'System',email:APP_SYNC_ID,role:'syslevel'};
       saveSession(currentUser);
-      statusEl.style.display='none';btn.disabled=false;btn.textContent='Sign In';
       siCaptureSession(currentUser);
+      await liWaitForCover(); // ensure overlay is fully covering before swapping views
+      statusEl.style.display='none';btn.disabled=false;btn.textContent='Sign In';
       enterDashboard();
+      liFinishWipe(true);
       return;
     }
 
@@ -5479,6 +5994,7 @@ async function doLogin(){
     // ── Block check ──
     if(u.is_blocked){
       statusEl.style.display='none';btn.disabled=false;btn.textContent='Sign In';
+      liFinishWipe(false);
       // Re-count violations dynamically to show accurate number in modal
       var now=new Date();
       var from=now.getFullYear()+'-'+(now.getMonth()<9?'0':'')+(now.getMonth()+1)+'-01';
@@ -5492,12 +6008,15 @@ async function doLogin(){
     currentUser={id:u.id,name:u.name,email:u.email,role:u.role,timesheetEnabled:u.timesheet_enabled?true:false,photo_url:u.photo_url||null,canUnblock:u.can_unblock?true:false};
     saveSession(currentUser);
     rlClear(); // successful login — reset failure counter
-    statusEl.style.display='none';btn.disabled=false;btn.textContent='Sign In';
     siCaptureSession(currentUser);
+    await liWaitForCover(); // ensure overlay is fully covering before swapping views
+    statusEl.style.display='none';btn.disabled=false;btn.textContent='Sign In';
     enterDashboard();
+    liFinishWipe(true);
   }catch(e){
     console.error('Login failed:',e.message);
     statusEl.style.display='none';btn.disabled=false;btn.textContent='Sign In';
+    liFinishWipe(false);
     if(e.message==='invalid'){
       // Record failure and log it
       var rlState=rlRecordFailure();
@@ -5582,6 +6101,7 @@ function _inactForceLogout(){
     var bb = document.getElementById('break-bar'); if(bb) bb.style.display = 'none';
     var tbw = document.getElementById('tb-break-wrap'); if(tbw) tbw.style.display = 'none';
     var ab = document.getElementById('attendance-badge'); if(ab) ab.style.display = 'none';
+    var wdt = document.getElementById('work-done-toast'); if(wdt) wdt.remove();
     document.getElementById('username').value = '';
     document.getElementById('password').value = '';
     var err = document.getElementById('login-error');
@@ -5619,7 +6139,7 @@ function inactStopWatching(){
   });
 }
 
-function doLogout(){
+async function doLogout(){
   inactStopWatching(); // always clear inactivity timers first
   document.body.classList.remove('logged-in');
   // Check if agent has unhandled reassigned cases — wrapped in try/catch so it NEVER blocks logout
@@ -5635,6 +6155,9 @@ function doLogout(){
       }
     }
   } catch(e){ console.warn('Logout check skipped:', e.message); }
+  // Kick off the particle dissolve — runs in parallel with the cleanup below,
+  // purely cosmetic, never blocks or alters the actual logout.
+  liStartWipe('logout-btn');
   // ── Clean up chat dock completely ──
   try{
     // Close all open chat windows
@@ -5662,16 +6185,27 @@ function doLogout(){
   if(_loginClockInterval)clearInterval(_loginClockInterval);
   if(window._breakStatInterval){ clearInterval(window._breakStatInterval); window._breakStatInterval=null; }
   if(typeof catHideWidget==='function') catHideWidget();
+  // Clear focus session so next login starts fresh
+  try{
+    var _fuKey='focus_session_'+(currentUser&&currentUser.id?currentUser.id:'');
+    if(_fuKey!=='focus_session_') localStorage.removeItem(_fuKey);
+  }catch(e){}
   currentUser=null;clearSession();
+  await liWaitForCover(); // ensure overlay is fully covering before swapping views
   document.getElementById('dashboard-view').classList.remove('active');
   document.getElementById('login-view').classList.add('active');
   var bb=document.getElementById('break-bar');if(bb)bb.style.display='none';
   var tbw=document.getElementById('tb-break-wrap');if(tbw)tbw.style.display='none';
   var ab=document.getElementById('attendance-badge');if(ab)ab.style.display='none';
+  // Remove the "Work Session Complete" toast if it's still showing (e.g. user
+  // logs out within its 12s auto-dismiss window) — it's appended straight to
+  // document.body, so it would otherwise float on top of the login page.
+  var wdt=document.getElementById('work-done-toast');if(wdt)wdt.remove();
   document.getElementById('username').value='';
   document.getElementById('password').value='';
   document.getElementById('login-error').style.display='none';
   showPage('home',document.querySelector('.sidebar-item'));
+  liFinishWipe(true);
 }
 
 function enterDashboard(){
@@ -6027,6 +6561,7 @@ async function loadUsersPage(){
         canUnblockToggle+
         unblockBtn+
         (u.role!=='admin'?'<button onclick="makeUserAdmin(\''+u.id+'\',\''+esc(u.name)+'\')" style="padding:.32rem .85rem;background:rgba(76,118,168,.1);border:1px solid rgba(76,118,168,.3);color:var(--accent-blue);border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;flex-shrink:0;white-space:nowrap;">⬆️ Make Admin</button>':'')+
+        '<button class="um-relieve-btn" onclick="relieveUser(this.dataset.id,this.dataset.name)" data-id="'+u.id+'" data-name="'+esc(u.name)+'">🕊️ Relieve</button>'+
         '<button class="um-del-btn" onclick="removeUser(this.dataset.id,this.dataset.name)" data-id="'+u.id+'" data-name="'+esc(u.name)+'">Remove</button>'+
       '</div>';
     }).join('');
@@ -6136,6 +6671,32 @@ async function tsToggleUser(userId,enabled){
 async function removeUser(id,name){
   if(!confirm('Remove '+name+'? They will no longer be able to log in.'))return;
   try{await sbDelete('users','id',id);loadUsersPage();}catch(e){alert('Could not remove user.');}
+}
+
+// ── Relieve from duty — a gentler alternative to Remove.
+//    Keeps the person's People profile, marks it with a tribute badge,
+//    and moves them into the "Alumni · In Our Hearts" section instead of deleting them. ──
+async function relieveUser(userId, userName){
+  if(!confirm('Mark '+userName+' as Relieved from Duty?\n\nThey will move to the "Alumni · In Our Hearts" section on the People page with a tribute badge. Nothing is deleted — this can be undone from that card later.'))return;
+  var revokeLogin = confirm('Also revoke '+userName+'\'s login access right now?\n\nOK = Yes, block their login immediately.\nCancel = No, leave login as-is for now.');
+  try{
+    var people = await sbQuery('people','user_id=eq.'+userId+'&select=id');
+    var hasProfile = people && people.length;
+    if(hasProfile){
+      await sbUpdate('people','id',people[0].id,{
+        relieved:true,
+        relieved_date:new Date().toISOString().slice(0,10),
+        relieved_note:'Relieved from Duty ❤️'
+      });
+    }
+    if(revokeLogin){
+      await sbUpdate('users','id',userId,{is_blocked:true,block_reason:'Relieved from duty'});
+    }
+    alert(hasProfile
+      ? userName+' has been marked as Relieved from Duty. 🕊️'
+      : userName+' — login access updated, but no matching People profile was found, so no tribute card could be created.');
+    loadUsersPage();
+  }catch(e){ alert('Could not complete: '+e.message); }
 }
 
 async function makeUserAdmin(userId, userName){
@@ -6608,6 +7169,7 @@ async function loadRosterSummary(){
 }
 
 const CLOUDINARY_CLOUD='dvp62lqmv';
+const CLOUDINARY_CLOUD2='qdazszk2';
 const M_TAG_MAP={all:null,birthday:'birthday',outing:'team-outing',dinner:'team-dinner',funfriday:'fun-friday'};
 const M_LABELS={all:'Recents',birthday:'Birthday',outing:'Team Outing',dinner:'Team Dinner',funfriday:'Fun Friday'};
 var _mlikes={},_mliked={},_mcomments={};
@@ -6631,9 +7193,42 @@ function _mTagKey(r){for(var k in M_TAG_MAP){if(M_TAG_MAP[k]&&(r.tags||[]).index
 function _mFmtDate(iso){if(!iso)return'';var d=new Date(iso);var mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];return mo[d.getMonth()]+' '+d.getDate()+', '+d.getFullYear();}
 function _mTimeAgo(ts){var s=Math.floor((Date.now()-ts)/1000);if(s<60)return'just now';if(s<3600)return Math.floor(s/60)+'m ago';if(s<86400)return Math.floor(s/3600)+'h ago';return Math.floor(s/86400)+'d ago';}
 function _mInitials(n){return(n||'U').split(' ').map(function(w){return w[0];}).join('').toUpperCase().slice(0,2);}
-async function _mFetch(tag){if(!CLOUDINARY_CLOUD||CLOUDINARY_CLOUD==='YOUR_CLOUD_NAME'){var v=M_TAG_MAP[tag];return v?DEMO_MOMENTS.filter(function(r){return(r.tags||[]).indexOf(v)>-1;}):DEMO_MOMENTS;}var v2=M_TAG_MAP[tag]||'site_moments';try{var res=await fetch('https://res.cloudinary.com/'+CLOUDINARY_CLOUD+'/image/list/'+v2+'.json');if(!res.ok)throw new Error('fail');var data=await res.json();var resources=(data.resources||[]).map(function(r){// Construct secure_url from public_id if missing
-if(!r.secure_url&&r.public_id){r.secure_url='https://res.cloudinary.com/'+CLOUDINARY_CLOUD+'/image/upload/q_auto,f_auto,w_600/'+r.public_id;}// Add tags array from the tag used to fetch
-if(!r.tags||!r.tags.length){var cTag=M_TAG_MAP[tag];r.tags=cTag?[cTag]:[];}return r;});return resources.sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at);});}catch(e){console.warn('Cloudinary fetch error:',e.message);var v3=M_TAG_MAP[tag];return v3?DEMO_MOMENTS.filter(function(r){return(r.tags||[]).indexOf(v3)>-1;}):DEMO_MOMENTS;}}
+async function _mFetchFromCloud(cloudName, tag){
+  var v2=M_TAG_MAP[tag]||'site_moments';
+  try{
+    var res=await fetch('https://res.cloudinary.com/'+cloudName+'/image/list/'+v2+'.json');
+    if(!res.ok) throw new Error('fail');
+    var data=await res.json();
+    return (data.resources||[]).map(function(r){
+      if(!r.secure_url&&r.public_id){r.secure_url='https://res.cloudinary.com/'+cloudName+'/image/upload/q_auto,f_auto,w_600/'+r.public_id;}
+      if(!r.tags||!r.tags.length){var cTag=M_TAG_MAP[tag];r.tags=cTag?[cTag]:[];}
+      // prefix public_id with cloud name to avoid collisions between the two accounts
+      r.public_id=cloudName+'__'+r.public_id;
+      return r;
+    });
+  }catch(e){
+    console.warn('Cloudinary fetch error ('+cloudName+'):', e.message);
+    return [];
+  }
+}
+async function _mFetch(tag){
+  if(!CLOUDINARY_CLOUD||CLOUDINARY_CLOUD==='YOUR_CLOUD_NAME'){
+    var v=M_TAG_MAP[tag];
+    return v?DEMO_MOMENTS.filter(function(r){return(r.tags||[]).indexOf(v)>-1;}):DEMO_MOMENTS;
+  }
+  // Fetch from both clouds in parallel
+  var results=await Promise.all([
+    _mFetchFromCloud(CLOUDINARY_CLOUD, tag),
+    _mFetchFromCloud(CLOUDINARY_CLOUD2, tag)
+  ]);
+  var merged=results[0].concat(results[1]);
+  // If both failed, fall back to demo
+  if(!merged.length){
+    var vf=M_TAG_MAP[tag];
+    return vf?DEMO_MOMENTS.filter(function(r){return(r.tags||[]).indexOf(vf)>-1;}):DEMO_MOMENTS;
+  }
+  return merged.sort(function(a,b){return new Date(b.created_at)-new Date(a.created_at);});
+}
 // Hidden moments — stored in Supabase for global visibility
 var _mHiddenIds = []; // cache of hidden public_ids
 var _mHiddenLoaded = false;
@@ -6800,7 +7395,7 @@ function bbShowModal(){
         '<p style="font-size:.875rem;color:var(--text-primary);line-height:1.7;margin:0;">Please ask your administrator to unlock your account to regain access.</p>'+
       '</div>'+
       '<div style="border-top:1px solid var(--navy-border);padding-top:1rem;margin-top:.4rem;">'+
-        '<button onclick="bbGoToLogin()" style="font-size:.8rem;color:var(--text-muted);background:none;border:none;cursor:pointer;font-family:DM Sans,sans-serif;">Sign in as a different user</button>'+
+        '<button id="bb-goto-login-btn" onclick="bbGoToLogin()" style="font-size:.8rem;color:var(--text-muted);background:none;border:none;cursor:pointer;font-family:DM Sans,sans-serif;">Sign in as a different user</button>'+
       '</div>'+
     '</div>';
   document.body.appendChild(el);
@@ -6813,18 +7408,22 @@ function bbShowModal(){
 
 // bbSubmitPin and _bbSilentUnblock removed — click-pattern self-unblock permanently disabled
 
-function bbGoToLogin(){
+async function bbGoToLogin(){
   var el = document.getElementById('bb-modal-overlay');
-  if(el) el.remove();
   document.body.classList.remove('logged-in');
+  liStartWipe('bb-goto-login-btn');
+  await liWaitForCover(); // ensure overlay is fully covering before swapping views
+  if(el) el.remove();
   document.getElementById('dashboard-view').classList.remove('active');
   document.getElementById('login-view').classList.add('active');
   var bb=document.getElementById('break-bar');if(bb)bb.style.display='none';
   var tbw=document.getElementById('tb-break-wrap');if(tbw)tbw.style.display='none';
   var ab=document.getElementById('attendance-badge');if(ab)ab.style.display='none';
+  var wdt=document.getElementById('work-done-toast');if(wdt)wdt.remove();
   document.getElementById('username').value='';
   document.getElementById('password').value='';
   document.getElementById('login-error').style.display='none';
+  liFinishWipe(true);
 }
 
 // ── Admin unblock from Manage Users ──
@@ -7049,6 +7648,8 @@ function tbBreakPick(type){
   var startTime=new Date().toISOString();
   _breakState[type]={active:true,start:startTime,done:false};
   try{localStorage.setItem('tc_break_'+currentUser.id+'_'+type,JSON.stringify({start:startTime,date:todayStr()}));}catch(e){}
+  // Record break for focus score
+  if(typeof _focusRecordBreak==='function') _focusRecordBreak();
 
   // Supabase insert
   sbInsert('breaks',{user_id:currentUser.id,user_name:currentUser.name,date:todayStr(),break_type:type,start_time:startTime,over_limit:false,over_by_seconds:0})
@@ -9641,12 +10242,14 @@ async function qbEditQuiz(btn, quizId){
   var panel = document.getElementById('qb-edit-'+quizId);
   if(!panel) return;
   if(panel.style.display==='block'){ panel.style.display='none'; return; }
-  var rows = await sbQuery('quizzes','id=eq.'+quizId+'&select=id,question,type,date,open_time,close_time,max_attempts,correct_answer');
+  var rows = await sbQuery('quizzes','id=eq.'+quizId+'&select=id,question,type,date,open_time,close_time,max_attempts,correct_answer,choices');
   if(!rows||!rows.length) return;
   var q = rows[0];
   var d = qaISOtoLocalDate(q.open_time)||q.date;
   var ot = qaISOtoLocalTime(q.open_time);
   var ct = qaISOtoLocalTime(q.close_time);
+  var choicesArr = [];
+  try{ choicesArr = q.choices ? JSON.parse(q.choices) : []; }catch(e){ choicesArr = []; }
   // Build edit form using DOM
   panel.innerHTML='';
   var wrap=document.createElement('div'); wrap.style.cssText='display:flex;flex-direction:column;gap:.6rem;max-width:600px;';
@@ -9665,11 +10268,53 @@ async function qbEditQuiz(btn, quizId){
   row.appendChild(mkInput('qe-d-'+quizId,'date',d,'Date','0 0 140px'));
   row.appendChild(mkInput('qe-ot-'+quizId,'time',ot,'Opens','0 0 110px'));
   row.appendChild(mkInput('qe-ct-'+quizId,'time',ct,'Closes','0 0 110px'));
-  row.appendChild(mkInput('qe-ca-'+quizId,'text',q.correct_answer||'','Correct Answer (blank = essay)','1 1 140px'));
   wrap.appendChild(row);
+
+  var letters=['A','B','C','D','E','F'];
+  if(q.type==='mcq'){
+    var chLbl=document.createElement('div'); chLbl.style.cssText='font-size:.72rem;color:var(--text-muted);'; chLbl.textContent='Choices (select the correct one)'; wrap.appendChild(chLbl);
+    var chWrap=document.createElement('div'); chWrap.id='qe-choices-'+quizId; chWrap.style.cssText='display:flex;flex-direction:column;gap:.5rem;';
+    var srcChoices = choicesArr.length ? choicesArr : ['',''];
+    srcChoices.forEach(function(cVal,i){
+      var crow=document.createElement('div'); crow.className='qa-choice-row';
+      var radio=document.createElement('input'); radio.type='radio'; radio.name='qe-correct-'+quizId; radio.value=String(i);
+      if(q.correct_answer!=null && cVal===q.correct_answer) radio.checked=true;
+      var tinp=document.createElement('input'); tinp.type='text'; tinp.placeholder='Choice '+(letters[i]||i+1); tinp.className='qe-choice-input-'+quizId; tinp.value=cVal||'';
+      var rmv=document.createElement('button'); rmv.type='button'; rmv.textContent='\u2715'; rmv.style.cssText='background:none;border:none;color:var(--accent-red);cursor:pointer;font-size:.9rem;';
+      rmv.onclick=function(){ crow.remove(); };
+      crow.appendChild(radio); crow.appendChild(tinp); crow.appendChild(rmv);
+      chWrap.appendChild(crow);
+    });
+    wrap.appendChild(chWrap);
+    var addBtn=document.createElement('button'); addBtn.type='button'; addBtn.className='qa-add-choice'; addBtn.textContent='+ Add Choice';
+    addBtn.onclick=(function(id){return function(){
+      var cw=document.getElementById('qe-choices-'+id);
+      var idx=cw.children.length;
+      var crow=document.createElement('div'); crow.className='qa-choice-row';
+      crow.innerHTML='<input type="radio" name="qe-correct-'+id+'" value="'+idx+'"/><input type="text" placeholder="Choice '+(letters[idx]||idx+1)+'" class="qe-choice-input-'+id+'"/><button type="button" onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--accent-red);cursor:pointer;font-size:.9rem;">&#10005;</button>';
+      cw.appendChild(crow);
+    };})(quizId);
+    wrap.appendChild(addBtn);
+  } else if(q.type==='truefalse'){
+    var tfLbl=document.createElement('div'); tfLbl.style.cssText='font-size:.72rem;color:var(--text-muted);'; tfLbl.textContent='Correct Answer'; wrap.appendChild(tfLbl);
+    var tfWrap=document.createElement('div'); tfWrap.style.cssText='display:flex;gap:1rem;';
+    ['True','False'].forEach(function(v){
+      var lab=document.createElement('label'); lab.style.cssText='display:flex;align-items:center;gap:.4rem;font-size:.82rem;color:var(--text-primary);';
+      var r=document.createElement('input'); r.type='radio'; r.name='qe-tf-'+quizId; r.value=v;
+      if(q.correct_answer===v) r.checked=true;
+      lab.appendChild(r); lab.appendChild(document.createTextNode(v));
+      tfWrap.appendChild(lab);
+    });
+    wrap.appendChild(tfWrap);
+  } else {
+    var caRow=document.createElement('div'); caRow.style.cssText='display:flex;gap:.6rem;flex-wrap:wrap;';
+    caRow.appendChild(mkInput('qe-ca-'+quizId,'text',q.correct_answer||'','Correct Answer (blank = essay)','1 1 140px'));
+    wrap.appendChild(caRow);
+  }
+
   var btns=document.createElement('div'); btns.style.cssText='display:flex;gap:.5rem;align-items:center;';
   var sv=document.createElement('button'); sv.className='qa-toggle-btn on'; sv.textContent='Save';
-  sv.onclick=(function(id){return function(){qbSaveEdit(id);};})(quizId); btns.appendChild(sv);
+  sv.onclick=(function(id,type){return function(){qbSaveEdit(id,type);};})(quizId,q.type); btns.appendChild(sv);
   var cx=document.createElement('button'); cx.className='qa-toggle-btn'; cx.textContent='Cancel';
   cx.onclick=(function(id){return function(){document.getElementById('qb-edit-'+id).style.display='none';};})(quizId); btns.appendChild(cx);
   var msg=document.createElement('span'); msg.id='qe-msg-'+quizId; msg.style.cssText='font-size:.78rem;color:var(--accent-green);'; btns.appendChild(msg);
@@ -9678,22 +10323,39 @@ async function qbEditQuiz(btn, quizId){
   panel.style.display='block';
 }
 
-async function qbSaveEdit(quizId){
+async function qbSaveEdit(quizId, type){
   var q = document.getElementById('qe-q-'+quizId).value.trim();
   var d = document.getElementById('qe-d-'+quizId).value;
   var ot = document.getElementById('qe-ot-'+quizId).value;
   var ct = document.getElementById('qe-ct-'+quizId).value;
-  var ca = document.getElementById('qe-ca-'+quizId).value.trim();
   var msg = document.getElementById('qe-msg-'+quizId);
   if(!q||!d||!ot||!ct){ if(msg){msg.textContent='Fill all fields.';msg.style.color='#ef493c';} return; }
+
+  var payload = { question:q, date:d, open_time:qaDateTimeToISO(d,ot), close_time:qaDateTimeToISO(d,ct) };
+
+  if(type==='mcq'){
+    var inputs=document.querySelectorAll('.qe-choice-input-'+quizId);
+    var checked=document.querySelector('input[name="qe-correct-'+quizId+'"]:checked');
+    if(!checked){ if(msg){msg.textContent='Please select the correct answer.';msg.style.color='#ef493c';} return; }
+    var choices=[]; inputs.forEach(function(inp){choices.push(inp.value.trim());});
+    choices=choices.filter(function(c){return c;});
+    if(choices.length<2){ if(msg){msg.textContent='Please add at least 2 choices.';msg.style.color='#ef493c';} return; }
+    var correctIdx=parseInt(checked.value);
+    payload.choices=JSON.stringify(choices);
+    payload.correct_answer=choices[correctIdx]!=null?choices[correctIdx]:choices[0];
+  } else if(type==='truefalse'){
+    var tf=document.querySelector('input[name="qe-tf-'+quizId+'"]:checked');
+    if(!tf){ if(msg){msg.textContent='Please select True or False.';msg.style.color='#ef493c';} return; }
+    payload.choices=JSON.stringify(['True','False']);
+    payload.correct_answer=tf.value;
+  } else {
+    var ca = document.getElementById('qe-ca-'+quizId).value.trim();
+    payload.correct_answer = ca||null;
+  }
+
   if(msg) msg.textContent='Saving...';
   try{
-    await sbUpdate('quizzes','id',quizId,{
-      question:q, date:d,
-      open_time:qaDateTimeToISO(d,ot),
-      close_time:qaDateTimeToISO(d,ct),
-      correct_answer:ca||null
-    });
+    await sbUpdate('quizzes','id',quizId,payload);
     if(msg){msg.textContent='Saved!';msg.style.color='var(--accent-green)';}
     setTimeout(function(){ document.getElementById('qb-edit-'+quizId).style.display='none'; loadQuizBuilderList(); },800);
   }catch(e){ if(msg){msg.textContent='Error: '+e.message;msg.style.color='#ef493c';} }
@@ -9997,6 +10659,7 @@ async function submitQuiz(){
 
 // ── ASSESSMENT BUILDER (Admin) ──
 var _editingAssessmentId=null;
+var _arData={};
 
 function resetAssessmentBuilder(){
   document.getElementById('ab-title').value='';
@@ -11351,6 +12014,9 @@ async function workClockIn(){
       time: loginTime,
       date: today
     }));
+    // Quick local particle confirm — grabbed while the button is still
+    // visible, right before setWclockUI() swaps it out for End Work.
+    liButtonBurst('wclock-start-btn', 135, 155);
     setWclockUI('active');
     startWclockTick();
     showAttendanceBadge(loginTime);
@@ -11427,6 +12093,9 @@ async function confirmEndWork(){
     // Update display
     var display = document.getElementById('work-clock-display');
     if(display){ display.textContent = 'Done — ' + h + 'h ' + m + 'm'; display.style.color = '#4ade80'; }
+    // Quick local particle confirm — grabbed while End Work is still
+    // visible, right before setWclockUI() swaps it back to Start Work.
+    liButtonBurst('wclock-end-btn', 8, 26);
     setWclockUI('done');
     // Clear persisted clock-in
     localStorage.removeItem('tc_clockin_'+currentUser.id);
@@ -11815,15 +12484,21 @@ function pplInitialsDiv(p,size,cls){
 
 function pplRender(people){
   var grid = document.getElementById('ppl-grid');
+  var alumniWrap = document.getElementById('ppl-alumni-wrap');
+  var alumniGrid = document.getElementById('ppl-alumni-grid');
   if(!people||!people.length){
     grid.innerHTML='<div class="ppl-loading">No profiles yet. Add the first one!</div>';
+    if(alumniWrap) alumniWrap.style.display='none';
     return;
   }
+
+  var activePeople = people.filter(function(p){ return !p.relieved; });
+  var relievedPeople = people.filter(function(p){ return p.relieved; });
 
   // Get live attendance status
   var attMap = window._liveAttMap||{};
 
-  grid.innerHTML = people.map(function(p){
+  grid.innerHTML = (activePeople.length ? activePeople : []).map(function(p){
     var ini = pplInitials(p.name);
     var bg  = pplColor(p.name);
 
@@ -11864,7 +12539,48 @@ function pplRender(people){
       (chipsHtml?'<div class="ppl-card-badges">'+chipsHtml+'</div>':'')+
       statusHtml+
     '</div>';
-  }).join('');
+  }).join('') || '<div class="ppl-loading">No active profiles right now.</div>';
+
+  // ── Alumni / In Our Hearts — relieved teammates, kept as a tribute ──
+  if(alumniWrap && alumniGrid){
+    if(relievedPeople.length){
+      alumniGrid.innerHTML = relievedPeople.map(function(p){
+        var ini = pplInitials(p.name);
+        var bg  = pplColor(p.name);
+        var imgSrc = p.photo_url || '';
+        var avatar = imgSrc
+          ? '<div class="ppl-card-avatar"><img src="'+imgSrc+'" onerror="this.style.display=\'none\';this.parentElement.style.cursor=\'default\'"/></div>'
+          : '<div class="ppl-card-initials" style="background:'+bg+';">'+ini+'</div>';
+        var dateStr = '';
+        if(p.relieved_date){
+          try{
+            var dt = new Date(p.relieved_date+'T00:00:00');
+            dateStr = dt.toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+          }catch(e){}
+        }
+        var restoreBtn = isAdminUser() ? '<button class="ppl-alumni-restore" onclick="event.stopPropagation();pplRestore(\''+p.id+'\',\''+esc(p.name)+'\')" title="Restore to active team">↺ Restore</button>' : '';
+        return '<div class="ppl-alumni-card" onclick="pplOpenProfile(\''+p.id+'\')" style="cursor:pointer;">'+
+          restoreBtn+
+          avatar+
+          '<div class="ppl-card-name">'+esc(p.name||'')+'</div>'+
+          '<div class="ppl-card-role">'+esc(p.role||'')+(p.team?' · '+esc(p.team):'')+'</div>'+
+          '<div class="ppl-alumni-badge">'+esc(p.relieved_note||'Relieved from Duty ❤️')+'</div>'+
+          (dateStr?'<div class="ppl-alumni-date">'+dateStr+'</div>':'')+
+        '</div>';
+      }).join('');
+      alumniWrap.style.display='';
+    } else {
+      alumniWrap.style.display='none';
+    }
+  }
+}
+
+async function pplRestore(personId, personName){
+  if(!confirm('Restore '+personName+' to the active team list?\n\nThis removes the tribute badge and moves them back into the main People grid.'))return;
+  try{
+    await sbUpdate('people','id',personId,{relieved:false,relieved_date:null});
+    pplLoad();
+  }catch(e){ alert('Could not restore: '+e.message); }
 }
 
 function pplFilter(search){
@@ -11892,10 +12608,23 @@ function pplOpenProfile(id){
 
   var canEdit = isAdminUser() || (currentUser && currentUser.id === p.user_id);
 
+  var relievedHtml = '';
+  if(p.relieved){
+    var relDateStr = '';
+    if(p.relieved_date){
+      try{ relDateStr = new Date(p.relieved_date+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'}); }catch(e){}
+    }
+    relievedHtml = '<div style="margin-top:.6rem;display:flex;flex-direction:column;align-items:center;gap:.25rem;">'+
+      '<span class="ppl-alumni-badge" style="position:static;">'+esc(p.relieved_note||'Relieved from Duty ❤️')+'</span>'+
+      (relDateStr?'<span class="ppl-alumni-date" style="margin-top:0;">'+relDateStr+'</span>':'')+
+    '</div>';
+  }
+
   var html = '<div class="ppl-modal-hero">'+
     avatar+
     '<div class="ppl-modal-name">'+esc(p.name||'')+'</div>'+
     '<div class="ppl-modal-role">'+esc(p.role||'')+(p.team?' · '+esc(p.team):'')+'</div>'+
+    relievedHtml+
     (canEdit?'<button class="ppl-upload-btn" style="margin-top:.6rem;" onclick="pplOpenEdit(\''+p.id+'\')">✎ Edit Profile</button>':'')+
   '</div>'+
   '<div class="ppl-modal-body">';
@@ -16094,119 +16823,7 @@ function pplCloseLightbox(){
   }
   .amb-btn.off.active{ border-color:rgba(239,73,60,.4);background:rgba(239,73,60,.08);color:var(--accent-red); }
   .amb-btn-icon{ font-size:1.4rem;line-height:1; }
-  /* ══ EASTER EGG SYSTEM ══ */
 
-  /* Gravity */
-  .eg-gravity-el {
-    position: fixed !important;
-    transition: none !important;
-    z-index: 8000;
-    cursor: grab;
-  }
-  .eg-gravity-el:active { cursor: grabbing; }
-
-  /* Barrel roll */
-  @keyframes eg-barrel-roll {
-    0%   { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  .eg-barrel { animation: eg-barrel-roll 1s ease-in-out; }
-
-  /* Tilt */
-  .eg-tilted { transform: rotate(2.5deg) !important; transition: transform .6s ease !important; transform-origin: center center; }
-
-  /* Matrix canvas */
-  #eg-matrix-canvas {
-    position: fixed; inset: 0; z-index: 9500;
-    pointer-events: none; opacity: 0;
-    transition: opacity .5s;
-  }
-  #eg-matrix-canvas.active { opacity: 1; }
-
-  /* Rave */
-  #eg-rave-overlay {
-    position: fixed; inset: 0; z-index: 9400;
-    pointer-events: none; opacity: 0;
-    mix-blend-mode: screen;
-    transition: opacity .1s;
-  }
-
-  /* Thanos dust */
-  .eg-dust-particle {
-    position: fixed; pointer-events: none;
-    z-index: 9300; border-radius: 50%;
-    animation: eg-dust-fly var(--dur,1.2s) ease forwards;
-  }
-  @keyframes eg-dust-fly {
-    0%   { opacity:1; transform: translate(0,0) scale(1); }
-    100% { opacity:0; transform: translate(var(--tx,40px), var(--ty,-60px)) scale(0); }
-  }
-
-  /* k7diwan splash */
-  #eg-diwan-splash {
-    position: fixed; inset: 0; z-index: 9600;
-    display: none;
-    align-items: center; justify-content: center;
-    flex-direction: column; gap: 1rem;
-    background: radial-gradient(ellipse at center, rgba(10,15,40,0.97) 0%, rgba(5,8,25,0.99) 100%);
-    opacity: 0; pointer-events: none;
-    transition: opacity .6s;
-  }
-  #eg-diwan-splash.active { display: flex; opacity: 1; pointer-events: all; }
-  #eg-diwan-splash .eg-diwan-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(2.2rem, 6vw, 4.5rem);
-    font-weight: 700;
-    background: linear-gradient(135deg, #f59e0b, #ef4444, #8b5cf6, #06b6d4);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-size: 300% 300%;
-    animation: eg-diwan-gradient 3s ease infinite;
-    text-align: center; letter-spacing: .06em;
-  }
-  @keyframes eg-diwan-gradient {
-    0%   { background-position: 0% 50%; }
-    50%  { background-position: 100% 50%; }
-    100% { background-position: 0% 50%; }
-  }
-  #eg-diwan-splash .eg-diwan-sub {
-    font-size: 1rem; color: rgba(200,210,230,0.7);
-    letter-spacing: .25em; text-transform: uppercase;
-    font-family: 'DM Sans', sans-serif;
-  }
-  #eg-diwan-splash .eg-diwan-stars {
-    font-size: 1.8rem; letter-spacing: .5rem;
-    animation: eg-star-pulse 1.4s ease-in-out infinite;
-  }
-  @keyframes eg-star-pulse {
-    0%,100% { opacity:.4; transform: scale(0.95); }
-    50%     { opacity:1;  transform: scale(1.05); }
-  }
-  #eg-diwan-splash .eg-diwan-close {
-    margin-top: 1.5rem; font-size: .78rem; color: rgba(255,255,255,.3);
-    cursor: pointer; letter-spacing: .15em; font-family: 'DM Sans', sans-serif;
-  }
-  #eg-diwan-splash .eg-diwan-close:hover { color: rgba(255,255,255,.6); }
-  .eg-confetti {
-    position: fixed; pointer-events: none; z-index: 9550;
-    width: 8px; height: 8px; border-radius: 2px;
-    animation: eg-confetti-fall var(--dur,3s) ease-in forwards;
-  }
-  @keyframes eg-confetti-fall {
-    0%   { opacity:1; transform: translateY(var(--sy,0px)) rotate(0deg) translateX(0); }
-    100% { opacity:0; transform: translateY(var(--ey,600px)) rotate(var(--r,720deg)) translateX(var(--ex,80px)); }
-  }
-
-  /* Easter egg toast hint */
-  #eg-hint-toast {
-    position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%);
-    background: rgba(15,20,45,0.92); color: rgba(200,215,240,0.9);
-    font-size: .72rem; padding: .45rem 1.1rem; border-radius: 20px;
-    border: 1px solid rgba(100,130,200,0.2); z-index: 9700;
-    font-family: 'DM Sans', sans-serif; letter-spacing: .08em;
-    opacity: 0; pointer-events: none; transition: opacity .3s;
-    white-space: nowrap;
-  }
-  #eg-hint-toast.show { opacity: 1; }
 </style>
 
 <!-- ══ Widget Root ══ -->
@@ -17423,22 +18040,11 @@ function tryCatReminder(q){
   rawText=rawText.replace(/^(to|about|for|on|at|a|the|my)\s+/gi,'').replace(/\s+(at|on|for)\s*$/gi,'').replace(/\s+/g,' ').trim();
   if(!rawText||rawText.length<2) return null;
 
-  if(typeof window.remAddFromCat==='function'){
-    window.remAddFromCat(rawText,dateStr,timeStr,'none');
-    var resp='Done Boss! Added: "'+rawText+'"';
-    if(dateStr){
-      // Display using local date
-      var parts=dateStr.split('-');
-      var dt=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
-      var DNAMES=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-      var MNAMES=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      resp+=' — '+DNAMES[dt.getDay()]+' '+dt.getDate()+' '+MNAMES[dt.getMonth()];
-      if(timeStr)resp+=' at '+timeStr;
-    }
-    resp+=' 🐾';
-    return resp;
-  }
-  return 'Added to your reminders Boss! "'+rawText+'" 🐾';
+  // NOTE: this used to persist to the Reminders (Apple iCloud style) page via
+  // window.remAddFromCat, which has been removed. Rather than falsely claiming
+  // success, return null so catDispatch falls through to the timed-reminder
+  // brain (handleReminder) or the AI fallback instead of lying to the user.
+  return null;
 }
 
 // ════════════════════════════════════════════════
@@ -18193,372 +18799,6 @@ setState('sleep');
 })();
 </script>
 
-
-<script>
-// ═══════════════════════════════════════════════════════
-//  REMINDERS — Apple iCloud style, inline editing
-// ═══════════════════════════════════════════════════════
-var _rems = [];
-var _remTab = 'all';
-var _remBlurBlock = false;
-var _remNotifTimers = {};
-var REM_KEY = 'k7tc_rem_v2';
-
-// ── Storage ──
-function remLoad(){
-  try{ var s=localStorage.getItem(REM_KEY); _rems=s?JSON.parse(s):[]; }catch(e){ _rems=[]; }
-}
-function remSave(){
-  try{ localStorage.setItem(REM_KEY,JSON.stringify(_rems)); }catch(e){}
-  if(typeof sbInsert==='function'&&typeof currentUser!=='undefined'&&currentUser){
-    var key='rem_'+currentUser.id;
-    var val=JSON.stringify(_rems);
-    if(typeof sbQuery==='function'){
-      sbQuery('settings','key=eq.'+key+'&select=key').then(function(ex){
-        if(ex&&ex.length){ if(typeof sbUpdate==='function')sbUpdate('settings','key',key,{value:val}); }
-        else if(typeof sbInsert==='function'){ sbInsert('settings',{key:key,value:val}); }
-      }).catch(function(){});
-    }
-  }
-}
-async function remLoadCloud(){
-  if(typeof sbQuery!=='function'||typeof currentUser==='undefined'||!currentUser)return;
-  try{
-    var rows=await sbQuery('settings','key=eq.rem_'+currentUser.id+'&select=value');
-    if(rows&&rows.length&&rows[0].value){
-      var c=JSON.parse(rows[0].value);
-      if(c&&Array.isArray(c)&&c.length>=_rems.length){ _rems=c; remSave(); }
-    }
-  }catch(e){}
-}
-
-// ── Init ──
-function remPruneOld(){
-  var cutoff=Date.now()-24*3600*1000;
-  var before=_rems.length;
-  _rems=_rems.filter(function(r){
-    if(!r.done) return true;
-    var ts=r.completedAt||r.doneAt||r.updatedAt||r.createdAt||0;
-    if(!ts) return false;
-    return new Date(ts).getTime()>cutoff;
-  });
-  if(_rems.length!==before) remSave();
-}
-function remInit(){
-  remLoad();
-  remPruneOld();
-  remLoadCloud().then(function(){ remPruneOld(); remRender(); remScheduleAll(); });
-  remRender();
-}
-// Hook showPage
-(function hookRem(){
-  if(typeof showPage==='function'){
-    var _sp=showPage;
-    showPage=function(id,el){
-      _sp(id,el);
-      if(id==='reminders')setTimeout(remInit,80);
-    };
-  } else { setTimeout(hookRem,300); }
-})();
-
-// ── Tabs ──
-function remSetTab(tab,el){
-  _remTab=tab;
-  document.querySelectorAll('.rem-sidebar-item').forEach(function(p){p.classList.remove('rem-list-active');});
-  if(el)el.classList.add('rem-list-active');
-  var titles={all:'Reminders',today:'Today',scheduled:'Scheduled',done:'Completed'};
-  var t=document.getElementById('rem-main-title');
-  if(t)t.textContent=titles[tab]||'Reminders';
-  remRender();
-}
-
-// ── Render ──
-function remRender(){
-  var now=new Date();
-  var todayStr=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
-  var active=_rems.filter(function(r){return!r.done;});
-  var todayR=_rems.filter(function(r){return!r.done&&r.date&&r.date.slice(0,10)===todayStr;});
-  var sched =_rems.filter(function(r){return!r.done&&r.date;});
-  var done  =_rems.filter(function(r){return r.done;});
-
-  function sc(id,n){var e=document.getElementById(id);if(e)e.textContent=n||'';}
-  sc('rem-all-count',   active.length||'');
-  sc('rem-today-count', todayR.length||'');
-  sc('rem-sched-count', sched.length||'');
-  sc('rem-done-count',  done.length||'');
-
-  // Show clear button only when there are completed items
-  var clearBtn=document.getElementById('rem-clear-done-btn');
-  if(clearBtn) clearBtn.style.display=done.length>0?'block':'none';
-
-  // Badge on sidebar
-  var badge=document.getElementById('rem-badge');
-  if(badge){badge.textContent=active.length;badge.style.display=active.length>0?'':'none';}
-
-  var show = _remTab==='all'?active:_remTab==='today'?todayR:_remTab==='scheduled'?sched:done;
-  var ul=document.getElementById('rem-ul');
-  var empty=document.getElementById('rem-empty');
-  if(!ul)return;
-  ul.innerHTML='';
-
-  if(show.length===0){
-    if(empty)empty.style.display='block';
-  } else {
-    if(empty)empty.style.display='none';
-    var PRI={none:'',low:'<span class="rem-pri-badge rem-pri-low">Low</span>',medium:'<span class="rem-pri-badge rem-pri-medium">Medium</span>',high:'<span class="rem-pri-badge rem-pri-high">High</span>'};
-    show.forEach(function(r){
-      var li=document.createElement('li');
-      li.className='rem-item'+(r.done?' done':'');
-      li.dataset.id=r.id;
-      var meta='';
-      if(r.date){
-        var dt=new Date(r.date);
-        var overdue=!r.done&&dt<now;
-        var ds=dt.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'short'});
-        if(r.time)ds+=' '+r.time;
-        meta+='<span class="'+(overdue?'rem-overdue':'')+'">'+(overdue?'⚠ ':'')+ds+'</span>';
-      }
-      if(r.priority&&r.priority!=='none') meta+=PRI[r.priority]||'';
-      var chk=document.createElement('div'); chk.className='rem-check'; chk.onclick=function(){remToggle(r.id);};
-      var bodyDiv=document.createElement('div'); bodyDiv.className='rem-item-body';
-      var textDiv=document.createElement('div'); textDiv.className='rem-item-text'; textDiv.contentEditable='true';
-      textDiv.textContent=r.text;
-      textDiv.addEventListener('blur',function(){remEditSave(this,r.id);});
-      textDiv.addEventListener('keydown',function(e){remEditKey(e,r.id);});
-      bodyDiv.appendChild(textDiv);
-      if(meta){var metaDiv=document.createElement('div');metaDiv.className='rem-item-meta';metaDiv.innerHTML=meta;bodyDiv.appendChild(metaDiv);}
-      var delBtn=document.createElement('button'); delBtn.className='rem-item-del'; delBtn.textContent='🗑'; delBtn.onclick=function(){remDel(r.id);};
-      li.appendChild(chk); li.appendChild(bodyDiv); li.appendChild(delBtn);
-      ul.appendChild(li);
-    });
-  }
-
-  // Show/hide detail bar based on input focus
-  var inp=document.getElementById('rem-inline-input');
-  if(inp&&document.activeElement===inp){
-    var db=document.getElementById('rem-detail-bar');
-    if(db)db.style.display='flex';
-  }
-}
-
-function escR(t){return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
-
-// ── Toggle done ──
-function remToggle(id){
-  var r=_rems.find(function(x){return x.id===id;});
-  if(!r)return;
-  r.done=!r.done;
-  r.completedAt=r.done?new Date().toISOString():null;
-  remSave();
-  // Animate complete
-  var li=document.querySelector('.rem-item[data-id="'+id+'"]');
-  if(li){
-    li.classList.toggle('done',r.done);
-    if(r.done) setTimeout(remRender,350); else remRender();
-  }
-}
-
-// ── Delete ──
-function remDel(id){
-  _rems=_rems.filter(function(r){return r.id!==id;});
-  remSave(); remRender();
-}
-
-// ── Clear all completed ──
-function remClearDone(){
-  var count=_rems.filter(function(r){return r.done;}).length;
-  if(!count) return;
-  if(!confirm('Clear all '+count+' completed reminder'+(count!==1?'s':'')+' permanently?')) return;
-  _rems=_rems.filter(function(r){return!r.done;});
-  remSave(); remRender();
-}
-
-// ── Inline editing of existing items ──
-function remEditSave(el,id){
-  var text=(el.textContent||'').trim();
-  var r=_rems.find(function(x){return x.id===id;});
-  if(!r)return;
-  if(!text){ remDel(id); return; }
-  r.text=text;
-  remSave();
-}
-function remEditKey(e,id){
-  if(e.key==='Enter'){ e.preventDefault(); e.target.blur(); remAddNew(); }
-  if(e.key==='Backspace'&&(e.target.textContent||'')===''){
-    e.preventDefault(); remDel(id);
-  }
-}
-
-// ── New inline input ──
-function remShowDetailBar(){
-  var db=document.getElementById('rem-detail-bar');
-  if(db)db.style.display='flex';
-  var di=document.getElementById('rem-date-input');
-  if(di&&!di.value){
-    var nd=new Date();
-    di.value=nd.getFullYear()+'-'+String(nd.getMonth()+1).padStart(2,'0')+'-'+String(nd.getDate()).padStart(2,'0');
-  }
-}
-
-function remAddNew(){
-  var inp=document.getElementById('rem-inline-input');
-  var db=document.getElementById('rem-detail-bar');
-  if(!inp)return;
-  if(db)db.style.display='flex';
-  inp.focus();
-  // Set today as default date
-  var di=document.getElementById('rem-date-input');
-  if(di&&!di.value){
-    var nd=new Date();
-    di.value=nd.getFullYear()+'-'+String(nd.getMonth()+1).padStart(2,'0')+'-'+String(nd.getDate()).padStart(2,'0');
-  }
-}
-
-function remInlineKey(e){
-  if(e.key==='Enter'){
-    e.preventDefault();
-    remCommitInline();
-    // Stay focused for next entry
-    setTimeout(function(){
-      var inp=document.getElementById('rem-inline-input');
-      if(inp)inp.focus();
-    },30);
-  }
-  if(e.key==='Escape'){
-    e.target.value='';
-    var db=document.getElementById('rem-detail-bar');
-    if(db)db.style.display='none';
-    e.target.blur();
-  }
-}
-
-function remInlineBlur(){
-  // Small delay to allow clicking detail bar without losing content
-  setTimeout(function(){
-    var inp=document.getElementById('rem-inline-input');
-    var db=document.getElementById('rem-detail-bar');
-    
-    // Check if the focus has moved to something inside the detail bar, or back to the input
-    var isFocusingInput = document.activeElement === inp;
-    var isFocusingDetailBar = db && db.contains(document.activeElement);
-    
-    if (isFocusingInput || isFocusingDetailBar) {
-      return; // User is still interacting with the reminder creator
-    }
-    
-    if(inp&&inp.value.trim()) remCommitInline();
-    if(db) db.style.display='none';
-  },250);
-}
-
-function remCommitInline(){
-  var inp=document.getElementById('rem-inline-input');
-  var text=(inp?inp.value:'').trim();
-  if(!text)return;
-  var di=document.getElementById('rem-date-input');
-  var ti=document.getElementById('rem-time-input');
-  var pi=document.getElementById('rem-pri-select');
-  var dateVal=di&&di.value?di.value:null;
-  var timeVal=ti&&ti.value?ti.value:null;
-  var fullDate=dateVal?(dateVal+(timeVal?'T'+timeVal+':00':'')):null;
-  var rem={
-    id:'r'+Date.now()+'_'+Math.random().toString(36).slice(2,6),
-    text:text, date:fullDate, time:timeVal,
-    priority:pi?pi.value:'none', done:false,
-    createdAt:new Date().toISOString()
-  };
-  _rems.unshift(rem);
-  remSave(); remRender();
-  if(inp)inp.value='';
-  // Reset detail bar inputs
-  if(di)di.value=new Date().toISOString().slice(0,10);
-  if(ti)ti.value='';
-  if(pi)pi.value='none';
-  // Schedule notification
-  remScheduleOne(rem);
-}
-
-// ── Cat can add reminders ──
-window.remAddFromCat=function(text,dateStr,timeStr,priority){
-  var fullDate=dateStr?(dateStr+(timeStr?'T'+timeStr+':00':'')):null;
-  var rem={
-    id:'r'+Date.now()+'_cat',
-    text:text, date:fullDate, time:timeStr||null,
-    priority:priority||'none', done:false,
-    createdAt:new Date().toISOString()
-  };
-  _rems.unshift(rem);
-  remSave(); remRender(); remScheduleOne(rem);
-  return rem;
-};
-
-// ── Email notification via EmailJS ──
-function remSendEmail(r){
-  try{
-    if(!window.EMAILJS_SERVICE_ID||window.EMAILJS_SERVICE_ID==='YOUR_SERVICE_ID')return;
-    if(!window.emailjs)return;
-    var agentEmail=(typeof currentUser!=='undefined'&&currentUser)?currentUser.email:'';
-    var agentName=(typeof currentUser!=='undefined'&&currentUser)?currentUser.name:'Boss';
-    if(!agentEmail)return;
-    var dueText='';
-    if(r.date){
-      var parts=r.date.split('T')[0].split('-');
-      var dt=new Date(parseInt(parts[0]),parseInt(parts[1])-1,parseInt(parts[2]));
-      var DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
-      var MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-      dueText=DAYS[dt.getDay()]+' '+dt.getDate()+' '+MONTHS[dt.getMonth()];
-      if(r.time) dueText+=' at '+r.time;
-    }
-    emailjs.send(window.EMAILJS_SERVICE_ID, window.EMAILJS_TEMPLATE_ID, {
-      email:     agentEmail,
-      to_name:   agentName,
-      reminder:  r.text,
-      due_time:  dueText||'Now',
-      app_name:  'K7TeamCore'
-    }).then(function(){ console.log('[EmailJS] Reminder sent to '+agentEmail); })
-      .catch(function(e){ console.warn('[EmailJS] Send failed:',e); });
-  }catch(e){ console.warn('[EmailJS] Error:',e); }
-}
-
-// ── Sticky popup ──
-function remShowPopup(r){
-  var old=document.getElementById('rem-notif-popup');
-  if(old) old.remove();
-  var n=document.createElement('div');
-  n.id='rem-notif-popup';
-  n.style.cssText='position:fixed;top:72px;right:22px;z-index:99999;background:var(--navy-card);border:1px solid rgba(239,73,60,.4);border-radius:14px;padding:1rem 1rem 1rem 1rem;max-width:300px;box-shadow:0 12px 40px rgba(0,0,0,.45);animation:remIn .3s ease;';
-  n.innerHTML=
-    '<div style="display:flex;gap:.65rem;align-items:flex-start;">'+
-      '<span style="font-size:1.3rem;flex-shrink:0;margin-top:1px;">🔔</span>'+
-      '<div style="flex:1;min-width:0;">'+
-        '<div style="font-size:.82rem;font-weight:700;color:var(--text-primary);margin-bottom:.25rem;">Reminder</div>'+
-        '<div style="font-size:.8rem;color:var(--text-muted);line-height:1.5;word-break:break-word;">'+escR(r.text)+'</div>'+
-        (r.time?'<div style="font-size:.72rem;color:var(--accent-red);margin-top:.35rem;font-weight:600;">⏰ '+escR(r.time)+'</div>':'')+
-      '</div>'+
-      '<button onclick="document.getElementById(\'rem-notif-popup\').remove()" style="background:none;border:none;cursor:pointer;color:var(--text-dim);font-size:1rem;padding:0 0 0 .4rem;flex-shrink:0;line-height:1;" title="Dismiss">✕</button>'+
-    '</div>'+
-    '<div style="display:flex;gap:.5rem;margin-top:.75rem;justify-content:flex-end;">'+
-      '<button onclick="document.getElementById(\'rem-notif-popup\').remove()" style="padding:.3rem .9rem;background:var(--gold);color:#fff;border:none;border-radius:6px;font-size:.75rem;font-weight:600;cursor:pointer;font-family:\'DM Sans\',sans-serif;">Got it</button>'+
-    '</div>';
-  document.body.appendChild(n);
-  if(window.Notification&&Notification.permission==='granted') new Notification('K7 Reminder',{body:r.text});
-}
-
-// ── Schedule one reminder ──
-function remScheduleOne(r){
-  if(!r.date||r.done) return;
-  var dt=new Date(r.date);
-  if(isNaN(dt.getTime())) return;
-  var ms=dt.getTime()-Date.now();
-  // Missed by ≤30 min (tab was closed) — fire immediately
-  if(ms<=0&&ms>=-30*60*1000){ remSendEmail(r); remShowPopup(r); return; }
-  if(ms<=0||ms>7*24*3600000) return;
-  if(_remNotifTimers[r.id]) clearTimeout(_remNotifTimers[r.id]);
-  _remNotifTimers[r.id]=setTimeout(function(){ remSendEmail(r); remShowPopup(r); },ms);
-}
-function remScheduleAll(){ _rems.forEach(function(r){ if(!r.done) remScheduleOne(r); }); }
-if(window.Notification&&Notification.permission==='default') setTimeout(function(){ Notification.requestPermission(); },3000);
-</script>
 
 <script>
 // ═══════════════════════════════════════════════════════
@@ -20346,449 +20586,6 @@ async function checkVHGlobalToggle(){
 function icOnLogin(){
   icStartIncomingPoll();
 }
-
-
-
-
-// ══════════════════════════════════════════════════════════
-//  EASTER EGG SYSTEM
-//  Triggers (outside input fields only):
-//    Konami code  ↑↑↓↓←→←→BA  → Gravity
-//    k7magic      → Barrel roll
-//    k7matrix     → Matrix rain
-//    k7rave       → Rave party
-//    k7thanos     → Thanos snap
-//    k7tilt       → Tilt page  (k7straight to restore)
-//    k7diwan      → Special tribute splash
-// ══════════════════════════════════════════════════════════
-
-(function(){
-
-  // ── Key sequence tracker ──
-  var _egBuffer = '';
-  var _egKonami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
-  var _egKonamiPos = 0;
-  var _egActive = {};   // which effects are currently running
-
-  function egInInput(){
-    var t = document.activeElement;
-    if(!t) return false;
-    var tag = t.tagName;
-    if(tag==='INPUT'||tag==='TEXTAREA'||tag==='SELECT') return true;
-    if(t.isContentEditable) return true;
-    return false; // divs, body, buttons etc are fine
-  }
-
-  // Debug: expose buffer so you can check in console
-  Object.defineProperty(window, '_egDebug', { get: function(){ return { buffer: _egBuffer, konamiPos: _egKonamiPos, active: _egActive }; } });
-
-  function egHint(msg){
-    var el = document.getElementById('eg-hint-toast');
-    if(!el) return;
-    el.textContent = msg;
-    el.classList.add('show');
-    clearTimeout(el._ht);
-    el._ht = setTimeout(function(){ el.classList.remove('show'); }, 2800);
-  }
-
-  document.addEventListener('keydown', function(e){
-    // Konami code check (works even in inputs for arrow keys to not block normal use)
-    var expected = _egKonami[_egKonamiPos];
-    var key = e.key;
-    if(key === expected){
-      _egKonamiPos++;
-      if(_egKonamiPos === _egKonami.length){
-        _egKonamiPos = 0;
-        egGravity();
-      }
-    } else {
-      _egKonamiPos = (key === _egKonami[0]) ? 1 : 0;
-    }
-
-    // Text sequences — only outside inputs
-    if(egInInput()) return;
-    if(e.key === 'Escape'){
-      egEscapeAll();
-      return;
-    }
-    if(e.key && e.key.length === 1){
-      _egBuffer += e.key.toLowerCase();
-      if(_egBuffer.length > 20) _egBuffer = _egBuffer.slice(-20);
-      egCheckBuffer();
-    }
-  });
-
-  function egCheckBuffer(){
-    var b = _egBuffer;
-    if(b.endsWith('k7magic'))   { _egBuffer=''; egBarrelRoll(); }
-    else if(b.endsWith('k7matrix'))  { _egBuffer=''; egMatrix(); }
-    else if(b.endsWith('k7rave'))    { _egBuffer=''; egRave(); }
-    else if(b.endsWith('k7thanos'))  { _egBuffer=''; egThanos(); }
-    else if(b.endsWith('k7tilt'))    { _egBuffer=''; egTilt(); }
-    else if(b.endsWith('k7straight')){ _egBuffer=''; egUnTilt(); }
-    else if(b.endsWith('k7diwan'))   { _egBuffer=''; egDiwan(); }
-  }
-
-  function egEscapeAll(){
-    egGravityStop();
-    egMatrixStop();
-    egRaveStop();
-    egDiwanClose();
-    egUnTilt();
-    _egActive = {};
-  }
-
-  // ════════════════════════════
-  //  GRAVITY
-  // ════════════════════════════
-  var _egGravityBodies = [];
-  var _egGravityRAF = null;
-
-  function egGravity(){
-    if(_egActive.gravity){ egGravityStop(); return; }
-    _egActive.gravity = true;
-    egHint('🌍 Gravity activated! Click elements to throw them. Konami again to restore.');
-
-    // Grab all meaningful elements
-    var sel = '.sidebar-item, .cd-card, .main-content > div > div, .home-card, .stat-card, .topbar-msg-btn, .work-clock-wrap';
-    var els = document.querySelectorAll(sel);
-    var W = window.innerWidth, H = window.innerHeight;
-
-    els.forEach(function(el){
-      var r = el.getBoundingClientRect();
-      if(r.width < 10 || r.height < 10) return;
-
-      // Save original styles
-      var orig = {
-        position: el.style.position, left: el.style.left, top: el.style.top,
-        width: el.style.width, zIndex: el.style.zIndex,
-        transform: el.style.transform, margin: el.style.margin,
-        transition: el.style.transition
-      };
-
-      // Fix dimensions and position
-      el.style.position = 'fixed';
-      el.style.left     = r.left + 'px';
-      el.style.top      = r.top  + 'px';
-      el.style.width    = r.width + 'px';
-      el.style.zIndex   = '8000';
-      el.style.margin   = '0';
-      el.style.transition = 'none';
-      el.classList.add('eg-gravity-el');
-
-      var body = {
-        el: el, orig: orig,
-        x: r.left, y: r.top,
-        vx: (Math.random()-0.5)*2,
-        vy: -(Math.random()*1.5),
-        rot: 0, rotV: (Math.random()-0.5)*4,
-        w: r.width, h: r.height,
-        mass: Math.max(0.4, Math.min(2.0, (r.width*r.height)/40000)),
-        bounces: 0
-      };
-
-      el.addEventListener('click', function(ev){
-        if(!_egActive.gravity) return;
-        ev.stopPropagation();
-        body.vy = -(8 + Math.random()*6);
-        body.vx = (Math.random()-0.5)*10;
-        body.rotV = (Math.random()-0.5)*12;
-      }, true);
-
-      _egGravityBodies.push(body);
-    });
-
-    _egGravityRAF = requestAnimationFrame(egGravityTick);
-  }
-
-  function egGravityTick(){
-    if(!_egActive.gravity){ _egGravityRAF=null; return; }
-    var H = window.innerHeight;
-    var W = window.innerWidth;
-    var gravity = 0.45;
-
-    _egGravityBodies.forEach(function(b){
-      b.vy += gravity * b.mass;
-      b.x  += b.vx;
-      b.y  += b.vy;
-      b.rot += b.rotV;
-
-      // Floor bounce
-      if(b.y + b.h >= H){
-        b.y  = H - b.h;
-        b.vy = -(b.vy * 0.42);
-        b.vx *=  0.78;
-        b.rotV *= 0.7;
-        b.bounces++;
-        if(Math.abs(b.vy) < 0.8) b.vy = 0;
-        if(Math.abs(b.vx) < 0.2) b.vx = 0;
-      }
-      // Side walls
-      if(b.x < 0){ b.x=0; b.vx=Math.abs(b.vx)*0.5; }
-      if(b.x + b.w > W){ b.x=W-b.w; b.vx=-Math.abs(b.vx)*0.5; }
-
-      b.el.style.left      = b.x + 'px';
-      b.el.style.top       = b.y + 'px';
-      b.el.style.transform = 'rotate('+b.rot+'deg)';
-    });
-
-    _egGravityRAF = requestAnimationFrame(egGravityTick);
-  }
-
-  function egGravityStop(){
-    _egActive.gravity = false;
-    if(_egGravityRAF){ cancelAnimationFrame(_egGravityRAF); _egGravityRAF=null; }
-    _egGravityBodies.forEach(function(b){
-      b.el.classList.remove('eg-gravity-el');
-      b.el.style.position   = b.orig.position;
-      b.el.style.left       = b.orig.left;
-      b.el.style.top        = b.orig.top;
-      b.el.style.width      = b.orig.width;
-      b.el.style.zIndex     = b.orig.zIndex;
-      b.el.style.transform  = b.orig.transform;
-      b.el.style.margin     = b.orig.margin;
-      b.el.style.transition = b.orig.transition;
-    });
-    _egGravityBodies = [];
-  }
-
-  // ════════════════════════════
-  //  BARREL ROLL
-  // ════════════════════════════
-  function egBarrelRoll(){
-    if(_egActive.barrel) return;
-    _egActive.barrel = true;
-    egHint('🛢️ Do a barrel roll!');
-    var root = document.getElementById('dashboard-view') || document.body;
-    root.classList.add('eg-barrel');
-    root.addEventListener('animationend', function done(){
-      root.classList.remove('eg-barrel');
-      root.removeEventListener('animationend', done);
-      _egActive.barrel = false;
-    });
-  }
-
-  // ════════════════════════════
-  //  MATRIX RAIN
-  // ════════════════════════════
-  var _egMatrixRAF = null;
-  var _egMatrixDrops = [];
-
-  function egMatrix(){
-    if(_egActive.matrix){ egMatrixStop(); return; }
-    _egActive.matrix = true;
-    egHint('💊 There is no spoon. Type k7matrix again or Escape to exit.');
-
-    var canvas = document.getElementById('eg-matrix-canvas');
-    canvas.width  = window.innerWidth;
-    canvas.height = window.innerHeight;
-    canvas.classList.add('active');
-
-    var ctx  = canvas.getContext('2d');
-    var cols = Math.floor(canvas.width / 16);
-    _egMatrixDrops = Array(cols).fill(1);
-
-    function tick(){
-      if(!_egActive.matrix){ ctx.clearRect(0,0,canvas.width,canvas.height); return; }
-      ctx.fillStyle = 'rgba(0,0,0,0.06)';
-      ctx.fillRect(0,0,canvas.width,canvas.height);
-      ctx.fillStyle = '#00ff41';
-      ctx.font = '14px monospace';
-      _egMatrixDrops.forEach(function(y,i){
-        var ch = String.fromCharCode(0x30A0 + Math.random()*96);
-        ctx.fillStyle = y===1 ? '#fff' : '#00ff41';
-        ctx.fillText(ch, i*16, y*16);
-        if(y*16 > canvas.height && Math.random() > 0.975) _egMatrixDrops[i] = 0;
-        _egMatrixDrops[i]++;
-      });
-      _egMatrixRAF = requestAnimationFrame(tick);
-    }
-    tick();
-
-    // Auto stop after 12 seconds
-    setTimeout(function(){ if(_egActive.matrix) egMatrixStop(); }, 12000);
-  }
-
-  function egMatrixStop(){
-    _egActive.matrix = false;
-    if(_egMatrixRAF){ cancelAnimationFrame(_egMatrixRAF); _egMatrixRAF=null; }
-    var canvas = document.getElementById('eg-matrix-canvas');
-    if(canvas){
-      canvas.classList.remove('active');
-      setTimeout(function(){ var ctx=canvas.getContext('2d'); ctx.clearRect(0,0,canvas.width,canvas.height); }, 500);
-    }
-  }
-
-  // ════════════════════════════
-  //  RAVE
-  // ════════════════════════════
-  var _egRaveTimer = null;
-  var _egRaveInterval = null;
-
-  function egRave(){
-    if(_egActive.rave){ egRaveStop(); return; }
-    _egActive.rave = true;
-    egHint('🎉 RAVE MODE! Type k7rave again or Escape to stop.');
-
-    var overlay = document.getElementById('eg-rave-overlay');
-    var hues = [0,30,60,120,180,240,300];
-    var i = 0;
-    overlay.style.opacity = '1';
-
-    _egRaveInterval = setInterval(function(){
-      if(!_egActive.rave){ return; }
-      var h = hues[i++ % hues.length];
-      overlay.style.background = 'hsla('+h+',100%,60%,0.18)';
-      document.body.style.filter = 'hue-rotate('+h+'deg)';
-    }, 160);
-
-    // Auto stop after 8s
-    _egRaveTimer = setTimeout(function(){ if(_egActive.rave) egRaveStop(); }, 8000);
-  }
-
-  function egRaveStop(){
-    _egActive.rave = false;
-    clearInterval(_egRaveInterval);
-    clearTimeout(_egRaveTimer);
-    var overlay = document.getElementById('eg-rave-overlay');
-    if(overlay) overlay.style.opacity = '0';
-    document.body.style.filter = '';
-  }
-
-  // ════════════════════════════
-  //  THANOS SNAP
-  // ════════════════════════════
-  function egThanos(){
-    if(_egActive.thanos) return;
-    _egActive.thanos = true;
-    egHint('⚡ Perfectly balanced, as all things should be.');
-
-    var els = Array.from(document.querySelectorAll('.sidebar-item'));
-    var half = Math.floor(els.length / 2);
-    var victims = els.sort(function(){ return Math.random()-0.5; }).slice(0, half);
-
-    victims.forEach(function(el, idx){
-      setTimeout(function(){
-        var r = el.getBoundingClientRect();
-        // Spawn dust particles
-        for(var p=0; p<18; p++){
-          var d = document.createElement('div');
-          d.className = 'eg-dust-particle';
-          var hue = 20+Math.random()*40;
-          d.style.cssText =
-            'left:'+(r.left+Math.random()*r.width)+'px;'+
-            'top:'+(r.top+Math.random()*r.height)+'px;'+
-            'width:'+(3+Math.random()*5)+'px;'+
-            'height:'+(3+Math.random()*5)+'px;'+
-            'background:hsl('+hue+',80%,55%);'+
-            '--tx:'+(Math.random()-0.5)*120+'px;'+
-            '--ty:'+(-(20+Math.random()*100))+'px;'+
-            '--dur:'+(0.8+Math.random()*0.7)+'s;';
-          document.body.appendChild(d);
-          setTimeout(function(){ if(d.parentNode) d.parentNode.removeChild(d); }, 1600);
-        }
-        el.style.transition = 'opacity .6s, transform .6s';
-        el.style.opacity    = '0';
-        el.style.transform  = 'scale(0.3) translateY(-20px)';
-      }, idx * 80);
-    });
-
-    setTimeout(function(){
-      egHint('🫳 Snapped. Escape to restore.');
-      _egActive.thanos = false;
-    }, victims.length*80 + 800);
-
-    // Restore after 6s
-    setTimeout(function(){
-      victims.forEach(function(el){
-        el.style.transition = 'opacity .5s, transform .5s';
-        el.style.opacity    = '';
-        el.style.transform  = '';
-      });
-    }, 6000);
-  }
-
-  // ════════════════════════════
-  //  TILT
-  // ════════════════════════════
-  var _egTilted = false;
-
-  function egTilt(){
-    if(_egTilted) return;
-    _egTilted = true;
-    egHint('↗️ Tilted! Type k7straight to fix.');
-    var root = document.getElementById('dashboard-view') || document.body;
-    root.classList.add('eg-tilted');
-  }
-
-  function egUnTilt(){
-    if(!_egTilted) return;
-    _egTilted = false;
-    var root = document.getElementById('dashboard-view') || document.body;
-    root.classList.remove('eg-tilted');
-    egHint('✅ Back to normal.');
-  }
-
-  // ════════════════════════════
-  //  K7DIWAN TRIBUTE
-  // ════════════════════════════
-  function egDiwan(){
-    if(_egActive.diwan) return;
-    _egActive.diwan = true;
-    var splash = document.getElementById('eg-diwan-splash');
-    if(!splash) return;
-    splash.style.display = 'flex';
-    splash.style.opacity = '0';
-    void splash.offsetWidth; // force reflow so transition fires
-    splash.classList.add('active');
-
-    // Confetti burst
-    var colors = ['#f59e0b','#ef4444','#8b5cf6','#06b6d4','#10b981','#f97316','#ec4899'];
-    for(var i=0; i<80; i++){
-      (function(){
-        var c = document.createElement('div');
-        c.className = 'eg-confetti';
-        c.style.cssText =
-          'left:'+(10+Math.random()*80)+'vw;'+
-          'top:-20px;'+
-          'background:'+colors[Math.floor(Math.random()*colors.length)]+';'+
-          '--dur:'+(2+Math.random()*2)+'s;'+
-          '--ey:'+(window.innerHeight+40)+'px;'+
-          '--r:'+(360+Math.random()*720)+'deg;'+
-          '--ex:'+(Math.random()-0.5)*200+'px;';
-        document.body.appendChild(c);
-        setTimeout(function(){ if(c.parentNode) c.parentNode.removeChild(c); }, 4200);
-      })();
-    }
-  }
-
-  window.egDiwanClose = function(){
-    var splash = document.getElementById('eg-diwan-splash');
-    if(splash){
-      splash.classList.remove('active');
-      splash.style.opacity = '0';
-      setTimeout(function(){ splash.style.display = 'none'; }, 650);
-    }
-    _egActive.diwan = false;
-  };
-
-  // Hook Escape to also close diwan splash
-  document.addEventListener('keydown', function(e){
-    if(e.key==='Escape' && _egActive.diwan) egDiwanClose();
-  });
-
-  // ── Init: expose for console testing and Escape ──
-  window._egEscapeAll = egEscapeAll;
-  window.egGravity    = egGravity;
-  window.egBarrelRoll = egBarrelRoll;
-  window.egMatrix     = egMatrix;
-  window.egRave       = egRave;
-  window.egThanos     = egThanos;
-  window.egTilt       = egTilt;
-  window.egDiwan      = egDiwan;
-
-})();
-
 </script>
 
 <!-- ══ CELEBRATION OVERLAY (reused by Celebrations feature) ══ -->
@@ -21679,6 +21476,732 @@ async function siClearAll(){
     siLoadLogs();
   }catch(e){ alert('Error: '+e.message); }
 }
+
+// ═══════════════════════════════════════════════════════════════
+//  LIVE WEATHER + WORLD CLOCK WIDGET
+//  Pill in topbar: shows local icon + temp
+//  Click → dropdown with 12 cities: live time + weather + work-hours dot
+//  Open-Meteo API — free, no key. Weather lazy-loads on first open.
+//  Auto rain/thunder ambient animation via existing ambApply()
+// ═══════════════════════════════════════════════════════════════
+(function(){
+
+  // ── 12 World Cities ──
+  var WX_CITIES = [
+    { key:'chennai',      iso:'in', name:'Chennai',      tz:'Asia/Kolkata',        lat:13.0827,  lon:80.2707  },
+    { key:'dubai',        iso:'ae', name:'Dubai',         tz:'Asia/Dubai',          lat:25.2048,  lon:55.2708  },
+    { key:'riyadh',       iso:'sa', name:'Riyadh',        tz:'Asia/Riyadh',         lat:24.7136,  lon:46.6753  },
+    { key:'kuwait',       iso:'kw', name:'Kuwait City',   tz:'Asia/Kuwait',         lat:29.3759,  lon:47.9774  },
+    { key:'tehran',       iso:'ir', name:'Tehran',        tz:'Asia/Tehran',         lat:35.6892,  lon:51.3890  },
+    { key:'moscow',       iso:'ru', name:'Moscow',        tz:'Europe/Moscow',       lat:55.7558,  lon:37.6173  },
+    { key:'london',       iso:'gb', name:'London',        tz:'Europe/London',       lat:51.5074,  lon:-0.1278  },
+    { key:'newyork',      iso:'us', name:'New York',      tz:'America/New_York',    lat:40.7128,  lon:-74.0060 },
+    { key:'johannesburg', iso:'za', name:'Johannesburg',  tz:'Africa/Johannesburg', lat:-26.2041, lon:28.0473  },
+    { key:'singapore',    iso:'sg', name:'Singapore',     tz:'Asia/Singapore',      lat:1.3521,   lon:103.8198 },
+    { key:'shanghai',     iso:'cn', name:'Shanghai',      tz:'Asia/Shanghai',       lat:31.2304,  lon:121.4737 },
+    { key:'tokyo',        iso:'jp', name:'Tokyo',         tz:'Asia/Tokyo',          lat:35.6762,  lon:139.6503 }
+  ];
+
+  var WX_HOME = WX_CITIES[0]; // default = Chennai, replaced by geolocation
+  var _wxInterval    = null;
+  var _wxClockTimer  = null;
+  var _wxOpen        = false;
+  var _wxWeatherCache = {}; // key → { icon, temp, fetched }
+  var _wxFetching     = {}; // key → true (in-flight guard)
+
+  // ── WMO code decoder ──
+  function wxDecode(code, isDay){
+    var d = isDay;
+    if(code === 0)  return { icon: d?'☀️':'🌙',  isRain:false, isThunder:false };
+    if(code <= 2)   return { icon: d?'⛅':'🌙',  isRain:false, isThunder:false };
+    if(code === 3)  return { icon:'☁️',           isRain:false, isThunder:false };
+    if(code <= 49)  return { icon:'🌫️',           isRain:false, isThunder:false };
+    if(code <= 57)  return { icon:'🌧️',           isRain:true,  isThunder:false };
+    if(code <= 67)  return { icon:'🌧️',           isRain:true,  isThunder:false };
+    if(code <= 77)  return { icon:'❄️',           isRain:false, isThunder:false };
+    if(code <= 82)  return { icon:'🌦️',           isRain:true,  isThunder:false };
+    if(code <= 86)  return { icon:'🌨️',           isRain:false, isThunder:false };
+    if(code <= 99)  return { icon:'⛈️',           isRain:true,  isThunder:true  };
+    return           { icon:'🌡️',                  isRain:false, isThunder:false };
+  }
+
+  // ── Fetch weather for one city, cache it ──
+  async function wxFetchCity(city){
+    if(_wxFetching[city.key]) return;
+    _wxFetching[city.key] = true;
+    try{
+      var url = 'https://api.open-meteo.com/v1/forecast?latitude='+city.lat+'&longitude='+city.lon+
+        '&current=temperature_2m,weathercode,is_day,precipitation&timezone=auto&forecast_days=1';
+      var resp = await fetch(url);
+      var data = await resp.json();
+      var cur  = data.current;
+      var info = wxDecode(cur.weathercode, cur.is_day === 1);
+      _wxWeatherCache[city.key] = {
+        icon: info.icon, temp: Math.round(cur.temperature_2m),
+        isRain: info.isRain, isThunder: info.isThunder,
+        precip: cur.precipitation || 0, fetched: Date.now()
+      };
+    }catch(e){ /* silent */ }
+    _wxFetching[city.key] = false;
+  }
+
+  // ── Fetch home city + trigger animation ──
+  async function wxFetchHome(){
+    await wxFetchCity(WX_HOME);
+    var wx = _wxWeatherCache[WX_HOME.key];
+    if(!wx) return;
+    // Update pill
+    var iconEl = document.getElementById('wx-icon');
+    var tempEl = document.getElementById('wx-temp');
+    var cityEl = document.getElementById('wx-city-pill');
+    if(iconEl) iconEl.textContent = wx.icon;
+    if(tempEl) tempEl.textContent = wx.temp + '°C';
+    if(cityEl) cityEl.textContent = WX_HOME.name;
+    // Show wrap
+    var wrap = document.getElementById('wx-wrap');
+    if(wrap) wrap.style.display = '';
+    // NOTE: automatic weather-triggered ambient rain/thunder has been disabled by request.
+    // Weather pill (icon/temp/city) still updates above; it just no longer drives ambApply().
+    // Refresh dropdown if open
+    if(_wxOpen) wxRenderDropdown();
+  }
+
+  // ── Fetch all cities (background, lazy) ──
+  function wxFetchAll(){
+    WX_CITIES.forEach(function(c){ wxFetchCity(c); });
+  }
+
+  // ── Format time for a timezone ──
+  function wxGetTime(tz){
+    try{
+      var now = new Date();
+      var parts = new Intl.DateTimeFormat('en-US',{
+        timeZone: tz, hour:'numeric', minute:'2-digit', second:'2-digit',
+        hour12: true
+      }).formatToParts(now);
+      var get = function(t){ var p=parts.find(function(p){return p.type===t;}); return p?p.value:''; };
+      var h = get('hour'), m = get('minute'), s = get('second'), period = get('dayPeriod');
+      var hour24 = new Intl.DateTimeFormat('en-GB',{ timeZone:tz, hour:'2-digit', hour12:false }).formatToParts(now).find(function(p){return p.type==='hour';});
+      return { time: h+':'+m+':'+s+' '+period, hour: hour24 ? parseInt(hour24.value) : 12 };
+    }catch(e){ return { time:'--:-- --', hour: 12 }; }
+  }
+
+  function wxGetDate(tz){
+    try{
+      return new Intl.DateTimeFormat('en-GB',{
+        timeZone: tz, weekday:'short', month:'short', day:'numeric'
+      }).format(new Date());
+    }catch(e){ return ''; }
+  }
+
+  // ── Render dropdown ──
+  function wxRenderDropdown(){
+    var drop = document.getElementById('wx-dropdown');
+    if(!drop) return;
+    var now = new Date();
+    var updStr = now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true});
+    var html =
+      '<div class="wx-drop-header">'+
+        '<div class="wx-drop-header-left">'+
+          '<span class="wx-drop-htitle">World Clock &amp; Weather</span>'+
+        '</div>'+
+        '<span class="wx-drop-lastupd">Updated '+updStr+'</span>'+
+      '</div>'+
+      '<div class="wx-grid">';
+    WX_CITIES.forEach(function(c){
+      var t    = wxGetTime(c.tz);
+      var date = wxGetDate(c.tz);
+      var isWork = t.hour >= 9 && t.hour < 18;
+      var wx   = _wxWeatherCache[c.key];
+      var wIcon = wx ? wx.icon : '';
+      var wTemp = wx ? wx.temp+'°' : '';
+      // Split time into number + AM/PM
+      var timeParts = t.time.match(/^(.+?)\s*(AM|PM)$/i);
+      var timeNum = timeParts ? timeParts[1] : t.time;
+      var timePeriod = timeParts ? timeParts[2] : '';
+      var flagHtml = c.iso
+        ? '<img class="wx-city-flag" src="https://flagcdn.com/w40/'+c.iso+'.png" alt="'+c.name+'" loading="lazy"/>'
+        : '<span style="font-size:1.3rem;flex-shrink:0;">📍</span>';
+      html +=
+        '<div class="wx-city-card'+(isWork?' work-hours':'')+'" id="wxcard-'+c.key+'">'+
+          '<div class="wx-work-dot'+(isWork?' active':'')+'"></div>'+
+          flagHtml+
+          '<div class="wx-city-body">'+
+            '<div class="wx-city-name">'+c.name+'</div>'+
+            '<div class="wx-city-time" id="wxt-'+c.key+'">'+timeNum+'<span class="wx-city-ampm">'+timePeriod+'</span></div>'+
+            '<div class="wx-city-date">'+date+'</div>'+
+          '</div>'+
+          '<div class="wx-city-wx">'+
+            '<span class="wx-city-wicon">'+wIcon+'</span>'+
+            '<span class="wx-city-wtemp">'+wTemp+'</span>'+
+          '</div>'+
+        '</div>';
+    });
+    html += '</div>'+
+      '<div class="wx-drop-footer">'+
+        '<span style="width:6px;height:6px;border-radius:50%;background:#2EC56F;display:inline-block;box-shadow:0 0 5px rgba(46,197,111,.6);flex-shrink:0;"></span>'+
+        'Green dot = business hours (9 AM – 6 PM local) &nbsp;·&nbsp; Weather loads on first open'+
+      '</div>';
+    drop.innerHTML = html;
+  }
+
+  // ── Live clock tick (every second when dropdown open) ──
+  function wxStartClock(){
+    if(_wxClockTimer) return;
+    _wxClockTimer = setInterval(function(){
+      if(!_wxOpen){ clearInterval(_wxClockTimer); _wxClockTimer=null; return; }
+      WX_CITIES.forEach(function(c){
+        var el = document.getElementById('wxt-'+c.key);
+        if(el){
+          var t = wxGetTime(c.tz);
+          var timeParts = t.time.match(/^(.+?)\s*(AM|PM)$/i);
+          var timeNum = timeParts ? timeParts[1] : t.time;
+          var timePeriod = timeParts ? timeParts[2] : '';
+          el.innerHTML = timeNum+'<span class="wx-city-ampm">'+timePeriod+'</span>';
+        }
+      });
+    }, 1000);
+  }
+
+  // ── Toggle dropdown ──
+  window.wxToggleDropdown = function(e){
+    e.stopPropagation();
+    var drop = document.getElementById('wx-dropdown');
+    var btn  = document.getElementById('wx-widget');
+    if(!drop) return;
+    _wxOpen = drop.style.display === 'none' || drop.style.display === '';
+    if(_wxOpen){
+      // Fetch all cities weather in background on first open
+      wxFetchAll();
+      wxRenderDropdown();
+      drop.style.display = 'block';
+      btn.classList.add('open');
+      wxStartClock();
+    } else {
+      drop.style.display = 'none';
+      btn.classList.remove('open');
+    }
+  };
+
+  // Close on outside click
+  document.addEventListener('click', function(e){
+    if(!_wxOpen) return;
+    var wrap = document.getElementById('wx-wrap');
+    if(wrap && !wrap.contains(e.target)){
+      var drop = document.getElementById('wx-dropdown');
+      var btn  = document.getElementById('wx-widget');
+      if(drop) drop.style.display = 'none';
+      if(btn)  btn.classList.remove('open');
+      _wxOpen = false;
+    }
+  });
+
+  // ── Geolocation → home city ──
+  function wxStart(){
+    // Always start immediately with Chennai as default — no "Your Location" flash
+    wxFetchHome();
+    if(_wxInterval) clearInterval(_wxInterval);
+    _wxInterval = setInterval(wxFetchHome, 15*60*1000);
+
+    if(!navigator.geolocation) return;
+    navigator.geolocation.getCurrentPosition(
+      function(pos){
+        var lat = pos.coords.latitude, lon = pos.coords.longitude;
+        // Only override if they're NOT in Chennai (>50km away)
+        var dLat = lat - 13.0827, dLon = lon - 80.2707;
+        var distKm = Math.sqrt(dLat*dLat + dLon*dLon) * 111;
+        if(distKm < 50) return; // close enough to Chennai — keep Chennai label
+        // They're elsewhere (e.g. Bangalore) — reverse geocode then update
+        fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json')
+          .then(function(r){ return r.json(); })
+          .then(function(geo){
+            var city = (geo.address && (geo.address.city || geo.address.town || geo.address.suburb)) || 'Your Location';
+            WX_HOME = { key:'home', flag:'📍', name:city, tz: Intl.DateTimeFormat().resolvedOptions().timeZone, lat:lat, lon:lon };
+            WX_CITIES[0] = WX_HOME;
+            // Re-fetch with correct coords and update pill
+            wxFetchHome();
+          }).catch(function(){});
+      },
+      function(){ /* denied — Chennai stays, already started */ },
+      { timeout:6000, maximumAge:3600000 }
+    );
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){ wxStart(); });
+
+})();
+
+// ═══════════════════════════════════════════════════════════════
+//  FOCUS SCORE + STRESS TRACKER
+//  Focus: session length, breaks, time of day, unbroken screen
+//  Stress: typing rhythm, mouse velocity, rage clicks, tab focus
+//  Private to agent only — no admin visibility
+//  Beta · Under Testing
+// ═══════════════════════════════════════════════════════════════
+(function(){
+
+  var _focusOpen     = false;
+  var _focusInterval = null;
+  var _sessionStart  = null;
+  var _lastBreakTime = null;
+  var _breaksTaken   = 0;
+
+  // Stress tracking state
+  var _keyTimes = [], _backspaceCount = 0, _keyTotal = 0;
+  var _lastMouseX = null, _lastMouseY = null, _lastMouseT = null;
+  var _mouseVelocities = [];
+  var _clickTimes = [], _rageCount = 0;
+  var _tabHideCount = 0, _lastTabHide = null, _rapidTabSwitches = 0;
+
+  // ── Stress listeners ──
+  function stressAttachListeners(){
+    document.addEventListener('keydown', function(e){
+      var now = Date.now();
+      _keyTotal++;
+      if(e.key === 'Backspace') _backspaceCount++;
+      _keyTimes.push(now);
+      var cutoff = now - 120000;
+      _keyTimes = _keyTimes.filter(function(t){ return t > cutoff; });
+    });
+
+    var _lastSample = 0;
+    document.addEventListener('mousemove', function(e){
+      var now = Date.now();
+      if(now - _lastSample < 100) return;
+      _lastSample = now;
+      if(_lastMouseX !== null){
+        var dx = e.clientX - _lastMouseX;
+        var dy = e.clientY - _lastMouseY;
+        var dt = now - _lastMouseT;
+        if(dt > 0){
+          var vel = Math.sqrt(dx*dx + dy*dy) / dt * 100;
+          _mouseVelocities.push(vel);
+          if(_mouseVelocities.length > 40) _mouseVelocities.shift();
+        }
+      }
+      _lastMouseX = e.clientX; _lastMouseY = e.clientY; _lastMouseT = now;
+    });
+
+    document.addEventListener('click', function(e){
+      var now = Date.now();
+      _clickTimes.push({ t:now, x:e.clientX, y:e.clientY });
+      _clickTimes = _clickTimes.filter(function(c){ return now-c.t < 2000; });
+      if(_clickTimes.length >= 3){
+        var recent = _clickTimes.filter(function(c){ return now-c.t < 600; });
+        if(recent.length >= 3){
+          var first = recent[0];
+          var allClose = recent.every(function(c){
+            return Math.sqrt(Math.pow(c.x-first.x,2)+Math.pow(c.y-first.y,2)) < 50;
+          });
+          if(allClose){ _rageCount++; _clickTimes = []; }
+        }
+      }
+    });
+
+    document.addEventListener('visibilitychange', function(){
+      var now = Date.now();
+      if(document.hidden){
+        _tabHideCount++;
+        _lastTabHide = now;
+      } else {
+        if(_lastTabHide && (now - _lastTabHide) < 8000) _rapidTabSwitches++;
+      }
+    });
+  }
+
+  // ── Stress calculation ──
+  function stressCalc(){
+    var now = Date.now();
+    var sessionMins = _sessionStart ? (now - _sessionStart)/60000 : 1;
+
+    // 1. Typing rhythm
+    var typingScore = 100;
+    if(_keyTotal > 20){
+      var bsRatio = _backspaceCount / Math.max(1, _keyTotal);
+      if(bsRatio > 0.15) typingScore = Math.max(20, Math.round(100-(bsRatio-0.15)*400));
+      var wpm2min = _keyTimes.length / 5;
+      if(wpm2min > 80) typingScore = Math.min(typingScore, Math.max(30, Math.round(100-(wpm2min-80)*1.2)));
+    }
+
+    // 2. Mouse velocity
+    var mouseScore = 100;
+    if(_mouseVelocities.length > 5){
+      var avg = _mouseVelocities.reduce(function(a,b){return a+b;},0)/_mouseVelocities.length;
+      if(avg > 12) mouseScore = Math.max(20, Math.round(100-(avg-12)*4));
+      var variance = _mouseVelocities.reduce(function(a,v){return a+Math.pow(v-avg,2);},0)/_mouseVelocities.length;
+      var jitter = Math.sqrt(variance)/Math.max(1,avg);
+      if(jitter > 0.8) mouseScore = Math.min(mouseScore, Math.max(25, Math.round(100-jitter*40)));
+    }
+
+    // 3. Rage clicks
+    var rageScore = 100;
+    var rageRate = _rageCount / Math.max(1, sessionMins/10);
+    if(rageRate >= 1) rageScore = Math.max(20, Math.round(100-rageRate*25));
+
+    // 4. Tab focus
+    var tabScore = 100;
+    var tabRate = _rapidTabSwitches / Math.max(1, sessionMins/10);
+    if(tabRate >= 2) tabScore = Math.max(25, Math.round(100-(tabRate-1)*18));
+
+    var overall = Math.round(typingScore*0.3 + mouseScore*0.35 + rageScore*0.2 + tabScore*0.15);
+
+    return {
+      overall: overall,
+      signals: [
+        { icon:'⌨️', name:'Typing rhythm',
+          score: typingScore,
+          detail: _keyTotal < 20 ? 'Not enough data yet' :
+            typingScore >= 75 ? 'Relaxed, steady' : typingScore >= 50 ? 'Some pressure' : 'Erratic — take a breath',
+          raw: _keyTotal < 20 ? 'Type more to activate' : Math.round((_backspaceCount/Math.max(1,_keyTotal))*100)+'% backspace rate'
+        },
+        { icon:'🖱️', name:'Mouse movement',
+          score: mouseScore,
+          detail: _mouseVelocities.length < 5 ? 'Move mouse to activate' :
+            mouseScore >= 75 ? 'Smooth and controlled' : mouseScore >= 50 ? 'Slightly hurried' : 'Fast and erratic',
+          raw: _mouseVelocities.length > 0 ?
+            Math.round(_mouseVelocities.reduce(function(a,b){return a+b;},0)/_mouseVelocities.length)+' avg velocity' : '—'
+        },
+        { icon:'👆', name:'Click pattern',
+          score: rageScore,
+          detail: _rageCount === 0 ? 'No frustration clicks' :
+            _rageCount === 1 ? '1 frustration click detected' : _rageCount+' frustration clicks detected',
+          raw: _rageCount === 0 ? 'All clear' : _rageCount+' rage clicks'
+        },
+        { icon:'🪟', name:'Tab focus',
+          score: tabScore,
+          detail: _rapidTabSwitches === 0 ? 'Staying focused in portal' :
+            _rapidTabSwitches <= 2 ? 'Occasional tab switching' : 'Frequent tab switching',
+          raw: _rapidTabSwitches+' rapid switches'
+        }
+      ]
+    };
+  }
+
+  function stressLabel(s){
+    if(s>=75) return {text:'Calm',     color:'#22c55e', bg:'rgba(46,197,111,.12)'};
+    if(s>=50) return {text:'Moderate', color:'#f59e0b', bg:'rgba(245,158,11,.12)'};
+    return          {text:'Elevated',  color:'#ef4444', bg:'rgba(239,73,60,.12)' };
+  }
+  function stressSignalColor(s){ return s>=75?'#22c55e':s>=50?'#f59e0b':'#ef4444'; }
+
+  // ── Focus calculation (4 factors, 100pts) ──
+  function focusCalc(){
+    if(!_sessionStart) return null;
+    var now = Date.now();
+    var slHrs = (now - _sessionStart)/3600000;
+    var slMins = slHrs * 60;
+    var minsUnbroken = _lastBreakTime ? Math.round((now-_lastBreakTime)/60000) : Math.round(slMins);
+    var hour = new Date().getHours();
+    var bt = _breaksTaken;
+
+    // 1. Session length /30 — full points up to 3hrs, gradual decay after
+    var slPts = slHrs<=3 ? 30 : slHrs<=5 ? Math.max(12,Math.round(30-(slHrs-3)*7)) : Math.max(5,Math.round(30-(slHrs-3)*9));
+
+    // 2. Break compliance /30
+    // Grace period: first break not due until 1.5hrs in — before that, full 30pts
+    var bPts;
+    var bDetail;
+    if(slHrs < 1.5){
+      // Grace period — no break expected yet, full points
+      bPts = 30;
+      bDetail = 'First break due in '+Math.max(0,Math.round((1.5-slHrs)*60))+'m';
+    } else {
+      var suggested = Math.max(1, Math.floor(slHrs/1.5));
+      // Soft penalty — don't go to 0 immediately, decay over 30min window
+      var overdueRatio = Math.min(1, (slHrs - bt*1.5) / 1.5);
+      bPts = bt >= suggested ? 30 : Math.max(0, Math.round(30 - overdueRatio*30));
+      bDetail = bt+' of '+suggested+' suggested breaks';
+    }
+
+    // 3. Time of day /20
+    var tdPts = hour>=9&&hour<=11 ? 20 : hour>=14&&hour<=16 ? 10 : hour>=17||hour<8 ? 13 : 17;
+    var tdDetail = hour>=9&&hour<=11?'Morning peak — best focus':hour>=14&&hour<=16?'Afternoon dip zone':hour>=17?'End of day wind-down':'Normal window';
+
+    // 4. Unbroken screen /20 — grace for first 20 mins
+    var usPts;
+    var usDetail;
+    if(minsUnbroken <= 20){
+      usPts = 20;
+      usDetail = minsUnbroken+'m — still within safe window';
+    } else if(minsUnbroken <= 45){
+      usPts = Math.round(20 - (minsUnbroken-20)*0.28);
+      usDetail = minsUnbroken+'m — consider looking away soon';
+    } else {
+      usPts = Math.max(2, Math.round(20-(minsUnbroken-20)*0.36));
+      usDetail = minsUnbroken+'m — eye strain risk, take a break';
+    }
+
+    var total = Math.min(100, slPts+bPts+tdPts+usPts);
+    return {
+      total: total,
+      factors: [
+        {icon:'🕐',name:'Session length',   pts:slPts,max:30,detail:Math.round(slHrs*10)/10+'h on screen'},
+        {icon:'☕',name:'Break compliance', pts:bPts, max:30,detail:bDetail},
+        {icon:'🌅',name:'Time of day',      pts:tdPts,max:20,detail:tdDetail},
+        {icon:'👁️',name:'Unbroken screen',  pts:usPts,max:20,detail:usDetail}
+      ]
+    };
+  }
+
+  function focusColor(s){ return s>=80?'#22c55e':s>=60?'#f59e0b':'#ef4444'; }
+  function focusStatus(s){
+    if(s>=80) return {label:'Good',     bg:'rgba(46,197,111,.15)',color:'#2EC56F'};
+    if(s>=60) return {label:'Moderate', bg:'rgba(245,158,11,.15)', color:'#f59e0b'};
+    return          {label:'Low',       bg:'rgba(239,73,60,.15)',  color:'#ef4444'};
+  }
+  function focusInsight(score,factors){
+    if(score>=80) return {text:"You're focused and pacing well. Keep it up.",bg:'rgba(46,197,111,.08)',color:'rgba(46,197,111,.9)'};
+    var weak=factors.filter(function(f){return f.pts/f.max<0.6;});
+    var reason=weak.length?weak[0].name.toLowerCase():'session length';
+    if(score>=60) return {text:'Focus is moderate — '+reason+' is dragging your score. A short break could help.',bg:'rgba(245,158,11,.08)',color:'rgba(245,158,11,.9)'};
+    return {text:'Focus is low — '+reason+' needs attention. Step away for 5 minutes.',bg:'rgba(239,73,60,.08)',color:'rgba(239,73,60,.9)'};
+  }
+
+  // ── Pill — animated ring + number count-up/down ──
+  var _lastDisplayedScore = null;
+  function focusUpdatePill(score){
+    var arc  = document.getElementById('focus-ring-arc');
+    var num  = document.getElementById('focus-ring-num');
+    var wrap = document.getElementById('focus-wrap');
+    var pill = document.getElementById('focus-pill');
+    if(!arc||!num||!wrap) return;
+
+    var circ   = 2*Math.PI*15;
+    var target = score;
+    var color  = focusColor(target);
+
+    // Smooth ring animation via CSS transition (already on the element)
+    arc.setAttribute('stroke-dashoffset',(circ*(1-target/100)).toFixed(2));
+    arc.setAttribute('stroke', color);
+
+    // Animate number counting up or down
+    if(_lastDisplayedScore === null){
+      // First load — count up from 100 to score over 1.2s
+      var start = 100, end = target, duration = 1200;
+      var startTime = null;
+      function countUp(ts){
+        if(!startTime) startTime = ts;
+        var progress = Math.min(1,(ts-startTime)/duration);
+        var eased = 1 - Math.pow(1-progress,3); // ease-out cubic
+        var current = Math.round(start + (end-start)*eased);
+        num.textContent = current;
+        // Also animate ring in sync
+        arc.setAttribute('stroke-dashoffset',(circ*(1-current/100)).toFixed(2));
+        arc.setAttribute('stroke', focusColor(current));
+        if(progress < 1) requestAnimationFrame(countUp);
+        else { num.textContent = target; }
+      }
+      requestAnimationFrame(countUp);
+    } else if(_lastDisplayedScore !== target){
+      // Score changed — quick count + subtle pulse
+      var from = _lastDisplayedScore, to = target, dur = 600;
+      var t0 = null;
+      function countChange(ts){
+        if(!t0) t0 = ts;
+        var p = Math.min(1,(ts-t0)/dur);
+        var ep = p<0.5 ? 2*p*p : -1+(4-2*p)*p; // ease in-out
+        num.textContent = Math.round(from + (to-from)*ep);
+        if(p < 1) requestAnimationFrame(countChange);
+        else num.textContent = target;
+      }
+      requestAnimationFrame(countChange);
+
+      // Pulse the pill on drop (score decreased)
+      if(target < _lastDisplayedScore && pill){
+        pill.style.transition = 'transform .15s ease';
+        pill.style.transform = 'scale(1.18)';
+        setTimeout(function(){ pill.style.transform = 'scale(1)'; }, 180);
+      }
+    } else {
+      num.textContent = target;
+    }
+
+    _lastDisplayedScore = target;
+    wrap.style.display = '';
+  }
+
+  // ── Render dropdown ──
+  function focusRenderDropdown(fData,sData){
+    var drop=document.getElementById('focus-dropdown');
+    if(!drop||!fData) return;
+    var st=focusStatus(fData.total);
+    var ins=focusInsight(fData.total,fData.factors);
+    var circ=2*Math.PI*22;
+    var fOff=(circ*(1-fData.total/100)).toFixed(2);
+    var fCol=focusColor(fData.total);
+    var sl=stressLabel(sData.overall);
+
+    var html=
+      '<div class="focus-drop-header">'+
+        '<div class="focus-drop-title-row">'+
+          '<span class="focus-drop-title">Focus Score</span>'+
+          '<span class="wx-beta-tag">Beta · Under Testing</span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="focus-big-score">'+
+        '<div class="focus-big-ring">'+
+          '<svg width="56" height="56" viewBox="0 0 56 56">'+
+            '<circle cx="28" cy="28" r="22" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="4"/>'+
+            '<circle cx="28" cy="28" r="22" fill="none" stroke="'+fCol+'" stroke-width="4" stroke-linecap="round"'+
+            ' stroke-dasharray="'+circ.toFixed(2)+'" stroke-dashoffset="'+fOff+'"'+
+            ' style="transform:rotate(-90deg);transform-origin:50% 50%;"/>'+
+          '</svg>'+
+          '<div class="focus-big-num" style="color:'+fCol+';">'+fData.total+'</div>'+
+        '</div>'+
+        '<div class="focus-big-label">'+
+          '<h3>'+fData.total+'% focus</h3>'+
+          '<p>Your current session score</p>'+
+          '<span class="focus-status-badge" style="background:'+st.bg+';color:'+st.color+';">'+st.label+'</span>'+
+        '</div>'+
+      '</div>'+
+      '<div class="focus-factors">';
+
+    fData.factors.forEach(function(f){
+      var pct=Math.round(f.pts/f.max*100);
+      var fc=focusColor(pct);
+      html+='<div class="focus-factor">'+
+        '<span class="focus-f-icon">'+f.icon+'</span>'+
+        '<div class="focus-f-body">'+
+          '<div class="focus-f-name">'+f.name+
+            ' <span style="color:rgba(255,255,255,.28);font-size:.63rem;">'+f.detail+'</span></div>'+
+          '<div class="focus-f-bar"><div class="focus-f-fill" style="width:'+pct+'%;background:'+fc+';"></div></div>'+
+        '</div>'+
+        '<span class="focus-f-pts" style="color:'+fc+';">'+f.pts+'/'+f.max+'</span>'+
+      '</div>';
+    });
+
+    html+='</div>'+
+      '<div class="focus-insight" style="background:'+ins.bg+';color:'+ins.color+';">'+ins.text+'</div>'+
+
+      '<div style="margin:.25rem .75rem 0;padding:.6rem 0 .4rem;border-top:0.5px solid rgba(255,255,255,.07);'+
+        'display:flex;align-items:center;justify-content:space-between;">'+
+        '<div style="display:flex;align-items:center;gap:.45rem;">'+
+          '<span style="font-size:.68rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;'+
+            'color:rgba(255,255,255,.35);font-family:DM Sans,sans-serif;">Stress Signals</span>'+
+        '</div>'+
+        '<span style="font-size:.72rem;font-weight:700;padding:2px 10px;border-radius:20px;'+
+          'background:'+sl.bg+';color:'+sl.color+';font-family:DM Sans,sans-serif;">'+sl.text+'</span>'+
+      '</div>'+
+      '<div class="focus-factors" style="padding-top:.3rem;">';
+
+    sData.signals.forEach(function(s){
+      var sc=stressSignalColor(s.score);
+      html+='<div class="focus-factor">'+
+        '<span class="focus-f-icon">'+s.icon+'</span>'+
+        '<div class="focus-f-body">'+
+          '<div class="focus-f-name">'+s.name+
+            ' <span style="color:rgba(255,255,255,.25);font-size:.63rem;">'+s.raw+'</span></div>'+
+          '<div style="font-size:.65rem;color:rgba(255,255,255,.4);margin-bottom:3px;font-family:DM Sans,sans-serif;">'+s.detail+'</div>'+
+          '<div class="focus-f-bar"><div class="focus-f-fill" style="width:'+s.score+'%;background:'+sc+';"></div></div>'+
+        '</div>'+
+        '<span class="focus-f-pts" style="color:'+sc+';">'+s.score+'</span>'+
+      '</div>';
+    });
+
+    html+='</div>'+
+      '<div class="focus-drop-footer">'+
+        '🔒 Private · Only you can see this · Updates every 2 min'+
+      '</div>';
+
+    drop.innerHTML=html;
+  }
+
+  // ── Tick ──
+  function focusTick(){
+    var fData=focusCalc();
+    if(!fData) return;
+    var sData=stressCalc();
+    focusUpdatePill(fData.total);
+    if(_focusOpen) focusRenderDropdown(fData,sData);
+  }
+
+  // ── Toggle ──
+  window.focusToggleDropdown=function(e){
+    e.stopPropagation();
+    var drop=document.getElementById('focus-dropdown');
+    if(!drop) return;
+    _focusOpen=drop.style.display==='none'||drop.style.display==='';
+    if(_focusOpen){
+      var fData=focusCalc(); var sData=stressCalc();
+      if(fData) focusRenderDropdown(fData,sData);
+      drop.style.display='block';
+    } else { drop.style.display='none'; }
+  };
+
+  document.addEventListener('click',function(e){
+    if(!_focusOpen) return;
+    var wrap=document.getElementById('focus-wrap');
+    if(wrap&&!wrap.contains(e.target)){
+      var drop=document.getElementById('focus-dropdown');
+      if(drop) drop.style.display='none';
+      _focusOpen=false;
+    }
+  });
+
+  window._focusRecordBreak=function(){
+    _breaksTaken++;
+    _lastBreakTime=Date.now();
+    // Persist to localStorage so refresh doesn't lose break data
+    if(typeof currentUser!=='undefined'&&currentUser&&currentUser.id){
+      try{
+        localStorage.setItem('focus_session_'+currentUser.id, JSON.stringify({
+          start: _sessionStart,
+          breaks: _breaksTaken,
+          lastBreak: _lastBreakTime
+        }));
+      }catch(e){}
+    }
+  };
+
+  document.addEventListener('DOMContentLoaded',function(){
+    stressAttachListeners();
+    var _focusCheck=setInterval(function(){
+      if(typeof currentUser!=='undefined'&&currentUser&&currentUser.id){
+        clearInterval(_focusCheck);
+
+        var KEY = 'focus_session_'+currentUser.id;
+        var today = new Date().toDateString();
+        var stored = null;
+        try{ stored = JSON.parse(localStorage.getItem(KEY)); }catch(e){}
+
+        if(stored && stored.start && new Date(stored.start).toDateString() === today){
+          // Same day — restore session so refresh doesn't reset
+          _sessionStart   = stored.start;
+          _breaksTaken    = stored.breaks  || 0;
+          _lastBreakTime  = stored.lastBreak|| null;
+          _lastDisplayedScore = null; // still animate to current score, not count-up from 100
+        } else {
+          // New day or first login — fresh session
+          _sessionStart  = Date.now();
+          _breaksTaken   = 0;
+          _lastBreakTime = null;
+          _lastDisplayedScore = null;
+          try{
+            localStorage.setItem(KEY, JSON.stringify({
+              start: _sessionStart, breaks: 0, lastBreak: null
+            }));
+          }catch(e){}
+        }
+
+        focusTick();
+        _focusInterval=setInterval(function(){
+          // Save state every tick so it's always fresh on restore
+          focusTick();
+          if(typeof currentUser!=='undefined'&&currentUser&&currentUser.id){
+            try{
+              localStorage.setItem('focus_session_'+currentUser.id, JSON.stringify({
+                start: _sessionStart,
+                breaks: _breaksTaken,
+                lastBreak: _lastBreakTime
+              }));
+            }catch(e){}
+          }
+        }, 60*1000);
+      }
+    },2000);
+  });
+
+})();
 </script>
 
 
