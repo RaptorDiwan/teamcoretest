@@ -1773,9 +1773,30 @@
     .wclock-btn { padding: .3rem .65rem; font-size: .72rem; }
 
     /* ── LAYOUT ── */
+    html, body { overflow-x: hidden; } /* safety net: any stray wide element
+      clips instead of dragging the whole page into horizontal scroll */
     .dash-body { flex-direction: column; overflow: auto; }
     .sidebar { display: none; }
-    .main-content { padding: 1rem 1rem 7rem 1rem; overflow-y: visible; }
+    .main-content { padding: 1rem 1rem 7rem 1rem; overflow-y: visible; overflow-x: hidden; }
+
+    /* ── TOPBAR OVERFLOW ──
+       topbar-right can hold quite a few items (weather, work clock, focus
+       score, avatar, logout) depending on what's enabled for the account.
+       Rather than hide any of them, let the row scroll horizontally within
+       itself — nothing is lost, it just becomes swipeable instead of
+       overflowing the whole page (which was the actual bug: this row had no
+       width limit at all before, so the browser stretched the entire
+       document to fit it). overflow-y stays visible so the weather/focus
+       dropdown panels — which extend below the topbar — aren't clipped. */
+    .topbar-right {
+      overflow-x: auto;
+      overflow-y: visible;
+      -webkit-overflow-scrolling: touch;
+      max-width: calc(100vw - 130px); /* leaves room for the brand on the left */
+      scrollbar-width: none;
+    }
+    .topbar-right::-webkit-scrollbar { display: none; }
+    .topbar-brand { flex-shrink: 0; }
 
     /* ── BOTTOM NAV ──
        Gated on body.logged-in (same pattern already used for #chat-dock-icon
@@ -1795,6 +1816,10 @@
     .break-toast { left: 1rem; right: 1rem; transform: none; bottom: 130px; min-width: unset; max-width: unset; }
 
     /* ── HOME ── */
+    .home-two-col { grid-template-columns: 1fr; gap: 1rem; } /* was a fixed
+      260px + 1fr grid — the fixed column never fit on a phone, forcing the
+      entire page (topbar included) into horizontal scroll. This was the
+      main cause of the mobile layout breaking. */
     .home-greeting h1 { font-size: 1.6rem; }
     .home-greeting { margin-bottom: 1.5rem; }
     .live-stats-row { grid-template-columns: repeat(2,1fr); gap: .75rem; margin-bottom: 1.25rem; }
@@ -2117,95 +2142,6 @@ body.dark .ts-input { background:#111827;border-color:#2D3748;color:#F1F5F9; }
   .cat-toggle-slider:before{position:absolute;content:'';height:18px;width:18px;left:3px;bottom:3px;background:white;border-radius:50%;transition:.3s;}
   .cat-toggle-wrap input:checked + .cat-toggle-slider{background:var(--gold);}
   .cat-toggle-wrap input:checked + .cat-toggle-slider:before{transform:translateX(20px);}
-
-  /* ── K7 Radar ── */
-  .radar-root{width:100%;padding:2rem 2.5rem;display:flex;flex-direction:column;gap:0;box-sizing:border-box;overflow-y:auto;}
-  
-  /* Page header */
-  .radar-page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.6rem;flex-wrap:wrap;gap:1rem;}
-  .radar-page-icon{width:44px;height:44px;border-radius:12px;background:linear-gradient(135deg,var(--gold),var(--gold-light));display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0;box-shadow:0 4px 14px rgba(239,73,60,.25);}
-  .radar-page-title{font-family:'Cormorant Garamond',serif;font-size:1.55rem;font-weight:700;color:var(--text-primary);line-height:1.1;}
-  .radar-page-sub{font-size:.75rem;color:var(--text-muted);margin-top:2px;}
-  .radar-month-sel{background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:8px;padding:.42rem .8rem;color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:.82rem;outline:none;cursor:pointer;}
-
-  /* Tab bar */
-  .radar-tabbar{display:flex;gap:.35rem;border-bottom:2px solid var(--navy-border);padding-bottom:0;margin-bottom:1.4rem;}
-  .radar-tab{display:flex;align-items:center;gap:.4rem;background:none;border:none;border-bottom:2px solid transparent;margin-bottom:-2px;padding:.55rem 1rem;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .18s;border-radius:6px 6px 0 0;}
-  .radar-tab:hover{color:var(--text-primary);background:var(--navy-hover);}
-  .radar-tab.active{color:var(--gold);border-bottom-color:var(--gold);font-weight:700;background:rgba(239,73,60,.05);}
-
-  .radar-panel{animation:fadeIn .2s ease;width:100%;}
-  .radar-card{background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius);padding:1.4rem 1.8rem;width:100%;box-sizing:border-box;}
-  .radar-card-header{display:flex;align-items:center;justify-content:space-between;gap:.8rem;margin-bottom:.2rem;}
-  .radar-card-title{font-size:.95rem;font-weight:700;color:var(--text-primary);}
-  .radar-card-sub{font-size:.75rem;color:var(--text-muted);margin-top:2px;}
-
-  /* Form elements */
-  .radar-form-row{display:flex;gap:1rem;flex-wrap:wrap;}
-  .radar-field{flex:1;min-width:160px;display:flex;flex-direction:column;}
-  .radar-label{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.38rem;}
-  .radar-optional{font-size:.68rem;font-weight:400;letter-spacing:0;text-transform:none;color:var(--text-dim);margin-left:.3rem;}
-  .radar-section-label{font-size:.78rem;font-weight:600;color:var(--text-primary);margin-bottom:.9rem;}
-  .radar-input{width:100%;padding:.52rem .85rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:8px;color:var(--text-primary);font-family:'DM Sans',sans-serif;font-size:.84rem;outline:none;box-sizing:border-box;transition:border-color .18s,box-shadow .18s;}
-  .radar-input:focus{border-color:rgba(239,73,60,.45);box-shadow:0 0 0 3px rgba(239,73,60,.08);}
-  .radar-textarea{resize:none;height:60px;line-height:1.5;}
-
-  /* Flag groups */
-  .radar-flags-container{display:flex;flex-direction:column;gap:0;border:1px solid var(--navy-border);border-radius:var(--radius);overflow:hidden;}
-  .radar-flag-group{padding:.85rem 1rem;border-bottom:1px solid var(--navy-border);}
-  .radar-flag-group:last-child{border-bottom:none;}
-  .radar-flag-group-title{display:flex;align-items:center;gap:.5rem;font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem;}
-  .radar-flag-group-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
-  .radar-flag-row{display:flex;flex-wrap:wrap;gap:.4rem;}
-
-  /* Flag chips — redesigned */
-  .radar-flag-chip{display:inline-flex;align-items:center;gap:.35rem;padding:.32rem .75rem;border-radius:20px;font-size:.76rem;font-weight:500;color:var(--text-muted);cursor:pointer;transition:all .15s;user-select:none;border:1.5px solid var(--navy-border);background:var(--navy-card);}
-  .radar-flag-chip input{display:none;}
-  .rfc-icon{font-size:.72rem;}
-  .rfc-pts{font-size:.68rem;font-weight:700;opacity:.5;margin-left:.1rem;}
-  .radar-flag-chip:hover{border-color:rgba(239,73,60,.3);color:var(--text-primary);background:var(--navy-hover);}
-  /* Selected states by severity */
-  .radar-flag-chip.selected.rfg-neutral{background:rgba(46,197,111,.1);border-color:rgba(46,197,111,.4);color:#1a7a45;}
-  .radar-flag-chip.selected.rfg-neutral .rfc-pts{opacity:1;color:#1a7a45;}
-  .radar-flag-chip.selected.rfg-warn{background:rgba(239,149,30,.1);border-color:rgba(239,149,30,.45);color:#b5690d;}
-  .radar-flag-chip.selected.rfg-warn .rfc-pts{opacity:1;color:#b5690d;}
-  .radar-flag-chip.selected.rfg-bad{background:rgba(239,73,60,.1);border-color:rgba(239,73,60,.4);color:#c0291e;}
-  .radar-flag-chip.selected.rfg-bad .rfc-pts{opacity:1;color:#c0291e;}
-
-  /* Deduction bar */
-  .radar-entry-footer{margin-top:1.2rem;display:flex;flex-direction:column;gap:.85rem;padding-top:1.1rem;border-top:1px solid var(--navy-border);}
-  .radar-deduction-bar{display:flex;align-items:center;justify-content:space-between;padding:.65rem 1rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:8px;}
-  .radar-deduction-val{font-size:1rem;font-weight:800;color:var(--text-dim);transition:color .2s;}
-  .radar-deduction-val.has-deduction{color:var(--accent-red);}
-
-  /* Buttons */
-  .radar-btn-primary{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1.25rem;background:var(--gold);color:#fff;border:none;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.82rem;font-weight:700;cursor:pointer;transition:opacity .18s,transform .1s;white-space:nowrap;}
-  .radar-btn-primary:hover{opacity:.88;}
-  .radar-btn-primary:active{transform:scale(.97);}
-  .radar-btn-ghost{display:inline-flex;align-items:center;gap:.4rem;padding:.45rem 1rem;background:transparent;color:var(--text-muted);border:1px solid var(--navy-border);border-radius:8px;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:500;cursor:pointer;transition:all .15s;white-space:nowrap;}
-  .radar-btn-ghost:hover{background:var(--navy-hover);color:var(--text-primary);}
-  .radar-submit-row{display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;}
-
-  /* Tables */
-  .radar-table{width:100%;border-collapse:collapse;font-size:.8rem;}
-  .radar-table th{font-size:.67rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;text-transform:uppercase;padding:.5rem .8rem;border-bottom:2px solid var(--navy-border);text-align:left;white-space:nowrap;}
-  .radar-table td{padding:.6rem .8rem;border-bottom:1px solid rgba(0,0,0,.04);color:var(--text-primary);vertical-align:middle;}
-  body.dark .radar-table td{border-bottom-color:rgba(255,255,255,.04);}
-  .radar-table tr:last-child td{border-bottom:none;}
-  .radar-table tbody tr:hover td{background:var(--navy-hover);}
-
-  /* Rating badges */
-  .radar-badge{display:inline-flex;align-items:center;padding:.22rem .65rem;border-radius:20px;font-size:.72rem;font-weight:700;white-space:nowrap;}
-  .radar-badge.excellent{background:rgba(46,197,111,.12);color:#1a7a45;}
-  .radar-badge.good{background:rgba(239,149,30,.12);color:#b5690d;}
-  .radar-badge.average{background:rgba(239,73,60,.1);color:#c0291e;}
-  .radar-badge.poor{background:rgba(239,73,60,.2);color:#9b1a12;}
-
-  /* Score ring */
-  .radar-score-ring{width:88px;height:88px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-direction:column;border:3px solid var(--navy-border);flex-shrink:0;}
-
-  /* Empty state */
-  .radar-empty{color:var(--text-dim);font-size:.82rem;padding:.4rem 0;}
 
 /* ═══════════════════════════════════════
      CHAT SYSTEM — Facebook Bottom Dock
@@ -3409,15 +3345,6 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
         </svg>
         Case Tracker
         <span class="sidebar-badge" id="ct-alert-badge" style="display:none;background:#EF493C;color:#fff;margin-left:auto;">!</span>
-      </div>
-
-      <div class="sidebar-item" id="sidebar-radar" onclick="showPage('radar', this)" style="display:none;">
-        <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-          <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
-          <line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/>
-          <line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/>
-        </svg>
-        K7 Radar
       </div>
 
       <div class="sidebar-item" id="sidebar-ts" onclick="showPage('timesheet', this)" style="display:none;">
@@ -4792,296 +4719,8 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
             </div>
           </div>
 
-          <!-- ── Section: K7 Radar ── -->
-          <div class="cd-card">
-            <div class="cd-card-header">
-              <span class="cd-card-icon" style="background:rgba(239,73,60,.12);">🎯</span>
-              <div>
-                <div class="cd-card-title">K7 Radar</div>
-                <div class="cd-card-sub">Enable L1 performance logging for admins and selected users</div>
-              </div>
-              <div style="display:flex;align-items:center;gap:.8rem;margin-left:auto;">
-                <span id="cd-radar-status" style="font-size:.8rem;color:var(--text-muted);">Loading…</span>
-                <label class="cat-toggle-wrap"><input type="checkbox" id="cd-radar-toggle" onchange="cdRadarToggle(this.checked)"/><span class="cat-toggle-slider"></span></label>
-              </div>
-            </div>
-            <div id="cd-radar-msg" class="cd-msg" style="display:none;"></div>
-            <div style="margin-top:.6rem;font-size:.75rem;color:var(--text-dim);line-height:1.55;">When enabled, admins and TLs can log performance entries against L1 agents. Agents see their own rating only. Full reports visible to admin.</div>
-          </div>
-
           <!-- ── CSAT Reports — loaded from csat_module_patch.js ── -->
           <div id="cd-csat-card"></div>
-
-        </div>
-      </div>
-
-      <!-- ══ K7 RADAR PAGE ══ -->
-      <div class="page" id="page-radar">
-        <div class="radar-root">
-
-          <!-- ── Page Header ── -->
-          <div class="radar-page-header">
-            <div style="display:flex;align-items:center;gap:1rem;">
-              <div class="radar-page-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" width="22" height="22">
-                  <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
-                  <line x1="12" y1="2" x2="12" y2="4"/><line x1="12" y1="20" x2="12" y2="22"/>
-                  <line x1="2" y1="12" x2="4" y2="12"/><line x1="20" y1="12" x2="22" y2="12"/>
-                </svg>
-              </div>
-              <div>
-                <div class="radar-page-title">K7 Radar</div>
-                <div class="radar-page-sub">L1 Engineer Performance Tracking</div>
-              </div>
-            </div>
-            <div style="margin-left:auto;display:flex;align-items:center;gap:.7rem;">
-              <select id="radar-month-filter" class="radar-month-sel" onchange="radarRefreshAll()"><!-- filled by JS --></select>
-            </div>
-          </div>
-
-          <!-- ── Tab Bar ── -->
-          <div class="radar-tabbar" id="radar-tabs">
-            <button class="radar-tab active" id="radar-tab-log" onclick="radarTab('log')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-              Log Entry
-            </button>
-            <button class="radar-tab" id="radar-tab-report" onclick="radarTab('report')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
-              Global Report
-            </button>
-            <button class="radar-tab" id="radar-tab-mine" onclick="radarTab('mine')">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-              My Rating
-            </button>
-            <button class="radar-tab" id="radar-tab-data" onclick="radarTab('data')" style="display:none;">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
-              Data
-            </button>
-          </div>
-
-          <!-- ══ TAB: LOG ENTRY ══ -->
-          <div id="radar-panel-log" class="radar-panel">
-
-            <div class="radar-card">
-              <!-- Agent + Ticket row -->
-              <div class="radar-form-row">
-                <div class="radar-field">
-                  <label class="radar-label">Agent</label>
-                  <select id="radar-agent-sel" class="radar-input"></select>
-                </div>
-                <div class="radar-field">
-                  <label class="radar-label">Ticket ID <span class="radar-optional">optional</span></label>
-                  <input type="text" id="radar-ticket-id" class="radar-input" placeholder="e.g. #45231"/>
-                </div>
-              </div>
-
-              <!-- Flags section -->
-              <div style="margin-top:1.4rem;">
-                <div class="radar-section-label">Select Flags <span class="radar-optional">all that apply — multiple allowed</span></div>
-
-                <div id="radar-flags-wrap" class="radar-flags-container">
-
-                  <div class="radar-flag-group">
-                    <div class="radar-flag-group-title">
-                      <span class="radar-flag-group-dot" style="background:rgba(76,118,168,.6);"></span>
-                      Escalation
-                    </div>
-                    <div class="radar-flag-row">
-                      <label class="radar-flag-chip rfg-neutral" data-pts="0"><input type="checkbox" value="valid_escalation" data-pts="0"><span class="rfc-icon">✅</span> Valid Escalation <span class="rfc-pts">+0</span></label>
-                      <label class="radar-flag-chip rfg-warn" data-pts="-1"><input type="checkbox" value="partial_miss" data-pts="-1"><span class="rfc-icon">⚠️</span> Partial Miss <span class="rfc-pts">−1</span></label>
-                      <label class="radar-flag-chip rfg-bad" data-pts="-3"><input type="checkbox" value="avoidable_escalation" data-pts="-3"><span class="rfc-icon">❌</span> Avoidable Escalation <span class="rfc-pts">−3</span></label>
-                    </div>
-                  </div>
-
-                  <div class="radar-flag-group">
-                    <div class="radar-flag-group-title">
-                      <span class="radar-flag-group-dot" style="background:rgba(239,73,60,.7);"></span>
-                      Technical Competency
-                    </div>
-                    <div class="radar-flag-row">
-                      <label class="radar-flag-chip rfg-bad" data-pts="-2"><input type="checkbox" value="should_have_known" data-pts="-2"><span class="rfc-icon">❌</span> Should Have Known <span class="rfc-pts">−2</span></label>
-                      <label class="radar-flag-chip rfg-bad" data-pts="-2"><input type="checkbox" value="no_proactive_thinking" data-pts="-2"><span class="rfc-icon">❌</span> No Proactive Thinking <span class="rfc-pts">−2</span></label>
-                      <label class="radar-flag-chip rfg-bad" data-pts="-2"><input type="checkbox" value="missed_obvious_step" data-pts="-2"><span class="rfc-icon">❌</span> Missed Obvious Step <span class="rfc-pts">−2</span></label>
-                      <label class="radar-flag-chip rfg-bad" data-pts="-2"><input type="checkbox" value="wrong_troubleshooting" data-pts="-2"><span class="rfc-icon">❌</span> Wrong Troubleshooting <span class="rfc-pts">−2</span></label>
-                    </div>
-                  </div>
-
-                  <div class="radar-flag-group">
-                    <div class="radar-flag-group-title">
-                      <span class="radar-flag-group-dot" style="background:rgba(239,149,30,.7);"></span>
-                      Behavior
-                    </div>
-                    <div class="radar-flag-row">
-                      <label class="radar-flag-chip rfg-warn" data-pts="-1"><input type="checkbox" value="asked_unnecessary_doubt" data-pts="-1"><span class="rfc-icon">⚠️</span> Asked Unnecessary Doubt <span class="rfc-pts">−1</span></label>
-                      <label class="radar-flag-chip rfg-warn" data-pts="-1"><input type="checkbox" value="didnt_attempt_first" data-pts="-1"><span class="rfc-icon">⚠️</span> Didn't Attempt First <span class="rfc-pts">−1</span></label>
-                      <label class="radar-flag-chip rfg-warn" data-pts="-2"><input type="checkbox" value="repeated_same_mistake" data-pts="-2"><span class="rfc-icon">⚠️</span> Repeated Same Mistake <span class="rfc-pts">−2</span></label>
-                    </div>
-                  </div>
-
-                  <div class="radar-flag-group">
-                    <div class="radar-flag-group-title">
-                      <span class="radar-flag-group-dot" style="background:rgba(239,149,30,.5);"></span>
-                      Efficiency
-                    </div>
-                    <div class="radar-flag-row">
-                      <label class="radar-flag-chip rfg-warn" data-pts="-1"><input type="checkbox" value="high_aht" data-pts="-1"><span class="rfc-icon">⚠️</span> High AHT <span class="rfc-pts">−1</span></label>
-                      <label class="radar-flag-chip rfg-warn" data-pts="-1"><input type="checkbox" value="delayed_response" data-pts="-1"><span class="rfc-icon">⚠️</span> Delayed Response <span class="rfc-pts">−1</span></label>
-                    </div>
-                  </div>
-
-                  <div class="radar-flag-group">
-                    <div class="radar-flag-group-title">
-                      <span class="radar-flag-group-dot" style="background:rgba(239,73,60,.5);"></span>
-                      Process
-                    </div>
-                    <div class="radar-flag-row">
-                      <label class="radar-flag-chip rfg-bad" data-pts="-2"><input type="checkbox" value="didnt_follow_sop" data-pts="-2"><span class="rfc-icon">❌</span> Didn't Follow SOP <span class="rfc-pts">−2</span></label>
-                      <label class="radar-flag-chip rfg-bad" data-pts="-3"><input type="checkbox" value="wrong_info_to_customer" data-pts="-3"><span class="rfc-icon">❌</span> Wrong Info to Customer <span class="rfc-pts">−3</span></label>
-                      <label class="radar-flag-chip rfg-bad" data-pts="-1"><input type="checkbox" value="escalated_without_notes" data-pts="-1"><span class="rfc-icon">❌</span> Escalated Without Notes <span class="rfc-pts">−1</span></label>
-                    </div>
-                  </div>
-
-                  <div class="radar-flag-group">
-                    <div class="radar-flag-group-title">
-                      <span class="radar-flag-group-dot" style="background:rgba(76,118,168,.5);"></span>
-                      Communication Quality
-                    </div>
-                    <div class="radar-flag-row">
-                      <label class="radar-flag-chip rfg-warn" data-pts="-1"><input type="checkbox" value="template_without_modification" data-pts="-1"><span class="rfc-icon">⚠️</span> Template Without Modification <span class="rfc-pts">−1</span></label>
-                      <label class="radar-flag-chip rfg-bad" data-pts="-2"><input type="checkbox" value="robotic_ai_text" data-pts="-2"><span class="rfc-icon">❌</span> Robotic / AI Text <span class="rfc-pts">−2</span></label>
-                      <label class="radar-flag-chip rfg-warn" data-pts="-1"><input type="checkbox" value="unprofessional_tone" data-pts="-1"><span class="rfc-icon">⚠️</span> Unprofessional Tone <span class="rfc-pts">−1</span></label>
-                    </div>
-                  </div>
-
-                </div>
-              </div>
-
-              <!-- Deduction bar + Notes + Submit -->
-              <div class="radar-entry-footer">
-                <div class="radar-deduction-bar">
-                  <div style="display:flex;align-items:center;gap:.6rem;">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="14" height="14" style="color:var(--text-dim);flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                    <span style="font-size:.8rem;color:var(--text-muted);">Deduction for this entry</span>
-                  </div>
-                  <span id="radar-deduction-preview" class="radar-deduction-val">0 pts</span>
-                </div>
-
-                <div class="radar-field" style="margin-top:.3rem;">
-                  <label class="radar-label">Notes <span class="radar-optional">optional</span></label>
-                  <textarea id="radar-notes" class="radar-input radar-textarea" placeholder="Brief context about this entry…"></textarea>
-                </div>
-
-                <div class="radar-submit-row">
-                  <button class="radar-btn-primary" onclick="radarSubmitEntry()">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>
-                    Submit Entry
-                  </button>
-                  <button class="radar-btn-ghost" onclick="radarClearForm()">Clear</button>
-                  <span id="radar-entry-msg" style="font-size:.8rem;display:none;margin-left:.2rem;"></span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ══ TAB: GLOBAL REPORT ══ -->
-          <div id="radar-panel-report" class="radar-panel" style="display:none;">
-
-            <div class="radar-card">
-              <div class="radar-card-header">
-                <div class="radar-card-title">Team Overview</div>
-                <button class="radar-btn-ghost" onclick="radarLoadReport()">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="13" height="13"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
-                  Refresh
-                </button>
-              </div>
-              <div id="radar-global-table" style="overflow-x:auto;margin-top:.2rem;">
-                <div class="radar-empty">Loading…</div>
-              </div>
-            </div>
-
-            <div class="radar-card" style="margin-top:.9rem;">
-              <div class="radar-card-header">
-                <div class="radar-card-title">Agent Drilldown</div>
-              </div>
-              <div style="display:flex;gap:.7rem;align-items:center;flex-wrap:wrap;margin:.8rem 0;">
-                <select id="radar-drill-agent" class="radar-input" style="flex:1;min-width:180px;"></select>
-                <button class="radar-btn-primary" onclick="radarLoadDrilldown()">View Full Log</button>
-              </div>
-              <div id="radar-drilldown-wrap">
-                <div class="radar-empty">Select an agent above to view their full log.</div>
-              </div>
-            </div>
-          </div>
-
-          <!-- ══ TAB: MY RATING ══ -->
-          <div id="radar-panel-mine" class="radar-panel" style="display:none;">
-            <div class="radar-card" id="radar-mine-card">
-              <div class="radar-empty">Loading your rating…</div>
-            </div>
-          </div>
-
-          <!-- ══ TAB: DATA MANAGEMENT ══ -->
-          <div id="radar-panel-data" class="radar-panel" style="display:none;">
-
-            <div class="radar-card">
-              <div class="radar-card-header">
-                <div>
-                  <div class="radar-card-title">Export Backup</div>
-                  <div class="radar-card-sub">Download as Excel — all 14 columns, nothing missed</div>
-                </div>
-              </div>
-              <div style="display:flex;gap:.7rem;align-items:flex-end;flex-wrap:wrap;margin-top:1rem;">
-                <div style="flex:1;min-width:160px;">
-                  <label class="radar-label">Month</label>
-                  <select id="radar-export-month" class="radar-input"></select>
-                </div>
-                <button class="radar-btn-primary" onclick="radarExportMonth()">⬇ Download Month</button>
-                <button class="radar-btn-ghost" onclick="radarExportAll()">⬇ All Data</button>
-              </div>
-              <div id="radar-export-msg" style="font-size:.78rem;margin-top:.6rem;display:none;"></div>
-            </div>
-
-            <div class="radar-card" style="margin-top:.9rem;">
-              <div class="radar-card-header">
-                <div>
-                  <div class="radar-card-title">Delete Records</div>
-                  <div class="radar-card-sub">Free up database space — export a backup first</div>
-                </div>
-              </div>
-              <div style="display:flex;gap:.7rem;align-items:flex-end;flex-wrap:wrap;margin-top:1rem;">
-                <div style="flex:1;min-width:160px;">
-                  <label class="radar-label">Month to Delete</label>
-                  <select id="radar-delete-month" class="radar-input"></select>
-                </div>
-                <button class="cd-btn-danger" onclick="radarDeleteMonth()" style="white-space:nowrap;flex-shrink:0;">🗑 Delete Month</button>
-              </div>
-              <div style="margin-top:.9rem;padding:.85rem 1rem;background:rgba(239,73,60,.05);border:1px solid rgba(239,73,60,.18);border-radius:10px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.7rem;">
-                <div>
-                  <div style="font-size:.82rem;font-weight:700;color:#ef493c;">⚠ Delete All Records</div>
-                  <div style="font-size:.74rem;color:var(--text-dim);margin-top:3px;">Permanently wipes every entry across all months. Cannot be undone.</div>
-                </div>
-                <button class="cd-btn-danger" onclick="radarDeleteAll()" style="white-space:nowrap;flex-shrink:0;">🗑 Delete All</button>
-              </div>
-              <div id="radar-delete-msg" style="font-size:.78rem;margin-top:.6rem;display:none;"></div>
-            </div>
-
-            <div class="radar-card" style="margin-top:.9rem;">
-              <div class="radar-card-header">
-                <div>
-                  <div class="radar-card-title">Storage Summary</div>
-                  <div class="radar-card-sub">Record counts by month</div>
-                </div>
-                <button class="radar-btn-ghost" onclick="radarLoadStorageSummary()">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="13" height="13"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
-                  Refresh
-                </button>
-              </div>
-              <div id="radar-storage-summary" style="margin-top:.8rem;">
-                <div class="radar-empty">Loading…</div>
-              </div>
-            </div>
-
-          </div>
 
         </div>
       </div>
@@ -5468,8 +5107,6 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
 
     </main>
   </div>
-</div>
-
 </div>
 
 <script>
@@ -6376,7 +6013,7 @@ function showPage(id,elem){
   if(id==='moments') setTimeout(function(){_mLoadTab(_mActiveTab);},60);
   if(id==='quiz'){ loadAgentQuiz(); loadHallOfFame(); }
   if(id==='announcements') loadAnnouncementsAdmin();
-  if(id==='controldeck'){ _cdPwResetUnlocked=false; var lk=document.getElementById('cd-pwreset-locked'),pk=document.getElementById('cd-pwreset-panel'),ub=document.getElementById('cd-pwreset-unlock-btn'),pi=document.getElementById('cd-pwreset-pin'); if(lk)lk.style.display='flex'; if(pk)pk.style.display='none'; if(ub)ub.style.display=''; if(pi){pi.value='';} cdLoadAll(); checkVHGlobalToggle(); if(typeof radarLoadCdToggleState==='function') radarLoadCdToggleState(); }
+  if(id==='controldeck'){ _cdPwResetUnlocked=false; var lk=document.getElementById('cd-pwreset-locked'),pk=document.getElementById('cd-pwreset-panel'),ub=document.getElementById('cd-pwreset-unlock-btn'),pi=document.getElementById('cd-pwreset-pin'); if(lk)lk.style.display='flex'; if(pk)pk.style.display='none'; if(ub)ub.style.display=''; if(pi){pi.value='';} cdLoadAll(); checkVHGlobalToggle(); }
   if(id==='intercom'){ icPageInit(); }
 
 
@@ -6443,10 +6080,6 @@ function updateAdminVisibility(){
   if(tsItem){
     var canSeeTs=isAdminUser()||(currentUser&&currentUser.timesheetEnabled);
     tsItem.style.display=canSeeTs?'flex':'none';
-  }
-  // K7 Radar: update visibility based on global toggle
-  if(typeof window.radarUpdateSidebarVisibility === 'function'){
-    window.radarUpdateSidebarVisibility();
   }
 }
 function openSimulation(){window.open('simulation.html','_blank');}
@@ -11229,10 +10862,18 @@ async function showAssessmentQuestions(id, title, forceRefresh){
   panel.innerHTML='<div style="color:var(--text-dim);font-size:.85rem;">Loading questions...</div>';
   try{
     var qs=await sbQuery('assessment_questions','assessment_id=eq.'+id+'&order=created_at.asc');
+    window._aqCache=window._aqCache||{};
+    if(qs) qs.forEach(function(q){ window._aqCache[q.id]=q; });
     var qList=(qs&&qs.length)?qs.map(function(q,i){
-      return '<div style="padding:.6rem 0;border-bottom:1px solid var(--navy-border);display:flex;align-items:center;justify-content:space-between;">'+
-        '<span style="font-size:.85rem;color:var(--text-primary);">'+(i+1)+'. '+q.question.slice(0,80)+'... <em style="color:var(--text-dim);font-size:.75rem;">('+q.type+')</em></span>'+
-        '<button class="qa-del-btn" style="padding:.25rem .6rem;font-size:.72rem;" onclick="deleteAssessmentQuestion(\''+q.id+'\',\''+id+'\',\''+title.replace(/'/g,"\\'")+'\')">Remove</button>'+
+      return '<div style="padding:.6rem 0;border-bottom:1px solid var(--navy-border);">'+
+        '<div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap;">'+
+          '<span style="font-size:.85rem;color:var(--text-primary);flex:1;min-width:200px;">'+(i+1)+'. '+q.question.slice(0,80)+'... <em style="color:var(--text-dim);font-size:.75rem;">('+q.type+')</em></span>'+
+          '<div style="display:flex;gap:.4rem;flex-shrink:0;">'+
+            '<button class="qa-toggle-btn" style="padding:.25rem .6rem;font-size:.72rem;" onclick="editAssessmentQuestion(\''+q.id+'\',\''+id+'\')">&#9998; Edit</button>'+
+            '<button class="qa-del-btn" style="padding:.25rem .6rem;font-size:.72rem;" onclick="deleteAssessmentQuestion(\''+q.id+'\',\''+id+'\',\''+title.replace(/'/g,"\\'")+'\')">Remove</button>'+
+          '</div>'+
+        '</div>'+
+        '<div id="aqe-panel-'+q.id+'" style="display:none;margin-top:.6rem;padding:.85rem;background:#F1F6FD;border-radius:var(--radius-sm);"></div>'+
       '</div>';
     }).join(''):'<div style="color:var(--text-dim);font-size:.82rem;margin-bottom:.75rem;">No questions yet. Add below.</div>';
 
@@ -11321,6 +10962,109 @@ async function deleteAssessmentQuestion(qId, assessmentId, title){
   if(!confirm('Remove this question?'))return;
   try{await sbDelete('assessment_questions','id',qId);showAssessmentQuestions(assessmentId,title);}
   catch(e){alert('Delete failed.');}
+}
+
+// ── EDIT EXISTING QUESTION ──
+function editAssessmentQuestion(qId, assessmentId){
+  var panel=document.getElementById('aqe-panel-'+qId);
+  if(!panel)return;
+  if(panel.style.display==='block'){ panel.style.display='none'; return; }
+
+  var q=(window._aqCache&&window._aqCache[qId])||null;
+  if(!q){ panel.innerHTML='<div style="color:var(--accent-red);font-size:.78rem;">Could not load question data. Try reopening this panel.</div>'; panel.style.display='block'; return; }
+
+  var choices=[];
+  try{ choices=JSON.parse(q.choices||'[]'); }catch(e){ choices=[]; }
+  var qEsc=String(q.question||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+  var html='<div class="qa-form-grid" style="margin-bottom:.6rem;">'+
+    '<div class="qa-field" style="grid-column:1/-1"><label>Question</label><textarea id="aqe-q-'+qId+'" style="min-height:60px;padding:.55rem .8rem;background:#fff;border:1px solid var(--navy-border);border-radius:var(--radius-sm);font-family:DM Sans,sans-serif;font-size:.85rem;width:100%;box-sizing:border-box;outline:none;resize:vertical;">'+qEsc+'</textarea></div>'+
+    '<div class="qa-field"><label>Type</label><select id="aqe-type-'+qId+'" onchange="aqeTypeChange(\''+qId+'\')">'+
+      '<option value="mcq"'+(q.type==='mcq'?' selected':'')+'>Multiple Choice</option>'+
+      '<option value="truefalse"'+(q.type==='truefalse'?' selected':'')+'>True / False</option>'+
+      '<option value="essay"'+(q.type==='essay'?' selected':'')+'>Essay</option>'+
+    '</select></div>'+
+  '</div>';
+
+  html+='<div id="aqe-mcq-'+qId+'" style="display:'+(q.type==='mcq'?'block':'none')+';">'+
+    '<div class="qa-choices" id="aqe-choices-'+qId+'">';
+  if(q.type==='mcq'&&choices.length){
+    choices.forEach(function(c,ci){
+      var cVal=String(c).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+      var isCorrect=(c===q.correct_answer);
+      html+='<div class="qa-choice-row"><input type="radio" name="aqe-correct-'+qId+'" value="'+ci+'"'+(isCorrect?' checked':'')+'/><input type="text" value="'+cVal+'" class="aqe-ci-'+qId+'"/>'+(choices.length>2?'<button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--accent-red);cursor:pointer;">&#10005;</button>':'')+'</div>';
+    });
+  } else {
+    html+='<div class="qa-choice-row"><input type="radio" name="aqe-correct-'+qId+'" value="0"/><input type="text" placeholder="Choice A" class="aqe-ci-'+qId+'"/></div>'+
+          '<div class="qa-choice-row"><input type="radio" name="aqe-correct-'+qId+'" value="1"/><input type="text" placeholder="Choice B" class="aqe-ci-'+qId+'"/></div>';
+  }
+  html+='</div><button class="qa-add-choice" onclick="aqeAddChoice(\''+qId+'\')">+ Add Choice</button></div>';
+
+  html+='<div id="aqe-tf-'+qId+'" style="display:'+(q.type==='truefalse'?'block':'none')+';margin:.5rem 0;">'+
+    '<label style="font-size:.72rem;color:var(--text-muted);display:block;margin-bottom:.35rem;">Correct Answer</label>'+
+    '<div style="display:flex;gap:1rem;">'+
+      '<label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;"><input type="radio" name="aqe-tf-'+qId+'" value="true"'+(q.correct_answer==='True'?' checked':'')+' style="accent-color:var(--gold);"/> True</label>'+
+      '<label style="display:flex;align-items:center;gap:.4rem;cursor:pointer;"><input type="radio" name="aqe-tf-'+qId+'" value="false"'+(q.correct_answer==='False'?' checked':'')+' style="accent-color:var(--gold);"/> False</label>'+
+    '</div></div>';
+
+  html+='<div id="aqe-essay-'+qId+'" style="display:'+(q.type==='essay'?'block':'none')+';font-size:.78rem;color:var(--accent-blue);padding:.5rem;background:rgba(76,118,168,.08);border-radius:6px;margin:.5rem 0;">Essay — agents type freely, manually reviewed.</div>';
+
+  html+='<div style="margin-top:.6rem;display:flex;gap:.6rem;align-items:center;">'+
+    '<button class="qa-save-btn" onclick="saveAssessmentQuestionEdit(\''+qId+'\',\''+assessmentId+'\')">Save changes</button>'+
+    '<button class="qa-cancel-btn" onclick="document.getElementById(\'aqe-panel-'+qId+'\').style.display=\'none\'">Cancel</button>'+
+    '<span id="aqe-msg-'+qId+'" style="font-size:.78rem;margin-left:.3rem;color:var(--accent-red);"></span>'+
+  '</div>';
+
+  panel.innerHTML=html;
+  panel.style.display='block';
+}
+
+function aqeTypeChange(qId){
+  var type=document.getElementById('aqe-type-'+qId).value;
+  document.getElementById('aqe-mcq-'+qId).style.display=type==='mcq'?'block':'none';
+  document.getElementById('aqe-tf-'+qId).style.display=type==='truefalse'?'block':'none';
+  document.getElementById('aqe-essay-'+qId).style.display=type==='essay'?'block':'none';
+}
+
+function aqeAddChoice(qId){
+  var choices=document.getElementById('aqe-choices-'+qId);
+  var idx=choices.children.length;
+  var letters=['A','B','C','D','E','F'];
+  var row=document.createElement('div');
+  row.className='qa-choice-row';
+  row.innerHTML='<input type="radio" name="aqe-correct-'+qId+'" value="'+idx+'"/><input type="text" placeholder="Choice '+(letters[idx]||idx+1)+'" class="aqe-ci-'+qId+'"/><button onclick="this.parentElement.remove()" style="background:none;border:none;color:var(--accent-red);cursor:pointer;">&#10005;</button>';
+  choices.appendChild(row);
+}
+
+async function saveAssessmentQuestionEdit(qId, assessmentId){
+  var q=document.getElementById('aqe-q-'+qId);
+  var type=document.getElementById('aqe-type-'+qId);
+  var msgEl=document.getElementById('aqe-msg-'+qId);
+  if(!q||!q.value.trim()){if(msgEl)msgEl.textContent='Question is required.';return;}
+  var qText=q.value.trim();
+  var qType=type.value;
+  var choices=[], correctAnswer=null;
+
+  if(qType==='mcq'){
+    var inputs=document.querySelectorAll('.aqe-ci-'+qId);
+    var checked=document.querySelector('input[name="aqe-correct-'+qId+'"]:checked');
+    if(!checked){if(msgEl)msgEl.textContent='Select the correct answer.';return;}
+    inputs.forEach(function(inp){if(inp.value.trim())choices.push(inp.value.trim());});
+    if(choices.length<2){if(msgEl)msgEl.textContent='Add at least 2 choices.';return;}
+    correctAnswer=choices[parseInt(checked.value)]||choices[0];
+  } else if(qType==='truefalse'){
+    var tf=document.querySelector('input[name="aqe-tf-'+qId+'"]:checked');
+    if(!tf){if(msgEl)msgEl.textContent='Select True or False.';return;}
+    choices=['True','False']; correctAnswer=tf.value==='true'?'True':'False';
+  }
+
+  try{
+    await sbUpdate('assessment_questions','id',qId,{
+      question:qText, type:qType, choices:JSON.stringify(choices), correct_answer:correctAnswer
+    });
+    if(msgEl){msgEl.style.color='#1a7a45';msgEl.textContent='Saved!';}
+    showAssessmentQuestions(assessmentId,'',true);
+  }catch(e){if(msgEl)msgEl.textContent='Error: '+e.message;}
 }
 
 // ── BULK QUESTION IMPORT (Excel) ──
@@ -20729,733 +20473,6 @@ async function siLoadLogs(){
   }
 }
 
-
-// ══════════════════════════════════════════════════════
-//  K7 RADAR — L1 Performance Tracking Module
-// ══════════════════════════════════════════════════════
-
-(function(){
-
-  // ── Flag definitions (value → label + deduction) ──
-  var RADAR_FLAGS = {
-    valid_escalation:          { label:'✅ Valid Escalation',               pts: 0  },
-    partial_miss:              { label:'⚠️ Partial Miss',                   pts: -1 },
-    avoidable_escalation:      { label:'❌ Avoidable Escalation',           pts: -3 },
-    should_have_known:         { label:'❌ Should Have Known',              pts: -2 },
-    no_proactive_thinking:     { label:'❌ No Proactive Thinking',          pts: -2 },
-    missed_obvious_step:       { label:'❌ Missed Obvious Step',            pts: -2 },
-    wrong_troubleshooting:     { label:'❌ Wrong Troubleshooting',          pts: -2 },
-    asked_unnecessary_doubt:   { label:'⚠️ Asked Unnecessary Doubt',        pts: -1 },
-    didnt_attempt_first:       { label:'⚠️ Didn\'t Attempt First',          pts: -1 },
-    repeated_same_mistake:     { label:'⚠️ Repeated Same Mistake',          pts: -2 },
-    high_aht:                  { label:'⚠️ High AHT',                       pts: -1 },
-    delayed_response:          { label:'⚠️ Delayed Response',               pts: -1 },
-    didnt_follow_sop:          { label:'❌ Didn\'t Follow SOP',             pts: -2 },
-    wrong_info_to_customer:    { label:'❌ Wrong Info Given to Customer',   pts: -3 },
-    escalated_without_notes:   { label:'❌ Escalated Without Proper Notes', pts: -1 },
-    template_without_modification:{ label:'⚠️ Used Template Without Modification', pts: -1 },
-    robotic_ai_text:           { label:'❌ Robotic / AI Generated Text',    pts: -2 },
-    unprofessional_tone:       { label:'⚠️ Unprofessional Tone',            pts: -1 }
-  };
-
-  // Escalation-related flag keys for counting
-  var ESCALATION_FLAGS = ['valid_escalation','partial_miss','avoidable_escalation'];
-  var UNWANTED_FLAGS   = ['avoidable_escalation','partial_miss'];
-
-  // ── Helpers ──
-  function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-  function radarIsEnabled(){
-    // If the feature is disabled under Control Deck, it is off for everyone.
-    if(window._radarEnabled !== true) return false;
-    // Admin/TL always have access; others need the toggle enabled
-    if(typeof isAdminUser === 'function' && isAdminUser()) return true;
-    return window._radarEnabled === true;
-  }
-
-  function radarCanLog(){
-    return typeof isAdminUser === 'function' && isAdminUser();
-  }
-
-  function radarRating(score){
-    if(score >= 90) return { label:'⭐ Excellent', cls:'excellent' };
-    if(score >= 75) return { label:'👍 Good',      cls:'good'      };
-    if(score >= 60) return { label:'⚠️ Average',   cls:'average'   };
-    return                  { label:'❌ Needs Training', cls:'poor' };
-  }
-
-  function radarScoreColor(score){
-    if(score >= 90) return '#2ec56f';
-    if(score >= 75) return '#ef951e';
-    if(score >= 60) return '#ef951e';
-    return '#ef493c';
-  }
-
-  // ── Month filter init ──
-  function radarInitMonthFilter(){
-    var sel = document.getElementById('radar-month-filter');
-    if(!sel) return;
-    var now = new Date();
-    var html = '';
-    for(var i = 0; i < 6; i++){
-      var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      var m = d.getMonth() + 1;
-      var y = d.getFullYear();
-      var label = d.toLocaleString('default',{month:'long'}) + ' ' + y;
-      var selected = (i === 0) ? 'selected' : '';
-      html += '<option value="'+m+'-'+y+'" '+selected+'>'+label+'</option>';
-    }
-    sel.innerHTML = html;
-  }
-
-  function radarGetMonthYear(){
-    var sel = document.getElementById('radar-month-filter');
-    if(!sel || !sel.value) { var n=new Date(); return {m:n.getMonth()+1, y:n.getFullYear()}; }
-    var parts = sel.value.split('-');
-    return { m: parseInt(parts[0]), y: parseInt(parts[1]) };
-  }
-
-  // ── Tab switching ──
-  window.radarTab = function(tab){
-    ['log','report','mine','data'].forEach(function(t){
-      var panel = document.getElementById('radar-panel-'+t);
-      var btn   = document.getElementById('radar-tab-'+t);
-      if(panel) panel.style.display = (t === tab) ? '' : 'none';
-      if(btn)   btn.classList.toggle('active', t === tab);
-    });
-    if(tab === 'report'){ radarLoadReport(); radarLoadAgents(); }
-    if(tab === 'mine')   radarLoadMine();
-    if(tab === 'data')   radarInitDataTab();
-  };
-
-  window.radarRefreshAll = function(){
-    var active = document.querySelector('.radar-tab.active');
-    if(!active) return;
-    var tab = active.id.replace('radar-tab-','');
-    if(tab === 'report') radarLoadReport();
-    if(tab === 'mine')   radarLoadMine();
-  };
-
-  // ── Populate agent dropdowns ──
-  async function radarLoadAgents(){
-    try{
-      // Load all non-syslevel users so no one gets missed
-      var rows = await sbQuery('users','role=neq.syslevel&select=id,name,role&order=name.asc');
-      var sel  = document.getElementById('radar-agent-sel');
-      var dril = document.getElementById('radar-drill-agent');
-      var opts = '<option value="">— Select Agent —</option>';
-      // Show agents and TLs (L1s could be either role in some setups)
-      (rows||[]).filter(function(u){ return u.role !== 'admin' && u.role !== 'syslevel'; }).forEach(function(u){
-        opts += '<option value="'+esc(u.id)+'">'+esc(u.name)+'</option>';
-      });
-      if(sel)  sel.innerHTML  = opts;
-      if(dril) dril.innerHTML = opts;
-    }catch(e){ console.warn('K7 Radar: agent load error',e); }
-  }
-
-  // ── Flag chip interaction ──
-  function radarInitChips(){
-    document.querySelectorAll('.radar-flag-chip').forEach(function(chip){
-      chip.addEventListener('click', function(){
-        var cb = chip.querySelector('input[type=checkbox]');
-        if(!cb) return;
-        cb.checked = !cb.checked;
-        chip.classList.toggle('selected', cb.checked);
-        radarUpdateDeductionPreview();
-      });
-    });
-  }
-
-  function radarUpdateDeductionPreview(){
-    var total = 0;
-    document.querySelectorAll('#radar-flags-wrap input[type=checkbox]:checked').forEach(function(cb){
-      var pts = parseInt(cb.getAttribute('data-pts')||'0');
-      total += pts;
-    });
-    var el = document.getElementById('radar-deduction-preview');
-    if(!el) return;
-    el.textContent = total === 0 ? '0 pts' : total + ' pts';
-    el.classList.toggle('has-deduction', total < 0);
-  }
-
-  // ── Submit entry ──
-  window.radarSubmitEntry = async function(){
-    if(!radarCanLog()){ alert('You do not have permission to log entries.'); return; }
-    var agentSel = document.getElementById('radar-agent-sel');
-    var ticketEl = document.getElementById('radar-ticket-id');
-    var notesEl  = document.getElementById('radar-notes');
-    var msgEl    = document.getElementById('radar-entry-msg');
-
-    var agentId   = agentSel ? agentSel.value : '';
-    var agentName = agentSel ? agentSel.options[agentSel.selectedIndex].text : '';
-    if(!agentId){ msgEl.textContent='Please select an agent.'; msgEl.style.color='#ef493c'; msgEl.style.display=''; setTimeout(function(){msgEl.style.display='none';},3000); return; }
-
-    var flags = [];
-    var deduction = 0;
-    document.querySelectorAll('#radar-flags-wrap input[type=checkbox]:checked').forEach(function(cb){
-      flags.push(cb.value);
-      deduction += parseInt(cb.getAttribute('data-pts')||'0');
-    });
-    if(!flags.length){ msgEl.textContent='Please select at least one flag.'; msgEl.style.color='#ef493c'; msgEl.style.display=''; setTimeout(function(){msgEl.style.display='none';},3000); return; }
-
-    var now = new Date();
-    var payload = {
-      agent_id:      agentId,
-      agent_name:    agentName,
-      logged_by_id:  currentUser.id,
-      logged_by_name:currentUser.name,
-      ticket_id:     ticketEl ? ticketEl.value.trim() : '',
-      flags:         '{'+flags.map(function(f){return '"'+f+'"';}).join(',')+'}',
-      deduction:     deduction,
-      notes:         notesEl ? notesEl.value.trim() : '',
-      month:         now.getMonth()+1,
-      year:          now.getFullYear()
-    };
-
-    try{
-      msgEl.textContent = 'Saving…'; msgEl.style.color='var(--text-muted)'; msgEl.style.display='';
-      await sbInsert('l1_radar_log', payload);
-      msgEl.textContent = '✓ Entry logged successfully.'; msgEl.style.color='#2ec56f';
-      radarClearForm();
-      setTimeout(function(){ msgEl.style.display='none'; }, 3500);
-    }catch(e){
-      msgEl.textContent = 'Error: '+e.message; msgEl.style.color='#ef493c'; msgEl.style.display='';
-    }
-  };
-
-  window.radarClearForm = function(){
-    var agentSel = document.getElementById('radar-agent-sel');
-    var ticketEl = document.getElementById('radar-ticket-id');
-    var notesEl  = document.getElementById('radar-notes');
-    if(agentSel) agentSel.value = '';
-    if(ticketEl) ticketEl.value = '';
-    if(notesEl)  notesEl.value  = '';
-    document.querySelectorAll('#radar-flags-wrap input[type=checkbox]').forEach(function(cb){ cb.checked = false; });
-    document.querySelectorAll('.radar-flag-chip').forEach(function(c){ c.classList.remove('selected'); });
-    radarUpdateDeductionPreview();
-  };
-
-  // ── Global Report ──
-  window.radarLoadReport = async function(){
-    var wrap = document.getElementById('radar-global-table');
-    if(!wrap) return;
-    wrap.innerHTML = '<div style="color:var(--text-dim);font-size:.82rem;">Loading…</div>';
-    var my = radarGetMonthYear();
-    try{
-      var rows = await sbQuery('l1_radar_log','month=eq.'+my.m+'&year=eq.'+my.y+'&select=agent_id,agent_name,flags,deduction');
-      // Group by agent
-      var agents = {};
-      (rows||[]).forEach(function(r){
-        if(!agents[r.agent_id]) agents[r.agent_id] = { name: r.agent_name, entries:0, totalDed:0, escalations:0, unwanted:0 };
-        var a = agents[r.agent_id];
-        a.entries++;
-        a.totalDed += (r.deduction||0);
-        // Parse flags array from postgres format
-        var flagsArr = [];
-        if(Array.isArray(r.flags)) flagsArr = r.flags;
-        else if(typeof r.flags === 'string') flagsArr = r.flags.replace(/[{}"]/g,'').split(',').filter(Boolean);
-        flagsArr.forEach(function(f){
-          if(ESCALATION_FLAGS.indexOf(f) > -1) a.escalations++;
-          if(UNWANTED_FLAGS.indexOf(f) > -1)   a.unwanted++;
-        });
-      });
-
-      if(!Object.keys(agents).length){
-        wrap.innerHTML = '<div style="color:var(--text-dim);font-size:.82rem;padding:.5rem 0;">No entries found for this month.</div>';
-        return;
-      }
-
-      var html = '<table class="radar-table"><thead><tr>'+
-        '<th>Agent</th><th>Entries</th><th>Escalations</th><th>Unwanted</th><th>Score</th><th>Rating</th>'+
-        '</tr></thead><tbody>';
-
-      Object.keys(agents).forEach(function(id){
-        var a = agents[id];
-        var score = Math.max(0, 100 + a.totalDed);
-        var r = radarRating(score);
-        html += '<tr>'+
-          '<td style="font-weight:600;">'+esc(a.name)+'</td>'+
-          '<td>'+a.entries+'</td>'+
-          '<td>'+a.escalations+'</td>'+
-          '<td style="color:'+(a.unwanted>0?'#ef493c':'var(--text-primary)')+';">'+a.unwanted+'</td>'+
-          '<td><span style="font-weight:700;color:'+radarScoreColor(score)+';">'+score+'</span><span style="color:var(--text-dim);font-size:.72rem;">/100</span></td>'+
-          '<td><span class="radar-badge '+r.cls+'">'+r.label+'</span></td>'+
-          '</tr>';
-      });
-      html += '</tbody></table>';
-      wrap.innerHTML = html;
-
-      // Populate drilldown dropdown from users table (not just from entries — shows all agents always)
-      radarLoadAgents();
-    }catch(e){
-      wrap.innerHTML = '<div style="color:#ef493c;font-size:.82rem;">Error: '+esc(e.message)+'</div>';
-    }
-  };
-
-  // ── Agent Drilldown ──
-  window.radarLoadDrilldown = async function(){
-    var agentId = document.getElementById('radar-drill-agent').value;
-    var wrap    = document.getElementById('radar-drilldown-wrap');
-    if(!agentId){ wrap.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;">Select an agent above.</div>'; return; }
-    wrap.innerHTML = '<div style="color:var(--text-dim);font-size:.82rem;">Loading…</div>';
-    var my = radarGetMonthYear();
-    try{
-      var rows = await sbQuery('l1_radar_log',
-        'agent_id=eq.'+encodeURIComponent(agentId)+'&month=eq.'+my.m+'&year=eq.'+my.y+'&order=created_at.desc');
-      if(!rows||!rows.length){
-        wrap.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;">No entries for this agent this month.</div>';
-        return;
-      }
-      var agentName = rows[0].agent_name;
-      var totalDed  = rows.reduce(function(s,r){ return s+(r.deduction||0); },0);
-      var score     = Math.max(0,100+totalDed);
-      var rating    = radarRating(score);
-
-      var html = '<div style="display:flex;align-items:center;gap:1.2rem;margin-bottom:1rem;flex-wrap:wrap;">'+
-        '<div class="radar-score-ring" style="border-color:'+radarScoreColor(score)+';">'+
-          '<span style="font-size:1.4rem;font-weight:800;color:'+radarScoreColor(score)+';">'+score+'</span>'+
-          '<span style="font-size:.62rem;color:var(--text-dim);">/ 100</span>'+
-        '</div>'+
-        '<div>'+
-          '<div style="font-size:1rem;font-weight:700;color:var(--text-primary);">'+esc(agentName)+'</div>'+
-          '<div style="margin-top:.3rem;"><span class="radar-badge '+rating.cls+'">'+rating.label+'</span></div>'+
-          '<div style="font-size:.75rem;color:var(--text-dim);margin-top:.3rem;">'+rows.length+' entries · Total deduction: '+totalDed+' pts</div>'+
-        '</div>'+
-      '</div>';
-
-      html += '<table class="radar-table"><thead><tr>'+
-        '<th>Date</th><th>Ticket</th><th>Flags</th><th>Impact</th><th>Logged By</th><th>Notes</th>'+
-        '</tr></thead><tbody>';
-
-      rows.forEach(function(r){
-        var flagsArr = [];
-        if(Array.isArray(r.flags)) flagsArr = r.flags;
-        else if(typeof r.flags === 'string') flagsArr = r.flags.replace(/[{}"]/g,'').split(',').filter(Boolean);
-        var flagLabels = flagsArr.map(function(f){ return RADAR_FLAGS[f] ? RADAR_FLAGS[f].label : f; }).join('<br>');
-        var dateStr = r.created_at ? new Date(r.created_at).toLocaleDateString('en-IN',{day:'2-digit',month:'short'}) : '—';
-        html += '<tr>'+
-          '<td style="white-space:nowrap;">'+dateStr+'</td>'+
-          '<td style="color:var(--text-dim);">'+esc(r.ticket_id||'—')+'</td>'+
-          '<td style="font-size:.75rem;line-height:1.6;">'+flagLabels+'</td>'+
-          '<td style="font-weight:700;color:'+(r.deduction<0?'#ef493c':'#2ec56f')+';">'+(r.deduction||0)+' pts</td>'+
-          '<td style="color:var(--text-dim);font-size:.78rem;">'+esc(r.logged_by_name||'—')+'</td>'+
-          '<td style="color:var(--text-dim);font-size:.76rem;">'+esc(r.notes||'—')+'</td>'+
-          '</tr>';
-      });
-      html += '</tbody></table>';
-      wrap.innerHTML = html;
-    }catch(e){
-      wrap.innerHTML = '<div style="color:#ef493c;font-size:.82rem;">Error: '+esc(e.message)+'</div>';
-    }
-  };
-
-  // ── My Rating (Agent Self View) ──
-  window.radarLoadMine = async function(){
-    var card = document.getElementById('radar-mine-card');
-    if(!card||!currentUser) return;
-    card.innerHTML = '<div style="color:var(--text-dim);font-size:.82rem;">Loading your rating…</div>';
-    var my = radarGetMonthYear();
-    try{
-      var rows = await sbQuery('l1_radar_log',
-        'agent_id=eq.'+encodeURIComponent(currentUser.id)+'&month=eq.'+my.m+'&year=eq.'+my.y);
-      var totalDed = (rows||[]).reduce(function(s,r){ return s+(r.deduction||0); },0);
-      var score    = Math.max(0,100+totalDed);
-      var rating   = radarRating(score);
-
-      // Count flag types for agent view (no ticket IDs, no notes, no who logged)
-      var flagCounts = {};
-      (rows||[]).forEach(function(r){
-        var flagsArr = [];
-        if(Array.isArray(r.flags)) flagsArr = r.flags;
-        else if(typeof r.flags === 'string') flagsArr = r.flags.replace(/[{}"]/g,'').split(',').filter(Boolean);
-        flagsArr.forEach(function(f){ flagCounts[f] = (flagCounts[f]||0)+1; });
-      });
-
-      var html = '<div style="text-align:center;padding:1rem 0 .5rem;">'+
-        '<div class="radar-score-ring" style="margin:0 auto;border-color:'+radarScoreColor(score)+';width:100px;height:100px;">'+
-          '<span style="font-size:1.8rem;font-weight:800;color:'+radarScoreColor(score)+';">'+score+'</span>'+
-          '<span style="font-size:.65rem;color:var(--text-dim);">/ 100</span>'+
-        '</div>'+
-        '<div style="margin-top:.8rem;"><span class="radar-badge '+rating.cls+'" style="font-size:.85rem;padding:.3rem .9rem;">'+rating.label+'</span></div>'+
-        '<div style="font-size:.75rem;color:var(--text-dim);margin-top:.4rem;">Your rating for '+new Date(my.y,my.m-1,1).toLocaleString('default',{month:'long'})+' '+my.y+'</div>'+
-      '</div>';
-
-      if(rows && rows.length){
-        html += '<div style="margin-top:1rem;border-top:1px solid var(--navy-border);padding-top:.9rem;">'+
-          '<div style="font-size:.72rem;font-weight:700;color:var(--text-muted);letter-spacing:.08em;margin-bottom:.6rem;">ENTRIES THIS MONTH ('+rows.length+')</div>'+
-          '<div style="display:flex;flex-wrap:wrap;gap:.4rem;">';
-        Object.keys(flagCounts).forEach(function(f){
-          var def = RADAR_FLAGS[f];
-          if(!def) return;
-          html += '<div style="background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:20px;padding:.25rem .7rem;font-size:.74rem;color:var(--text-muted);">'+
-            esc(def.label)+' <span style="font-weight:700;color:var(--text-primary);">×'+flagCounts[f]+'</span></div>';
-        });
-        html += '</div>'+
-          '<div style="margin-top:.8rem;font-size:.75rem;color:var(--text-dim);font-style:italic;">Details will be discussed in your 1:1 session.</div>'+
-        '</div>';
-      } else {
-        html += '<div style="text-align:center;font-size:.8rem;color:#2ec56f;margin-top:.8rem;">✓ No entries logged this month. Keep it up!</div>';
-      }
-      card.innerHTML = html;
-    }catch(e){
-      card.innerHTML = '<div style="color:#ef493c;font-size:.82rem;">Error: '+esc(e.message)+'</div>';
-    }
-  };
-
-  // ── Control Deck toggle ──
-  window.cdRadarToggle = async function(val){
-    var msgEl = document.getElementById('cd-radar-msg');
-    var statEl= document.getElementById('cd-radar-status');
-    try{
-      var ex = await sbQuery('settings','key=eq.radar_enabled&select=key');
-      if(ex && ex.length){ await sbUpdate('settings','key','radar_enabled',{value:val?'true':'false'}); }
-      else { await sbInsert('settings',{key:'radar_enabled',value:val?'true':'false'}); }
-      window._radarEnabled = val;
-      if(statEl) statEl.textContent = val ? 'Enabled' : 'Disabled';
-      if(msgEl){ msgEl.textContent = val ? '✓ K7 Radar enabled.' : '✓ K7 Radar disabled.'; msgEl.style.display=''; setTimeout(function(){msgEl.style.display='none';},2500); }
-      radarUpdateSidebarVisibility();
-    }catch(e){
-      if(msgEl){ msgEl.textContent='Error: '+e.message; msgEl.style.display=''; }
-    }
-  };
-
-  async function radarLoadCdToggleState(){
-    try{
-      var rows = await sbQuery('settings','key=eq.radar_enabled&select=value');
-      var enabled = rows && rows[0] && rows[0].value === 'true';
-      window._radarEnabled = enabled;
-      var tog  = document.getElementById('cd-radar-toggle');
-      var stat = document.getElementById('cd-radar-status');
-      if(tog)  tog.checked = enabled;
-      if(stat) stat.textContent = enabled ? 'Enabled' : 'Disabled';
-      radarUpdateSidebarVisibility();
-    }catch(e){ console.warn('K7 Radar: cd toggle state error',e); }
-  }
-
-  function radarUpdateSidebarVisibility(){
-    var sidebarItem = document.getElementById('sidebar-radar');
-    if(!sidebarItem) return;
-    var show = radarIsEnabled();
-    sidebarItem.style.display = show ? 'flex' : 'none';
-  }
-
-  // ── showPage hook ──
-  (function(){
-    var _sp = showPage;
-    showPage = function(id, elem){
-      if(id === 'radar' && !radarIsEnabled()){
-        _sp('home', document.querySelector('.sidebar-item'));
-        return;
-      }
-      _sp(id, elem);
-      if(id === 'radar') radarInitPage();
-    };
-  })();
-
-  function radarInitPage(){
-    radarInitMonthFilter();
-    radarInitChips();
-    radarLoadAgents();
-    // Show/hide tabs based on role
-    var logTab    = document.getElementById('radar-tab-log');
-    var reportTab = document.getElementById('radar-tab-report');
-    var dataTab   = document.getElementById('radar-tab-data');
-    var logPanel  = document.getElementById('radar-panel-log');
-    var isAdmin   = typeof isAdminUser === 'function' && isAdminUser();
-    if(logTab)    logTab.style.display    = isAdmin ? '' : 'none';
-    if(reportTab) reportTab.style.display = isAdmin ? '' : 'none';
-    if(dataTab)   dataTab.style.display   = isAdmin ? '' : 'none';
-    if(logPanel)  logPanel.style.display  = isAdmin ? '' : 'none';
-    if(!isAdmin){
-      radarTab('mine');
-      if(document.getElementById('radar-tab-mine')) document.getElementById('radar-tab-mine').classList.add('active');
-    }
-    radarUpdateDeductionPreview();
-  }
-
-  // ── Data tab month dropdowns ──
-  function radarInitDataDropdowns(){
-    var now = new Date();
-    var html = '';
-    for(var i = 0; i < 12; i++){
-      var d = new Date(now.getFullYear(), now.getMonth() - i, 1);
-      var m = d.getMonth()+1;
-      var y = d.getFullYear();
-      var label = d.toLocaleString('default',{month:'long'})+' '+y;
-      html += '<option value="'+m+'-'+y+'">'+label+'</option>';
-    }
-    var expSel = document.getElementById('radar-export-month');
-    var delSel = document.getElementById('radar-delete-month');
-    if(expSel) expSel.innerHTML = html;
-    if(delSel) delSel.innerHTML = html;
-  }
-
-  function radarInitDataTab(){
-    radarInitDataDropdowns();
-    radarLoadStorageSummary();
-  }
-
-  // ── Fetch all rows helper ──
-  async function radarFetchRows(extraFilter){
-    var filter = 'order=created_at.desc';
-    if(extraFilter) filter = extraFilter + '&' + filter;
-    var rows = await sbQuery('l1_radar_log', filter + '&select=id,created_at,month,year,agent_id,agent_name,logged_by_id,logged_by_name,ticket_id,flags,deduction,notes');
-    return rows || [];
-  }
-
-  // ── Compute per-agent monthly scores for export ──
-  function radarComputeScores(rows){
-    // key: agentId-month-year → totalDed
-    var map = {};
-    rows.forEach(function(r){
-      var key = r.agent_id+'-'+r.month+'-'+r.year;
-      if(!map[key]) map[key] = 0;
-      map[key] += (r.deduction||0);
-    });
-    return map;
-  }
-
-  // ── Build Excel via SheetJS ──
-  function radarBuildExcel(rows, filename){
-    if(!rows.length){ return false; }
-    var scoreMap = radarComputeScores(rows);
-
-    var headers = [
-      'Entry ID','Date & Time','Month','Year',
-      'Agent Name','Agent ID',
-      'Ticket ID',
-      'Flags',
-      'Total Deduction (pts)',
-      'Notes',
-      'Logged By','Logged By ID',
-      'Agent Monthly Score','Agent Monthly Rating'
-    ];
-
-    var data = [headers];
-    rows.forEach(function(r){
-      var flagsArr = [];
-      if(Array.isArray(r.flags)) flagsArr = r.flags;
-      else if(typeof r.flags === 'string') flagsArr = r.flags.replace(/[{}"]/g,'').split(',').filter(Boolean);
-      var flagLabels = flagsArr.map(function(f){ return RADAR_FLAGS[f] ? RADAR_FLAGS[f].label : f; }).join(', ');
-      var key = r.agent_id+'-'+r.month+'-'+r.year;
-      var monthScore = Math.max(0, 100 + (scoreMap[key]||0));
-      var rating = radarRating(monthScore);
-      var dateStr = r.created_at ? new Date(r.created_at).toLocaleString('en-IN') : '';
-      data.push([
-        r.id||'',
-        dateStr,
-        r.month||'',
-        r.year||'',
-        r.agent_name||'',
-        r.agent_id||'',
-        r.ticket_id||'',
-        flagLabels,
-        r.deduction||0,
-        r.notes||'',
-        r.logged_by_name||'',
-        r.logged_by_id||'',
-        monthScore,
-        rating.label.replace(/[⭐👍⚠️❌]/g,'').trim()
-      ]);
-    });
-
-    // Use SheetJS if available, else CSV fallback
-    if(typeof XLSX !== 'undefined'){
-      var wb = XLSX.utils.book_new();
-      var ws = XLSX.utils.aoa_to_sheet(data);
-      // Column widths
-      ws['!cols'] = [
-        {wch:36},{wch:20},{wch:8},{wch:6},
-        {wch:18},{wch:36},
-        {wch:14},{wch:60},{wch:12},
-        {wch:30},{wch:18},{wch:36},
-        {wch:14},{wch:18}
-      ];
-      XLSX.utils.book_append_sheet(wb, ws, 'K7 Radar');
-      XLSX.writeFile(wb, filename+'.xlsx');
-    } else {
-      // CSV fallback
-      var csv = data.map(function(row){
-        return row.map(function(cell){
-          var s = String(cell||'').replace(/"/g,'""');
-          return '"'+s+'"';
-        }).join(',');
-      }).join('\n');
-      var blob = new Blob([csv], {type:'text/csv'});
-      var a = document.createElement('a');
-      a.href = URL.createObjectURL(blob);
-      a.download = filename+'.csv';
-      a.click();
-    }
-    return true;
-  }
-
-  // ── Export month ──
-  window.radarExportMonth = async function(){
-    var sel = document.getElementById('radar-export-month');
-    var msg = document.getElementById('radar-export-msg');
-    if(!sel) return;
-    var parts = sel.value.split('-');
-    var m = parseInt(parts[0]), y = parseInt(parts[1]);
-    var label = sel.options[sel.selectedIndex].text;
-    msg.textContent = 'Fetching data…'; msg.style.color='var(--text-muted)'; msg.style.display='';
-    try{
-      // Load SheetJS if not loaded
-      await radarEnsureXLSX();
-      var rows = await radarFetchRows('month=eq.'+m+'&year=eq.'+y);
-      if(!rows.length){ msg.textContent='No entries found for '+label+'.'; msg.style.color='#ef493c'; return; }
-      var ok = radarBuildExcel(rows, 'K7_Radar_'+label.replace(' ','_'));
-      if(ok){ msg.textContent='✓ Downloaded '+rows.length+' entries for '+label+'.'; msg.style.color='#2ec56f'; }
-    }catch(e){ msg.textContent='Error: '+e.message; msg.style.color='#ef493c'; }
-    setTimeout(function(){ msg.style.display='none'; }, 4000);
-  };
-
-  // ── Export all ──
-  window.radarExportAll = async function(){
-    var msg = document.getElementById('radar-export-msg');
-    msg.textContent = 'Fetching all data…'; msg.style.color='var(--text-muted)'; msg.style.display='';
-    try{
-      await radarEnsureXLSX();
-      var rows = await radarFetchRows(null);
-      if(!rows.length){ msg.textContent='No entries found.'; msg.style.color='#ef493c'; return; }
-      var ok = radarBuildExcel(rows, 'K7_Radar_Full_Backup_'+new Date().toISOString().slice(0,10));
-      if(ok){ msg.textContent='✓ Downloaded all '+rows.length+' entries.'; msg.style.color='#2ec56f'; }
-    }catch(e){ msg.textContent='Error: '+e.message; msg.style.color='#ef493c'; }
-    setTimeout(function(){ msg.style.display='none'; }, 4000);
-  };
-
-  // ── Delete month ──
-  window.radarDeleteMonth = async function(){
-    var sel = document.getElementById('radar-delete-month');
-    var msg = document.getElementById('radar-delete-msg');
-    if(!sel) return;
-    var parts = sel.value.split('-');
-    var m = parseInt(parts[0]), y = parseInt(parts[1]);
-    var label = sel.options[sel.selectedIndex].text;
-    if(!confirm('Delete ALL K7 Radar entries for '+label+'?\n\nThis cannot be undone. Make sure you have downloaded a backup first.')) return;
-    msg.textContent = 'Deleting…'; msg.style.color='var(--text-muted)'; msg.style.display='';
-    try{
-      var r = await fetch(SUPABASE_URL+'/rest/v1/l1_radar_log?month=eq.'+m+'&year=eq.'+y,
-        {method:'DELETE', headers:sbHeaders({})});
-      if(!r.ok){ var t=await r.text(); throw new Error(t); }
-      msg.textContent='✓ All entries for '+label+' deleted.'; msg.style.color='#2ec56f';
-      radarLoadStorageSummary();
-    }catch(e){ msg.textContent='Error: '+e.message; msg.style.color='#ef493c'; }
-    setTimeout(function(){ msg.style.display='none'; }, 4000);
-  };
-
-  // ── Delete all ──
-  window.radarDeleteAll = async function(){
-    var msg = document.getElementById('radar-delete-msg');
-    if(!confirm('⚠️ DELETE ALL K7 Radar records?\n\nThis will permanently remove every entry across all months and cannot be undone.\n\nAre you absolutely sure?')) return;
-    msg.textContent = 'Deleting all records…'; msg.style.color='var(--text-muted)'; msg.style.display='';
-    try{
-      var r = await fetch(SUPABASE_URL+'/rest/v1/l1_radar_log?id=neq.00000000-0000-0000-0000-000000000000',
-        {method:'DELETE', headers:sbHeaders({})});
-      if(!r.ok){ var t=await r.text(); throw new Error(t); }
-      msg.textContent='✓ All K7 Radar records deleted.'; msg.style.color='#2ec56f';
-      radarLoadStorageSummary();
-    }catch(e){ msg.textContent='Error: '+e.message; msg.style.color='#ef493c'; }
-    setTimeout(function(){ msg.style.display='none'; }, 4000);
-  };
-
-  // ── Storage Summary ──
-  window.radarLoadStorageSummary = async function(){
-    var wrap = document.getElementById('radar-storage-summary');
-    if(!wrap) return;
-    wrap.innerHTML = '<div style="color:var(--text-dim);font-size:.82rem;">Loading…</div>';
-    try{
-      var rows = await sbQuery('l1_radar_log','select=month,year');
-      if(!rows||!rows.length){ wrap.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;">No records found.</div>'; return; }
-      // Group by month-year
-      var counts = {};
-      rows.forEach(function(r){
-        var key = r.year+'-'+(r.month<10?'0':'')+r.month;
-        var label = new Date(r.year, r.month-1, 1).toLocaleString('default',{month:'long'})+' '+r.year;
-        if(!counts[key]) counts[key] = {label:label, count:0};
-        counts[key].count++;
-      });
-      var keys = Object.keys(counts).sort().reverse();
-      var html = '<table class="radar-table"><thead><tr><th>Month</th><th>Entries</th><th>Actions</th></tr></thead><tbody>';
-      keys.forEach(function(k){
-        var c = counts[k];
-        var parts = k.split('-');
-        var y = parts[0], m = parseInt(parts[1]);
-        html += '<tr>'+
-          '<td style="font-weight:600;">'+esc(c.label)+'</td>'+
-          '<td>'+c.count+' entries</td>'+
-          '<td><button class="cd-btn-sec" style="font-size:.72rem;padding:.22rem .6rem;" onclick="radarQuickExport('+m+','+y+',\''+esc(c.label)+'\')">⬇️ Export</button> '+
-          '<button class="cd-btn-danger" style="font-size:.72rem;padding:.22rem .6rem;" onclick="radarQuickDelete('+m+','+y+',\''+esc(c.label)+'\')">🗑️ Delete</button></td>'+
-          '</tr>';
-      });
-      html += '</tbody></table>';
-      html += '<div style="margin-top:.6rem;font-size:.75rem;color:var(--text-dim);">Total: <strong style="color:var(--text-primary);">'+rows.length+' entries</strong> across '+keys.length+' month(s)</div>';
-      wrap.innerHTML = html;
-    }catch(e){
-      wrap.innerHTML='<div style="color:#ef493c;font-size:.82rem;">Error: '+esc(e.message)+'</div>';
-    }
-  };
-
-  // ── Quick export from summary table ──
-  window.radarQuickExport = async function(m, y, label){
-    var msg = document.getElementById('radar-delete-msg');
-    msg.textContent='Fetching…'; msg.style.color='var(--text-muted)'; msg.style.display='';
-    try{
-      await radarEnsureXLSX();
-      var rows = await radarFetchRows('month=eq.'+m+'&year=eq.'+y);
-      radarBuildExcel(rows, 'K7_Radar_'+label.replace(' ','_'));
-      msg.textContent='✓ Exported '+rows.length+' entries for '+label; msg.style.color='#2ec56f';
-    }catch(e){ msg.textContent='Error: '+e.message; msg.style.color='#ef493c'; }
-    setTimeout(function(){ msg.style.display='none'; },3500);
-  };
-
-  // ── Quick delete from summary table ──
-  window.radarQuickDelete = async function(m, y, label){
-    var msg = document.getElementById('radar-delete-msg');
-    if(!confirm('Delete all entries for '+label+'? Cannot be undone.')) return;
-    msg.textContent='Deleting…'; msg.style.color='var(--text-muted)'; msg.style.display='';
-    try{
-      var r = await fetch(SUPABASE_URL+'/rest/v1/l1_radar_log?month=eq.'+m+'&year=eq.'+y,
-        {method:'DELETE',headers:sbHeaders({})});
-      if(!r.ok){ var t=await r.text(); throw new Error(t); }
-      msg.textContent='✓ Entries for '+label+' deleted.'; msg.style.color='#2ec56f';
-      radarLoadStorageSummary();
-    }catch(e){ msg.textContent='Error: '+e.message; msg.style.color='#ef493c'; }
-    setTimeout(function(){ msg.style.display='none'; },3500);
-  };
-
-  // ── Lazy load SheetJS ──
-  function radarEnsureXLSX(){
-    return new Promise(function(resolve, reject){
-      if(typeof XLSX !== 'undefined'){ resolve(); return; }
-      var s = document.createElement('script');
-      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
-      s.onload = resolve;
-      s.onerror = function(){ reject(new Error('Failed to load Excel library. Check your internet connection.')); };
-      document.head.appendChild(s);
-    });
-  }
-
-  // ── sbUpsert helper (if not already defined) ──
-  if(typeof sbUpsert === 'undefined'){
-    window.sbUpsert = async function(table, data, onConflict){
-      var url = SUPABASE_URL+'/rest/v1/'+table+(onConflict?'?on_conflict='+onConflict:'');
-      var r = await fetch(url,{method:'POST',headers:sbHeaders({'Content-Type':'application/json','Prefer':'resolution=merge-duplicates,return=representation'}),body:JSON.stringify(data)});
-      if(!r.ok){ var t=await r.text(); throw new Error(t); }
-      return r.json();
-    };
-  }
-
-  // ── Init on load ──
-  document.addEventListener('DOMContentLoaded', function(){
-    setTimeout(radarLoadCdToggleState, 1200);
-  });
-
-  // Expose functions to window so they can be called from outside this IIFE
-  window.radarIsEnabled = radarIsEnabled;
-  window.radarUpdateSidebarVisibility = radarUpdateSidebarVisibility;
-
-})();
 
 function siStatBadge(val,label,color){
   return '<div style="background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:8px;padding:.5rem .9rem;min-width:90px;">'+
