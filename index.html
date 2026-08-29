@@ -5873,7 +5873,7 @@ function _inactForceLogout(){
     document.getElementById('dashboard-view').classList.remove('active');
     document.getElementById('login-view').classList.add('active');
     var bb = document.getElementById('break-bar'); if(bb) bb.style.display = 'none';
-    var tbw = document.getElementById('tb-break-wrap'); if(tbw) tbw.style.display = 'none';
+    var tbw = document.getElementById('tb-break-wrap'); if(tbw) tbw.style.display = 'none'; if(typeof tbBreakClose==='function') tbBreakClose();
     var ab = document.getElementById('attendance-badge'); if(ab) ab.style.display = 'none';
     var wdt = document.getElementById('work-done-toast'); if(wdt) wdt.remove();
     document.getElementById('username').value = '';
@@ -5964,7 +5964,7 @@ async function doLogout(){
   document.getElementById('dashboard-view').classList.remove('active');
   document.getElementById('login-view').classList.add('active');
   var bb=document.getElementById('break-bar');if(bb)bb.style.display='none';
-  var tbw=document.getElementById('tb-break-wrap');if(tbw)tbw.style.display='none';
+  var tbw=document.getElementById('tb-break-wrap');if(tbw)tbw.style.display='none';if(typeof tbBreakClose==='function')tbBreakClose();
   var ab=document.getElementById('attendance-badge');if(ab)ab.style.display='none';
   // Remove the "Work Session Complete" toast if it's still showing (e.g. user
   // logs out within its 12s auto-dismiss window) — it's appended straight to
@@ -7182,7 +7182,7 @@ async function bbGoToLogin(){
   document.getElementById('dashboard-view').classList.remove('active');
   document.getElementById('login-view').classList.add('active');
   var bb=document.getElementById('break-bar');if(bb)bb.style.display='none';
-  var tbw=document.getElementById('tb-break-wrap');if(tbw)tbw.style.display='none';
+  var tbw=document.getElementById('tb-break-wrap');if(tbw)tbw.style.display='none';if(typeof tbBreakClose==='function')tbBreakClose();
   var ab=document.getElementById('attendance-badge');if(ab)ab.style.display='none';
   var wdt=document.getElementById('work-done-toast');if(wdt)wdt.remove();
   document.getElementById('username').value='';
@@ -7331,6 +7331,28 @@ const BREAK_EMOJIS = { breakfast:'🍳', lunch:'🍽️', beverage:'☕', shortb
 var _breakState = {}; // { type: { start, elapsed, done, interval } }
 
 // ── Topbar break button functions ──
+function tbBreakEnsurePortal(){
+  // .topbar (an ancestor several levels up) uses backdrop-filter, which
+  // per spec makes it a new "containing block" for position:fixed
+  // descendants — so a fixed element left inside it doesn't actually
+  // anchor to the viewport, it anchors to .topbar instead, which drags
+  // .topbar-right's overflow-x:auto clipping back into play. Moving the
+  // menu to be a direct child of <body> (a "portal", same trick libraries
+  // like Radix/Popper use) takes it out from under any filtered/
+  // backdrop-filtered ancestor for good.
+  var menu=document.getElementById('tb-break-menu');
+  if(menu && menu.parentElement !== document.body){
+    document.body.appendChild(menu);
+  }
+}
+function tbBreakClose(){
+  var menu=document.getElementById('tb-break-menu');
+  var btn=document.getElementById('tb-break-btn');
+  if(menu)menu.classList.remove('open');
+  if(btn)btn.classList.remove('open');
+  window.removeEventListener('resize',tbBreakPositionMenu);
+  window.removeEventListener('scroll',tbBreakPositionMenu,true);
+}
 function tbBreakPositionMenu(){
   // Menu is position:fixed, so it's positioned relative to the viewport,
   // not the scrolling .topbar-right wrap — this is what keeps it from
@@ -7361,15 +7383,13 @@ function tbBreakPositionMenu(){
 }
 function tbBreakToggle(e){
   if(e) e.stopPropagation();
+  tbBreakEnsurePortal();
   var btn=document.getElementById('tb-break-btn');
   var menu=document.getElementById('tb-break-menu');
   if(!btn||!menu)return;
   var isOpen=menu.classList.contains('open');
   if(isOpen){
-    menu.classList.remove('open');
-    btn.classList.remove('open');
-    window.removeEventListener('resize',tbBreakPositionMenu);
-    window.removeEventListener('scroll',tbBreakPositionMenu,true);
+    tbBreakClose();
   } else {
     // Show first (off-screen-safe defaults) so offsetWidth/Height are
     // measurable, then position it, then reveal.
@@ -7383,10 +7403,7 @@ function tbBreakToggle(e){
       document.addEventListener('click',function closeTbMenu(ev){
         var wrap=document.getElementById('tb-break-wrap');
         if((wrap&&!wrap.contains(ev.target))&&!menu.contains(ev.target)){
-          menu.classList.remove('open');
-          btn.classList.remove('open');
-          window.removeEventListener('resize',tbBreakPositionMenu);
-          window.removeEventListener('scroll',tbBreakPositionMenu,true);
+          tbBreakClose();
         }
         document.removeEventListener('click',closeTbMenu);
       });
