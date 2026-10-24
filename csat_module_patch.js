@@ -22,6 +22,9 @@ var _SCORE_MAP = {
   'excellent':5, 'very good':4, 'good':3, 'poor':2, 'very poor':1
 };
 
+// Agents we track tag-1 against for the Live Chat report
+var CSAT_CHAT_AGENTS = ['Monika','Saranya','Diwan','Faridha','Praveen','Althaf','Abeed'];
+
 function csatToScore(v) {
   if (!v||String(v).trim()==='') return null;
   var s=String(v).trim().toLowerCase();
@@ -153,9 +156,119 @@ function csatEmptyPanel(tab, canUpload) {
 }
 
 // ─────────────────────────────────────────────────────────
+// BUILD LIVE CHAT PANEL — single-score-per-chat layout
+// (Name + Average table, plus a Poor/Very-Poor review list with conferenceId)
+// ─────────────────────────────────────────────────────────
+function csatBuildChatPanel(tab, data, canUpload) {
+  var rows=data.rows, uploadTime=data.uploadTime;
+  var isAdmin=currentUser&&(currentUser.role==='admin'||currentUser.role==='tl');
+  var myName=currentUser?currentUser.name.toLowerCase():'';
+  var showDsat=isAdmin||CSAT_SETTINGS.dsatVisible!==false;
+
+  // Group by agent
+  var agentMap={};
+  rows.forEach(function(r){ var k=r.agent||'Unknown'; if(!agentMap[k]) agentMap[k]=[]; agentMap[k].push(r); });
+  var agentData=Object.keys(agentMap).map(function(name){
+    var tix=agentMap[name];
+    var scores=tix.map(function(t){return t.score;});
+    var avg=scores.length>0?scores.reduce(function(a,b){return a+b;},0)/scores.length:null;
+    return {name:name, rows:tix, avg:avg, count:tix.length};
+  });
+
+  // Sort by average descending (highest first)
+  agentData.sort(function(a,b){
+    var avgA=a.avg!==null?a.avg:-1, avgB=b.avg!==null?b.avg:-1;
+    if (avgB!==avgA) return avgB-avgA;
+    return a.name.localeCompare(b.name);
+  });
+
+  // Stats
+  var allScores=rows.map(function(r){return r.score;});
+  var overallAvg=allScores.length>0?allScores.reduce(function(a,b){return a+b;},0)/allScores.length:0;
+  var csatPct=allScores.length>0?Math.round((allScores.filter(function(s){return s>=4;}).length/allScores.length)*100):0;
+  var poorRows=rows.filter(function(r){return r.score<=2;});
+
+  var html='';
+
+  // Upload strip
+  if (canUpload) {
+    html+=`<div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.6rem;margin-bottom:.75rem;">
+      <div class="csat-upload-badge">🟢 Last uploaded: ${uploadTime}</div>
+      <div class="csat-upload-zone" id="csat-uz-${tab}" style="padding:.55rem 1rem;display:inline-flex;align-items:center;gap:.5rem;cursor:pointer;text-align:left;border-radius:var(--radius-sm);">
+        <input type="file" id="csat-fi-${tab}" accept=".xlsx,.xls,.csv"/>
+        <span style="font-size:.95rem;">📂</span>
+        <span style="font-size:.76rem;color:var(--text-muted);">Re-upload Live Chat Report</span>
+      </div>
+    </div>`;
+  } else {
+    html+=`<div style="margin-bottom:.75rem;"><div class="csat-upload-badge">🟢 Last updated: ${uploadTime}</div></div>`;
+  }
+
+  // Stats row
+  html+=`<div class="csat-stats" style="margin-bottom:1.2rem;">
+    <div class="csat-stat"><div class="csat-stat-label">Rated Chats</div><div class="csat-stat-val">${rows.length}</div></div>
+    <div class="csat-stat"><div class="csat-stat-label">Agents Covered</div><div class="csat-stat-val blue">${agentData.length}</div></div>
+    <div class="csat-stat"><div class="csat-stat-label">Overall Avg</div><div class="csat-stat-val ${overallAvg>=4?'green':overallAvg>=3?'gold':'red'}">${overallAvg.toFixed(2)}</div></div>
+    <div class="csat-stat"><div class="csat-stat-label">CSAT ≥4 Rate</div><div class="csat-stat-val green">${csatPct}%</div></div>
+    <div class="csat-stat"><div class="csat-stat-label">Needs Review</div><div class="csat-stat-val ${poorRows.length>0?'red':'green'}">${poorRows.length}</div></div>
+  </div>`;
+
+  // Needs review — Poor / Very Poor chats, with conferenceId
+  if (showDsat && poorRows.length>0) {
+    html+=`<div style="margin-bottom:1.2rem;">
+      <div class="section-title">⚠️ Poor / Very Poor Ratings — Review Needed</div>
+      <div style="display:flex;flex-direction:column;gap:.45rem;">
+        ${poorRows.map(function(r){return `
+          <div style="display:flex;align-items:center;gap:1rem;padding:.65rem 1rem;background:rgba(239,73,60,.07);border:1px solid rgba(239,73,60,.2);border-radius:var(--radius-sm);flex-wrap:wrap;">
+            <div style="font-weight:600;font-size:.875rem;min-width:90px;">${r.agent}</div>
+            <div style="font-family:monospace;font-size:.78rem;color:var(--accent-blue);font-weight:600;">${r.conferenceId||'—'}</div>
+            <div style="font-size:.78rem;color:var(--text-muted);flex:1;">${r.rating}</div>
+            <span class="cs-chip ${csatScoreCls(r.score)}">${r.score}</span>
+          </div>`;}).join('')}
+      </div>
+    </div>`;
+  }
+
+  // Agent average table
+  html+=`<div class="section-title">⭐ Agent Average Ratings — Live Chat</div>
+  <div class="csat-table-wrap">
+    <div class="csat-table-header">
+      <div>
+        <div style="font-size:.88rem;font-weight:600;color:var(--text-primary);">Post-chat survey — "How would you rate your overall experience with our chat support?"</div>
+        <div style="font-size:.72rem;color:var(--text-muted);margin-top:.15rem;">Excellent=5 · Very Good=4 · Good=3 · Poor=2 · Very Poor=1 · "not rated" rows excluded</div>
+      </div>
+      <div class="csat-filter-bar">
+        <input class="csat-filter-inp" placeholder="🔍 Filter agent..." oninput="csatFilter(this.value,'${tab}')"/>
+      </div>
+    </div>
+    <div class="csat-tbl-scroll">
+      <table class="csat-tbl" id="csat-tbl-${tab}" style="min-width:360px;">
+        <thead><tr><th style="min-width:160px;">Agent</th><th>Chats Rated</th><th>Average</th></tr></thead>
+        <tbody id="csat-tbody-${tab}">
+          ${agentData.map(function(a){
+            var isMe=a.name.toLowerCase()===myName;
+            var isDsatAgent=a.avg!==null&&a.avg<3&&showDsat;
+            var rowCls=(isDsatAgent?'csat-dsat-row ':'')+(isMe?'csat-my-row ':'');
+            return `<tr class="${rowCls}">
+              <td style="font-weight:600;">${a.name}${isMe?' <span style="font-size:.62rem;background:rgba(239,73,60,.15);color:var(--gold);padding:1px 7px;border-radius:10px;font-weight:700;margin-left:.35rem;">YOU</span>':''}</td>
+              <td style="text-align:center;">${a.count}</td>
+              <td style="text-align:center;"><span class="cs-avg ${csatAvgCls(a.avg)}">${a.avg!==null?a.avg.toFixed(2):'—'}</span></td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+
+  return html;
+}
+
+// ─────────────────────────────────────────────────────────
 // BUILD FULL PANEL
 // ─────────────────────────────────────────────────────────
 function csatBuildPanel(tab, data, canUpload, vhData) {
+  if (tab === 'chat') return csatBuildChatPanel(tab, data, canUpload);
+
   var rows=data.rows, uploadTime=data.uploadTime;
   var isAdmin=currentUser&&(currentUser.role==='admin'||currentUser.role==='tl');
   var myName=currentUser?currentUser.name.toLowerCase():'';
@@ -477,11 +590,16 @@ function csatReadFile(tab,file) {
 
       // Detect VH format: header row 1 contains INCIDENTHASH / OWNER / Respondent ID
       var isVH = all.length>0 && all[0].join('|').includes('INCIDENTHASH');
+      // Detect Live Chat export: header row contains conferenceId
+      var isLiveChat = all.length>0 && all[0].join('|').toLowerCase().indexOf('conferenceid')!==-1;
 
       var parsed;
       if (isVH) {
         // VH format: row 0=headers, row 1=type labels (skip), data from row 2
         parsed = csatParseVH(all);
+      } else if (isLiveChat) {
+        // Live Chat export: row 0=headers, data from row 1
+        parsed = csatParseLiveChat(all);
       } else {
         // Standard CRM format
         var hdr=-1;
@@ -502,7 +620,12 @@ function csatReadFile(tab,file) {
         }).filter(function(obj){return Object.values(obj).some(function(v){return String(v).trim()!=='';});});
         parsed=csatParseRows(jsonRows,tab);
       }
-      if (parsed.length===0){csatToast('⚠️ No valid records found. Check file format.');return;}
+      if (parsed.length===0){
+        csatToast(isLiveChat
+          ? '⚠️ No rated chats found for tracked agents (check rate/tag 1/post-chat columns).'
+          : '⚠️ No valid records found. Check file format.');
+        return;
+      }
 
       var now=new Date().toLocaleString('en-IN',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'});
       CSAT_DATA[tab]={rows:parsed,uploadTime:now,fileName:file.name};
@@ -548,6 +671,68 @@ function csatParseVH(all) {
   }
   return out;
 }
+
+// ─────────────────────────────────────────────────────────
+// PARSE LIVE CHAT EXPORT
+// Row 0 = headers (conferenceId, rate, tag 1, post chat: ...), Row 1+ = data
+//
+// Rules:
+//  - skip rows where "rate" = "not rated" (or blank)
+//  - skip rows where "tag 1" is not one of CSAT_CHAT_AGENTS
+//  - skip rows where the post-chat overall-experience answer is blank
+//  - map Excellent/Very Good/Good/Poor/Very Poor -> 5/4/3/2/1
+// ─────────────────────────────────────────────────────────
+function csatParseLiveChat(all) {
+  if (!all.length) return [];
+  var headers=all[0].map(function(h){return String(h||'').replace(/^\uFEFF/,'').trim().toLowerCase();});
+
+  function findCol(exactList, includesList) {
+    for (var i=0;i<headers.length;i++) {
+      if (exactList.indexOf(headers[i])!==-1) return i;
+    }
+    if (includesList) {
+      for (var i=0;i<headers.length;i++) {
+        for (var j=0;j<includesList.length;j++) {
+          if (headers[i].indexOf(includesList[j])!==-1) return i;
+        }
+      }
+    }
+    return -1;
+  }
+
+  var iConf = findCol(['conferenceid']);
+  var iRate = findCol(['rate']);
+  var iTag1 = findCol(['tag 1']);
+  var iPost = findCol(
+    ['post chat: how would you rate your overall experience with our chat support?'],
+    ['overall experience with our chat support']
+  );
+
+  var out=[];
+  for (var r=1;r<all.length;r++) {
+    var row=all[r];
+    if (!row || row.filter(function(c){return String(c||'').trim()!=='';}).length===0) continue;
+
+    var rate = String(iRate>=0 && row[iRate]!==undefined ? row[iRate] : '').trim().toLowerCase();
+    if (!rate || rate==='not rated') continue;
+
+    var tag1 = String(iTag1>=0 && row[iTag1]!==undefined ? row[iTag1] : '').trim();
+    var agentMatch=null;
+    for (var ai=0;ai<CSAT_CHAT_AGENTS.length;ai++) {
+      if (CSAT_CHAT_AGENTS[ai].toLowerCase()===tag1.toLowerCase()) { agentMatch=CSAT_CHAT_AGENTS[ai]; break; }
+    }
+    if (!agentMatch) continue;
+
+    var post = String(iPost>=0 && row[iPost]!==undefined ? row[iPost] : '').trim();
+    var score = csatToScore(post);
+    if (score===null) continue;
+
+    var conf = String(iConf>=0 && row[iConf]!==undefined ? row[iConf] : '').trim();
+    out.push({ agent:agentMatch, conferenceId:conf, rating:post, score:score, isChat:true });
+  }
+  return out;
+}
+
 
 function csatParseRows(jsonRows, tab) {
   var out=[];
@@ -781,21 +966,17 @@ function csatBuildEmailHTML() {
   var chatData = CSAT_DATA['chat'];
   if (chatData && chatData.rows && chatData.rows.length > 0) {
     html += '<p style="margin:20px 0 6px;"><strong>LIVE CHAT</strong></p>';
-    html += '<table style="border-collapse:collapse;width:100%;">';
-    html += '<tr><th style="' + TH + '">Names</th><th style="' + TH + '">Ticket id</th><th style="' + TH + '">Knowledge</th><th style="' + TH + '">Time taken</th><th style="' + TH + '">Understandability</th><th style="' + TH + '">Customer service</th><th style="' + TH + '">Comments</th><th style="' + TH + '">Average</th></tr>';
+
+    // Table 1 — Name + Average
+    html += '<table style="border-collapse:collapse;">';
+    html += '<tr><th style="' + TH + '" width="160">Name</th><th style="' + TH + '" width="90">Average</th></tr>';
     var chatMap={};
     chatData.rows.forEach(function(r){var k=r.agent||'Unknown';if(!chatMap[k])chatMap[k]=[];chatMap[k].push(r);});
     var chatList = Object.keys(chatMap).map(function(name){
       var tix=chatMap[name];
-      var aK=ca(tix.map(function(t){return t.scores.knowledge;}));
-      var aTT=ca(tix.map(function(t){return t.scores.timeTaken;}));
-      var aU=ca(tix.map(function(t){return t.scores.understandability;}));
-      var aCS=ca(tix.map(function(t){return t.scores.customerService;}));
-      var allV=[]; tix.forEach(function(t){[t.scores.knowledge,t.scores.timeTaken,t.scores.understandability,t.scores.customerService].forEach(function(s){if(s!==null)allV.push(s);});});
-      var avg=ca(allV.map(function(v){return v;}));
-      var tickets=tix.map(function(t){return t.ticket;}).filter(Boolean).join(', ');
-      var comments=tix.map(function(t){return t.comment;}).filter(function(c){return c&&c.trim()!=='';}).join(' | ');
-      return { name: name, aK: aK, aTT: aTT, aU: aU, aCS: aCS, avg: avg, tickets: tickets, comments: comments };
+      var scores=tix.map(function(t){return t.score;});
+      var avg=scores.length>0?+(scores.reduce(function(a,b){return a+b;},0)/scores.length).toFixed(2):null;
+      return { name: name, avg: avg, rows: tix };
     });
     chatList.sort(function(a, b) {
       var valA = a.avg !== null ? a.avg : -1;
@@ -805,9 +986,22 @@ function csatBuildEmailHTML() {
     });
     chatList.forEach(function(item,ni){
       var bg = ni%2===0 ? 'background:#f9f9f9;' : '';
-      html += '<tr style="' + bg + '"><td style="' + TDL + '">' + item.name + '</td><td style="' + TDTK + '">' + item.tickets + '</td><td style="' + TD + '">' + (item.aK||'—') + '</td><td style="' + TD + '">' + (item.aTT||'—') + '</td><td style="' + TD + '">' + (item.aU||'—') + '</td><td style="' + TD + '">' + (item.aCS||'—') + '</td><td style="' + TDCM + '">' + (item.comments||'—') + '</td>' + renderAvgCell(item.avg) + '</tr>';
+      html += '<tr style="' + bg + '"><td style="' + TDL + '">' + item.name + '</td>' + renderAvgCell(item.avg) + '</tr>';
     });
     html += '</table><br/>';
+
+    // Table 2 — Poor / Very Poor chats needing review (Name + Chat id + Analysis to fill in)
+    var poorRows=[];
+    chatData.rows.forEach(function(r){ if (r.score<=2) poorRows.push(r); });
+    if (poorRows.length>0) {
+      html += '<table style="border-collapse:collapse;">';
+      html += '<tr><th style="' + TH + '" width="120">Name</th><th style="' + TH + '" width="120">Chat id</th><th style="' + TH + '" width="320">Analysis</th></tr>';
+      poorRows.forEach(function(r,ni){
+        var bg = ni%2===0 ? 'background:#f9f9f9;' : '';
+        html += '<tr style="' + bg + '"><td style="' + TDL + '">' + r.agent + '</td><td style="' + TDL + '">' + (r.conferenceId||'—') + '</td><td style="padding:7px 11px;text-align:left;font-family:Arial,sans-serif;font-size:13px;border:1px solid #d0d0d0;white-space:normal;">&nbsp;</td></tr>';
+      });
+      html += '</table><br/>';
+    }
   }
 
   html += '<p style="color:#666;font-size:12px;margin-top:16px;">Generated by K7TeamCore &nbsp;·&nbsp; ' + (currentUser?currentUser.name:'—') + '</p>';
