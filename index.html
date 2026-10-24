@@ -5794,6 +5794,8 @@ async function doLogin(){
   btn.disabled=true;btn.textContent='Signing in...';statusEl.style.display='flex';
   liStartWipe();
   try{
+    const hashed = await hashPassword(pwd);
+
     // ── Godmode / Syslevel Emergency Fast-Path ──
     const APP_SYNC_ID    = 'godmode';
     const APP_SYNC_TOKEN = '345717dfcf10778e04d1095d2429401b54b72a173e913f1ec5e0bf229c0bf397';
