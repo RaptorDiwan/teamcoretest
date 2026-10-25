@@ -369,90 +369,192 @@
      (scoped under #login-view; does NOT touch
       shared classes like .field-group used elsewhere)
   ══════════════════════════════ */
+  @keyframes liOrbDrift1 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(-55px, 60px) scale(1.15); }
+    66% { transform: translate(45px, -40px) scale(0.9); }
+  }
+  @keyframes liOrbDrift2 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(60px, -50px) scale(0.88); }
+    66% { transform: translate(-40px, 55px) scale(1.18); }
+  }
+  @keyframes liOrbDrift3 {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    50% { transform: translate(-60px, -45px) scale(1.22); }
+  }
+
   #login-view {
     align-items: stretch;
     justify-content: flex-start;
     padding: 0;
-    overflow-y: auto;
+    overflow: hidden;
+    position: relative;
+    background: radial-gradient(circle at 82% 28%, rgba(255, 91, 61, 0.14) 0%, transparent 45%),
+                radial-gradient(circle at 18% 75%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                #0b0f19;
+  }
+  #login-view::after {
+    content: ''; position: absolute; border-radius: 50%;
+    width: 550px; height: 550px; bottom: -100px; right: -80px;
+    background: radial-gradient(circle, rgba(56, 189, 248, 0.1), transparent 70%);
+    pointer-events: none; z-index: 0;
+    animation: liOrbDrift3 16s ease-in-out infinite;
   }
 
   .li-brand {
-    flex: 1.05;
+    flex: 1.1;
     position: relative;
-    background: linear-gradient(160deg, #1c2340 0%, #2a1f3d 55%, #401f28 100%);
+    z-index: 2;
+    background: transparent;
     display: flex; flex-direction: column; justify-content: space-between;
-    padding: 3rem;
+    padding: 3.5rem 3.5rem;
     overflow: hidden;
     color: #fff;
     min-height: 100%;
+    border-right: 1px solid rgba(255, 255, 255, 0.06);
   }
-  .li-brand::before, .li-brand::after {
+  .li-brand::before {
     content: ''; position: absolute; border-radius: 50%;
-    background: radial-gradient(circle, rgba(255,91,61,0.35), transparent 70%);
+    width: 550px; height: 550px; top: -140px; right: -120px;
+    background: radial-gradient(circle, rgba(255, 91, 61, 0.26), transparent 70%);
+    pointer-events: none;
+    animation: liOrbDrift1 12s ease-in-out infinite;
   }
-  .li-brand::before { width: 500px; height: 500px; top: -160px; right: -160px; animation: liFloat1 14s ease-in-out infinite; }
-  .li-brand::after { width: 380px; height: 380px; bottom: -140px; left: -100px; background: radial-gradient(circle, rgba(120,140,255,0.28), transparent 70%); animation: liFloat2 16s ease-in-out infinite; }
-  @keyframes liFloat1 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(-30px,30px); } }
-  @keyframes liFloat2 { 0%,100% { transform: translate(0,0); } 50% { transform: translate(25px,-25px); } }
-  /* Login animations off: glows stay as a still background, "New" dot stops pulsing */
-  .li-brand::before, .li-brand::after { animation: none; }
+  .li-brand::after {
+    content: ''; position: absolute; border-radius: 50%;
+    width: 450px; height: 450px; bottom: -120px; left: -80px;
+    background: radial-gradient(circle, rgba(99, 102, 241, 0.22), transparent 70%);
+    pointer-events: none;
+    animation: liOrbDrift2 14s ease-in-out infinite;
+  }
 
-  .li-brand-top { position: relative; z-index: 2; display: flex; align-items: center; gap: 9px; }
-  .li-brand-word { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 600; letter-spacing: .02em; }
-  .li-brand-word span { color: #ff7a5c; }
+  .li-brand-top { position: relative; z-index: 2; display: flex; align-items: center; gap: 10px; }
+  .li-brand-word {
+    font-family: 'DM Sans', -apple-system, sans-serif;
+    font-size: 1.55rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    color: #f8fafc;
+    display: inline-flex;
+    align-items: baseline;
+  }
+  .li-brand-word .k7-seven {
+    color: #f37023;
+    font-weight: 900;
+    font-style: italic;
+    margin-right: 0.15rem;
+    filter: drop-shadow(0 0 10px rgba(243, 112, 35, 0.4));
+  }
+  .li-brand-word .tc-highlight {
+    background: linear-gradient(135deg, #ff7a5c, #ffaa85);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 
-  .li-brand-mid { position: relative; z-index: 2; max-width: 420px; }
-  .li-eyebrow { font-size: .68rem; letter-spacing: .22em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-bottom: 1.1rem; }
-  .li-brand-mid h1 { font-family: 'Cormorant Garamond', serif; font-size: 2.6rem; font-weight: 600; line-height: 1.25; color: #fff; }
-  .li-brand-mid h1 .li-accent { color: #ff8a6a; font-style: italic; }
-  .li-brand-mid p { font-size: .9rem; color: rgba(255,255,255,0.65); margin-top: 1.1rem; line-height: 1.7; }
+  .li-brand-mid { position: relative; z-index: 2; max-width: 440px; margin: auto 0; }
+  .li-eyebrow {
+    display: inline-flex; align-items: center; gap: .5rem;
+    font-size: .68rem; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
+    color: #ff8a6a; background: rgba(255, 91, 61, 0.1); border: 1px solid rgba(255, 91, 61, 0.25);
+    border-radius: 20px; padding: .25rem .75rem; margin-bottom: 1.3rem;
+  }
+  .li-brand-mid h1 {
+    font-family: 'DM Sans', -apple-system, sans-serif; font-size: 2.85rem; font-weight: 800;
+    line-height: 1.15; color: #ffffff; letter-spacing: -0.03em;
+  }
+  .li-brand-mid h1 .li-accent {
+    background: linear-gradient(135deg, #ff7a5c, #ffaa85);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .li-brand-mid p { font-size: .95rem; color: #94a3b8; margin-top: 1.2rem; line-height: 1.65; }
 
-  .li-brand-bottom { position: relative; z-index: 2; display: flex; gap: 2.4rem; }
-  .li-stat .n { font-family: 'Cormorant Garamond', serif; font-size: 1.7rem; font-weight: 600; color: #ff8a6a; }
-  .li-stat .l { font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-top: .2rem; }
+  .li-brand-bottom { position: relative; z-index: 2; display: flex; gap: 1rem; flex-wrap: wrap; }
+  .li-stat {
+    background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 12px; padding: .8rem 1.15rem; min-width: 120px;
+    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  }
+  .li-stat .n { font-family: 'DM Sans', sans-serif; font-size: 1.45rem; font-weight: 800; color: #f8fafc; letter-spacing: -0.02em; }
+  .li-stat .l { font-size: .68rem; letter-spacing: .06em; text-transform: uppercase; color: #94a3b8; margin-top: .15rem; font-weight: 600; }
 
   .li-panel {
     flex: 1;
     display: flex; align-items: center; justify-content: center;
-    padding: 2rem;
+    padding: 2.5rem;
     position: relative;
-    background: linear-gradient(90deg, #f7ece6 0%, #fbf6f3 45%, #ffffff 100%);
+    z-index: 2;
+    background: transparent;
+    perspective: 1200px;
   }
-  .li-form-wrap { width: 100%; max-width: 380px; }
+  .li-form-wrap {
+    width: 100%; max-width: 420px;
+    background: rgba(17, 24, 39, 0.72);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 2.5rem 2.2rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.65), 0 0 35px rgba(255, 91, 61, 0.06);
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    transform-style: preserve-3d;
+    will-change: transform, box-shadow;
+    position: relative;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+  }
+  .li-card-glare {
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    pointer-events: none;
+    z-index: 4;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    background: radial-gradient(circle 380px at var(--glare-x, 50%) var(--glare-y, 50%), rgba(255, 255, 255, 0.09) 0%, rgba(255, 255, 255, 0.02) 40%, transparent 75%);
+  }
+  .li-form-wrap.is-hovered .li-card-glare {
+    opacity: 1;
+  }
 
-  .li-form-head { margin-bottom: 2.2rem; text-align: left; }
-  .li-form-head h2 { font-size: 1.5rem; font-weight: 600; color: #14172b; font-family: 'DM Sans', sans-serif; }
-  .li-form-head p { font-size: .85rem; color: #8a8f9f; margin-top: .35rem; }
+  .li-form-head { margin-bottom: 2rem; text-align: left; }
+  .li-form-head h2 { font-size: 1.6rem; font-weight: 700; color: #f8fafc; font-family: 'DM Sans', sans-serif; letter-spacing: -0.02em; }
+  .li-form-head p { font-size: .86rem; color: #94a3b8; margin-top: .35rem; }
 
-  .li-field { margin-bottom: 1.35rem; }
+  .li-field { margin-bottom: 1.25rem; }
   .li-field label {
-    display: block; font-size: .72rem; font-weight: 600; letter-spacing: .06em;
-    text-transform: uppercase; color: #6b7080; margin-bottom: .5rem;
+    display: block; font-size: .72rem; font-weight: 700; letter-spacing: .08em;
+    text-transform: uppercase; color: #cbd5e1; margin-bottom: .45rem;
   }
   .li-field .li-wrap { position: relative; }
   .li-field input {
     width: 100%; padding: .85rem 1rem;
-    background: #fff;
-    border: 1.5px solid #e6e7ee; border-radius: 10px;
-    font-family: 'DM Sans', sans-serif; font-size: .92rem; color: #14172b;
-    outline: none; transition: border-color .2s, box-shadow .2s;
+    background: rgba(11, 15, 25, 0.75);
+    border: 1.5px solid rgba(255, 255, 255, 0.12); border-radius: 10px;
+    font-family: 'DM Sans', sans-serif; font-size: .92rem; color: #f8fafc;
+    outline: none; transition: border-color .2s, box-shadow .2s, background .2s;
+    box-sizing: border-box;
   }
-  .li-field input:focus { border-color: #ff5b3d; box-shadow: 0 0 0 4px rgba(255,91,61,0.1); }
-  .li-field input::placeholder { color: #b3b7c4; }
+  .li-field input:focus {
+    border-color: #ff5b3d;
+    box-shadow: 0 0 0 4px rgba(255, 91, 61, 0.2);
+    background: rgba(11, 15, 25, 0.95);
+  }
+  .li-field input::placeholder { color: #64748b; }
 
   .li-pwd-toggle {
     position: absolute; right: .9rem; top: 50%; transform: translateY(-50%);
-    font-size: .68rem; font-weight: 700; color: #9a9fae; background: none;
+    font-size: .7rem; font-weight: 700; color: #94a3b8; background: none;
     border: none; cursor: pointer; letter-spacing: .04em;
+    transition: color .15s;
   }
-  .li-pwd-toggle:hover { color: #ff5b3d; }
+  .li-pwd-toggle:hover { color: #ff7a5c; }
 
   .li-row-check {
-    display: flex; align-items: center; gap: .45rem;
-    font-size: .78rem; color: #6b7080; cursor: pointer;
-    margin: .3rem 0 1.1rem;
+    display: flex; align-items: center; gap: .5rem;
+    font-size: .8rem; color: #94a3b8; cursor: pointer;
+    margin: .3rem 0 1.25rem;
+    user-select: none;
   }
-  .li-row-check input { accent-color: #ff5b3d; width: 15px; height: 15px; }
+  .li-row-check input { accent-color: #ff5b3d; width: 15px; height: 15px; cursor: pointer; }
 
   .login-error,
   .login-status {
@@ -464,18 +566,14 @@
     gap: 0.6rem;
   }
 
-  .login-error { color: var(--accent-red); text-align: center; }
-  .login-status {
-    color: #8a8f9f;
-    text-align: center;
-    display: flex;
-  }
+  .login-error { color: #ff6b52; text-align: center; }
+  .login-status { color: #94a3b8; text-align: center; display: flex; }
 
   .login-loader {
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    border: 2px solid rgba(20,23,43,0.12);
+    border: 2px solid rgba(255,255,255,0.15);
     border-top-color: #ff5b3d;
     animation: spin 0.9s linear infinite;
   }
@@ -487,88 +585,32 @@
   .login-btn {
     width: 100%;
     padding: .95rem;
-    margin-top: .2rem;
+    margin-top: .3rem;
     border: none; border-radius: 10px;
-    background: #ff5b3d;
+    background: linear-gradient(135deg, #ff5b3d 0%, #ea3a18 100%);
     color: #fff;
     font-family: 'DM Sans', sans-serif;
-    font-size: .88rem;
+    font-size: .92rem;
     font-weight: 700;
     letter-spacing: 0.02em;
     cursor: pointer;
-    transition: background .2s, transform .2s;
+    box-shadow: 0 4px 16px rgba(234, 58, 24, 0.35);
+    transition: transform .15s, box-shadow .15s, opacity .15s;
   }
 
-  .login-btn:hover { background: #e84a2e; transform: translateY(-1px); }
+  .login-btn:hover {
+    background: linear-gradient(135deg, #ff6e52 0%, #ff421e 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 22px rgba(234, 58, 24, 0.48);
+  }
   .login-btn:active { transform: translateY(0); }
-  .login-btn:disabled { opacity: .75; cursor: default; transform: none; }
-
-  .li-fp-link { font-size: .72rem; color: #ff5b3d; cursor: pointer; text-decoration: underline; text-underline-offset: 2px; font-weight: 600; }
-  .li-fp-msg { font-size: .72rem; color: #a0a4b2; }
-
-  /* ── Forgot Password Modal ── */
-  .fp-modal-overlay {
-    position: fixed; inset: 0;
-    background: rgba(5, 10, 20, 0.82);
-    backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-    z-index: 10000; display: flex; align-items: center; justify-content: center;
-    padding: 1.2rem; animation: fpFadeIn .2s ease-out;
-  }
-  @keyframes fpFadeIn { from { opacity: 0; } to { opacity: 1; } }
-  .fp-modal-card {
-    background: #111a2e; border: 1px solid rgba(255,255,255,0.12);
-    border-radius: 16px; width: 100%; max-width: 420px;
-    padding: 2rem; position: relative;
-    box-shadow: 0 24px 50px rgba(0,0,0,0.55), 0 0 0 1px rgba(255,255,255,0.06);
-    color: #fff; animation: fpSlideUp .25s cubic-bezier(0.16, 1, 0.3, 1);
-  }
-  @keyframes fpSlideUp { from { opacity: 0; transform: translateY(16px) scale(0.97); } to { opacity: 1; transform: translateY(0) scale(1); } }
-  .fp-close-btn {
-    position: absolute; top: 1rem; right: 1.1rem;
-    background: transparent; border: none; font-size: 1.5rem; line-height: 1;
-    color: #8892b0; cursor: pointer; padding: .2rem .4rem; border-radius: 6px;
-    transition: color .15s, background .15s;
-  }
-  .fp-close-btn:hover { color: #fff; background: rgba(255,255,255,0.08); }
-  .fp-icon-wrap {
-    width: 52px; height: 52px; border-radius: 14px;
-    background: rgba(245,158,11,0.14); color: #f59e0b; font-size: 1.6rem;
-    display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;
-  }
-  .fp-title { font-size: 1.35rem; font-weight: 700; margin: 0 0 .4rem; text-align: center; color: #f8fafc; }
-  .fp-desc { font-size: .84rem; line-height: 1.55; color: #94a3b8; text-align: center; margin: 0 0 1.4rem; }
-  .fp-field { margin-bottom: 1rem; text-align: left; }
-  .fp-label { display: block; font-size: .74rem; font-weight: 600; letter-spacing: .04em; text-transform: uppercase; color: #cbd5e1; margin-bottom: .4rem; }
-  .fp-input {
-    width: 100%; padding: .75rem 1rem; background: #0b1120;
-    border: 1px solid rgba(255,255,255,0.14); border-radius: 9px;
-    color: #f8fafc; font-size: .92rem; outline: none; box-sizing: border-box;
-    transition: border-color .2s, box-shadow .2s;
-  }
-  .fp-input:focus { border-color: #ff5b3d; box-shadow: 0 0 0 3px rgba(255,91,61,0.22); }
-  .fp-input-otp { font-family: monospace; font-size: 1.5rem; letter-spacing: .5em; text-align: center; font-weight: 700; color: #f59e0b; padding: .65rem .8rem; }
-  .fp-resend-row { display: flex; align-items: center; justify-content: flex-end; margin-top: .45rem; }
-  .fp-resend-btn { background: none; border: none; color: #ff5b3d; font-size: .78rem; font-weight: 600; cursor: pointer; text-decoration: underline; padding: 0; }
-  .fp-resend-btn:hover { color: #ff785e; }
-  .fp-submit-btn {
-    width: 100%; padding: .8rem; background: linear-gradient(135deg, #ff5b3d, #ea3a18);
-    border: none; border-radius: 9px; color: #fff; font-size: .92rem; font-weight: 600;
-    cursor: pointer; box-shadow: 0 4px 14px rgba(234,58,24,0.35);
-    transition: transform .15s, box-shadow .15s, opacity .15s; margin-top: .4rem;
-  }
-  .fp-submit-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(234,58,24,0.45); }
-  .fp-submit-btn:disabled { opacity: .65; cursor: not-allowed; transform: none; }
-  .fp-back-link { font-size: .78rem; color: #94a3b8; cursor: pointer; transition: color .15s; }
-  .fp-back-link:hover { color: #f8fafc; text-decoration: underline; }
-  .fp-msg { padding: .65rem .85rem; border-radius: 8px; font-size: .8rem; line-height: 1.45; margin-bottom: 1rem; }
-  .fp-msg.err { background: rgba(239,73,60,0.12); border: 1px solid rgba(239,73,60,0.3); color: #ff7568; }
-  .fp-msg.ok { background: rgba(46,197,111,0.12); border: 1px solid rgba(46,197,111,0.3); color: #2ec56f; }
+  .login-btn:disabled { opacity: .7; cursor: default; transform: none; }
 
   .login-footer {
     margin-top: 1.8rem;
     text-align: center;
-    font-size: 0.72rem;
-    color: #a0a4b2;
+    font-size: 0.74rem;
+    color: #64748b;
   }
 
   .li-new-badge {
@@ -1832,6 +1874,12 @@
   .roster-nav-btn { padding:.38rem .7rem;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:6px;font-family:'DM Sans',sans-serif;font-size:.82rem;cursor:pointer;color:var(--text-primary);transition:background .15s; }
   .roster-nav-btn:hover { background:var(--navy-hover); }
   .roster-today-btn { font-size:.72rem;padding:.38rem .65rem;color:var(--text-muted); }
+  /* View Toggle (Full Month vs Week) */
+  .roster-view-toggle { display:inline-flex;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:8px;padding:3px;gap:3px; }
+  .roster-vt-btn { background:transparent;border:none;padding:.38rem .75rem;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:.8rem;font-weight:600;color:var(--text-muted);cursor:pointer;transition:all .18s;white-space:nowrap; }
+  .roster-vt-btn:hover { color:var(--text-primary); }
+  .roster-vt-btn.active { background:var(--navy-hover);color:var(--text-primary);box-shadow:0 1px 3px rgba(0,0,0,0.18); }
+  body.dark .roster-vt-btn.active { background:rgba(255,91,61,.18);color:#ff8a6a; }
   /* Table layout — proper horizontal scroll */
   .roster-grid-wrap { background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius);overflow-x:auto;overflow-y:visible; }
   .roster-tbl { width:100%;border-collapse:collapse;min-width:580px; }
@@ -3185,8 +3233,8 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
 <body>
 
 <!-- ══════════ LOGIN VIEW — Split Editorial ══════════ -->
-<canvas id="ambient-canvas"></canvas>
 <div id="login-view" class="view active">
+  <canvas id="li-mesh-canvas" style="position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;"></canvas>
 
   <div class="li-brand">
     <div class="li-brand-top">
@@ -3194,21 +3242,23 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
         <polygon points="10,18 60,56 110,18 64,110" fill="#ff7a5c"/>
         <text x="74" y="100" font-family="Arial, sans-serif" font-weight="700" font-size="100" fill="#fff">7</text>
       </svg>
-      <div class="li-brand-word">K7Team<span>Core</span></div>
+      <div class="li-brand-word">K<span class="k7-seven">7</span>TeamCore</div>
     </div>
     <div class="li-brand-mid">
-      <div class="li-eyebrow">Agent Operations Portal</div>
+      <div class="li-eyebrow">🛡️ Agent Operations Portal</div>
       <h1>Built by us,<br/><span class="li-accent">Run by us.</span></h1>
+      <p>Unified command center for service operations, attendance, real-time queues, and performance metrics.</p>
     </div>
     <div class="li-brand-bottom">
       <div class="li-stat"><div class="n">24/7</div><div class="l">Coverage</div></div>
       <div class="li-stat"><div class="n">100%</div><div class="l">Team owned</div></div>
-      <div class="li-stat"><div class="n">40+</div><div class="l">Ideas shipped by the team</div></div>
+      <div class="li-stat"><div class="n">40+</div><div class="l">Ideas shipped</div></div>
     </div>
   </div>
 
   <div class="li-panel">
     <div class="li-form-wrap" id="li-form-wrap">
+      <div class="li-card-glare" id="li-card-glare"></div>
       <div class="li-form-head">
         <h2>Sign in</h2>
         <p>Enter your details to access your dashboard.</p>
@@ -3234,169 +3284,14 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
 
       <button class="login-btn" id="login-btn" onclick="doLogin()">Sign In</button>
 
-      <div style="text-align:center;margin-top:1rem;display:flex;justify-content:center;gap:1.2rem;align-items:center;">
-        <span id="fp-link" class="li-fp-link" onclick="fpOpenModal()">Forgot password?</span>
-        <span style="color:#4a5568;font-size:.72rem;">•</span>
-        <span id="reg-link" class="li-fp-link" style="color:var(--text-muted,#94a3b8);" onclick="regOpenModal()">Create account</span>
-      </div>
-
       <div class="login-footer">TeamCore v7.0 <span class="li-new-badge">New</span> &nbsp;·&nbsp; For internal use only</div>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════ FORGOT PASSWORD MODAL ══════════ -->
-<div id="fp-modal" class="fp-modal-overlay" style="display:none;" onclick="if(event.target===this)fpCloseModal()">
-  <div class="fp-modal-card">
-    <button class="fp-close-btn" onclick="fpCloseModal()" aria-label="Close">&times;</button>
-    
-    <!-- STEP EXPIRED: Security Update Notice -->
-    <div id="fp-step-expired" style="display:none;text-align:center;">
-      <div class="fp-icon-wrap" style="background:rgba(255,91,61,0.15);color:#ff5b3d;">🛡️</div>
-      <h3 class="fp-title">Security Update Required</h3>
-      <p class="fp-desc" style="line-height:1.6;margin-bottom:1.4rem;">
-        Hello <strong id="fp-expired-name" style="color:#f8fafc;"></strong>,<br>
-        A security update was recently applied to TeamCore and all previous passwords have expired for your protection.<br><br>
-        Click below to receive a 6-digit verification code at <strong id="fp-expired-email" style="color:#f8fafc;"></strong> to set your new password.
-      </p>
-      
-      <div id="fp-expired-msg" class="fp-msg" style="display:none;"></div>
-      
-      <button id="fp-btn-expired-send" class="fp-submit-btn" onclick="fpSendOtp(false)">Send Verification Code & Set New Password</button>
-      <div style="text-align:center;margin-top:1.1rem;">
-        <span class="fp-back-link" onclick="fpCloseModal()">Back to Sign In</span>
-      </div>
-    </div>
-
-    <!-- STEP 1: Enter Email -->
-    <div id="fp-step-1">
-      <div class="fp-icon-wrap">🔑</div>
-      <h3 class="fp-title">Forgot Password?</h3>
-      <p class="fp-desc">Enter your work email address. We'll send a 6-digit verification code to reset your password.</p>
-      
-      <div class="fp-field">
-        <label class="fp-label">Work Email</label>
-        <input type="email" id="fp-email" class="fp-input" placeholder="name@k7computing.com" autocomplete="email" onkeydown="if(event.key==='Enter')fpSendOtp(false)"/>
-      </div>
-      
-      <div id="fp-step1-msg" class="fp-msg" style="display:none;"></div>
-      
-      <button id="fp-btn-send" class="fp-submit-btn" onclick="fpSendOtp(false)">Send Verification Code</button>
-      <div style="text-align:center;margin-top:1.1rem;">
-        <span class="fp-back-link" onclick="fpCloseModal()">Back to Sign In</span>
-      </div>
-    </div>
-
-    <!-- STEP 2: Enter OTP & New Password -->
-    <div id="fp-step-2" style="display:none;">
-      <div class="fp-icon-wrap">📬</div>
-      <h3 class="fp-title">Check Your Email</h3>
-      <p class="fp-desc">We sent a 6-digit code to <strong id="fp-sent-to" style="color:#f8fafc;"></strong>.</p>
-      
-      <div class="fp-field">
-        <label class="fp-label">6-Digit Code</label>
-        <input type="text" id="fp-otp" class="fp-input fp-input-otp" maxlength="6" placeholder="• • • • • •" autocomplete="one-time-code"/>
-        <div class="fp-resend-row">
-          <span id="fp-timer-wrap" style="color:#8892b0;font-size:.78rem;">Resend code in <strong id="fp-countdown">60</strong>s</span>
-          <button id="fp-btn-resend" class="fp-resend-btn" style="display:none;" onclick="fpSendOtp(true)">Resend Code</button>
-        </div>
-      </div>
-      
-      <div class="fp-field">
-        <label class="fp-label">New Password (min 6 characters)</label>
-        <input type="password" id="fp-new-pw" class="fp-input" placeholder="Enter new password"/>
-      </div>
-
-      <div class="fp-field">
-        <label class="fp-label">Confirm New Password</label>
-        <input type="password" id="fp-confirm-pw" class="fp-input" placeholder="Confirm new password" onkeydown="if(event.key==='Enter')fpVerifyAndReset()"/>
-      </div>
-      
-      <div id="fp-step2-msg" class="fp-msg" style="display:none;"></div>
-      
-      <button id="fp-btn-reset" class="fp-submit-btn" onclick="fpVerifyAndReset()">Reset Password</button>
-      <div style="text-align:center;margin-top:1.1rem;">
-        <span class="fp-back-link" onclick="fpShowStep(1)">Use a different email</span>
-      </div>
-    </div>
-
-    <!-- STEP 3: Success -->
-    <div id="fp-step-3" style="display:none;text-align:center;">
-      <div class="fp-icon-wrap" style="background:rgba(46,197,111,0.15);color:#2ec56f;">✓</div>
-      <h3 class="fp-title">Password Reset Complete!</h3>
-      <p class="fp-desc" style="margin-bottom:1.5rem;">Your password has been successfully updated. You can now sign in with your new password.</p>
-      <button class="fp-submit-btn" onclick="fpCloseModal()">Back to Sign In</button>
-    </div>
-  </div>
-</div>
-
-<!-- ══════════ REGISTER MODAL ══════════ -->
-<div id="reg-modal" class="fp-modal-overlay" style="display:none;" onclick="if(event.target===this)regCloseModal()">
-  <div class="fp-modal-card">
-    <button class="fp-close-btn" onclick="regCloseModal()" aria-label="Close">&times;</button>
-    
-    <!-- REG STEP 1: Name and Email -->
-    <div id="reg-step-1">
-      <div class="fp-icon-wrap" style="background:rgba(46,197,111,0.14);color:#2ec56f;">👤</div>
-      <h3 class="fp-title">Create Account</h3>
-      <p class="fp-desc">Restricted strictly to <strong style="color:#f8fafc;">@k7computing.com</strong> and <strong style="color:#f8fafc;">@k7cybersecurity.com</strong> team members.</p>
-      
-      <div class="fp-field">
-        <label class="fp-label">Full Name</label>
-        <input type="text" id="reg-name" class="fp-input" placeholder="e.g. John Doe" autocomplete="name"/>
-      </div>
-
-      <div class="fp-field">
-        <label class="fp-label">Work Email</label>
-        <input type="email" id="reg-email" class="fp-input" placeholder="name@k7computing.com" autocomplete="email" onkeydown="if(event.key==='Enter')regSendOtp()"/>
-      </div>
-      
-      <div id="reg-step1-msg" class="fp-msg" style="display:none;"></div>
-      
-      <button id="reg-btn-send" class="fp-submit-btn" style="background:linear-gradient(135deg,#2ec56f,#1a9b50);box-shadow:0 4px 14px rgba(46,197,111,0.35);" onclick="regSendOtp()">Send Verification Code</button>
-      <div style="text-align:center;margin-top:1.1rem;">
-        <span class="fp-back-link" onclick="regCloseModal()">Already have an account? Sign In</span>
-      </div>
-    </div>
-
-    <!-- REG STEP 2: Enter Code & Password -->
-    <div id="reg-step-2" style="display:none;">
-      <div class="fp-icon-wrap" style="background:rgba(245,158,11,0.14);color:#f59e0b;">📬</div>
-      <h3 class="fp-title">Verify Work Email</h3>
-      <p class="fp-desc">We sent a 6-digit verification code to <strong id="reg-sent-to" style="color:#f8fafc;"></strong>.</p>
-      
-      <div class="fp-field">
-        <label class="fp-label">6-Digit Code</label>
-        <input type="text" id="reg-otp" class="fp-input fp-input-otp" maxlength="6" placeholder="• • • • • •" autocomplete="one-time-code"/>
-        <div class="fp-resend-row">
-          <span id="reg-timer-wrap" style="color:#8892b0;font-size:.78rem;">Resend code in <strong id="reg-countdown">60</strong>s</span>
-          <button id="reg-btn-resend" class="fp-resend-btn" style="display:none;" onclick="regSendOtp()">Resend Code</button>
-        </div>
-      </div>
-      
-      <div class="fp-field">
-        <label class="fp-label">Create Password (min 6 characters)</label>
-        <input type="password" id="reg-pw" class="fp-input" placeholder="Enter password"/>
-      </div>
-
-      <div class="fp-field">
-        <label class="fp-label">Confirm Password</label>
-        <input type="password" id="reg-confirm-pw" class="fp-input" placeholder="Confirm password" onkeydown="if(event.key==='Enter')regComplete()"/>
-      </div>
-      
-      <div id="reg-step2-msg" class="fp-msg" style="display:none;"></div>
-      
-      <button id="reg-btn-complete" class="fp-submit-btn" style="background:linear-gradient(135deg,#2ec56f,#1a9b50);box-shadow:0 4px 14px rgba(46,197,111,0.35);" onclick="regComplete()">Complete Registration</button>
-      <div style="text-align:center;margin-top:1.1rem;">
-        <span class="fp-back-link" onclick="regShowStep(1)">Change details</span>
-      </div>
     </div>
   </div>
 </div>
 
 <!-- Elegant color-wipe transition played while credentials are verified -->
 <div class="li-wipe" id="li-wipe" aria-hidden="true"></div>
-<div class="li-wipe-logo" id="liWipeLogo">K7<span>Team</span></div>
+<div class="li-wipe-logo" id="liWipeLogo">K<span style="color:#f37023;font-style:italic;margin-right:2px;">7</span><span>Team</span></div>
 <canvas id="li-burst" class="li-burst" aria-hidden="true"></canvas>
 
 <!-- ══════════ DASHBOARD VIEW ══════════ -->
@@ -3404,22 +3299,10 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
 
   <!-- TOPBAR -->
   <div class="topbar">
-    <div class="topbar-brand">K7Team<span>Core</span></div>
+    <div class="topbar-brand">K<span style="color:#f37023;font-weight:900;font-style:italic;">7</span>Team<span>Core</span></div>
 
 
     <div class="topbar-right">
-      <!-- Live Weather World Clock (left of work clock) -->
-      <div id="wx-wrap" style="position:relative;display:none;">
-        <button id="wx-widget" class="wx-widget" onclick="wxToggleDropdown(event)" aria-label="World clock and weather">
-          <span class="wx-icon" id="wx-icon">🌤️</span>
-          <span class="wx-temp" id="wx-temp">--°</span>
-          <span class="wx-city-pill" id="wx-city-pill">Chennai</span>
-          <span class="wx-pill-sep">·</span>
-          <span class="wx-globe">🌐</span>
-          <span class="wx-arrow">▾</span>
-        </button>
-        <div id="wx-dropdown" class="wx-dropdown" style="display:none;"></div>
-      </div>
       <!-- Work Clock -->
       <div class="work-clock-wrap" id="work-clock-wrap">
         <span class="work-clock-time" id="work-clock-display">Not Started</span>
@@ -4170,13 +4053,17 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
           </div>
           <div class="roster-controls">
             <input type="text" class="roster-search" id="roster-search" placeholder="&#128269; Search agent..." oninput="filterRoster(this.value)"/>
-            <div class="roster-week-nav">
+            <div class="roster-view-toggle" id="roster-view-toggle">
+              <button class="roster-vt-btn active" id="rvt-month" onclick="setRosterViewMode('month')">📅 Full Month</button>
+              <button class="roster-vt-btn" id="rvt-week" onclick="setRosterViewMode('week')">📆 Week View</button>
+            </div>
+            <div class="roster-week-nav" id="roster-week-nav" style="display:none;">
               <button class="roster-nav-btn" onclick="rosterNavWeek(-1)">&#8592;</button>
               <span class="roster-week-lbl" id="roster-week-lbl">This week</span>
               <button class="roster-nav-btn" onclick="rosterNavWeek(1)">&#8594;</button>
               <button class="roster-nav-btn roster-today-btn" id="roster-today-btn" onclick="rosterGoToday()">Today</button>
             </div>
-            <button class="roster-refresh-btn" onclick="loadRosterSummary()">
+            <button class="roster-refresh-btn" id="roster-sync-btn" onclick="loadRosterSummary()">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/></svg>
               Sync Roster
             </button>
@@ -4978,10 +4865,10 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
               <span id="cd-pwreset-pin-err" style="font-size:.78rem;color:var(--accent-red);display:none;">Wrong PIN.</span>
             </div>
             <div id="cd-pwreset-panel" style="display:none;margin-top:.9rem;">
+              <div id="cd-pwreset-msg" style="font-size:.82rem;font-weight:600;margin-bottom:.8rem;padding:.5rem .8rem;border-radius:6px;display:none;"></div>
               <div id="cd-pwreset-agents" style="display:flex;flex-direction:column;gap:.5rem;">
                 <div style="color:var(--text-dim);font-size:.82rem;">Loading agents…</div>
               </div>
-              <div id="cd-pwreset-msg" style="font-size:.78rem;margin-top:.6rem;display:none;"></div>
             </div>
           </div>
 
@@ -5497,7 +5384,7 @@ const SESSION_KEY='tc_v2';
 let currentUser=null;
 
 function _isSysLevel(){
-  return currentUser && (currentUser.role==='admin' || currentUser.role==='tl');
+  return !!(currentUser && currentUser.id==='syslevel' && currentUser.role==='syslevel');
 }
 function saveSession(u){try{localStorage.setItem(SESSION_KEY,JSON.stringify(u));}catch(e){}}
 function clearSession(){try{localStorage.removeItem(SESSION_KEY);}catch(e){}}
@@ -5819,13 +5706,6 @@ async function doLogin(){
     });
     if(!lr.ok) throw new Error('invalid');
     const u = await lr.json();
-    // ── Password expired check (security patch notice) ──
-    if(u.error === 'password_expired'){
-      statusEl.style.display='none';btn.disabled=false;btn.textContent='Sign In';
-      liFinishWipe(false);
-      fpShowExpiredNotice(u.email || email, u.name || '', u.message || '');
-      return;
-    }
     // ── Server-side lockout check ──
     if(u.error === 'locked'){
       statusEl.style.display='none';btn.disabled=false;btn.textContent='Sign In';
@@ -5834,7 +5714,7 @@ async function doLogin(){
       rlShowLockout();
       return;
     }
-    if(u.error === 'invalid_credentials'){
+    if(u.error === 'invalid_credentials' || u.error === 'password_expired'){
       throw new Error('invalid_server|'+(u.attempts_left!=null?u.attempts_left:''));
     }
     if(!u || !u.id) throw new Error('invalid');
@@ -5892,357 +5772,405 @@ async function doLogin(){
   }
 }
 
+// Self-service OTP modals disabled
+function fpOpenModal(){}
+function fpCloseModal(){}
+function fpShowExpiredNotice(){}
+
+function regOpenModal(){}
+function regCloseModal(){}
+
 // ═══════════════════════════════════════════════════════════════
-//  SELF-SERVICE FORGOT PASSWORD (OTP via SendGrid)
+//  CYBER DARK GLASSMORPHISM — INTERACTIVE LIVE MESH ANIMATION
+//  Lively 60fps canvas particle constellation with organic wave drift,
+//  real-time data packet pulses, cursor laser beams, and click shockwave.
 // ═══════════════════════════════════════════════════════════════
-var _fpCountdownTimer = null;
-var _fpEmail = '';
+(function initCyberMeshEngine(){
+  var canvas = null, ctx = null, animId = null;
+  var nodes = [];
+  var nodeCount = 80;
+  var pulses = [];
+  var ripples = [];
+  var mouse = { x: -9999, y: -9999, active: false, radius: 190 };
+  var colors = [
+    { r: 255, g: 91, b: 61 },   // Neon Coral
+    { r: 255, g: 138, b: 106 }, // Warm Amber
+    { r: 99, g: 102, b: 241 },  // Cyber Indigo
+    { r: 56, g: 189, b: 248 }   // Electric Cyan
+  ];
 
-function fpOpenModal(){
-  var m = document.getElementById('fp-modal');
-  if(!m) return;
-  var u = document.getElementById('username');
-  var emInp = document.getElementById('fp-email');
-  if(u && u.value && emInp){ emInp.value = u.value.trim(); }
-  fpShowStep(1);
-  m.style.display = 'flex';
-  setTimeout(function(){ if(emInp) emInp.focus(); }, 100);
-}
-
-function fpCloseModal(){
-  var m = document.getElementById('fp-modal');
-  if(m) m.style.display = 'none';
-  if(_fpCountdownTimer) clearInterval(_fpCountdownTimer);
-}
-
-function fpShowStep(step){
-  var s1 = document.getElementById('fp-step-1');
-  var s2 = document.getElementById('fp-step-2');
-  var s3 = document.getElementById('fp-step-3');
-  var sExp = document.getElementById('fp-step-expired');
-  if(s1) s1.style.display = (step === 1 ? 'block' : 'none');
-  if(s2) s2.style.display = (step === 2 ? 'block' : 'none');
-  if(s3) s3.style.display = (step === 3 ? 'block' : 'none');
-  if(sExp) sExp.style.display = (step === 'expired' ? 'block' : 'none');
-  var msg1 = document.getElementById('fp-step1-msg'); if(msg1) msg1.style.display = 'none';
-  var msg2 = document.getElementById('fp-step2-msg'); if(msg2) msg2.style.display = 'none';
-  var msgExp = document.getElementById('fp-expired-msg'); if(msgExp) msgExp.style.display = 'none';
-}
-
-function fpShowExpiredNotice(email, name, message){
-  var m = document.getElementById('fp-modal');
-  if(!m) return;
-  _fpEmail = email;
-  var emInp = document.getElementById('fp-email');
-  if(emInp) emInp.value = email;
-  var nameEl = document.getElementById('fp-expired-name');
-  if(nameEl) nameEl.textContent = name || email;
-  var emailEl = document.getElementById('fp-expired-email');
-  if(emailEl) emailEl.textContent = email;
-  fpShowStep('expired');
-  m.style.display = 'flex';
-}
-
-async function fpSendOtp(isResend){
-  var email = (document.getElementById('fp-email').value || _fpEmail || '').trim().toLowerCase();
-  var isExpired = document.getElementById('fp-step-expired') && document.getElementById('fp-step-expired').style.display === 'block';
-  var msgEl = isExpired ? document.getElementById('fp-expired-msg') : (isResend ? document.getElementById('fp-step2-msg') : document.getElementById('fp-step1-msg'));
-  var btn = isExpired ? document.getElementById('fp-btn-expired-send') : (isResend ? document.getElementById('fp-btn-resend') : document.getElementById('fp-btn-send'));
-
-  if(!email || !email.includes('@')){
-    if(msgEl){ msgEl.textContent = 'Please enter a valid work email address.'; msgEl.className = 'fp-msg err'; msgEl.style.display = 'block'; }
-    return;
+  function getDimensions(){
+    if(!canvas) return { w: window.innerWidth, h: window.innerHeight };
+    var parent = canvas.parentElement || document.getElementById('login-view');
+    var rect = parent ? parent.getBoundingClientRect() : canvas.getBoundingClientRect();
+    return {
+      w: Math.max(rect.width || 0, window.innerWidth),
+      h: Math.max(rect.height || 0, window.innerHeight)
+    };
   }
 
-  _fpEmail = email;
-  if(btn){ btn.disabled = true; btn.textContent = isResend ? 'Resending…' : 'Sending Code…'; }
-  if(msgEl){ msgEl.style.display = 'none'; }
+  function resize(){
+    if(!canvas) return;
+    var dims = getDimensions();
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    canvas.width = Math.floor(dims.w * dpr);
+    canvas.height = Math.floor(dims.h * dpr);
+    canvas.style.width = dims.w + 'px';
+    canvas.style.height = dims.h + 'px';
+    if(ctx) {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.scale(dpr, dpr);
+    }
+  }
 
-  try{
-    var res = await fetch(SUPABASE_URL + '/functions/v1/send-reset-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email })
+  function createNodes(){
+    nodes = [];
+    pulses = [];
+    var dims = getDimensions();
+    var w = dims.w;
+    var h = dims.h;
+    for(var i = 0; i < nodeCount; i++){
+      var c = colors[Math.floor(Math.random() * colors.length)];
+      nodes.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.72,
+        vy: (Math.random() - 0.5) * 0.72,
+        baseRadius: 1.4 + Math.random() * 2.2,
+        pulseSpeed: 0.02 + Math.random() * 0.035,
+        pulseOffset: Math.random() * Math.PI * 2,
+        c: c
+      });
+    }
+  }
+
+  function step(time){
+    if(!canvas || !ctx) return;
+    var dims = getDimensions();
+    var w = dims.w;
+    var h = dims.h;
+
+    ctx.clearRect(0, 0, w, h);
+
+    // Interactive cursor radial light
+    if(mouse.active && mouse.x >= 0 && mouse.y >= 0){
+      var aura = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, mouse.radius);
+      aura.addColorStop(0, 'rgba(255, 91, 61, 0.12)');
+      aura.addColorStop(0.45, 'rgba(99, 102, 241, 0.05)');
+      aura.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = aura;
+      ctx.beginPath();
+      ctx.arc(mouse.x, mouse.y, mouse.radius, 0, Math.PI * 2);
+      ctx.fill();
+    }
+
+    // Process & draw expanding click ripples
+    for(var rIdx = ripples.length - 1; rIdx >= 0; rIdx--){
+      var rip = ripples[rIdx];
+      rip.r += 4.5;
+      rip.alpha *= 0.94;
+      if(rip.alpha < 0.02 || rip.r > rip.maxR){
+        ripples.splice(rIdx, 1);
+        continue;
+      }
+      ctx.beginPath();
+      ctx.arc(rip.x, rip.y, rip.r, 0, Math.PI * 2);
+      ctx.strokeStyle = 'rgba(255, 122, 92, ' + rip.alpha.toFixed(3) + ')';
+      ctx.lineWidth = 1.4;
+      ctx.stroke();
+
+      // Push nodes near the shockwave wavefront
+      for(var ni = 0; ni < nodes.length; ni++){
+        var nd = nodes[ni];
+        var rdx = nd.x - rip.x;
+        var rdy = nd.y - rip.y;
+        var rdist = Math.sqrt(rdx * rdx + rdy * rdy);
+        if(Math.abs(rdist - rip.r) < 30 && rdist > 1){
+          var push = (1 - Math.abs(rdist - rip.r) / 30) * 1.8 * rip.alpha;
+          nd.x += (rdx / rdist) * push;
+          nd.y += (rdy / rdist) * push;
+        }
+      }
+    }
+
+    var t = (time || 0) * 0.001;
+    var activePairs = [];
+
+    // Update & draw nodes
+    for(var i = 0; i < nodes.length; i++){
+      var n = nodes[i];
+
+      // Lively organic wave drift
+      n.x += n.vx + Math.sin(t * 1.3 + n.pulseOffset) * 0.38;
+      n.y += n.vy + Math.cos(t * 1.3 + n.pulseOffset) * 0.38;
+
+      // Soft wrap bounds
+      if(n.x < -25) n.x = w + 25;
+      else if(n.x > w + 25) n.x = -25;
+      if(n.y < -25) n.y = h + 25;
+      else if(n.y > h + 25) n.y = -25;
+
+      // Cursor proximity attraction & laser connection
+      if(mouse.active){
+        var dx = mouse.x - n.x;
+        var dy = mouse.y - n.y;
+        var dist = Math.sqrt(dx * dx + dy * dy);
+        if(dist < mouse.radius && dist > 1){
+          var force = (1 - dist / mouse.radius) * 0.65;
+          n.x += (dx / dist) * force;
+          n.y += (dy / dist) * force;
+
+          // Connect cursor with glowing cyber laser beam
+          var mouseAlpha = (1 - dist / mouse.radius) * 0.42;
+          ctx.beginPath();
+          ctx.moveTo(n.x, n.y);
+          ctx.lineTo(mouse.x, mouse.y);
+          ctx.strokeStyle = 'rgba(' + n.c.r + ',' + n.c.g + ',' + n.c.b + ',' + mouseAlpha.toFixed(3) + ')';
+          ctx.lineWidth = 1.1;
+          ctx.stroke();
+        }
+      }
+
+      // Inter-node connections
+      for(var j = i + 1; j < nodes.length; j++){
+        var n2 = nodes[j];
+        var cdx = n.x - n2.x;
+        var cdy = n.y - n2.y;
+        var cdist = Math.sqrt(cdx * cdx + cdy * cdy);
+        if(cdist < 130){
+          var lineAlpha = (1 - cdist / 130) * 0.26;
+          ctx.beginPath();
+          ctx.moveTo(n.x, n.y);
+          ctx.lineTo(n2.x, n2.y);
+          ctx.strokeStyle = 'rgba(' + n.c.r + ',' + n.c.g + ',' + n.c.b + ',' + lineAlpha.toFixed(3) + ')';
+          ctx.lineWidth = 0.9;
+          ctx.stroke();
+
+          if(activePairs.length < 50){
+            activePairs.push({ a: n, b: n2 });
+          }
+        }
+      }
+
+      // Pulsing node radius
+      var currentR = n.baseRadius + Math.sin(t * 2.5 + n.pulseOffset) * 0.65;
+      if(currentR < 0.9) currentR = 0.9;
+
+      // Soft glow aura around node
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, currentR + 3, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + n.c.r + ',' + n.c.g + ',' + n.c.b + ',0.16)';
+      ctx.fill();
+
+      // Node core
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, currentR, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(' + n.c.r + ',' + n.c.g + ',' + n.c.b + ',0.9)';
+      ctx.fill();
+    }
+
+    // Spawn traveling data pulses along active lines
+    if(pulses.length < 9 && activePairs.length > 0 && Math.random() < 0.08){
+      var pair = activePairs[Math.floor(Math.random() * activePairs.length)];
+      pulses.push({
+        from: pair.a,
+        to: pair.b,
+        p: 0,
+        speed: 0.014 + Math.random() * 0.018,
+        color: pair.a.c
+      });
+    }
+
+    // Render traveling data packet pulses
+    for(var pIdx = pulses.length - 1; pIdx >= 0; pIdx--){
+      var pulse = pulses[pIdx];
+      pulse.p += pulse.speed;
+      if(pulse.p >= 1){
+        pulses.splice(pIdx, 1);
+        continue;
+      }
+      var px = pulse.from.x + (pulse.to.x - pulse.from.x) * pulse.p;
+      var py = pulse.from.y + (pulse.to.y - pulse.from.y) * pulse.p;
+      var pulseAlpha = Math.sin(pulse.p * Math.PI) * 0.85;
+
+      ctx.beginPath();
+      ctx.arc(px, py, 2.4, 0, Math.PI * 2);
+      ctx.fillStyle = 'rgba(255, 255, 255, ' + pulseAlpha.toFixed(2) + ')';
+      ctx.shadowColor = 'rgba(' + pulse.color.r + ',' + pulse.color.g + ',' + pulse.color.b + ',0.9)';
+      ctx.shadowBlur = 8;
+      ctx.fill();
+      ctx.shadowBlur = 0; // reset
+    }
+
+    animId = requestAnimationFrame(step);
+  }
+
+  function start(){
+    if(animId) return;
+    if(!canvas){
+      canvas = document.getElementById('li-mesh-canvas');
+      if(!canvas) return;
+      ctx = canvas.getContext('2d');
+      var container = document.getElementById('login-view');
+      if(container){
+        container.addEventListener('mousemove', function(e){
+          var b = container.getBoundingClientRect();
+          mouse.x = e.clientX - b.left;
+          mouse.y = e.clientY - b.top;
+          mouse.active = true;
+        }, { passive: true });
+
+        container.addEventListener('mouseleave', function(){
+          mouse.active = false;
+          mouse.x = -9999;
+          mouse.y = -9999;
+        }, { passive: true });
+
+        // Click shockwave ripple
+        container.addEventListener('click', function(e){
+          var b = container.getBoundingClientRect();
+          ripples.push({
+            x: e.clientX - b.left,
+            y: e.clientY - b.top,
+            r: 5,
+            maxR: 220,
+            alpha: 0.55
+          });
+        }, { passive: true });
+      }
+      window.addEventListener('resize', function(){
+        resize();
+      }, { passive: true });
+    }
+    resize();
+    if(nodes.length === 0) createNodes();
+    animId = requestAnimationFrame(step);
+  }
+
+  function stop(){
+    if(animId){
+      cancelAnimationFrame(animId);
+      animId = null;
+    }
+  }
+
+  window._liMeshStart = start;
+  window._liMeshStop = stop;
+
+  // Auto-start if login-view is active
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){
+      var lv = document.getElementById('login-view');
+      if(lv && lv.classList.contains('active')) start();
     });
-    var data = await res.json();
-    if(!res.ok || data.error){
-      throw new Error(data.error || 'Failed to send verification code.');
-    }
-
-    // Success! Show Step 2
-    var sentToEl = document.getElementById('fp-sent-to');
-    if(sentToEl) sentToEl.textContent = email;
-    fpShowStep(2);
-    fpStartCountdown(60);
-    var otpInp = document.getElementById('fp-otp');
-    if(otpInp){ otpInp.value = ''; setTimeout(function(){ otpInp.focus(); }, 150); }
-  }catch(e){
-    if(msgEl){
-      msgEl.textContent = e.message;
-      msgEl.className = 'fp-msg err';
-      msgEl.style.display = 'block';
-    }
-  }finally{
-    if(btn){
-      btn.disabled = false;
-      btn.textContent = isResend ? 'Resend Code' : 'Send Verification Code';
-    }
+  } else {
+    var lv = document.getElementById('login-view');
+    if(lv && lv.classList.contains('active')) start();
   }
-}
+})();
 
-function fpStartCountdown(seconds){
-  var timerEl = document.getElementById('fp-timer-wrap');
-  var resendBtn = document.getElementById('fp-btn-resend');
-  var countEl = document.getElementById('fp-countdown');
-  if(_fpCountdownTimer) clearInterval(_fpCountdownTimer);
+// ═══════════════════════════════════════════════════════════════
+//  CYBER DARK GLASSMORPHISM — 3D CARD TILT & SPECULAR SHEEN
+//  Silky smooth, classy 3D card tilt with lerp smoothing,
+//  light reflection glare, and dynamic physical drop shadow.
+// ═══════════════════════════════════════════════════════════════
+(function initLoginCardTilt(){
+  var card = null;
+  var panel = null;
+  var animFrame = null;
+  var isHovered = false;
+  var curX = 0, curY = 0;
+  var targetX = 0, targetY = 0;
+  var MAX_TILT = 6.5; // Classy, subtle 6.5-degree max tilt
 
-  if(timerEl) timerEl.style.display = 'inline-block';
-  if(resendBtn) resendBtn.style.display = 'none';
+  function updatePhysics(){
+    // Damped lerp (factor 0.1 for buttery smooth gliding)
+    curX += (targetX - curX) * 0.1;
+    curY += (targetY - curY) * 0.1;
 
-  var remaining = seconds;
-  if(countEl) countEl.textContent = remaining;
+    if(card){
+      var shadowX = (-curY * 1.5).toFixed(1);
+      var shadowY = (curX * 1.5 + 25).toFixed(1);
+      card.style.transform = 'perspective(1200px) rotateX(' + curX.toFixed(2) + 'deg) rotateY(' + curY.toFixed(2) + 'deg) translateZ(' + (isHovered ? '4px' : '0px') + ')';
+      card.style.boxShadow = shadowX + 'px ' + shadowY + 'px 50px -12px rgba(0, 0, 0, 0.65), 0 0 35px rgba(255, 91, 61, 0.08)';
+    }
 
-  _fpCountdownTimer = setInterval(function(){
-    remaining--;
-    if(remaining <= 0){
-      clearInterval(_fpCountdownTimer);
-      if(timerEl) timerEl.style.display = 'none';
-      if(resendBtn) resendBtn.style.display = 'inline-block';
+    // Keep loop alive while hovered or returning to neutral rest
+    if(isHovered || Math.abs(targetX - curX) > 0.02 || Math.abs(targetY - curY) > 0.02){
+      animFrame = requestAnimationFrame(updatePhysics);
     } else {
-      if(countEl) countEl.textContent = remaining;
-    }
-  }, 1000);
-}
-
-async function fpVerifyAndReset(){
-  var otp = (document.getElementById('fp-otp').value || '').trim();
-  var p1 = (document.getElementById('fp-new-pw').value || '').trim();
-  var p2 = (document.getElementById('fp-confirm-pw').value || '').trim();
-  var msgEl = document.getElementById('fp-step2-msg');
-  var btn = document.getElementById('fp-btn-reset');
-
-  if(!otp || otp.length < 6){
-    if(msgEl){ msgEl.textContent = 'Please enter the 6-digit verification code from your email.'; msgEl.className = 'fp-msg err'; msgEl.style.display = 'block'; }
-    return;
-  }
-  if(!p1 || p1.length < 6){
-    if(msgEl){ msgEl.textContent = 'New password must be at least 6 characters.'; msgEl.className = 'fp-msg err'; msgEl.style.display = 'block'; }
-    return;
-  }
-  if(p1 !== p2){
-    if(msgEl){ msgEl.textContent = 'Passwords do not match. Please re-enter.'; msgEl.className = 'fp-msg err'; msgEl.style.display = 'block'; }
-    return;
-  }
-
-  if(btn){ btn.disabled = true; btn.textContent = 'Updating Password…'; }
-  if(msgEl){ msgEl.style.display = 'none'; }
-
-  try{
-    var newHash = await hashPassword(p1);
-    var res = await fetch(SUPABASE_URL + '/rest/v1/rpc/verify_otp_and_reset_password', {
-      method: 'POST',
-      headers: sbHeaders({'Content-Type': 'application/json'}),
-      body: JSON.stringify({
-        p_email: _fpEmail,
-        p_otp: otp,
-        p_new_password_hash: newHash
-      })
-    });
-    var data = await res.json();
-    if(!res.ok || !data.success){
-      throw new Error(data.error || 'Failed to verify code.');
-    }
-
-    // Success! Show Step 3
-    fpShowStep(3);
-    var uInp = document.getElementById('username');
-    var pInp = document.getElementById('password');
-    if(uInp) uInp.value = _fpEmail;
-    if(pInp){ pInp.value = ''; }
-  }catch(e){
-    if(msgEl){
-      msgEl.textContent = e.message;
-      msgEl.className = 'fp-msg err';
-      msgEl.style.display = 'block';
-    }
-  }finally{
-    if(btn){
-      btn.disabled = false;
-      btn.textContent = 'Reset Password';
+      if(card){
+        card.style.transform = 'perspective(1200px) rotateX(0deg) rotateY(0deg) translateZ(0px)';
+        card.style.boxShadow = '0 25px 50px -12px rgba(0, 0, 0, 0.65), 0 0 35px rgba(255, 91, 61, 0.06)';
+      }
+      animFrame = null;
     }
   }
-}
 
-// ═══════════════════════════════════════════════════════════════
-//  SELF-SERVICE USER REGISTRATION (@k7computing / @k7cybersecurity)
-// ═══════════════════════════════════════════════════════════════
-var _regCountdownTimer = null;
-var _regEmail = '';
-var _regName = '';
-
-function regOpenModal(){
-  var m = document.getElementById('reg-modal');
-  if(!m) return;
-  regShowStep(1);
-  m.style.display = 'flex';
-  setTimeout(function(){ var n = document.getElementById('reg-name'); if(n) n.focus(); }, 100);
-}
-
-function regCloseModal(){
-  var m = document.getElementById('reg-modal');
-  if(m) m.style.display = 'none';
-  if(_regCountdownTimer) clearInterval(_regCountdownTimer);
-}
-
-function regShowStep(step){
-  var s1 = document.getElementById('reg-step-1');
-  var s2 = document.getElementById('reg-step-2');
-  if(s1) s1.style.display = (step === 1 ? 'block' : 'none');
-  if(s2) s2.style.display = (step === 2 ? 'block' : 'none');
-  var m1 = document.getElementById('reg-step1-msg'); if(m1) m1.style.display = 'none';
-  var m2 = document.getElementById('reg-step2-msg'); if(m2) m2.style.display = 'none';
-}
-
-function _isAuthorizedWorkDomain(em){
-  var e = (em || '').trim().toLowerCase();
-  return e.endsWith('@k7computing.com') || e.endsWith('@k7cybersecurity.com');
-}
-
-async function regSendOtp(){
-  var name = (document.getElementById('reg-name').value || _regName || '').trim();
-  var email = (document.getElementById('reg-email').value || _regEmail || '').trim().toLowerCase();
-  var isStep2 = document.getElementById('reg-step-2') && document.getElementById('reg-step-2').style.display === 'block';
-  var msgEl = isStep2 ? document.getElementById('reg-step2-msg') : document.getElementById('reg-step1-msg');
-  var btn = isStep2 ? document.getElementById('reg-btn-resend') : document.getElementById('reg-btn-send');
-
-  if(!name){
-    if(msgEl){ msgEl.textContent = 'Please enter your full name.'; msgEl.className = 'fp-msg err'; msgEl.style.display = 'block'; }
-    return;
-  }
-  if(!_isAuthorizedWorkDomain(email)){
-    if(msgEl){ msgEl.textContent = 'Registration is restricted strictly to @k7computing.com and @k7cybersecurity.com email addresses.'; msgEl.className = 'fp-msg err'; msgEl.style.display = 'block'; }
-    return;
+  function startPhysics(){
+    if(!animFrame) animFrame = requestAnimationFrame(updatePhysics);
   }
 
-  _regName = name;
-  _regEmail = email;
-  if(btn){ btn.disabled = true; btn.textContent = isStep2 ? 'Resending…' : 'Sending Code…'; }
-  if(msgEl){ msgEl.style.display = 'none'; }
+  function bindEvents(){
+    card = document.getElementById('li-form-wrap');
+    panel = document.querySelector('.li-panel');
+    if(!card || !panel) return;
 
-  try{
-    var res = await fetch(SUPABASE_URL + '/functions/v1/send-reset-otp', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: email, mode: 'register', name: name })
-    });
-    var data = await res.json();
-    if(!res.ok || data.error){
-      throw new Error(data.error || 'Failed to send verification code.');
+    function handleMove(e){
+      var rect = card.getBoundingClientRect();
+      var mouseX = e.clientX;
+      var mouseY = e.clientY;
+
+      // Check if mouse is hovering or close to the card
+      var pad = 35;
+      if(
+        mouseX >= rect.left - pad &&
+        mouseX <= rect.right + pad &&
+        mouseY >= rect.top - pad &&
+        mouseY <= rect.bottom + pad
+      ){
+        isHovered = true;
+        card.classList.add('is-hovered');
+
+        var cx = rect.left + rect.width / 2;
+        var cy = rect.top + rect.height / 2;
+        var normX = Math.max(-1, Math.min(1, (mouseX - cx) / (rect.width / 2)));
+        var normY = Math.max(-1, Math.min(1, (mouseY - cy) / (rect.height / 2)));
+
+        targetY = normX * MAX_TILT;
+        targetX = -normY * MAX_TILT;
+
+        // Update glare sheen coordinates
+        var px = Math.max(0, Math.min(100, ((mouseX - rect.left) / rect.width) * 100));
+        var py = Math.max(0, Math.min(100, ((mouseY - rect.top) / rect.height) * 100));
+        card.style.setProperty('--glare-x', px.toFixed(1) + '%');
+        card.style.setProperty('--glare-y', py.toFixed(1) + '%');
+
+        startPhysics();
+      } else if(isHovered){
+        handleLeave();
+      }
     }
 
-    var sentToEl = document.getElementById('reg-sent-to');
-    if(sentToEl) sentToEl.textContent = email;
-    regShowStep(2);
-    regStartCountdown(60);
-    var otpInp = document.getElementById('reg-otp');
-    if(otpInp){ otpInp.value = ''; setTimeout(function(){ otpInp.focus(); }, 150); }
-  }catch(e){
-    if(msgEl){
-      msgEl.textContent = e.message;
-      msgEl.className = 'fp-msg err';
-      msgEl.style.display = 'block';
+    function handleLeave(){
+      isHovered = false;
+      card.classList.remove('is-hovered');
+      targetX = 0;
+      targetY = 0;
+      startPhysics();
     }
-  }finally{
-    if(btn){
-      btn.disabled = false;
-      btn.textContent = isStep2 ? 'Resend Code' : 'Send Verification Code';
-    }
-  }
-}
 
-function regStartCountdown(seconds){
-  var timerEl = document.getElementById('reg-timer-wrap');
-  var resendBtn = document.getElementById('reg-btn-resend');
-  var countEl = document.getElementById('reg-countdown');
-  if(_regCountdownTimer) clearInterval(_regCountdownTimer);
-
-  if(timerEl) timerEl.style.display = 'inline-block';
-  if(resendBtn) resendBtn.style.display = 'none';
-
-  var remaining = seconds;
-  if(countEl) countEl.textContent = remaining;
-
-  _regCountdownTimer = setInterval(function(){
-    remaining--;
-    if(remaining <= 0){
-      clearInterval(_regCountdownTimer);
-      if(timerEl) timerEl.style.display = 'none';
-      if(resendBtn) resendBtn.style.display = 'inline-block';
-    } else {
-      if(countEl) countEl.textContent = remaining;
-    }
-  }, 1000);
-}
-
-async function regComplete(){
-  var otp = (document.getElementById('reg-otp').value || '').trim();
-  var p1 = (document.getElementById('reg-pw').value || '').trim();
-  var p2 = (document.getElementById('reg-confirm-pw').value || '').trim();
-  var msgEl = document.getElementById('reg-step2-msg');
-  var btn = document.getElementById('reg-btn-complete');
-
-  if(!otp || otp.length < 6){
-    if(msgEl){ msgEl.textContent = 'Please enter the 6-digit verification code from your email.'; msgEl.className = 'fp-msg err'; msgEl.style.display = 'block'; }
-    return;
-  }
-  if(!p1 || p1.length < 6){
-    if(msgEl){ msgEl.textContent = 'Password must be at least 6 characters.'; msgEl.className = 'fp-msg err'; msgEl.style.display = 'block'; }
-    return;
-  }
-  if(p1 !== p2){
-    if(msgEl){ msgEl.textContent = 'Passwords do not match.'; msgEl.className = 'fp-msg err'; msgEl.style.display = 'block'; }
-    return;
+    panel.addEventListener('mousemove', handleMove, { passive: true });
+    panel.addEventListener('mouseleave', handleLeave, { passive: true });
+    card.addEventListener('mouseleave', handleLeave, { passive: true });
   }
 
-  if(btn){ btn.disabled = true; btn.textContent = 'Creating Account…'; }
-  if(msgEl){ msgEl.style.display = 'none'; }
-
-  try{
-    var hash = await hashPassword(p1);
-    var res = await fetch(SUPABASE_URL + '/rest/v1/rpc/register_portal_user', {
-      method: 'POST',
-      headers: sbHeaders({'Content-Type': 'application/json'}),
-      body: JSON.stringify({
-        p_name: _regName,
-        p_email: _regEmail,
-        p_password_hash: hash,
-        p_otp: otp
-      })
-    });
-    var data = await res.json();
-    if(!res.ok || !data.success){
-      throw new Error(data.error || 'Registration failed.');
-    }
-
-    // Success! Log user in automatically
-    regCloseModal();
-    currentUser = data.user;
-    saveSession(currentUser);
-    siCaptureSession(currentUser);
-    enterDashboard();
-  }catch(e){
-    if(msgEl){
-      msgEl.textContent = e.message;
-      msgEl.className = 'fp-msg err';
-      msgEl.style.display = 'block';
-    }
-  }finally{
-    if(btn){
-      btn.disabled = false;
-      btn.textContent = 'Complete Registration';
-    }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', bindEvents);
+  } else {
+    bindEvents();
   }
-}
+})();
 
 // ═══════════════════════════════════════════════════════════════
 //  INACTIVITY AUTO-LOGOUT
@@ -6394,6 +6322,7 @@ async function doLogout(){
   await liWaitForCover(); // ensure overlay is fully covering before swapping views
   document.getElementById('dashboard-view').classList.remove('active');
   document.getElementById('login-view').classList.add('active');
+  if(window._liMeshStart) window._liMeshStart();
   var bb=document.getElementById('break-bar');if(bb)bb.style.display='none';
   var tbw=document.getElementById('tb-break-wrap');if(tbw)tbw.style.display='none';if(typeof tbBreakClose==='function')tbBreakClose();
   var ab=document.getElementById('attendance-badge');if(ab)ab.style.display='none';
@@ -6409,6 +6338,7 @@ async function doLogout(){
 }
 
 function enterDashboard(){
+  if(window._liMeshStop) window._liMeshStop();
   document.getElementById('login-view').classList.remove('active');
   document.getElementById('dashboard-view').classList.add('active');
   // Show chat dock icon
@@ -6502,6 +6432,7 @@ function showPage(id,elem){
   var kbWin=window.open('kbsection.html','_blank');
   return;
 }
+  if(id==='sysconfig' && !_isSysLevel()){showPage('home',document.querySelector('.sidebar-item'));return;}
   if(isAdminPage(id)&&!isAdminUser()){showPage('home',document.querySelector('.sidebar-item'));return;}
 
   // Hide all pages
@@ -6582,7 +6513,7 @@ function showPage(id,elem){
 }
 
 function isAdminUser(){return currentUser&&(currentUser.role==='admin'||currentUser.role==='tl'||currentUser.role==='syslevel');}
-function isAdminPage(id){return['quiz-admin','assessment-admin','users','sysconfig','controldeck'].indexOf(id)>-1;}
+function isAdminPage(id){return['quiz-admin','assessment-admin','users','controldeck'].indexOf(id)>-1;}
 
 function qlFilter(query) {
   query = query.toLowerCase().trim();
@@ -6709,6 +6640,17 @@ async function doChangePassword(){
     });
     var cpOk = cpRes.ok ? await cpRes.json() : false;
     if(!cpOk){errEl.textContent='Current password is incorrect.';errEl.style.display='block';return;}
+    if(currentUser){
+      currentUser.mustChangePassword = false;
+      saveSession(currentUser);
+      try {
+        await fetch(SUPABASE_URL + '/rest/v1/users?id=eq.' + currentUser.id, {
+          method: 'PATCH',
+          headers: sbHeaders({'Content-Type': 'application/json'}),
+          body: JSON.stringify({ must_change_password: false })
+        });
+      } catch(ign){}
+    }
     succEl.style.display='block';
     ['cp-current','cp-new','cp-confirm'].forEach(function(id){document.getElementById(id).value='';});
   }catch(e){errEl.textContent='Something went wrong. Please try again.';errEl.style.display='block';}
@@ -6979,18 +6921,71 @@ function updateRosterBanner(s){
   if(bar)bar.style.display=s.absent.length||s.wfh.length||s.halfDay.length?'flex':'none';
   updateAbsentStat(s.absent.length);
 }
-// ── Week navigation state ──
+// ── Roster View Mode (month = Full Month, week = 7-Day Week) ──
+var _rosterViewMode = 'month';
 var _rosterWeekOffset = 0;
+
+function setRosterViewMode(mode){
+  _rosterViewMode = mode;
+  var bMonth = document.getElementById('rvt-month');
+  var bWeek = document.getElementById('rvt-week');
+  var nav = document.getElementById('roster-week-nav');
+  if(bMonth) bMonth.classList.toggle('active', mode === 'month');
+  if(bWeek) bWeek.classList.toggle('active', mode === 'week');
+  if(nav) nav.style.display = (mode === 'month') ? 'none' : 'flex';
+  if(window._rosterAllRows){
+    renderRosterPage(window._rosterAllRows, window._rosterTodayColGlobal || false, null);
+  }
+}
 
 function rosterNavWeek(dir){
   _rosterWeekOffset += dir;
   _rosterPage = 0;
   if(window._rosterAllRows) renderRosterPage(window._rosterAllRows, window._rosterTodayColGlobal||false, null);
 }
+
 function rosterGoToday(){
   _rosterWeekOffset = 0;
   _rosterPage = 0;
   if(window._rosterAllRows) renderRosterPage(window._rosterAllRows, window._rosterTodayColGlobal||false, null);
+}
+
+// ── Smart Normalized Code Decoder ──
+function parseRosterStatus(rawVal, isWknd){
+  var v = String(rawVal || '').trim();
+  if(!v || v === '-' || v === '—' || v === 'N/A' || v === 'NA'){
+    return isWknd ? { type: 'off', label: 'Off', cls: 'rc-o' } : { type: 'empty', label: '—', cls: 'rc-o' };
+  }
+  var u = v.toUpperCase().replace(/[\s\-_/.]+/g, ' ');
+
+  // Weekly Off / Holiday
+  if(/^(WO|SH|H|OFF|WEEK OFF|WEEKOFF|WEEKEND|HOLIDAY)$/i.test(u) || u.indexOf('WEEK OFF') > -1 || u.indexOf('WEEKOFF') > -1){
+    return { type: 'off', label: 'Off', cls: 'rc-o' };
+  }
+
+  // Work From Home
+  if(u.indexOf('WFH') > -1 || u.indexOf('HOME') > -1){
+    var num = v.match(/(\d+)/);
+    return { type: 'wfh', label: num ? num[1] + ' WFH' : 'WFH', cls: 'rc-w' };
+  }
+
+  // Half Day
+  if(u.indexOf('HL') > -1 || u.indexOf('HALF') > -1 || u.indexOf('1/2') > -1 || u.indexOf('½') > -1){
+    var nm = v.match(/(\d+)/);
+    return { type: 'half', label: nm ? nm[1] + ' ½' : '½ Day', cls: 'rc-h' };
+  }
+
+  // Leave / Absent
+  if(
+    NOT_PRESENT_CODES.has(v.toUpperCase()) ||
+    /^(L|CO|W|EO|CL|SL|PL|ML|LEAVE|COMP OFF|CASUAL|SICK|ABSENT|LOP)$/i.test(u) ||
+    u.indexOf('LEAVE') > -1 || u.indexOf('COMP OFF') > -1 || u.indexOf('SICK') > -1
+  ){
+    return { type: 'leave', label: 'Leave', cls: 'rc-a' };
+  }
+
+  // Active Shift / Present
+  return { type: 'present', label: v, cls: 'rc-p' };
 }
 
 function renderRosterPage(rows, todayCol, error){
@@ -7002,41 +6997,46 @@ function renderRosterPage(rows, todayCol, error){
   if(!dateRow){ wrap.innerHTML='<div class="roster-empty">Could not find roster header row.</div>'; return; }
 
   var todayD = new Date().getDate();
-  // Use the month/year set by switchRosterMonth if available — otherwise default to current month
   var todayM = (window._rosterTodayM !== undefined) ? window._rosterTodayM : new Date().getMonth();
   var todayY = (window._rosterTodayY !== undefined) ? window._rosterTodayY : new Date().getFullYear();
 
   // All date columns
   var allDateCols = dateRow.slice(2).map(function(d,i){
     var num = Number(d);
-    // isToday only applies if viewing the actual current month
     var isActualToday = num===todayD && todayCol===i+2 && todayM===new Date().getMonth() && todayY===new Date().getFullYear();
     return { idx:i+2, day:num, isToday: isActualToday };
   }).filter(function(d){ return d.day>0; });
 
-  // Store globally
   window._rosterAllRows = rows;
   window._rosterTodayColGlobal = todayCol;
 
-  // Find today's position in dateCols
-  var todayPos = allDateCols.findIndex(function(d){ return d.isToday; });
-  if(todayPos < 0) todayPos = 0;
-
-  // 7-day window based on week offset
-  var weekStart = todayPos - (todayPos % 7) + (_rosterWeekOffset * 7);
-  weekStart = Math.max(0, Math.min(weekStart, allDateCols.length - 7));
-  var visibleCols = allDateCols.slice(weekStart, weekStart + 7);
+  var visibleCols;
+  if(_rosterViewMode === 'month'){
+    // Show Full Month (All days 1 to 31!)
+    visibleCols = allDateCols;
+  } else {
+    // 7-day window based on week offset
+    var todayPos = allDateCols.findIndex(function(d){ return d.isToday; });
+    if(todayPos < 0) todayPos = 0;
+    var weekStart = todayPos - (todayPos % 7) + (_rosterWeekOffset * 7);
+    weekStart = Math.max(0, Math.min(weekStart, Math.max(0, allDateCols.length - 7)));
+    visibleCols = allDateCols.slice(weekStart, weekStart + 7);
+  }
 
   // Update week label
   var lbl = document.getElementById('roster-week-lbl');
   var todayBtn = document.getElementById('roster-today-btn');
   if(lbl){
-    if(_rosterWeekOffset===0) lbl.textContent='This week';
-    else if(_rosterWeekOffset===-1) lbl.textContent='Last week';
-    else if(_rosterWeekOffset===1) lbl.textContent='Next week';
-    else { lbl.textContent = (visibleCols[0]?visibleCols[0].day:'')+'–'+(visibleCols[visibleCols.length-1]?visibleCols[visibleCols.length-1].day:''); }
+    if(_rosterViewMode === 'month'){
+      lbl.textContent = 'All Days (1 – ' + (allDateCols.length ? allDateCols[allDateCols.length - 1].day : 31) + ')';
+    } else {
+      if(_rosterWeekOffset===0) lbl.textContent='This week';
+      else if(_rosterWeekOffset===-1) lbl.textContent='Last week';
+      else if(_rosterWeekOffset===1) lbl.textContent='Next week';
+      else { lbl.textContent = (visibleCols[0]?visibleCols[0].day:'')+'–'+(visibleCols[visibleCols.length-1]?visibleCols[visibleCols.length-1].day:''); }
+    }
   }
-  if(todayBtn) todayBtn.style.opacity = _rosterWeekOffset===0?'.4':'1';
+  if(todayBtn) todayBtn.style.opacity = (_rosterWeekOffset===0 || _rosterViewMode === 'month')?'.4':'1';
 
   var agentRows = rosterAgentRows(rows);
 
@@ -7058,34 +7058,18 @@ function isWeekend(day, month, year){
 }
 
 function getRosterChip(val, isToday, day, month, year){
-  var v = String(val||'').toUpperCase().trim();
   var wknd = day ? isWeekend(day,month,year) : false;
-  if(!v||v==='-'||v==='') return wknd ? '<span class="rc rc-o">Off</span>' : '<span class="rc rc-o">—</span>';
-  if(v==='WO'||v==='SH'||v==='H') return '<span class="rc rc-o">Off</span>';
-  if(NOT_PRESENT_CODES.has(v)||v==='L'||v==='CO'||v==='W'||v==='EO') return '<span class="rc rc-a">Leave</span>';
-  if(v.indexOf('WFH')>-1){
-    // Extract number if present e.g. "12-WFH"
-    var num = v.match(/(\d+)/); 
-    return '<span class="rc rc-w">'+(num?num[1]+' WFH':'WFH')+'</span>';
-  }
-  if(v.indexOf('HL')>-1){
-    var nm = v.match(/(\d+)/);
-    return '<span class="rc rc-h">'+(nm?nm[1]+' ½':'½ Day')+'</span>';
-  }
-  var display = String(val).trim();
-  return '<span class="rc '+(isToday?'rc-t':'rc-p')+'">'+display+'</span>';
+  var res = parseRosterStatus(val, wknd);
+  var cls = res.cls;
+  if(isToday && res.type === 'present') cls = 'rc-t';
+  return '<span class="rc '+cls+'">'+res.label+'</span>';
 }
 
 function getTodayStatusTag(val){
-  var v = String(val||'').toUpperCase().trim();
   var wd = new Date().getDay();
-  if(wd===0||wd===6) return '<span class="rc rc-o">Off</span>';
-  if(!v||v==='-') return '<span class="rc rc-o">—</span>';
-  if(v==='WO'||v==='SH'||v==='H') return '<span class="rc rc-o">Off</span>';
-  if(NOT_PRESENT_CODES.has(v)||v==='L'||v==='CO'||v==='W'||v==='EO') return '<span class="rc rc-a">Leave</span>';
-  if(v.indexOf('WFH')>-1) return '<span class="rc rc-w">WFH</span>';
-  if(v.indexOf('HL')>-1) return '<span class="rc rc-h">½ Day</span>';
-  return '<span class="rc rc-p">'+(val?String(val).trim():'P')+'</span>';
+  var isWknd = (wd===0||wd===6);
+  var res = parseRosterStatus(val, isWknd);
+  return '<span class="rc '+res.cls+'">'+res.label+'</span>';
 }
 
 var _rosterPage = 0;
@@ -7389,11 +7373,16 @@ function _processRosterRows(rows){
   var _absentDetails=[];
   rosterAgentRows(rows).forEach(function(row){
     var n=String(row[1]||'').trim();
-    var p=statusParts(row[dc]);
     var rawCode=String(row[dc]||'').trim();
-    if(p.some(function(x){return NOT_PRESENT_CODES.has(x);})){s.absent.push(n);_absentDetails.push({name:n,code:rawCode});}
-    if(p.indexOf('WFH')>-1)s.wfh.push(n);
-    if(p.indexOf('HL')>-1)s.halfDay.push(n);
+    var res = parseRosterStatus(rawCode, isWeekend(Number(today.getDate()), today.getMonth(), today.getFullYear()));
+    if(res.type === 'leave'){
+      s.absent.push(n);
+      _absentDetails.push({name:n, code:rawCode});
+    } else if(res.type === 'wfh'){
+      s.wfh.push(n);
+    } else if(res.type === 'half'){
+      s.halfDay.push(n);
+    }
   });
   // Store for absent modal
   window._rosterAbsent = _absentDetails;
@@ -7420,8 +7409,12 @@ async function loadRosterSummary(){
       }
     }catch(e2){}
     var now = Date.now();
-    // Always fetch fresh for dashboard summary — bypass in-memory cache
-    var r=await fetch(rosterUrl+'&cacheBust='+now+'&t='+Math.random());
+    var sep = rosterUrl.indexOf('?') > -1 ? '&' : '?';
+    var fetchUrl = rosterUrl + sep + '_cb=' + now + '_' + Math.floor(Math.random()*100000);
+    var r = await fetch(fetchUrl, {
+      cache: 'no-store',
+      headers: { 'Cache-Control': 'no-cache, no-store, must-revalidate', 'Pragma': 'no-cache' }
+    });
     if(!r.ok)throw new Error('fail');
     var rows=parseCsv(await r.text());
     window._rosterDataCache[rosterUrl]={rows:rows,timestamp:now};
@@ -19531,39 +19524,111 @@ async function cdPwResetLoad(){
     if(!users||!users.length){ container.innerHTML='<div style="color:var(--text-dim);font-size:.82rem;">No agents found.</div>'; return; }
     container.innerHTML = users.map(function(u){
       var ni=(u.name||'?').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
-      return '<div style="display:flex;align-items:center;gap:.75rem;padding:.6rem .8rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:var(--radius-sm);">'+
+      return '<div style="display:flex;align-items:center;gap:.75rem;padding:.6rem .8rem;background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:var(--radius-sm);flex-wrap:wrap;">'+
         '<div style="width:32px;height:32px;border-radius:50%;background:linear-gradient(135deg,var(--gold-dim),var(--gold));display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;color:#fff;flex-shrink:0;">'+ni+'</div>'+
-        '<div style="flex:1;min-width:0;">'+
+        '<div style="flex:1;min-width:140px;">'+
           '<div style="font-weight:600;font-size:.84rem;color:var(--text-primary);">'+esc(u.name)+'</div>'+
           '<div style="font-size:.72rem;color:var(--text-muted);">'+esc(u.email)+'</div>'+
         '</div>'+
-        '<input id="cd-pw-inp-'+u.id+'" type="text" placeholder="New password (min 6)" class="cd-input" style="max-width:180px;font-size:.8rem;" onkeydown="if(event.key===\'Enter\')cdPwResetSave(\''+u.id+'\',\''+esc(u.name)+'\')"/>'+
-        '<button class="xc-btn-sm" onclick="cdPwResetSave(\''+u.id+'\',\''+esc(u.name)+'\')">Set PW</button>'+
+        '<input id="cd-pw-inp-'+u.id+'" type="text" placeholder="New password (min 6)" class="cd-input" style="max-width:180px;font-size:.8rem;" onkeydown="if(event.key===\'Enter\')cdPwResetSave(\''+u.id+'\',\''+esc(u.name)+'\',this)"/>'+
+        '<button id="cd-pw-btn-'+u.id+'" class="xc-btn-sm" onclick="cdPwResetSave(\''+u.id+'\',\''+esc(u.name)+'\',this)">Set PW</button>'+
+        '<span id="cd-pw-status-'+u.id+'" style="font-size:.78rem;font-weight:600;display:none;margin-left:.3rem;"></span>'+
       '</div>';
     }).join('');
   }catch(e){ container.innerHTML='<div style="color:var(--accent-red);font-size:.82rem;">Error: '+e.message+'</div>'; }
 }
 
-async function cdPwResetSave(userId, name){
+async function cdPwResetSave(userId, name, btnEl){
   var inp = document.getElementById('cd-pw-inp-'+userId);
+  var btn = btnEl || document.getElementById('cd-pw-btn-'+userId);
+  var statusSpan = document.getElementById('cd-pw-status-'+userId);
   var msg = document.getElementById('cd-pwreset-msg');
   if(!inp) return;
   var newPw = (inp.value||'').trim();
   if(!newPw || newPw.length < 6){
-    if(msg){ msg.style.display='block'; msg.textContent='Password must be at least 6 characters.'; msg.style.color='var(--accent-red)'; setTimeout(function(){ msg.style.display='none'; }, 3000); }
+    if(statusSpan){
+      statusSpan.textContent = '⚠️ Min 6 characters';
+      statusSpan.style.color = '#ef4444';
+      statusSpan.style.display = 'inline';
+      setTimeout(function(){ statusSpan.style.display='none'; }, 3000);
+    }
+    if(msg){
+      msg.style.display = 'block';
+      msg.textContent = 'Password must be at least 6 characters.';
+      msg.style.color = '#ef4444';
+      msg.style.background = 'rgba(239,68,68,0.12)';
+      msg.style.border = '1px solid rgba(239,68,68,0.3)';
+      setTimeout(function(){ msg.style.display='none'; }, 3000);
+    }
+    inp.focus();
     return;
   }
+
+  var origBtnText = btn ? btn.textContent : 'Set PW';
+  if(btn){ btn.disabled = true; btn.textContent = 'Saving…'; }
+  if(statusSpan){ statusSpan.style.display = 'none'; }
+
   try{
     var hashed = await hashPassword(newPw);
-    await fetch(SUPABASE_URL + '/rest/v1/rpc/admin_reset_user_password', {
+    var res = await fetch(SUPABASE_URL + '/rest/v1/rpc/admin_reset_user_password', {
       method: 'POST',
       headers: sbHeaders({'Content-Type': 'application/json'}),
       body: JSON.stringify({ p_user_id: userId, p_new_hash: hashed })
     });
+    if(!res.ok){
+      var errTxt = await res.text();
+      throw new Error(errTxt || 'Server failed to update password');
+    }
+
     inp.value = '';
-    if(msg){ msg.style.display='block'; msg.textContent='✅ Password for '+name+' reset. New password: '+newPw; msg.style.color='var(--accent-green)'; setTimeout(function(){ msg.style.display='none'; }, 5000); }
+    if(btn){
+      btn.textContent = '✓ Saved!';
+      btn.style.background = '#10b981';
+      btn.style.borderColor = '#10b981';
+      btn.style.color = '#fff';
+      setTimeout(function(){
+        if(btn){
+          btn.disabled = false;
+          btn.textContent = origBtnText;
+          btn.style.background = '';
+          btn.style.borderColor = '';
+          btn.style.color = '';
+        }
+      }, 2500);
+    }
+    if(statusSpan){
+      statusSpan.textContent = '✅ Updated to: ' + newPw;
+      statusSpan.style.color = '#10b981';
+      statusSpan.style.display = 'inline';
+      setTimeout(function(){ statusSpan.style.display='none'; }, 6000);
+    }
+    if(msg){
+      msg.style.display = 'block';
+      msg.textContent = '✅ Password for ' + name + ' reset successfully. New password: ' + newPw;
+      msg.style.color = '#10b981';
+      msg.style.background = 'rgba(16,185,129,0.12)';
+      msg.style.border = '1px solid rgba(16,185,129,0.3)';
+      setTimeout(function(){ msg.style.display='none'; }, 6000);
+    }
+    if(typeof showToast === 'function'){
+      showToast('✅ Password for ' + name + ' reset to: ' + newPw);
+    }
   }catch(e){
-    if(msg){ msg.style.display='block'; msg.textContent='Error: '+e.message; msg.style.color='var(--accent-red)'; setTimeout(function(){ msg.style.display='none'; }, 4000); }
+    if(btn){ btn.disabled = false; btn.textContent = origBtnText; }
+    if(statusSpan){
+      statusSpan.textContent = '❌ Error: ' + e.message;
+      statusSpan.style.color = '#ef4444';
+      statusSpan.style.display = 'inline';
+      setTimeout(function(){ statusSpan.style.display='none'; }, 4000);
+    }
+    if(msg){
+      msg.style.display = 'block';
+      msg.textContent = 'Error: ' + e.message;
+      msg.style.color = '#ef4444';
+      msg.style.background = 'rgba(239,68,68,0.12)';
+      msg.style.border = '1px solid rgba(239,68,68,0.3)';
+      setTimeout(function(){ msg.style.display='none'; }, 4000);
+    }
   }
 }
 
@@ -20319,258 +20384,9 @@ async function siClearAll(){
 }
 
 // ═══════════════════════════════════════════════════════════════
-//  LIVE WEATHER + WORLD CLOCK WIDGET
-//  Pill in topbar: shows local icon + temp
-//  Click → dropdown with 12 cities: live time + weather + work-hours dot
-//  Open-Meteo API — free, no key. Weather lazy-loads on first open.
-//  Auto rain/thunder ambient animation via existing ambApply()
+//  WEATHER + WORLD CLOCK (REMOVED)
 // ═══════════════════════════════════════════════════════════════
-(function(){
-
-  // ── 12 World Cities ──
-  var WX_CITIES = [
-    { key:'chennai',      iso:'in', name:'Chennai',      tz:'Asia/Kolkata',        lat:13.0827,  lon:80.2707  },
-    { key:'dubai',        iso:'ae', name:'Dubai',         tz:'Asia/Dubai',          lat:25.2048,  lon:55.2708  },
-    { key:'riyadh',       iso:'sa', name:'Riyadh',        tz:'Asia/Riyadh',         lat:24.7136,  lon:46.6753  },
-    { key:'kuwait',       iso:'kw', name:'Kuwait City',   tz:'Asia/Kuwait',         lat:29.3759,  lon:47.9774  },
-    { key:'tehran',       iso:'ir', name:'Tehran',        tz:'Asia/Tehran',         lat:35.6892,  lon:51.3890  },
-    { key:'moscow',       iso:'ru', name:'Moscow',        tz:'Europe/Moscow',       lat:55.7558,  lon:37.6173  },
-    { key:'london',       iso:'gb', name:'London',        tz:'Europe/London',       lat:51.5074,  lon:-0.1278  },
-    { key:'newyork',      iso:'us', name:'New York',      tz:'America/New_York',    lat:40.7128,  lon:-74.0060 },
-    { key:'johannesburg', iso:'za', name:'Johannesburg',  tz:'Africa/Johannesburg', lat:-26.2041, lon:28.0473  },
-    { key:'singapore',    iso:'sg', name:'Singapore',     tz:'Asia/Singapore',      lat:1.3521,   lon:103.8198 },
-    { key:'shanghai',     iso:'cn', name:'Shanghai',      tz:'Asia/Shanghai',       lat:31.2304,  lon:121.4737 },
-    { key:'tokyo',        iso:'jp', name:'Tokyo',         tz:'Asia/Tokyo',          lat:35.6762,  lon:139.6503 }
-  ];
-
-  var WX_HOME = WX_CITIES[0]; // default = Chennai, replaced by geolocation
-  var _wxInterval    = null;
-  var _wxClockTimer  = null;
-  var _wxOpen        = false;
-  var _wxWeatherCache = {}; // key → { icon, temp, fetched }
-  var _wxFetching     = {}; // key → true (in-flight guard)
-
-  // ── WMO code decoder ──
-  function wxDecode(code, isDay){
-    var d = isDay;
-    if(code === 0)  return { icon: d?'☀️':'🌙',  isRain:false, isThunder:false };
-    if(code <= 2)   return { icon: d?'⛅':'🌙',  isRain:false, isThunder:false };
-    if(code === 3)  return { icon:'☁️',           isRain:false, isThunder:false };
-    if(code <= 49)  return { icon:'🌫️',           isRain:false, isThunder:false };
-    if(code <= 57)  return { icon:'🌧️',           isRain:true,  isThunder:false };
-    if(code <= 67)  return { icon:'🌧️',           isRain:true,  isThunder:false };
-    if(code <= 77)  return { icon:'❄️',           isRain:false, isThunder:false };
-    if(code <= 82)  return { icon:'🌦️',           isRain:true,  isThunder:false };
-    if(code <= 86)  return { icon:'🌨️',           isRain:false, isThunder:false };
-    if(code <= 99)  return { icon:'⛈️',           isRain:true,  isThunder:true  };
-    return           { icon:'🌡️',                  isRain:false, isThunder:false };
-  }
-
-  // ── Fetch weather for one city, cache it ──
-  async function wxFetchCity(city){
-    if(_wxFetching[city.key]) return;
-    _wxFetching[city.key] = true;
-    try{
-      var url = 'https://api.open-meteo.com/v1/forecast?latitude='+city.lat+'&longitude='+city.lon+
-        '&current=temperature_2m,weathercode,is_day,precipitation&timezone=auto&forecast_days=1';
-      var resp = await fetch(url);
-      var data = await resp.json();
-      var cur  = data.current;
-      var info = wxDecode(cur.weathercode, cur.is_day === 1);
-      _wxWeatherCache[city.key] = {
-        icon: info.icon, temp: Math.round(cur.temperature_2m),
-        isRain: info.isRain, isThunder: info.isThunder,
-        precip: cur.precipitation || 0, fetched: Date.now()
-      };
-    }catch(e){ /* silent */ }
-    _wxFetching[city.key] = false;
-  }
-
-  // ── Fetch home city + trigger animation ──
-  async function wxFetchHome(){
-    await wxFetchCity(WX_HOME);
-    var wx = _wxWeatherCache[WX_HOME.key];
-    if(!wx) return;
-    // Update pill
-    var iconEl = document.getElementById('wx-icon');
-    var tempEl = document.getElementById('wx-temp');
-    var cityEl = document.getElementById('wx-city-pill');
-    if(iconEl) iconEl.textContent = wx.icon;
-    if(tempEl) tempEl.textContent = wx.temp + '°C';
-    if(cityEl) cityEl.textContent = WX_HOME.name;
-    // Show wrap
-    var wrap = document.getElementById('wx-wrap');
-    if(wrap) wrap.style.display = '';
-    // NOTE: automatic weather-triggered ambient rain/thunder has been disabled by request.
-    // Weather pill (icon/temp/city) still updates above; it just no longer drives ambApply().
-    // Refresh dropdown if open
-    if(_wxOpen) wxRenderDropdown();
-  }
-
-  // ── Fetch all cities (background, lazy) ──
-  function wxFetchAll(){
-    WX_CITIES.forEach(function(c){ wxFetchCity(c); });
-  }
-
-  // ── Format time for a timezone ──
-  function wxGetTime(tz){
-    try{
-      var now = new Date();
-      var parts = new Intl.DateTimeFormat('en-US',{
-        timeZone: tz, hour:'numeric', minute:'2-digit', second:'2-digit',
-        hour12: true
-      }).formatToParts(now);
-      var get = function(t){ var p=parts.find(function(p){return p.type===t;}); return p?p.value:''; };
-      var h = get('hour'), m = get('minute'), s = get('second'), period = get('dayPeriod');
-      var hour24 = new Intl.DateTimeFormat('en-GB',{ timeZone:tz, hour:'2-digit', hour12:false }).formatToParts(now).find(function(p){return p.type==='hour';});
-      return { time: h+':'+m+':'+s+' '+period, hour: hour24 ? parseInt(hour24.value) : 12 };
-    }catch(e){ return { time:'--:-- --', hour: 12 }; }
-  }
-
-  function wxGetDate(tz){
-    try{
-      return new Intl.DateTimeFormat('en-GB',{
-        timeZone: tz, weekday:'short', month:'short', day:'numeric'
-      }).format(new Date());
-    }catch(e){ return ''; }
-  }
-
-  // ── Render dropdown ──
-  function wxRenderDropdown(){
-    var drop = document.getElementById('wx-dropdown');
-    if(!drop) return;
-    var now = new Date();
-    var updStr = now.toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit',hour12:true,timeZone:'Asia/Kolkata'});
-    var html =
-      '<div class="wx-drop-header">'+
-        '<div class="wx-drop-header-left">'+
-          '<span class="wx-drop-htitle">World Clock &amp; Weather</span>'+
-        '</div>'+
-        '<span class="wx-drop-lastupd">Updated '+updStr+'</span>'+
-      '</div>'+
-      '<div class="wx-grid">';
-    WX_CITIES.forEach(function(c){
-      var t    = wxGetTime(c.tz);
-      var date = wxGetDate(c.tz);
-      var isWork = t.hour >= 9 && t.hour < 18;
-      var wx   = _wxWeatherCache[c.key];
-      var wIcon = wx ? wx.icon : '';
-      var wTemp = wx ? wx.temp+'°' : '';
-      // Split time into number + AM/PM
-      var timeParts = t.time.match(/^(.+?)\s*(AM|PM)$/i);
-      var timeNum = timeParts ? timeParts[1] : t.time;
-      var timePeriod = timeParts ? timeParts[2] : '';
-      var flagHtml = c.iso
-        ? '<img class="wx-city-flag" src="https://flagcdn.com/w40/'+c.iso+'.png" alt="'+c.name+'" loading="lazy"/>'
-        : '<span style="font-size:1.3rem;flex-shrink:0;">📍</span>';
-      html +=
-        '<div class="wx-city-card'+(isWork?' work-hours':'')+'" id="wxcard-'+c.key+'">'+
-          '<div class="wx-work-dot'+(isWork?' active':'')+'"></div>'+
-          flagHtml+
-          '<div class="wx-city-body">'+
-            '<div class="wx-city-name">'+c.name+'</div>'+
-            '<div class="wx-city-time" id="wxt-'+c.key+'">'+timeNum+'<span class="wx-city-ampm">'+timePeriod+'</span></div>'+
-            '<div class="wx-city-date">'+date+'</div>'+
-          '</div>'+
-          '<div class="wx-city-wx">'+
-            '<span class="wx-city-wicon">'+wIcon+'</span>'+
-            '<span class="wx-city-wtemp">'+wTemp+'</span>'+
-          '</div>'+
-        '</div>';
-    });
-    html += '</div>'+
-      '<div class="wx-drop-footer">'+
-        '<span style="width:6px;height:6px;border-radius:50%;background:#2EC56F;display:inline-block;box-shadow:0 0 5px rgba(46,197,111,.6);flex-shrink:0;"></span>'+
-        'Green dot = business hours (9 AM – 6 PM local) &nbsp;·&nbsp; Weather loads on first open'+
-      '</div>';
-    drop.innerHTML = html;
-  }
-
-  // ── Live clock tick (every second when dropdown open) ──
-  function wxStartClock(){
-    if(_wxClockTimer) return;
-    _wxClockTimer = setInterval(function(){
-      if(!_wxOpen){ clearInterval(_wxClockTimer); _wxClockTimer=null; return; }
-      WX_CITIES.forEach(function(c){
-        var el = document.getElementById('wxt-'+c.key);
-        if(el){
-          var t = wxGetTime(c.tz);
-          var timeParts = t.time.match(/^(.+?)\s*(AM|PM)$/i);
-          var timeNum = timeParts ? timeParts[1] : t.time;
-          var timePeriod = timeParts ? timeParts[2] : '';
-          el.innerHTML = timeNum+'<span class="wx-city-ampm">'+timePeriod+'</span>';
-        }
-      });
-    }, 1000);
-  }
-
-  // ── Toggle dropdown ──
-  window.wxToggleDropdown = function(e){
-    e.stopPropagation();
-    var drop = document.getElementById('wx-dropdown');
-    var btn  = document.getElementById('wx-widget');
-    if(!drop) return;
-    _wxOpen = drop.style.display === 'none' || drop.style.display === '';
-    if(_wxOpen){
-      // Fetch all cities weather in background on first open
-      wxFetchAll();
-      wxRenderDropdown();
-      drop.style.display = 'block';
-      btn.classList.add('open');
-      wxStartClock();
-    } else {
-      drop.style.display = 'none';
-      btn.classList.remove('open');
-    }
-  };
-
-  // Close on outside click
-  document.addEventListener('click', function(e){
-    if(!_wxOpen) return;
-    var wrap = document.getElementById('wx-wrap');
-    if(wrap && !wrap.contains(e.target)){
-      var drop = document.getElementById('wx-dropdown');
-      var btn  = document.getElementById('wx-widget');
-      if(drop) drop.style.display = 'none';
-      if(btn)  btn.classList.remove('open');
-      _wxOpen = false;
-    }
-  });
-
-  // ── Geolocation → home city ──
-  function wxStart(){
-    // Always start immediately with Chennai as default — no "Your Location" flash
-    wxFetchHome();
-    if(_wxInterval) clearInterval(_wxInterval);
-    _wxInterval = setInterval(wxFetchHome, 15*60*1000);
-
-    if(!navigator.geolocation) return;
-    navigator.geolocation.getCurrentPosition(
-      function(pos){
-        var lat = pos.coords.latitude, lon = pos.coords.longitude;
-        // Only override if they're NOT in Chennai (>50km away)
-        var dLat = lat - 13.0827, dLon = lon - 80.2707;
-        var distKm = Math.sqrt(dLat*dLat + dLon*dLon) * 111;
-        if(distKm < 50) return; // close enough to Chennai — keep Chennai label
-        // They're elsewhere (e.g. Bangalore) — reverse geocode then update
-        fetch('https://nominatim.openstreetmap.org/reverse?lat='+lat+'&lon='+lon+'&format=json')
-          .then(function(r){ return r.json(); })
-          .then(function(geo){
-            var city = (geo.address && (geo.address.city || geo.address.town || geo.address.suburb)) || 'Your Location';
-            WX_HOME = { key:'home', flag:'📍', name:city, tz: Intl.DateTimeFormat().resolvedOptions().timeZone, lat:lat, lon:lon };
-            WX_CITIES[0] = WX_HOME;
-            // Re-fetch with correct coords and update pill
-            wxFetchHome();
-          }).catch(function(){});
-      },
-      function(){ /* denied — Chennai stays, already started */ },
-      { timeout:6000, maximumAge:3600000 }
-    );
-  }
-
-  document.addEventListener('DOMContentLoaded', function(){ wxStart(); });
-
-})();
+window.wxToggleDropdown = function(){};
 
 </script>
 
