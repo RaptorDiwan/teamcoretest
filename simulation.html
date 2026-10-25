@@ -327,6 +327,673 @@ body {
   0%,100%{transform:translateX(0)} 20%{transform:translateX(-8px)} 40%{transform:translateX(8px)} 60%{transform:translateX(-6px)} 80%{transform:translateX(6px)}
 }
 
+/* ══ K7 ENTERPRISE / CLOUD SECURITY SIMULATION ══ */
+#k7-cloud-panel, #k7-enterprise-panel {
+  min-height: calc(100vh - 48px);
+  display: none;
+  flex-direction: column;
+  width: 100%;
+  background: #f4f6f9;
+  font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+  color: #333;
+}
+#k7-cloud-panel.k7-visible, #k7-enterprise-panel.k7-visible { display: flex; }
+
+/* Login Screen */
+.k7-ce-login-wrap {
+  min-height: calc(100vh - 48px);
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #ffffff;
+  padding: 40px 20px;
+}
+.k7-ce-login-box {
+  width: 485px;
+  max-width: 95vw;
+  background: #ffffff;
+  border: 1px solid #c2d1dc;
+  border-radius: 3px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  overflow: hidden;
+}
+.k7-ce-login-header {
+  height: 56px;
+  background: linear-gradient(135deg, #d3eaf7 0%, #b8dbf2 60%, #8fc1e7 100%);
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  gap: 12px;
+  border-bottom: 1px solid #a8cce4;
+  position: relative;
+}
+.k7-ce-login-header-decor {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 70px;
+  background: linear-gradient(135deg, transparent 40%, rgba(32, 118, 179, 0.28) 100%);
+  clip-path: polygon(40% 0, 100% 0, 100% 100%, 0% 100%);
+  pointer-events: none;
+}
+.k7-ce-logo-icon {
+  width: 32px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.k7-ce-login-title {
+  font-family: Arial, sans-serif;
+  font-size: 19px;
+  font-weight: 900;
+  color: #001f3f;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.k7-ce-login-body {
+  padding: 24px 28px 20px 28px;
+  background: #ffffff;
+}
+.k7-ce-form-group {
+  margin-bottom: 15px;
+}
+.k7-ce-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: #333333;
+  margin-bottom: 5px;
+}
+.k7-ce-input {
+  width: 100%;
+  height: 34px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 13px;
+  color: #333;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+  box-sizing: border-box;
+}
+.k7-ce-input:focus {
+  border-color: #66afe9;
+  box-shadow: 0 0 6px rgba(102, 175, 233, 0.5);
+}
+.k7-ce-login-btn {
+  width: 100%;
+  height: 36px;
+  background: #337ab7;
+  border: 1px solid #2e6da4;
+  color: #ffffff;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: background .15s;
+  margin-top: 4px;
+  margin-bottom: 12px;
+}
+.k7-ce-login-btn:hover {
+  background: #286090;
+  border-color: #204d74;
+}
+.k7-ce-login-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #555;
+}
+.k7-ce-login-row a {
+  color: #337ab7;
+  text-decoration: none;
+}
+.k7-ce-login-row a:hover {
+  text-decoration: underline;
+}
+.k7-ce-login-row label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  font-size: 12px;
+  color: #333;
+}
+.k7-ce-footer-copy {
+  margin-top: 20px;
+  font-size: 11px;
+  color: #777;
+  text-align: center;
+  font-family: Arial, sans-serif;
+}
+
+/* Dashboard Screen */
+.k7-ce-dash-wrap {
+  width: 100%;
+  min-height: calc(100vh - 48px);
+  display: flex;
+  flex-direction: column;
+  background: #edf1f5;
+}
+.k7-ce-topbar {
+  height: 48px;
+  background: #337ab7;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 16px;
+  color: #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+.k7-ce-top-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.k7-ce-top-title {
+  font-size: 17px;
+  font-weight: 900;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  text-transform: uppercase;
+}
+.k7-ce-top-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.k7-ce-search-wrap {
+  position: relative;
+  width: 200px;
+}
+.k7-ce-search-input {
+  width: 100%;
+  height: 28px;
+  background: #ffffff;
+  border: 1px solid rgba(255,255,255,0.4);
+  border-radius: 14px;
+  padding: 0 28px 0 12px;
+  font-size: 12px;
+  color: #333;
+  outline: none;
+}
+.k7-ce-search-icon {
+  position: absolute;
+  right: 10px;
+  top: 6px;
+  font-size: 12px;
+  color: #777;
+  pointer-events: none;
+}
+.k7-ce-top-actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.k7-ce-action-btn {
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-size: 16px;
+  opacity: .92;
+  transition: opacity .15s;
+}
+.k7-ce-action-btn:hover { opacity: 1; }
+.k7-ce-badge-num {
+  position: absolute;
+  top: -5px;
+  right: -7px;
+  background: #f37023;
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 4px;
+  border-radius: 8px;
+  line-height: 1;
+}
+
+/* Dashboard Body */
+.k7-ce-main-layout {
+  display: flex;
+  flex: 1;
+  min-height: calc(100vh - 96px);
+}
+.k7-ce-sidebar {
+  width: 190px;
+  background: #ffffff;
+  border-right: 1px solid #dde3ea;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  padding: 14px 0;
+  position: relative;
+  z-index: 1000;
+}
+.k7-ce-support-header {
+  padding: 0 18px 12px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #edf1f5;
+  margin-bottom: 8px;
+}
+.k7-ce-support-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #f37023;
+}
+.k7-ce-collapse-arrow {
+  color: #777;
+  font-size: 12px;
+  cursor: pointer;
+}
+.k7-ce-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 18px;
+  font-size: 13px;
+  color: #444;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+  transition: all .15s;
+}
+.k7-ce-nav-item:hover {
+  background: #f5f8fa;
+  color: #337ab7;
+}
+.k7-ce-nav-item.active {
+  background: #eef6fc;
+  color: #337ab7;
+  font-weight: 600;
+  border-left-color: #337ab7;
+}
+.k7-ce-nav-icon {
+  font-size: 15px;
+  width: 20px;
+  text-align: center;
+  color: #555;
+}
+.k7-ce-nav-item.active .k7-ce-nav-icon {
+  color: #337ab7;
+}
+.k7-ce-version {
+  margin-top: auto;
+  padding: 12px 18px;
+  font-size: 11px;
+  color: #999;
+}
+
+/* Content Area */
+.k7-ce-content-area {
+  flex: 1;
+  padding: 18px 22px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.k7-ce-card {
+  background: #ffffff;
+  border: 1px solid #d9e1e8;
+  border-radius: 3px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+.k7-ce-card-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 12px;
+}
+
+/* Top 2 Charts Row */
+.k7-ce-top-row {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 16px;
+}
+.k7-ce-timeline-wrap {
+  width: 100%;
+  overflow-x: auto;
+  padding-bottom: 6px;
+}
+.k7-ce-timeline-axis {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ee5253;
+  padding-bottom: 4px;
+  margin-top: 50px;
+  position: relative;
+}
+.k7-ce-timeline-axis::before {
+  content: '0';
+  position: absolute;
+  left: -12px;
+  top: -8px;
+  font-size: 10px;
+  color: #777;
+}
+.k7-ce-timeline-axis::after {
+  content: '1';
+  position: absolute;
+  left: -12px;
+  top: -46px;
+  font-size: 10px;
+  color: #777;
+}
+.k7-ce-timeline-tick {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-size: 9px;
+  color: #666;
+  white-space: nowrap;
+  position: relative;
+}
+.k7-ce-timeline-tick::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #ee5253;
+  margin-bottom: 4px;
+}
+
+/* Donut Chart */
+.k7-ce-donut-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 0;
+}
+.k7-ce-donut {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  border: 22px solid #c2c9d2;
+  box-sizing: border-box;
+}
+.k7-ce-donut-label {
+  margin-top: 10px;
+  font-size: 11px;
+  color: #666;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.k7-ce-dot-grey {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #c2c9d2;
+}
+
+/* 5 Metric Cards Row */
+.k7-ce-metrics-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 12px;
+}
+.k7-ce-metric-card {
+  border-radius: 3px;
+  padding: 16px 16px 14px 16px;
+  color: #ffffff;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  min-height: 100px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.k7-ce-metric-val {
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1;
+}
+.k7-ce-metric-label {
+  font-size: 12px;
+  font-weight: 500;
+  margin-top: 8px;
+  line-height: 1.3;
+}
+.k7-ce-metric-icon {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  font-size: 26px;
+  opacity: 0.38;
+}
+
+/* Bottom 3 Cards Row */
+.k7-ce-bottom-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+.k7-ce-select {
+  height: 24px;
+  font-size: 11px;
+  border: 1px solid #ccc;
+  border-radius: 2px;
+  padding: 0 6px;
+  background: #fff;
+  color: #333;
+  margin-left: 6px;
+  outline: none;
+  cursor: pointer;
+}
+.k7-ce-os-row {
+  display: flex;
+  gap: 16px;
+  margin-top: 4px;
+}
+.k7-ce-os-card {
+  width: 32%;
+  min-width: 340px;
+  height: 290px;
+  background: #ffffff;
+  border: 1px solid #d9e1e8;
+  border-radius: 3px;
+  padding: 14px 16px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+}
+
+/* Flyout Submenu for Sidebar */
+.k7-ce-nav-parent {
+  position: relative;
+}
+.k7-ce-flyout {
+  display: none;
+  position: absolute;
+  left: 100%;
+  top: 0;
+  width: 180px;
+  background: #ffffff;
+  border: 1px solid #c9d5e0;
+  border-radius: 2px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+  z-index: 99999;
+  padding: 4px 0;
+}
+.k7-ce-flyout::before {
+  content: '';
+  position: absolute;
+  left: -15px;
+  top: 0;
+  width: 15px;
+  height: 100%;
+}
+.k7-ce-nav-parent:hover .k7-ce-flyout,
+.k7-ce-flyout:hover {
+  display: block !important;
+}
+.k7-ce-flyout-item {
+  padding: 8px 16px;
+  font-size: 12px;
+  color: #333333;
+  cursor: pointer;
+  transition: background .12s, color .12s;
+  font-weight: 400;
+}
+.k7-ce-flyout-item:hover {
+  background: #eef6fc;
+  color: #337ab7;
+  font-weight: 600;
+}
+.k7-ce-flyout-item.active {
+  background: #337ab7;
+  color: #ffffff;
+}
+#k7-ce-devices-content.show-view {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+#k7-ce-dash-content.hide-view {
+  display: none !important;
+}
+
+/* Devices Section */
+.k7-ce-dev-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.k7-ce-dev-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0;
+}
+.k7-ce-dev-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.k7-ce-dev-btn {
+  background: #337ab7;
+  border: 1px solid #2e6da4;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.06);
+  transition: background .15s;
+}
+.k7-ce-dev-btn:hover {
+  background: #286090;
+  border-color: #204d74;
+}
+
+/* Devices Table */
+.k7-ce-table-wrap {
+  background: #ffffff;
+  border: 1px solid #d9e1e8;
+  border-radius: 3px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+  overflow-x: auto;
+}
+.k7-ce-dev-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  font-family: Arial, sans-serif;
+  text-align: left;
+}
+.k7-ce-dev-table th {
+  background: #ffffff;
+  color: #333333;
+  font-weight: 600;
+  padding: 10px 14px;
+  border-bottom: 1px solid #e1e8ed;
+  border-right: 1px solid #f0f3f6;
+  white-space: nowrap;
+}
+.k7-ce-dev-table th:last-child {
+  border-right: none;
+}
+.k7-ce-dev-table td {
+  padding: 11px 14px;
+  border-bottom: 1px solid #edf2f7;
+  border-right: 1px solid #f8fafc;
+  color: #333333;
+  white-space: nowrap;
+}
+.k7-ce-dev-table td:last-child {
+  border-right: none;
+}
+.k7-ce-dev-table tr:hover td {
+  background: #f7fafc;
+}
+.k7-ce-dev-name-link {
+  color: #337ab7;
+  text-decoration: underline;
+  cursor: pointer;
+  font-weight: 500;
+}
+.k7-ce-dev-name-link:hover {
+  color: #23527c;
+}
+.k7-ce-table-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  font-size: 11px;
+  color: #666;
+  background: #ffffff;
+  border-top: 1px solid #e1e8ed;
+}
+.k7-ce-page-btn {
+  border: 1px solid #d0d7de;
+  background: #fff;
+  border-radius: 2px;
+  padding: 3px 8px;
+  cursor: pointer;
+  color: #555;
+  font-size: 11px;
+}
+.k7-ce-page-btn.disabled {
+  color: #bbb;
+  cursor: not-allowed;
+  border-color: #e1e8ed;
+}
+.k7-ce-size-opt {
+  padding: 2px 6px;
+  border-radius: 2px;
+  cursor: pointer;
+}
+.k7-ce-size-opt.active {
+  background: #337ab7;
+  color: #fff;
+  font-weight: 700;
+}
+
 /* ── MAC SETUP GUIDE PANEL ── */
 #k7-macsetup-panel {
   min-height: calc(100vh - 48px);
@@ -4181,21 +4848,500 @@ document.querySelectorAll('.ov').forEach(ov=>{
 </div>
 </div>
 
-<!-- ══ CLOUD SECURITY PANEL ══ -->
-<div id="k7-cloud-panel" class="k7-locked-panel">
-  <div class="k7-lock-box">
-    <div class="k7-lock-icon">☁️</div>
-    <div class="k7-lock-product">K7 Security Suite</div>
-    <div class="k7-lock-title">K7 Cloud Security</div>
-    <div class="k7-lock-coming">🚀 COMING SOON</div>
-    <div class="k7-lock-subtitle">This module provides cloud-based threat intelligence and centralised policy management across all endpoints.</div>
-    <div class="k7-lock-divider"></div>
-    <div class="k7-lock-input-label">ENTER ACCESS PASSWORD</div>
-    <input class="k7-lock-input" type="password" id="cloud-pwd" placeholder="••••••••" onkeydown="if(event.key==='Enter')k7TryUnlock('cloud')">
-    <button class="k7-lock-btn" onclick="k7TryUnlock('cloud')">Unlock Module</button>
-    <div class="k7-lock-error" id="cloud-err"></div>
-    <div class="k7-lock-admin">Don't have access? <span onclick="k7LockToast()">Contact your administrator</span> to request access.</div>
+<!-- ══ CLOUD SECURITY PANEL (K7 ENTERPRISE / CLOUD SECURITY SIMULATION) ══ -->
+<div id="k7-cloud-panel">
+
+  <!-- ── 1. LOGIN SCREEN (Matches Screenshot 1 Exactly) ── -->
+  <div id="k7-ce-login-view" class="k7-ce-login-wrap">
+    <div class="k7-ce-login-box">
+      <div class="k7-ce-login-header">
+        <div class="k7-ce-logo-icon">
+          <svg width="34" height="28" viewBox="0 0 100 85" fill="none">
+            <polygon points="10,12 90,12 50,80" fill="#f37023"/>
+            <polygon points="26,18 74,18 50,60" fill="#0f4c81"/>
+            <polygon points="38,24 62,24 50,45" fill="#f37023"/>
+          </svg>
+        </div>
+        <div class="k7-ce-login-title">K7 ENTERPRISE SECURITY</div>
+        <div class="k7-ce-login-header-decor"></div>
+      </div>
+      <div class="k7-ce-login-body">
+        <div class="k7-ce-form-group">
+          <label class="k7-ce-label" for="k7-ce-email">Email Address</label>
+          <input class="k7-ce-input" type="text" id="k7-ce-email" placeholder="" value="admin@k7security.com" onkeydown="if(event.key==='Enter')document.getElementById('k7-ce-pwd').focus()">
+        </div>
+        <div class="k7-ce-form-group">
+          <label class="k7-ce-label" for="k7-ce-pwd">Password</label>
+          <input class="k7-ce-input" type="password" id="k7-ce-pwd" placeholder="" value="••••••••" onkeydown="if(event.key==='Enter')k7CeDoLogin()">
+        </div>
+        <button class="k7-ce-login-btn" id="k7-ce-login-btn" onclick="k7CeDoLogin()">LOGIN</button>
+        <div class="k7-ce-login-row">
+          <a href="#" onclick="alert('Password reset instructions sent to your registered email.');return false;">Forgot Password ?</a>
+          <label><input type="checkbox" checked> Keep me signed in</label>
+        </div>
+      </div>
+    </div>
+    <div class="k7-ce-footer-copy">&copy; K7 Computing Pvt Ltd. All Rights reserved.</div>
   </div>
+
+  <!-- ── 2. DASHBOARD CONSOLE SCREEN (Matches Screenshot 2 Exactly) ── -->
+  <div id="k7-ce-dash-view" class="k7-ce-dash-wrap" style="display:none;">
+    
+    <!-- Topbar -->
+    <div class="k7-ce-topbar">
+      <div class="k7-ce-top-left">
+        <div class="k7-ce-logo-icon">
+          <svg width="28" height="24" viewBox="0 0 100 85" fill="none">
+            <polygon points="10,12 90,12 50,80" fill="#ffffff"/>
+            <polygon points="26,18 74,18 50,60" fill="#f37023"/>
+            <polygon points="38,24 62,24 50,45" fill="#ffffff"/>
+          </svg>
+        </div>
+        <span class="k7-ce-top-title">K7 ENTERPRISE SECURITY</span>
+      </div>
+
+      <div class="k7-ce-top-right">
+        <div class="k7-ce-search-wrap">
+          <input type="text" class="k7-ce-search-input" placeholder="Search user" />
+          <span class="k7-ce-search-icon">&#128269;</span>
+        </div>
+        <div class="k7-ce-top-actions">
+          <button class="k7-ce-action-btn" title="Notifications">
+            &#128276;<span class="k7-ce-badge-num">1</span>
+          </button>
+          <button class="k7-ce-action-btn" title="Help & Documentation">&#10068;</button>
+          <button class="k7-ce-action-btn" title="Agent Profile">&#128100;</button>
+          <button class="k7-ce-action-btn" onclick="k7CeLogout()" title="Log Out of Cloud Console" style="color:#ffb4a2;">&#x23FB;</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <div class="k7-ce-main-layout">
+      <!-- Sidebar -->
+      <aside class="k7-ce-sidebar">
+        <div class="k7-ce-support-header">
+          <span class="k7-ce-support-title">Support Team</span>
+          <span class="k7-ce-collapse-arrow" title="Collapse Sidebar">&#9664;</span>
+        </div>
+        <div class="k7-ce-nav-item active" id="k7-ce-nav-dashboard" onclick="k7CeSetNav(this,'dashboard')">
+          <span class="k7-ce-nav-icon">&#9201;</span>
+          <span>Dashboard</span>
+        </div>
+        <div class="k7-ce-nav-parent" onmouseenter="k7CeHoverMenu(true)" onmouseleave="k7CeHoverMenu(false)">
+          <div class="k7-ce-nav-item" id="k7-ce-nav-devices" onclick="k7CeShowDevices(event)">
+            <span class="k7-ce-nav-icon">&#128421;</span>
+            <span>Manage Devices</span>
+          </div>
+          <!-- Flyout Child Menu (Matches Screenshot 1 Exactly) -->
+          <div class="k7-ce-flyout" id="k7-ce-flyout-devices" onmouseenter="k7CeHoverMenu(true)" onmouseleave="k7CeHoverMenu(false)">
+            <div class="k7-ce-flyout-item active" id="k7-flyout-item-devices" style="border-top:2px solid #337ab7;font-weight:600;color:#337ab7;cursor:pointer;" onclick="k7CeShowDevices(event)">Devices</div>
+            <div class="k7-ce-flyout-item" onclick="alert('Install Protection wizard simulated.');event.stopPropagation();">Install Protection</div>
+            <div class="k7-ce-flyout-item" onclick="alert('Device Groups simulated.');event.stopPropagation();">Group</div>
+            <div class="k7-ce-flyout-item" onclick="alert('Security Policies simulated.');event.stopPropagation();">Policy</div>
+            <div class="k7-ce-flyout-item" onclick="alert('Device Tasks simulated.');event.stopPropagation();">Tasks</div>
+            <div class="k7-ce-flyout-item" onclick="alert('Policy Override settings simulated.');event.stopPropagation();">Policy Override</div>
+            <div class="k7-ce-flyout-item" onclick="alert('Quarantined files simulated.');event.stopPropagation();">Quarantine</div>
+          </div>
+        </div>
+        <div class="k7-ce-nav-item" onclick="k7CeSetNav(this,'appcontrol')">
+          <span class="k7-ce-nav-icon">&#128455;</span>
+          <span>Application Control</span>
+        </div>
+        <div class="k7-ce-nav-item" onclick="k7CeSetNav(this,'settings')">
+          <span class="k7-ce-nav-icon">&#9881;</span>
+          <span>Settings</span>
+        </div>
+        <div class="k7-ce-nav-item" onclick="k7CeSetNav(this,'admin')">
+          <span class="k7-ce-nav-icon">&#128100;</span>
+          <span>Administration</span>
+        </div>
+        <div class="k7-ce-nav-item" onclick="k7CeSetNav(this,'report')">
+          <span class="k7-ce-nav-icon">&#128202;</span>
+          <span>Report</span>
+        </div>
+        <div class="k7-ce-version">v4.5.5.41</div>
+      </aside>
+
+      <!-- Main Content Area -->
+      <main class="k7-ce-content-area">
+        
+        <!-- ── DASHBOARD VIEW ── -->
+        <div id="k7-ce-dash-content" style="display:flex;flex-direction:column;gap:16px;">
+        <!-- Top 2 Cards: 24h Timeline & Donut Status -->
+        <div class="k7-ce-top-row">
+          
+          <!-- Threat Detection 24h Timeline -->
+          <div class="k7-ce-card">
+            <div class="k7-ce-card-title">Threat detection in last 24 hours</div>
+            <div style="font-size:10px;color:#777;margin-bottom:-10px;">Threat Count</div>
+            <div class="k7-ce-timeline-wrap">
+              <div class="k7-ce-timeline-axis">
+                <span class="k7-ce-timeline-tick">8 PM</span>
+                <span class="k7-ce-timeline-tick">9 PM</span>
+                <span class="k7-ce-timeline-tick">10 PM</span>
+                <span class="k7-ce-timeline-tick">11 PM</span>
+                <span class="k7-ce-timeline-tick">12 AM</span>
+                <span class="k7-ce-timeline-tick">1 AM</span>
+                <span class="k7-ce-timeline-tick">2 AM</span>
+                <span class="k7-ce-timeline-tick">3 AM</span>
+                <span class="k7-ce-timeline-tick">4 AM</span>
+                <span class="k7-ce-timeline-tick">5 AM</span>
+                <span class="k7-ce-timeline-tick">6 AM</span>
+                <span class="k7-ce-timeline-tick">7 AM</span>
+                <span class="k7-ce-timeline-tick">8 AM</span>
+                <span class="k7-ce-timeline-tick">9 AM</span>
+                <span class="k7-ce-timeline-tick">10 AM</span>
+                <span class="k7-ce-timeline-tick">11 AM</span>
+                <span class="k7-ce-timeline-tick">12 PM</span>
+                <span class="k7-ce-timeline-tick">1 PM</span>
+                <span class="k7-ce-timeline-tick">2 PM</span>
+                <span class="k7-ce-timeline-tick">3 PM</span>
+                <span class="k7-ce-timeline-tick">4 PM</span>
+                <span class="k7-ce-timeline-tick">5 PM</span>
+                <span class="k7-ce-timeline-tick">6 PM</span>
+                <span class="k7-ce-timeline-tick">7 PM</span>
+              </div>
+            </div>
+            <div style="text-align:center;font-size:11px;color:#888;margin-top:14px;">Timeline</div>
+          </div>
+
+          <!-- Device Security Status Donut -->
+          <div class="k7-ce-card">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+              <span class="k7-ce-card-title" style="margin-bottom:0;">Device security status</span>
+              <span style="font-size:13px;font-weight:700;color:#111;">Total devices <span style="font-size:16px;">6</span></span>
+            </div>
+            <div class="k7-ce-donut-wrap">
+              <div class="k7-ce-donut"></div>
+              <div class="k7-ce-donut-label">
+                <span class="k7-ce-dot-grey"></span>
+                <span>6 Not reported</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Middle Row: 5 Colorful Metric Cards -->
+        <div class="k7-ce-metrics-row">
+          
+          <!-- Card 1: Coral / Red -->
+          <div class="k7-ce-metric-card" style="background:#ee5253;">
+            <div class="k7-ce-metric-val">0</div>
+            <div class="k7-ce-metric-label">Threat Detected</div>
+            <div class="k7-ce-metric-icon">&#129714;</div>
+          </div>
+
+          <!-- Card 2: Pink / Magenta -->
+          <div class="k7-ce-metric-card" style="background:#e84393;">
+            <div class="k7-ce-metric-val">0</div>
+            <div class="k7-ce-metric-label">Device Control - Device Access Violation</div>
+            <div class="k7-ce-metric-icon">&#128268;</div>
+          </div>
+
+          <!-- Card 3: Sky Blue -->
+          <div class="k7-ce-metric-card" style="background:#0984e3;">
+            <div class="k7-ce-metric-val">0</div>
+            <div class="k7-ce-metric-label">Application Blocked</div>
+            <div class="k7-ce-metric-icon">&#128193;</div>
+          </div>
+
+          <!-- Card 4: Teal -->
+          <div class="k7-ce-metric-card" style="background:#00a8b5;">
+            <div class="k7-ce-metric-val">0</div>
+            <div class="k7-ce-metric-label">Website Blocked (URLs)</div>
+            <div class="k7-ce-metric-icon">&#128065;</div>
+          </div>
+
+          <!-- Card 5: Purple -->
+          <div class="k7-ce-metric-card" style="background:#6c5ce7;">
+            <div class="k7-ce-metric-val">0</div>
+            <div class="k7-ce-metric-label">Vulnerability Detected</div>
+            <div class="k7-ce-metric-icon">&#128737;</div>
+          </div>
+
+        </div>
+
+        <!-- Bottom Row: 3 Network Packet Cards -->
+        <div class="k7-ce-bottom-row">
+          
+          <!-- Card 1: All time -->
+          <div class="k7-ce-card" style="min-height:260px;display:flex;flex-direction:column;">
+            <div class="k7-ce-card-title">Network packets blocked - All time</div>
+            <div style="flex:1;display:flex;align-items:center;justify-content:center;color:#b0b7c3;font-size:13px;letter-spacing:0.2px;">
+              No network packet blocked
+            </div>
+          </div>
+
+          <!-- Card 2: Top 10 Local IPs -->
+          <div class="k7-ce-card" style="min-height:260px;display:flex;flex-direction:column;">
+            <div class="k7-ce-card-title" style="margin-bottom:4px;">Network packet blocked - Top 10 Local IPs in 7 days</div>
+            <div style="margin-top:2px;font-size:11px;color:#555;">
+              Block type:
+              <select class="k7-ce-select">
+                <option>Both</option>
+                <option>Inbound</option>
+                <option>Outbound</option>
+              </select>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:10px;">
+              <svg width="68" height="68" viewBox="0 0 100 100" fill="none">
+                <path d="M47,47 L47,12 A38,38 0 0,0 12,47 Z" fill="#cfd4dc"/>
+                <path d="M53,47 L53,12 A38,38 0 0,1 88,47 Z" fill="#b8c0cc"/>
+                <path d="M12,53 A38,38 0 0,0 88,53 Z" fill="#cfd4dc"/>
+              </svg>
+              <div style="color:#b0b7c3;font-size:12px;margin-top:14px;letter-spacing:0.2px;">No data available</div>
+            </div>
+          </div>
+
+          <!-- Card 3: Top 10 Remote IPs -->
+          <div class="k7-ce-card" style="min-height:260px;display:flex;flex-direction:column;">
+            <div class="k7-ce-card-title" style="margin-bottom:4px;">Network packet blocked - Top 10 Remote IPs in 7 days</div>
+            <div style="margin-top:2px;font-size:11px;color:#555;">
+              Block type:
+              <select class="k7-ce-select">
+                <option>Both</option>
+                <option>Inbound</option>
+                <option>Outbound</option>
+              </select>
+            </div>
+            <div style="flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding-top:10px;">
+              <svg width="68" height="68" viewBox="0 0 100 100" fill="none">
+                <path d="M47,47 L47,12 A38,38 0 0,0 12,47 Z" fill="#cfd4dc"/>
+                <path d="M53,47 L53,12 A38,38 0 0,1 88,47 Z" fill="#b8c0cc"/>
+                <path d="M12,53 A38,38 0 0,0 88,53 Z" fill="#cfd4dc"/>
+              </svg>
+              <div style="color:#b0b7c3;font-size:12px;margin-top:14px;letter-spacing:0.2px;">No data available</div>
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Operating System Distribution Row -->
+        <div class="k7-ce-os-row">
+          <div class="k7-ce-os-card">
+            <div class="k7-ce-card-title">Operating system distribution</div>
+            <div style="display:flex;align-items:center;justify-content:center;height:220px;position:relative;">
+              <svg width="240" height="220" viewBox="0 0 240 220">
+                <!-- Red Slice: top-left (1 device) -->
+                <path d="M 120,110 L 74,72 A 62,62 0 0,1 141,51 Z" fill="#ee5253"/>
+                <!-- Blue Slice: top-right (1 device) -->
+                <path d="M 120,110 L 141,51 A 62,62 0 0,1 181,99 Z" fill="#4b70c6"/>
+                <!-- Green Slice: bottom half (3 devices, ~50%) -->
+                <path d="M 120,110 L 181,99 A 62,62 0 1,1 59,121 Z" fill="#78e08f"/>
+                <!-- Yellow Slice: mid-left (1 device) -->
+                <path d="M 120,110 L 59,121 A 62,62 0 0,1 74,72 Z" fill="#f5b041"/>
+                
+                <!-- Pointer Line & Label for Red slice -->
+                <line x1="108" y1="58" x2="95" y2="44" stroke="#888888" stroke-width="1"/>
+                <text x="90" y="42" font-size="11" fill="#444" font-family="Arial, sans-serif">1</text>
+
+                <!-- Pointer Line & Label for Blue slice -->
+                <line x1="162" y1="74" x2="176" y2="60" stroke="#888888" stroke-width="1"/>
+                <text x="180" y="58" font-size="11" fill="#444" font-family="Arial, sans-serif">1</text>
+
+                <!-- Pointer Line & Label for Yellow slice -->
+                <line x1="64" y1="96" x2="48" y2="96" stroke="#888888" stroke-width="1"/>
+                <text x="38" y="99" font-size="11" fill="#444" font-family="Arial, sans-serif">1</text>
+              </svg>
+            </div>
+          </div>
+        </div>
+        </div> <!-- Close #k7-ce-dash-content -->
+
+        <!-- ── DEVICES GRID VIEW (Matches Screenshot 2 Exactly) ── -->
+        <div id="k7-ce-devices-content" style="display:none;width:100%;">
+          
+          <!-- Header Bar: Title + Action Buttons -->
+          <div class="k7-ce-dev-header">
+            <h2 class="k7-ce-dev-title">Devices</h2>
+            <div class="k7-ce-dev-actions">
+              <button class="k7-ce-dev-btn" onclick="k7CeRefreshDevices()"><span style="font-size:13px;">&#x21bb;</span> Refresh</button>
+              <button class="k7-ce-dev-btn" onclick="alert('Export devices list');"><span style="font-size:13px;">&#x2913;</span> Export &#9662;</button>
+              <button class="k7-ce-dev-btn" onclick="alert('Import devices');"><span style="font-size:13px;">&#x2912;</span> Import</button>
+              <button class="k7-ce-dev-btn" onclick="alert('Grid view toggled');"><span style="font-size:13px;">&#8862;</span> Grid View</button>
+              <button class="k7-ce-dev-btn" onclick="alert('Configure columns');"><span style="font-size:13px;">&#9881;</span> Columns</button>
+              <button class="k7-ce-dev-btn" onclick="alert('Change device group');"><span style="font-size:13px;">&#128101;</span> Change Group</button>
+              <button class="k7-ce-dev-btn" onclick="alert('Filter devices');"><span style="font-size:13px;">&#9707;</span> Filter</button>
+            </div>
+          </div>
+
+          <!-- Table Container -->
+          <div class="k7-ce-table-wrap">
+            <table class="k7-ce-dev-table">
+              <thead>
+                <tr>
+                  <th style="width:220px;cursor:pointer;" onclick="k7CeSortDevices()">
+                    Device Name <span style="font-size:10px;color:#337ab7;">&#8595;</span>
+                  </th>
+                  <th>IP Address</th>
+                  <th>Group Name</th>
+                  <th>Antivirus</th>
+                  <th>Firewall</th>
+                  <th>Last Update</th>
+                  <th>Virus Definitions</th>
+                  <th>Product Version</th>
+                  <th>Last Contact</th>
+                </tr>
+              </thead>
+              <tbody id="k7-ce-dev-tbody">
+                <!-- Row 1: Abeed Rahman - PC -->
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#95a5a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                      </svg>
+                      <a href="#" class="k7-ce-dev-name-link" onclick="k7CeDeviceDetails('Abeed Rahman - PC');return false;">Abeed Rahman - PC</a>
+                    </div>
+                  </td>
+                  <td>192.168.5.56</td>
+                  <td>Admin2</td>
+                  <td>Disabled</td>
+                  <td>Enabled</td>
+                  <td>Jun 30 2026 04:24 PM</td>
+                  <td>-</td>
+                  <td>14.2.0831</td>
+                  <td>Jun 30 2026 04:25 PM</td>
+                </tr>
+
+                <!-- Row 2: Dixon Raja - Laptop (Green Monitor) -->
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                      </svg>
+                      <a href="#" class="k7-ce-dev-name-link" onclick="k7CeDeviceDetails('Dixon Raja - Laptop');return false;">Dixon Raja - Laptop</a>
+                    </div>
+                  </td>
+                  <td>192.168.1.153</td>
+                  <td>Demo TESTING DONT</td>
+                  <td>Enabled</td>
+                  <td>Enabled</td>
+                  <td>Oct-23-2026 07:42 PM</td>
+                  <td>14.86.61235</td>
+                  <td>14.2.0835</td>
+                  <td>Oct-23-2026 08:12 PM</td>
+                </tr>
+
+                <!-- Row 3: Felix Raj - Workstation -->
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#95a5a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                      </svg>
+                      <a href="#" class="k7-ce-dev-name-link" onclick="k7CeDeviceDetails('Felix Raj - Workstation');return false;">Felix Raj - Workstation</a>
+                    </div>
+                  </td>
+                  <td>172.16.3.168</td>
+                  <td>Default Group</td>
+                  <td>Enabled</td>
+                  <td>Not applicable</td>
+                  <td>Sep-18-2026 06:40 PM</td>
+                  <td>9.121.8246</td>
+                  <td>1.2</td>
+                  <td>Sep-18-2026 06:40 PM</td>
+                </tr>
+
+                <!-- Row 4: Pavithran - System -->
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#95a5a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                      </svg>
+                      <a href="#" class="k7-ce-dev-name-link" onclick="k7CeDeviceDetails('Pavithran - System');return false;">Pavithran - System</a>
+                    </div>
+                  </td>
+                  <td>192.168.29.179</td>
+                  <td>Pv_Work</td>
+                  <td>Enabled</td>
+                  <td>Enabled</td>
+                  <td>Oct 07-2026 08:56 AM</td>
+                  <td>14.83.61035</td>
+                  <td>14.2.0835</td>
+                  <td>Oct 07-2026 10:05 AM</td>
+                </tr>
+
+                <!-- Row 5: Diwakar M - Laptop -->
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#95a5a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                      </svg>
+                      <a href="#" class="k7-ce-dev-name-link" onclick="k7CeDeviceDetails('Diwakar M - Laptop');return false;">Diwakar M - Laptop</a>
+                    </div>
+                  </td>
+                  <td>192.168.5.54</td>
+                  <td>abed</td>
+                  <td>Enabled</td>
+                  <td>Not applicable</td>
+                  <td>Aug-10-2026 04:00 PM</td>
+                  <td>10.72.35853</td>
+                  <td>4.0.0.1</td>
+                  <td>Aug-10-2026 06:50 PM</td>
+                </tr>
+
+                <!-- Row 6: Vignesh - Desktop (Orange Monitor) -->
+                <tr>
+                  <td>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e67e22" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                      </svg>
+                      <a href="#" class="k7-ce-dev-name-link" onclick="k7CeDeviceDetails('Vignesh - Desktop');return false;">Vignesh - Desktop</a>
+                    </div>
+                  </td>
+                  <td>10.125.199.101</td>
+                  <td>Pv_Work</td>
+                  <td>Enabled</td>
+                  <td>Enabled</td>
+                  <td>Oct-22-2026 01:06 PM</td>
+                  <td>14.86.61214</td>
+                  <td>14.2.0835</td>
+                  <td>Oct-22-2026 01:42 PM</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- Table Footer Pagination Bar -->
+            <div class="k7-ce-table-footer">
+              <div>1 - 6 of 6 Devices</div>
+              <div style="display:flex;gap:4px;">
+                <button class="k7-ce-page-btn disabled">&#8592;</button>
+                <button class="k7-ce-page-btn disabled">&#8594;</button>
+              </div>
+              <div style="display:flex;align-items:center;gap:6px;">
+                <span class="k7-ce-size-opt">10</span>
+                <span class="k7-ce-size-opt active">25</span>
+                <span class="k7-ce-size-opt">50</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </main>
+    </div>
+
+  </div>
+
 </div>
 
 <!-- ══ ENTERPRISE SECURITY PANEL ══ -->
@@ -4249,6 +5395,155 @@ function goTeamCoreHome() {
   window.location.href = 'index (2).html';
 }
 
+// ── K7 Cloud / Enterprise Security Simulation JS ──
+function k7CeDoLogin(){
+  var loginView = document.getElementById('k7-ce-login-view');
+  var dashView = document.getElementById('k7-ce-dash-view');
+  var btn = document.getElementById('k7-ce-login-btn');
+  if(btn){
+    btn.textContent = 'LOGGING IN...';
+    btn.disabled = true;
+  }
+  setTimeout(function(){
+    if(btn){
+      btn.textContent = 'LOGIN';
+      btn.disabled = false;
+    }
+    if(loginView && dashView){
+      loginView.style.display = 'none';
+      dashView.style.display = 'flex';
+    }
+  }, 350);
+}
+
+function k7CeLogout(){
+  var loginView = document.getElementById('k7-ce-login-view');
+  var dashView = document.getElementById('k7-ce-dash-view');
+  if(loginView && dashView){
+    dashView.style.display = 'none';
+    loginView.style.display = 'flex';
+  }
+}
+
+function k7CeHoverMenu(show){
+  var flyout = document.getElementById('k7-ce-flyout-devices');
+  if(flyout){
+    flyout.style.display = show ? 'block' : 'none';
+  }
+}
+
+function k7CeShowDevices(ev){
+  if(ev) {
+    try { ev.stopPropagation(); ev.preventDefault(); } catch(e){}
+  }
+  var dash = document.getElementById('k7-ce-dash-content');
+  var dev = document.getElementById('k7-ce-devices-content');
+  if(dash) {
+    dash.style.setProperty('display', 'none', 'important');
+    dash.classList.add('hide-view');
+    dash.classList.remove('show-view');
+  }
+  if(dev) {
+    dev.style.setProperty('display', 'block', 'important');
+    dev.style.setProperty('visibility', 'visible', 'important');
+    dev.style.setProperty('opacity', '1', 'important');
+    dev.classList.add('show-view');
+    dev.classList.remove('hide-view');
+  }
+
+  var area = document.querySelector('.k7-ce-content-area');
+  if(area) area.scrollTop = 0;
+
+  document.querySelectorAll('.k7-ce-nav-item').forEach(function(i){ i.classList.remove('active'); });
+  var devNav = document.getElementById('k7-ce-nav-devices');
+  if(devNav) devNav.classList.add('active');
+
+  document.querySelectorAll('.k7-ce-flyout-item').forEach(function(fi){ fi.classList.remove('active'); });
+  var firstFlyout = document.querySelector('#k7-ce-flyout-devices .k7-ce-flyout-item');
+  if(firstFlyout) firstFlyout.classList.add('active');
+
+  var flyout = document.getElementById('k7-ce-flyout-devices');
+  if(flyout) flyout.style.display = 'none';
+}
+
+function k7CeShowDashboard(elem){
+  var dash = document.getElementById('k7-ce-dash-content');
+  var dev = document.getElementById('k7-ce-devices-content');
+  if(dash) {
+    dash.style.setProperty('display', 'flex', 'important');
+    dash.style.setProperty('visibility', 'visible', 'important');
+    dash.classList.add('show-view');
+    dash.classList.remove('hide-view');
+  }
+  if(dev) {
+    dev.style.setProperty('display', 'none', 'important');
+    dev.classList.add('hide-view');
+    dev.classList.remove('show-view');
+  }
+
+  var area = document.querySelector('.k7-ce-content-area');
+  if(area) area.scrollTop = 0;
+
+  document.querySelectorAll('.k7-ce-nav-item').forEach(function(i){ i.classList.remove('active'); });
+  if(elem) elem.classList.add('active');
+  else {
+    var dashNav = document.getElementById('k7-ce-nav-dashboard');
+    if(dashNav) dashNav.classList.add('active');
+  }
+
+  var flyout = document.getElementById('k7-ce-flyout-devices');
+  if(flyout) flyout.style.display = 'none';
+}
+
+function k7CeSetNav(elem, sectionName){
+  if(sectionName === 'devices'){
+    k7CeShowDevices();
+  } else if(sectionName === 'dashboard'){
+    k7CeShowDashboard(elem);
+  } else {
+    document.querySelectorAll('.k7-ce-nav-item').forEach(function(i){ i.classList.remove('active'); });
+    if(elem) elem.classList.add('active');
+    alert(sectionName.charAt(0).toUpperCase() + sectionName.slice(1) + ' module simulated for training.');
+  }
+}
+
+// Global click safety fallback
+document.addEventListener('click', function(e){
+  var target = e.target;
+  if(target && (target.id === 'k7-flyout-item-devices' || target.closest('#k7-flyout-item-devices'))){
+    k7CeShowDevices(e);
+  }
+});
+
+function k7CeDeviceDetails(agentName){
+  alert('Device Details:\n' + agentName + '\nEndpoint Security: Active\nReal-time Scan: Running\nPolicy: Standard Workstation');
+}
+
+function k7CeRefreshDevices(){
+  var btn = event.currentTarget || event.target;
+  var orig = btn.innerHTML;
+  btn.innerHTML = '<span style="font-size:13px;">&#x21bb;</span> Refreshing...';
+  btn.disabled = true;
+  setTimeout(function(){
+    btn.innerHTML = orig;
+    btn.disabled = false;
+  }, 400);
+}
+
+var _k7CeSortAsc = true;
+function k7CeSortDevices(){
+  var tbody = document.getElementById('k7-ce-dev-tbody');
+  if(!tbody) return;
+  var rows = Array.from(tbody.querySelectorAll('tr'));
+  _k7CeSortAsc = !_k7CeSortAsc;
+  rows.sort(function(a, b){
+    var nameA = (a.querySelector('.k7-ce-dev-name-link') || {}).textContent || '';
+    var nameB = (b.querySelector('.k7-ce-dev-name-link') || {}).textContent || '';
+    return _k7CeSortAsc ? nameA.localeCompare(nameB) : nameB.localeCompare(nameA);
+  });
+  rows.forEach(function(r){ tbody.appendChild(r); });
+}
+
 function k7Switch(app, btn) {
   ['win','ios','android','mac','macsetup','cloud','enterprise','utm'].forEach(function(a) {
     var p = document.getElementById('k7-' + a + '-panel');
@@ -4256,6 +5551,9 @@ function k7Switch(app, btn) {
   });
   document.querySelectorAll('.k7-sw-btn').forEach(function(b) { b.classList.remove('k7-active'); });
   var panel = document.getElementById('k7-' + app + '-panel');
+  if (app === 'enterprise') {
+    panel = document.getElementById('k7-cloud-panel');
+  }
   if (panel) panel.classList.add('k7-visible');
   btn.classList.add('k7-active');
   if (app === 'ios') setTimeout(drawDonut, 150);
