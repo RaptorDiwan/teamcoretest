@@ -291,36 +291,36 @@
 
 
   .dark-toggle {
-    width: 36px; height: 36px; border-radius: 50%;
+    width: 32px; height: 32px; border-radius: 50%;
     background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.15);
-    color: #fff; font-size: 1rem; cursor: pointer;
+    color: #fff; font-size: .88rem; cursor: pointer;
     display: flex; align-items: center; justify-content: center;
     transition: all .2s; flex-shrink: 0;
   }
   .dark-toggle:hover { background: rgba(255,255,255,.16); }
 
-  /* Work clock in topbar */
+  /* Work clock in topbar (Compact & Sleek) */
   .work-clock-wrap {
-    display: flex; align-items: center; gap: .55rem;
+    display: flex; align-items: center; gap: .45rem;
     background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16);
-    border-radius: 30px; padding: .32rem .4rem .32rem .85rem;
+    border-radius: 24px; padding: .22rem .35rem .22rem .75rem;
     backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.12);
     transition: all var(--transition);
   }
   .work-clock-wrap:hover {
     border-color: rgba(254,76,12,0.4);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.25), 0 0 12px rgba(254,76,12,0.15);
+    box-shadow: 0 3px 12px rgba(0,0,0,0.22), 0 0 10px rgba(254,76,12,0.15);
   }
   .work-clock-time {
-    font-size: .74rem; font-weight: 700; color: rgba(255,255,255,.85);
-    font-variant-numeric: tabular-nums; min-width: 44px;
+    font-size: .7rem; font-weight: 700; color: rgba(255,255,255,.85);
+    font-variant-numeric: tabular-nums; min-width: 38px;
     letter-spacing: 0.02em;
   }
   .work-clock-time.ticking { color: #4ade80; text-shadow: 0 0 8px rgba(74,222,128,0.4); }
   .wclock-btn {
-    font-size: .7rem; font-weight: 700; letter-spacing: .06em;
-    padding: .3rem .8rem; border-radius: 20px; border: none;
+    font-size: .64rem; font-weight: 700; letter-spacing: .05em;
+    padding: .22rem .68rem; border-radius: 18px; border: none;
     cursor: pointer; font-family: 'DM Sans', sans-serif;
     transition: all .2s;
   }
@@ -328,6 +328,7 @@
   .wclock-btn.start:hover { background: #27a85f; }
   .wclock-btn.end { background: rgba(239,73,60,.2); color: #ff7f75; border: 1px solid rgba(239,73,60,.3); }
   .wclock-btn.end:hover { background: rgba(239,73,60,.35); }
+
 
   /* Show/hide password */
   .pwd-wrap { position: relative; }
@@ -720,7 +721,7 @@
   .li-burst { position: fixed; inset: 0; z-index: 500; pointer-events: none; }
 
   @media (max-width: 860px) {
-    #login-view { flex-direction: column; }
+    #login-view { flex-direction: column; overflow-y: auto !important; -webkit-overflow-scrolling: touch; }
     .li-brand { min-height: 260px; padding: 2rem; }
     .li-brand-mid h1 { font-size: 2rem; }
   }
@@ -768,13 +769,13 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* ─── TOPBAR ─── */
+  /* ─── TOPBAR (Compact Executive) ─── */
   .topbar {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 2rem;
-    height: 60px;
+    padding: 0 1.5rem;
+    height: 52px;
     background: rgba(19,23,49,0.96);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--navy-border);
@@ -787,16 +788,16 @@
   .topbar-brand {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 7px;
     font-family: 'DM Sans', -apple-system, sans-serif;
-    font-size: 1.3rem;
+    font-size: 1.15rem;
     font-weight: 800;
     letter-spacing: -0.02em;
     color: #FFFFFF;
     user-select: none;
   }
   .topbar-brand .topbar-logo-img {
-    height: 22px;
+    height: 19px;
     width: auto;
     display: block;
     object-fit: contain;
@@ -816,31 +817,31 @@
   .topbar-right {
     display: flex;
     align-items: center;
-    gap: 1.2rem;
+    gap: 0.85rem;
   }
 
   .agent-badge {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.5rem;
     background: var(--navy-card);
     border: 1px solid var(--navy-border);
-    padding: 0.35rem 0.9rem 0.35rem 0.35rem;
+    padding: 0.22rem 0.75rem 0.22rem 0.25rem;
     border-radius: 50px;
   }
 
   .avatar {
-    width: 30px; height: 30px;
+    width: 26px; height: 26px;
     border-radius: 50%;
     background: linear-gradient(135deg, var(--gold-dim), var(--gold));
     display: flex; align-items: center; justify-content: center;
-    font-size: 0.7rem;
+    font-size: 0.64rem;
     font-weight: 600;
     color: #FFFFFF;
   }
 
   .agent-name {
-    font-size: 0.82rem;
+    font-size: 0.76rem;
     font-weight: 500;
     color: var(--text-primary);
   }
@@ -849,9 +850,9 @@
     background: rgba(239,73,60,0.14);
     border: 1px solid rgba(255,255,255,0.34);
     color: #FFFFFF;
-    padding: 0.38rem 0.95rem;
+    padding: 0.28rem 0.78rem;
     border-radius: 6px;
-    font-size: 0.8rem;
+    font-size: 0.74rem;
     font-weight: 600;
     cursor: pointer;
     transition: all var(--transition);
@@ -873,40 +874,40 @@
     overflow: hidden;
   }
 
-  /* ─── SIDEBAR ─── */
+  /* ─── SIDEBAR (Compact) ─── */
   .sidebar {
-    width: 220px;
+    width: 200px;
     flex-shrink: 0;
     background: var(--navy-card);
     border-right: 1px solid var(--navy-border);
-    padding: 1.5rem 0;
+    padding: 1.1rem 0;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
+    gap: 0.2rem;
     overflow-y: auto;
     overflow-x: hidden;
   }
 
   .sidebar-section {
-    padding: 0 1rem 0.5rem;
-    font-size: 0.62rem;
+    padding: 0 0.85rem 0.35rem;
+    font-size: 0.58rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--text-dim);
-    font-weight: 500;
-    margin-top: 1rem;
+    font-weight: 600;
+    margin-top: 0.75rem;
   }
 
   .sidebar-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.6rem 1.2rem;
-    margin: 0 0.5rem;
-    border-radius: var(--radius-sm);
+    gap: 0.65rem;
+    padding: 0.44rem 0.95rem;
+    margin: 0 0.35rem;
+    border-radius: 7px;
     cursor: pointer;
     transition: all var(--transition);
-    font-size: 0.875rem;
+    font-size: 0.8rem;
     font-weight: 400;
     color: var(--text-muted);
     border: 1px solid transparent;
@@ -931,8 +932,8 @@
   }
 
   .sidebar-item .s-icon {
-    width: 18px;
-    height: 18px;
+    width: 16px;
+    height: 16px;
     opacity: 0.7;
     flex-shrink: 0;
   }
@@ -943,9 +944,9 @@
     margin-left: auto;
     background: var(--gold);
     color: #1a1200;
-    font-size: 0.65rem;
+    font-size: 0.62rem;
     font-weight: 600;
-    padding: 1px 6px;
+    padding: 1px 5px;
     border-radius: 10px;
   }
 
@@ -953,11 +954,13 @@
     display: none;
   }
 
-  /* ─── MAIN CONTENT ─── */
+  /* ─── MAIN CONTENT (Balanced Compact Spacing) ─── */
   .main-content {
     flex: 1;
     overflow-y: auto;
-    padding: 2rem 2.5rem;
+    padding: 1.15rem 1.75rem;
+    max-width: 1400px;
+    width: 100%;
   }
 
   .page { display: none; }
@@ -1096,48 +1099,48 @@
   .wx-dropdown::-webkit-scrollbar-thumb { background: rgba(255,255,255,.15); border-radius: 4px; }
   .wx-dropdown::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,.28); }
 
-  /* ── EXECUTIVE CYBER-GLASS: HERO GREETING CARD ── */
+  /* ── EXECUTIVE CYBER-GLASS: HERO GREETING CARD (Compact & Sleek) ── */
   .home-greeting {
     position: relative;
-    border-radius: 20px;
-    padding: 2.2rem 2.6rem;
-    margin-bottom: 2rem;
+    border-radius: 12px;
+    padding: 0.85rem 1.35rem;
+    margin-bottom: 0.85rem;
     overflow: hidden;
     transition: all var(--transition);
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.88) 0%, rgba(235, 242, 250, 0.92) 100%);
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(178, 192, 211, 0.7);
-    border-left: 4px solid var(--gold);
-    box-shadow: 0 12px 36px rgba(7, 13, 45, 0.07), 0 2px 6px rgba(7, 13, 45, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+    border-left: 3px solid var(--gold);
+    box-shadow: 0 4px 16px rgba(7, 13, 45, 0.04), 0 1px 2px rgba(7, 13, 45, 0.02), inset 0 1px 0 rgba(255, 255, 255, 0.95);
   }
 
   .home-greeting::after {
     content: '';
     position: absolute;
-    top: -50px;
-    right: -50px;
-    width: 260px;
-    height: 260px;
+    top: -30px;
+    right: -30px;
+    width: 150px;
+    height: 150px;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(239, 73, 60, 0.12) 0%, transparent 68%);
-    filter: blur(32px);
+    background: radial-gradient(circle, rgba(239, 73, 60, 0.09) 0%, transparent 68%);
+    filter: blur(24px);
     pointer-events: none;
     z-index: 0;
   }
 
   body.dark .home-greeting {
-    background: linear-gradient(135deg, rgba(239, 73, 60, 0.13) 0%, rgba(26, 34, 54, 0.85) 100%);
+    background: linear-gradient(135deg, rgba(239, 73, 60, 0.12) 0%, rgba(26, 34, 54, 0.85) 100%);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border: 1px solid rgba(239, 73, 60, 0.32);
-    border-left: 4px solid var(--gold);
-    box-shadow: 0 18px 48px rgba(0, 0, 0, 0.42), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+    border-left: 3px solid var(--gold);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
 
   body.dark .home-greeting::after {
-    background: radial-gradient(circle, rgba(254, 76, 12, 0.32) 0%, transparent 70%);
-    filter: blur(40px);
+    background: radial-gradient(circle, rgba(254, 76, 12, 0.25) 0%, transparent 70%);
+    filter: blur(26px);
   }
 
   .home-greeting > * {
@@ -1147,11 +1150,11 @@
 
   .home-greeting h1 {
     font-family: 'DM Sans', -apple-system, sans-serif;
-    font-size: 1.95rem;
-    font-weight: 800;
+    font-size: 1.15rem;
+    font-weight: 700;
     color: var(--text-primary);
-    line-height: 1.25;
-    letter-spacing: -0.025em;
+    line-height: 1.22;
+    letter-spacing: -0.015em;
   }
 
   body.dark .home-greeting h1 {
@@ -1171,10 +1174,10 @@
 
   .home-greeting p {
     color: var(--text-muted);
-    font-size: 0.92rem;
-    line-height: 1.55;
-    margin-top: 0.45rem;
-    max-width: 680px;
+    font-size: 0.76rem;
+    line-height: 1.35;
+    margin-top: 0.15rem;
+    max-width: 640px;
   }
 
   body.dark .home-greeting p {
@@ -1184,33 +1187,33 @@
   .date-pill {
     display: inline-flex;
     align-items: center;
-    gap: 7px;
+    gap: 5px;
     background: rgba(239, 73, 60, 0.09);
-    border: 1px solid rgba(239, 73, 60, 0.28);
+    border: 1px solid rgba(239, 73, 60, 0.26);
     color: #c9352b;
-    font-size: 0.74rem;
+    font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.04em;
-    padding: 0.32rem 0.85rem;
-    border-radius: 20px;
-    margin-bottom: 0.75rem;
+    padding: 0.15rem 0.55rem;
+    border-radius: 14px;
+    margin-bottom: 0.35rem;
     backdrop-filter: blur(8px);
     transition: all var(--transition);
   }
 
   .date-pill::before {
     content: '';
-    width: 6px;
-    height: 6px;
+    width: 4.5px;
+    height: 4.5px;
     border-radius: 50%;
     background: var(--accent-green);
-    box-shadow: 0 0 8px var(--accent-green);
+    box-shadow: 0 0 6px var(--accent-green);
     display: inline-block;
   }
 
   body.dark .date-pill {
-    background: rgba(239, 73, 60, 0.16);
-    border-color: rgba(239, 73, 60, 0.38);
+    background: rgba(239, 73, 60, 0.15);
+    border-color: rgba(239, 73, 60, 0.35);
     color: #ff8a6a;
   }
 
@@ -1925,13 +1928,13 @@
   .qa-nav-btn:disabled { opacity:.4; cursor:not-allowed; }
 
   /* ═════════════════════════════════════════════════════════
-     EXECUTIVE CYBER-GLASS: LIVE STATS (Option 1 Enhanced)
+     EXECUTIVE CYBER-GLASS: LIVE STATS (Compact Executive)
      ═════════════════════════════════════════════════════════ */
   .live-stats-row {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 1.15rem;
-    margin-bottom: 2rem;
+    gap: 0.75rem;
+    margin-bottom: 0.95rem;
   }
 
   .live-stat-card {
@@ -1941,13 +1944,13 @@
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid rgba(178, 192, 211, 0.65);
-    border-radius: 16px;
-    padding: 1.25rem 1.35rem;
+    border-radius: 11px;
+    padding: 0.65rem 0.85rem;
     display: flex;
     align-items: center;
-    gap: 1.1rem;
-    box-shadow: 0 4px 18px rgba(7, 13, 45, 0.04), 0 1px 3px rgba(7, 13, 45, 0.02);
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    gap: 0.7rem;
+    box-shadow: 0 2px 10px rgba(7, 13, 45, 0.03), 0 1px 2px rgba(7, 13, 45, 0.02);
+    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   .live-stat-card::before {
@@ -1957,7 +1960,7 @@
     left: 0;
     right: 0;
     height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.9), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.85), transparent);
     pointer-events: none;
   }
 
@@ -1966,48 +1969,53 @@
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 26px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
   }
 
   body.dark .live-stat-card::before {
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.16), transparent);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.14), transparent);
   }
 
   .live-stat-card:hover {
-    transform: translateY(-3px);
+    transform: translateY(-2px);
     border-color: rgba(239, 73, 60, 0.42);
-    box-shadow: 0 12px 30px rgba(7, 13, 45, 0.09), 0 0 16px rgba(239, 73, 60, 0.12);
+    box-shadow: 0 8px 22px rgba(7, 13, 45, 0.08), 0 0 14px rgba(239, 73, 60, 0.1);
   }
 
   body.dark .live-stat-card:hover {
     border-color: rgba(239, 73, 60, 0.48);
-    box-shadow: 0 16px 38px rgba(0, 0, 0, 0.42), 0 0 22px rgba(239, 73, 60, 0.18);
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.4), 0 0 18px rgba(239, 73, 60, 0.18);
   }
 
   .stat-clickable { cursor: pointer; }
   .stat-clickable:hover { border-color: rgba(239, 73, 60, 0.45) !important; }
 
-  .stat-modal-row { display: flex; align-items: center; gap: .75rem; padding: .65rem .9rem; border-radius: var(--radius-sm); transition: background var(--transition); }
+  .stat-modal-row { display: flex; align-items: center; gap: .65rem; padding: .55rem .75rem; border-radius: var(--radius-sm); transition: background var(--transition); }
   .stat-modal-row:hover { background: var(--navy-hover); }
-  .stat-modal-avatar { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .7rem; font-weight: 700; color: #fff; flex-shrink: 0; }
-  .stat-modal-name { font-size: .88rem; font-weight: 500; color: var(--text-primary); flex: 1; }
-  .stat-modal-badge { font-size: .72rem; padding: .2rem .55rem; border-radius: 20px; font-weight: 600; white-space: nowrap; }
+  .stat-modal-avatar { width: 30px; height: 30px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: .65rem; font-weight: 700; color: #fff; flex-shrink: 0; }
+  .stat-modal-name { font-size: .8rem; font-weight: 500; color: var(--text-primary); flex: 1; }
+  .stat-modal-badge { font-size: .68rem; padding: .15rem .45rem; border-radius: 16px; font-weight: 600; white-space: nowrap; }
   .stat-modal-badge.active { background: rgba(46,197,111,.12); color: #2EC56F; }
   .stat-modal-badge.onbreak { background: rgba(212,170,96,.12); color: var(--gold); }
   .stat-modal-badge.absent { background: rgba(76,118,168,.12); color: var(--accent-blue); }
-  .stat-modal-empty { text-align: center; padding: 2rem 1rem; color: var(--text-muted); font-size: .85rem; }
+  .stat-modal-empty { text-align: center; padding: 1.5rem 1rem; color: var(--text-muted); font-size: .8rem; }
 
   .live-stat-icon {
-    width: 46px;
-    height: 46px;
-    border-radius: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-    transition: transform 0.22s ease;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
+    transition: transform 0.2s ease;
+  }
+
+  .live-stat-icon svg {
+    width: 16px;
+    height: 16px;
   }
 
   .live-stat-card:hover .live-stat-icon {
@@ -2016,18 +2024,19 @@
 
   body.dark .live-stat-icon {
     border-color: rgba(255, 255, 255, 0.09);
-    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
   }
 
   .live-stat-body { flex: 1; min-width: 0; }
 
   .live-stat-val {
     font-family: 'Outfit', 'DM Sans', sans-serif;
-    font-size: 2.1rem;
-    font-weight: 800;
+    font-size: 1.25rem;
+    font-weight: 700;
     color: var(--text-primary);
-    line-height: 1;
-    letter-spacing: -0.02em;
+    line-height: 1.1;
+    letter-spacing: -0.015em;
+    font-variant-numeric: tabular-nums;
   }
 
   body.dark .live-stat-val {
@@ -2035,12 +2044,15 @@
   }
 
   .live-stat-label {
-    font-size: 0.72rem;
-    font-weight: 700;
+    font-size: 0.63rem;
+    font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.09em;
+    letter-spacing: 0.05em;
     color: var(--text-dim);
-    margin-top: 0.35rem;
+    margin-top: 0.15rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   body.dark .live-stat-label {
@@ -2048,19 +2060,19 @@
   }
 
   /* ═════════════════════════════════════════════════════════
-     EXECUTIVE CYBER-GLASS: WHO'S ACTIVE (Option 1 Enhanced)
+     EXECUTIVE CYBER-GLASS: WHO'S ACTIVE (Compact Executive)
      ═════════════════════════════════════════════════════════ */
-  .home-two-col { display: grid; grid-template-columns: 260px 1fr; gap: 1.5rem; margin-top: 1.5rem; }
+  .home-two-col { display: grid; grid-template-columns: 235px 1fr; gap: 0.85rem; margin-top: 0.85rem; }
 
   .whos-active-panel {
     background: rgba(255, 255, 255, 0.88);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid rgba(178, 192, 211, 0.65);
-    border-radius: 16px;
-    padding: 1.4rem;
+    border-radius: 11px;
+    padding: 0.75rem 0.85rem;
     height: fit-content;
-    box-shadow: 0 4px 20px rgba(7, 13, 45, 0.04);
+    box-shadow: 0 2px 10px rgba(7, 13, 45, 0.03);
     transition: all var(--transition);
   }
 
@@ -2069,25 +2081,25 @@
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
   }
 
-  .whos-active-list { display: flex; flex-direction: column; gap: 0.45rem; margin-top: 0.85rem; }
+  .whos-active-list { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.6rem; }
 
   .wa-agent {
     display: flex;
     align-items: center;
-    gap: 0.75rem;
-    padding: 0.55rem 0.7rem;
-    border-radius: 10px;
+    gap: 0.55rem;
+    padding: 0.32rem 0.5rem;
+    border-radius: 7px;
     border: 1px solid transparent;
-    transition: all 0.2s ease;
+    transition: all 0.18s ease;
   }
 
   .wa-agent:hover {
     background: rgba(239, 73, 60, 0.06);
     border-color: rgba(239, 73, 60, 0.15);
-    transform: translateX(3px);
+    transform: translateX(2px);
   }
 
   body.dark .wa-agent:hover {
@@ -2096,22 +2108,42 @@
   }
 
   .wa-avatar {
-    width: 32px;
-    height: 32px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: linear-gradient(135deg, #EF493C, #C9352B);
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 0.68rem;
+    font-size: 0.6rem;
     font-weight: 800;
     color: #fff;
     flex-shrink: 0;
-    box-shadow: 0 2px 8px rgba(239, 73, 60, 0.3);
+    box-shadow: 0 1px 4px rgba(239, 73, 60, 0.25);
   }
 
-  .wa-name { font-size: .84rem; font-weight: 600; color: var(--text-primary); flex: 1; }
-  .wa-status { font-size: .65rem; font-weight: 700; padding: .2rem .55rem; border-radius: 20px; white-space: nowrap; letter-spacing: 0.02em; }
+  .wa-name {
+    font-size: 0.76rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  body.dark .wa-name {
+    color: #F1F5F9;
+  }
+
+  .wa-status {
+    font-size: 0.58rem;
+    font-weight: 700;
+    padding: 0.12rem 0.42rem;
+    border-radius: 12px;
+    white-space: nowrap;
+    letter-spacing: 0.02em;
+  }
   .wa-status.active { background: rgba(46,197,111,.14); color: #1a7a45; }
   body.dark .wa-status.active { color: #2ec56f; background: rgba(46,197,111,.18); }
   .wa-status.onbreak { background: rgba(239,73,60,.12); color: var(--gold); }
@@ -2119,24 +2151,24 @@
   .wa-status.out { background: rgba(123,135,153,.12); color: var(--text-dim); }
 
   /* ═════════════════════════════════════════════════════════
-     EXECUTIVE CYBER-GLASS: MODULE CARDS (Option 1 Enhanced)
+     EXECUTIVE CYBER-GLASS: MODULE CARDS (Compact Executive)
      ═════════════════════════════════════════════════════════ */
-  .home-modules-col { flex: 1; }
-  .home-module-list { display: flex; flex-direction: column; gap: 0.6rem; }
+  .home-modules-col { flex: 1; min-width: 0; }
+  .home-module-list { display: flex; flex-direction: column; gap: 0.42rem; }
 
   .hm-card {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    padding: 0.95rem 1.15rem;
+    gap: 0.75rem;
+    padding: 0.55rem 0.8rem;
     background: rgba(255, 255, 255, 0.88);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     border: 1px solid rgba(178, 192, 211, 0.65);
-    border-radius: 14px;
+    border-radius: 10px;
     cursor: pointer;
     box-shadow: 0 2px 8px rgba(7, 13, 45, 0.03);
-    transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   }
 
   body.dark .hm-card {
@@ -2144,50 +2176,56 @@
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.22);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
   }
 
   .hm-card:hover {
     background: #FFFFFF;
     border-color: rgba(239, 73, 60, 0.4);
-    transform: translateX(5px);
-    box-shadow: 0 10px 26px rgba(7, 13, 45, 0.08), 0 0 16px rgba(239, 73, 60, 0.1);
+    transform: translateX(3px);
+    box-shadow: 0 6px 18px rgba(7, 13, 45, 0.06), 0 0 12px rgba(239, 73, 60, 0.09);
   }
 
   body.dark .hm-card:hover {
     background: #1c273e;
     border-color: rgba(239, 73, 60, 0.45);
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.35), 0 0 20px rgba(239, 73, 60, 0.16);
+    box-shadow: 0 8px 22px rgba(0, 0, 0, 0.32), 0 0 16px rgba(239, 73, 60, 0.16);
   }
 
   .hm-icon {
-    width: 40px;
-    height: 40px;
-    border-radius: 11px;
+    width: 30px;
+    height: 30px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
     border: 1px solid rgba(0, 0, 0, 0.05);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.03);
     transition: transform 0.2s ease;
   }
 
+  .hm-icon svg {
+    width: 15px;
+    height: 15px;
+  }
+
   .hm-card:hover .hm-icon {
-    transform: scale(1.08);
+    transform: scale(1.06);
   }
 
   body.dark .hm-icon {
     border-color: rgba(255, 255, 255, 0.08);
-    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
   }
 
   .hm-body { flex: 1; min-width: 0; }
 
   .hm-title {
-    font-size: 0.9rem;
+    font-size: 0.78rem;
     font-weight: 700;
     color: var(--text-primary);
+    line-height: 1.2;
     transition: color 0.18s;
   }
 
@@ -2204,9 +2242,10 @@
   }
 
   .hm-sub {
-    font-size: 0.74rem;
+    font-size: 0.68rem;
     color: var(--text-dim);
-    margin-top: 0.15rem;
+    margin-top: 0.08rem;
+    line-height: 1.25;
   }
 
   body.dark .hm-sub {
@@ -2214,15 +2253,15 @@
   }
 
   .hm-arrow {
-    width: 15px;
-    height: 15px;
+    width: 13px;
+    height: 13px;
     opacity: 0.4;
     flex-shrink: 0;
     transition: transform 0.2s ease, opacity 0.2s ease, stroke 0.2s ease;
   }
 
   .hm-card:hover .hm-arrow {
-    transform: translateX(4px);
+    transform: translateX(3px);
     opacity: 1;
     stroke: #EF493C;
   }
@@ -2371,16 +2410,16 @@
   .rc-h { background:rgba(230,101,0,.12);color:#E65100; }
   .rc-o { background:rgba(123,135,153,.1);color:var(--text-dim); }
   .rc-t { background:rgba(239,73,60,.1);color:var(--gold);font-weight:700; }
-  /* My Shift card on home */
+  /* My Shift card on home (Compact Executive) */
   .my-shift-card {
     background: rgba(255, 255, 255, 0.88);
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     border: 1px solid rgba(178, 192, 211, 0.65);
-    border-radius: 16px;
-    padding: 1.2rem 1.4rem;
+    border-radius: 11px;
+    padding: 0.75rem 0.85rem;
     margin-bottom: 0;
-    box-shadow: 0 4px 18px rgba(7, 13, 45, 0.04);
+    box-shadow: 0 2px 10px rgba(7, 13, 45, 0.03);
     transition: all var(--transition);
   }
   body.dark .my-shift-card {
@@ -2388,21 +2427,21 @@
     backdrop-filter: blur(16px);
     -webkit-backdrop-filter: blur(16px);
     border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.28);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
   }
-  .my-shift-title { font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--text-dim); margin-bottom:.75rem; font-weight:700; }
+  .my-shift-title { font-size: .65rem; letter-spacing: .1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: .55rem; font-weight: 700; }
   body.dark .my-shift-title { color: #94A3B8; }
-  .my-shift-row { display:flex; gap:.5rem; flex-direction:column; }
-  .my-shift-item { display:flex; align-items:center; justify-content:space-between; padding:.55rem .75rem; background:rgba(239, 73, 60, 0.04); border-radius:10px; border:1px solid rgba(0,0,0,0.03); transition:all 0.18s; }
-  body.dark .my-shift-item { background:rgba(255,255,255,0.04); border-color:rgba(255,255,255,0.06); }
+  .my-shift-row { display: flex; gap: .35rem; flex-direction: column; }
+  .my-shift-item { display: flex; align-items: center; justify-content: space-between; padding: .35rem .6rem; background: rgba(239, 73, 60, 0.04); border-radius: 7px; border: 1px solid rgba(0,0,0,0.03); transition: all 0.18s; }
+  body.dark .my-shift-item { background: rgba(255,255,255,0.04); border-color: rgba(255,255,255,0.06); }
   .my-shift-item:hover { transform: translateX(2px); }
-  .my-shift-label { font-size:.78rem; color:var(--text-muted); font-weight:500; }
-  body.dark .my-shift-label { color:#94A3B8; }
-  .my-shift-val { font-size:.85rem; font-weight:700; color:var(--text-primary); }
-  body.dark .my-shift-val { color:#F8FAFC; }
-  .my-shift-val.green { color:var(--accent-green); }
-  .my-shift-val.red { color:var(--accent-red); }
-  .my-shift-val.blue { color:var(--accent-blue); }
+  .my-shift-label { font-size: .72rem; color: var(--text-muted); font-weight: 500; }
+  body.dark .my-shift-label { color: #94A3B8; }
+  .my-shift-val { font-size: .78rem; font-weight: 700; color: var(--text-primary); }
+  body.dark .my-shift-val { color: #F8FAFC; }
+  .my-shift-val.green { color: var(--accent-green); }
+  .my-shift-val.red { color: var(--accent-red); }
+  .my-shift-val.blue { color: var(--accent-blue); }
 
   /* ═══════════════════════════════════════════════════
      MOBILE RESPONSIVE — max-width 768px
@@ -3748,7 +3787,7 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
 
       <button class="login-btn" id="login-btn" onclick="doLogin()">Sign In</button>
 
-      <div class="login-footer">TeamCore v7.0 <span class="li-new-badge">New</span> &nbsp;·&nbsp; For internal use only</div>
+      <div class="login-footer">TeamCore v8.5.0 &nbsp;·&nbsp; Build 261030_1155 &nbsp;·&nbsp; For internal use only</div>
     </div>
   </div>
 </div>
@@ -3760,6 +3799,8 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
 
 <!-- ══════════ DASHBOARD VIEW ══════════ -->
 <div id="dashboard-view" class="view" style="flex-direction:column;">
+  <!-- Ambient Theme Canvas -->
+  <canvas id="ambient-canvas"></canvas>
 
   <!-- TOPBAR -->
   <div class="topbar">
@@ -3945,6 +3986,7 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
       <div class="sidebar-item" id="sidebar-unblock-agents" style="display:none;" onclick="showPage('unblock-agents', this)">
         <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
         Unblock Agents
+        <span class="sidebar-badge" id="sidebar-unblock-badge" style="display:none;background:#EF493C;color:#fff;margin-left:auto;font-size:.65rem;padding:1px 6px;border-radius:10px;font-weight:700;">0</span>
       </div>
       <div class="sidebar-item" onclick="showPage('reports', this)">
         <svg class="s-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -3995,7 +4037,7 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
           <line x1="12" y1="8" x2="12" y2="12"/>
           <line x1="12" y1="16" x2="12.01" y2="16"/>
         </svg>
-        About
+        About <span style="font-size:.62rem;opacity:.55;margin-left:auto;font-variant-numeric:tabular-nums;">v8.5.0</span>
       </div>
 
       <div class="sidebar-section admin-only">Admin</div>
@@ -4042,6 +4084,24 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
           <div class="date-pill" id="date-display"></div>
           <h1>Good <span id="time-greet">morning</span>, <span id="greet-name">Agent</span> &#128075;</h1>
           <p>Here&#39;s your workspace at a glance. Stay sharp, stay ahead.</p>
+        </div>
+
+        <!-- ── 1-CLICK UNBLOCK ALERT BANNER ── -->
+        <div id="home-blocked-alert" style="display:none;background:linear-gradient(135deg,rgba(239,73,60,0.15),rgba(239,73,60,0.06));border:1px solid rgba(239,73,60,0.35);border-radius:var(--radius);padding:.85rem 1.15rem;margin-bottom:1.1rem;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;box-shadow:0 4px 16px rgba(239,73,60,0.12);">
+          <div style="display:flex;align-items:center;gap:.75rem;min-width:0;flex:1;">
+            <div style="width:38px;height:38px;border-radius:10px;background:rgba(239,73,60,0.2);display:flex;align-items:center;justify-content:center;font-size:1.15rem;flex-shrink:0;">🔒</div>
+            <div style="min-width:0;">
+              <div style="font-weight:700;font-size:.88rem;color:var(--text-primary);display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;">
+                <span id="hba-title">Agents Locked Out</span>
+                <span style="font-size:.62rem;background:var(--accent-red);color:#fff;padding:2px 7px;border-radius:10px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;">Break Policy</span>
+              </div>
+              <div id="hba-desc" style="font-size:.76rem;color:var(--text-muted);margin-top:.15rem;">Locked out due to break limit violation.</div>
+            </div>
+          </div>
+          <button onclick="showPage('unblock-agents',null)" style="padding:.55rem 1.25rem;border-radius:8px;background:linear-gradient(135deg,#EF493C,#FF7A5C);color:#fff;border:none;font-weight:700;font-size:.82rem;cursor:pointer;font-family:'DM Sans',sans-serif;white-space:nowrap;box-shadow:0 2px 8px rgba(239,73,60,0.35);display:flex;align-items:center;gap:.4rem;flex-shrink:0;">
+            <span>View &amp; Unblock</span>
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+          </button>
         </div>
 
         <div id="absent-names-bar" style="display:none;background:rgba(199,102,95,0.07);border:1px solid rgba(199,102,95,0.2);border-radius:var(--radius);padding:.8rem 1.2rem;margin-bottom:1rem;align-items:center;gap:.85rem;">
@@ -4186,6 +4246,11 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
             <div class="admin-only" style="margin-top:1.2rem;">
               <div class="section-title" style="margin-bottom:.75rem;">Admin Tools</div>
               <div class="home-module-list">
+                <div class="hm-card" onclick="showPage('unblock-agents',null)">
+                  <div class="hm-icon" style="background:rgba(239,73,60,.12);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg></div>
+                  <div class="hm-body"><div class="hm-title">Unblock Agents <span id="hm-unblock-badge" style="display:none;background:#EF493C;color:#fff;font-size:.62rem;font-weight:700;padding:1px 6px;border-radius:10px;margin-left:4px;">0</span></div><div class="hm-sub">Restore agents locked out by break limit</div></div>
+                  <svg class="hm-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+                </div>
                 <div class="hm-card" onclick="showPage('quiz-admin',null)">
                   <div class="hm-icon" style="background:rgba(174,123,76,.1);"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--gold)" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></div>
                   <div class="hm-body"><div class="hm-title">Quiz Builder</div><div class="hm-sub">Create and schedule daily quizzes</div></div>
@@ -4548,7 +4613,14 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
       <!-- MOMENTS PAGE -->
       <div class="page" id="page-moments">
         <div class="moments-page">
-          <div><h2 class="moments-title">&#128247; Team Moments</h2><p class="moments-sub">Celebrating our wins, our fun, and everything in between.</p></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;">
+            <div><h2 class="moments-title">&#128247; Team Moments</h2><p class="moments-sub">Celebrating our wins, our fun, and everything in between.</p></div>
+            <div id="moments-admin-btn-wrap" style="display:none;">
+              <button class="ts-btn-primary" onclick="mOpenUploadModal()" style="display:inline-flex;align-items:center;gap:.4rem;padding:.45rem 1rem;font-size:.82rem;">
+                ➕ Upload Moment
+              </button>
+            </div>
+          </div>
           <div class="moments-tabs">
             <button class="mtab active" onclick="switchMomentsTab('all',this)">&#128336; Recents</button>
             <button class="mtab" onclick="switchMomentsTab('birthday',this)">&#127874; Birthdays</button>
@@ -4577,6 +4649,48 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
                     <input class="comment-input" id="comment-input" placeholder="Add a comment..." maxlength="200" onkeydown="if(event.key==='Enter')submitComment()"/>
                     <button class="comment-send-btn" onclick="submitComment()"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- ADMIN: UPLOAD MOMENT MODAL -->
+          <div class="lightbox-overlay" id="moments-upload-overlay" onclick="mCloseUploadModal(event)" style="display:none;align-items:center;justify-content:center;z-index:9999;">
+            <div class="xc-card" onclick="event.stopPropagation()" style="width:90%;max-width:440px;margin:auto;box-shadow:0 24px 60px rgba(7,13,45,.6);background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius);padding:1.6rem;">
+              <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.1rem;">
+                <div style="font-family:'Cormorant Garamond',serif;font-size:1.35rem;font-weight:600;color:var(--text-primary);">&#128247; Upload Team Moment</div>
+                <button onclick="mCloseUploadModal()" style="background:none;border:none;color:var(--text-dim);font-size:1.25rem;cursor:pointer;padding:.2rem .4rem;">&#10005;</button>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:.9rem;">
+                <!-- Dropzone -->
+                <div id="m-upload-dropzone" onclick="document.getElementById('m-file-input').click()" style="border:2px dashed var(--navy-border);border-radius:var(--radius-sm);padding:1.4rem;text-align:center;cursor:pointer;background:rgba(255,255,255,.02);transition:var(--transition);">
+                  <input type="file" id="m-file-input" accept="image/png,image/jpeg,image/webp,image/jpg" style="display:none;" onchange="mHandleFile(this)"/>
+                  <div id="m-preview-wrap">
+                    <div style="font-size:1.9rem;margin-bottom:.25rem;">&#128444;&#65039;</div>
+                    <div style="font-size:.82rem;font-weight:600;color:var(--text-primary);">Click to choose a photo</div>
+                    <div style="font-size:.72rem;color:var(--text-dim);margin-top:.2rem;">PNG, JPG, WebP (auto-optimized)</div>
+                  </div>
+                </div>
+                <!-- Category -->
+                <div>
+                  <label class="xc-label" style="font-size:.75rem;margin-bottom:.3rem;display:block;">Category / Album</label>
+                  <select id="m-category" class="xc-input" style="font-size:.8rem;">
+                    <option value="birthday">&#127874; Birthday</option>
+                    <option value="outing">&#127957; Team Outing</option>
+                    <option value="dinner">&#127869; Team Dinner</option>
+                    <option value="funfriday">&#127881; Fun Friday</option>
+                  </select>
+                </div>
+                <!-- Caption -->
+                <div>
+                  <label class="xc-label" style="font-size:.75rem;margin-bottom:.3rem;display:block;">Caption</label>
+                  <input type="text" id="m-caption" class="xc-input" style="font-size:.8rem;" placeholder="e.g. Celebrating project milestone! &#127881;" maxlength="120"/>
+                </div>
+                <div id="m-upload-msg" style="font-size:.74rem;color:var(--accent-red);display:none;"></div>
+                <!-- Actions -->
+                <div style="display:flex;justify-content:flex-end;gap:.5rem;margin-top:.4rem;">
+                  <button class="ppl-cancel-btn" onclick="mCloseUploadModal()">Cancel</button>
+                  <button class="ppl-save-btn" id="m-save-btn" onclick="mSaveMoment()">Upload Moment</button>
                 </div>
               </div>
             </div>
@@ -4877,7 +4991,7 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
           </div>
           <div style="flex:1;min-width:0;">
             <div style="font-family:'DM Sans',-apple-system,sans-serif;font-size:1.45rem;font-weight:800;letter-spacing:-0.02em;color:var(--text-primary);line-height:1.2;">Team<span style="background:linear-gradient(135deg,#ff7a5c,#ffaa85);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">Core</span></div>
-            <div style="font-size:.72rem;color:var(--text-muted);margin-top:3px;">V 8.3.0 &nbsp;·&nbsp; Build 260602_1908 &nbsp;·&nbsp; Designed &amp; Engineered by Diwan Chowthry</div>
+            <div style="font-size:.72rem;color:var(--text-muted);margin-top:3px;">V 8.5.0 &nbsp;·&nbsp; Build 261030_1155 &nbsp;·&nbsp; Designed &amp; Engineered by Diwan Chowthry</div>
           </div>
           <button class="about-update-check-btn" id="about-update-btn" onclick="aboutCheckUpdate()" style="flex-shrink:0;">
             <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"/><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10"/></svg>
@@ -5051,7 +5165,10 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
             <h2 class="um-title">🔓 Unblock Agents</h2>
             <p class="um-sub">View and unblock agents who have been locked out due to break limit violations.</p>
           </div>
-          <button class="um-add-btn" style="background:rgba(46,197,111,.12);border:1px solid rgba(46,197,111,.3);color:#1a7a45;" onclick="loadUnblockPage()">↻ Refresh</button>
+          <div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;">
+            <button id="ub-unblock-all-btn" class="um-add-btn" style="display:none;background:rgba(239,73,60,.12);border:1px solid rgba(239,73,60,.3);color:var(--accent-red);" onclick="ubUnblockAllFromPage()">🔓 Unblock All</button>
+            <button class="um-add-btn" style="background:rgba(46,197,111,.12);border:1px solid rgba(46,197,111,.3);color:#1a7a45;" onclick="loadUnblockPage()">↻ Refresh</button>
+          </div>
         </div>
         <div id="ub-agent-list">
           <div style="color:var(--text-dim);font-size:0.875rem;padding:1rem;text-align:center;">Loading...</div>
@@ -5207,14 +5324,16 @@ body.dark .ct-assign-inp{background:#1F2937;border-color:#2D3748;color:#F1F5F9;}
               <span id="cd-amb-status" style="font-size:.75rem;color:var(--text-muted);margin-left:auto;align-self:center;"></span>
             </div>
 
-            <!-- Theme grid -->
-            <div style="margin-top:.9rem;display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;">
-              <select id="cd-amb-select" class="cd-input" style="flex:1;min-width:180px;font-size:.88rem;" onchange="cdAmbSet(this.value)">
+            <!-- Theme Quick Picker Grid -->
+            <div id="cd-amb-grid" style="margin-top:.9rem;"></div>
+
+            <!-- Theme dropdown fallback & quick actions -->
+            <div style="margin-top:.85rem;display:flex;align-items:center;gap:.7rem;flex-wrap:wrap;">
+              <select id="cd-amb-select" class="cd-input" style="flex:1;min-width:180px;font-size:.84rem;" onchange="cdAmbSet(this.value)">
                 <!-- filled by JS -->
               </select>
-              <button class="cd-btn" onclick="cdAmbSet('off')" style="white-space:nowrap;">⭕ Off</button>
+              <button class="cd-btn" onclick="cdAmbSet('off')" style="white-space:nowrap;">⭕ Turn Off</button>
             </div>
-            <div id="cd-amb-grid" style="display:none;"></div>
 
             <!-- Controls: Opacity / Speed / Density -->
             <div style="margin-top:1rem;border-top:1px solid var(--navy-border);padding-top:.85rem;display:flex;flex-direction:column;gap:.7rem;">
@@ -5844,6 +5963,11 @@ async function hashPassword(p){
   return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
 }
 
+const APP_VERSION = 'v8.5.0';
+const APP_BUILD   = '261030_1155';
+window.TEAMCORE_VERSION = APP_VERSION;
+window.TEAMCORE_BUILD   = APP_BUILD;
+
 const SESSION_KEY='tc_v2';
 let currentUser=null;
 
@@ -5856,7 +5980,7 @@ function loadSession(){try{const s=localStorage.getItem(SESSION_KEY);return s?JS
 
 // ═══════════════════════════════════════════════════════════════
 //  LOGIN RATE LIMITING
-//  5 failed attempts → 15 minute lockout on this browser
+//  5 failed attempts in a 15-minute window → 15 minute lockout
 //  Failed attempts are logged to session_fingerprints for audit
 // ═══════════════════════════════════════════════════════════════
 var _RL_KEY        = 'tc_login_rl';
@@ -5865,10 +5989,10 @@ var _RL_WINDOW_MS  = 15 * 60 * 1000; // 15 minutes
 var _rlCountdownT  = null;
 
 function rlGetState(){
-  try{ var s=localStorage.getItem(_RL_KEY); return s?JSON.parse(s):{count:0,lockedUntil:0}; }catch(e){ return {count:0,lockedUntil:0}; }
+  try{ var s=localStorage.getItem(_RL_KEY); return s?JSON.parse(s):{count:0,lockedUntil:0,windowStart:0}; }catch(e){ return {count:0,lockedUntil:0,windowStart:0}; }
 }
 function rlSaveState(s){ try{ localStorage.setItem(_RL_KEY,JSON.stringify(s)); }catch(e){} }
-function rlClear(){ try{ localStorage.removeItem(_RL_KEY); }catch(e){} if(_rlCountdownT){ clearInterval(_rlCountdownT); _rlCountdownT=null; } }
+function rlClear(){ try{ localStorage.removeItem(_RL_KEY); }catch(e){} if(_rlCountdownT){ clearTimeout(_rlCountdownT); clearInterval(_rlCountdownT); _rlCountdownT=null; } }
 
 function rlIsLocked(){
   var s=rlGetState();
@@ -5877,8 +6001,17 @@ function rlIsLocked(){
 
 function rlRecordFailure(){
   var s=rlGetState();
-  s.count=(s.count||0)+1;
-  if(s.count>=_RL_MAX){ s.lockedUntil=Date.now()+_RL_WINDOW_MS; }
+  var now=Date.now();
+  // Rolling 15-minute window: if window expired or not set, reset count to 1
+  if(!s.windowStart || (now - s.windowStart > _RL_WINDOW_MS)){
+    s.count = 1;
+    s.windowStart = now;
+  } else {
+    s.count = (s.count || 0) + 1;
+  }
+  if(s.count >= _RL_MAX){
+    s.lockedUntil = now + _RL_WINDOW_MS;
+  }
   rlSaveState(s);
   return s;
 }
@@ -6782,6 +6915,7 @@ async function doLogout(){
   // NOTE: recordLogout intentionally NOT called here.
   if(_loginClockInterval)clearInterval(_loginClockInterval);
   if(window._breakStatInterval){ clearInterval(window._breakStatInterval); window._breakStatInterval=null; }
+  if(window._dashAutoRefreshInterval){ clearInterval(window._dashAutoRefreshInterval); window._dashAutoRefreshInterval=null; }
   currentUser=null;clearSession();
   await liWaitForCover(); // ensure overlay is fully covering before swapping views
   document.getElementById('dashboard-view').classList.remove('active');
@@ -6866,6 +7000,7 @@ function enterDashboard(){
 }
 
 window.addEventListener('DOMContentLoaded', async function(){
+  if(typeof rlIsLocked === 'function' && rlIsLocked()) rlShowLockout();
   document.getElementById('password').addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
   const saved=loadSession();
   if(saved && saved.id && saved.sessionToken){
@@ -7065,18 +7200,21 @@ function updateAdminVisibility(){
 // toggle visibility
   var gmItem=document.getElementById('sidebar-sysconfig');
   if(gmItem) gmItem.style.display=_isSysLevel()?'flex':'none';
-  // Unblock Agents sidebar: visible only for non-admin users with can_unblock flag
-  var ubItem=document.getElementById('sidebar-unblock-agents');
-  if(ubItem) ubItem.style.display=(!isAdminUser() && currentUser && currentUser.canUnblock)?'flex':'none';
+  // Unblock Agents: visible to Admins, Team Leads, and any user with can_unblock permission
+  var canSeeUnblock = isAdminUser() || (currentUser && currentUser.canUnblock);
+  var ubItem = document.getElementById('sidebar-unblock-agents');
+  if(ubItem) ubItem.style.display = canSeeUnblock ? 'flex' : 'none';
   // Mobile nav unblock item — same rule
-  var mobUbItem=document.getElementById('mob-unblock-item');
-  if(mobUbItem) mobUbItem.style.display=(!isAdminUser() && currentUser && currentUser.canUnblock)?'flex':'none';
+  var mobUbItem = document.getElementById('mob-unblock-item');
+  if(mobUbItem) mobUbItem.style.display = canSeeUnblock ? 'flex' : 'none';
   // Timesheet: always on for admin/TL, only on for agents if timesheetEnabled flag set
   var tsItem=document.getElementById('sidebar-ts');
   if(tsItem){
     var canSeeTs=isAdminUser()||(currentUser&&currentUser.timesheetEnabled);
     tsItem.style.display=canSeeTs?'flex':'none';
   }
+  var momentsBtn=document.getElementById('moments-admin-btn-wrap');
+  if(momentsBtn) momentsBtn.style.display=show?'block':'none';
 }
 function openSimulation(){window.open('simulation.html','_blank');}
 function setGreetingAndDate(){
@@ -7220,36 +7358,48 @@ async function ubToggleAccess(userId, enabled){
   }
 }
 
-// ── Load the Unblock Agents page (for can_unblock users) ──
+// ── Load the Unblock Agents page (for admins & can_unblock users) ──
 async function loadUnblockPage(){
   var listEl=document.getElementById('ub-agent-list');
+  var allBtn=document.getElementById('ub-unblock-all-btn');
   if(!listEl) return;
   listEl.innerHTML='<div style="color:var(--text-dim);font-size:0.875rem;padding:1.5rem;text-align:center;">Loading…</div>';
   try{
     var users=await sbQuery('users','is_blocked=eq.true&select=id,name,email,block_reason&order=name.asc');
     // Relieved-from-duty is an intentional offboarding block, not a break-limit block — keep it out of this report.
     if(users) users=users.filter(function(u){ return u.block_reason!=='Relieved from duty'; });
+    if(allBtn) allBtn.style.display=(users&&users.length>1)?'inline-flex':'none';
     if(!users||!users.length){
       listEl.innerHTML='<div style="text-align:center;padding:2.5rem 1rem;"><div style="font-size:2rem;margin-bottom:.75rem;">✅</div><div style="font-size:.95rem;font-weight:600;color:var(--text-primary);">No blocked agents</div><div style="font-size:.82rem;color:var(--text-muted);margin-top:.35rem;">Everyone is currently unblocked.</div></div>';
+      if(typeof updateHomeBlockedAlert==='function') updateHomeBlockedAlert([]);
       return;
     }
+    if(typeof updateHomeBlockedAlert==='function') updateHomeBlockedAlert(users);
     listEl.innerHTML=users.map(function(u){
       var ini=(u.name||'?').split(' ').map(function(w){return w[0];}).join('').slice(0,2).toUpperCase();
       var reason=u.block_reason||'Break limit exceeded';
-      return '<div class="um-user-card" id="ub-card-'+u.id+'" style="position:relative;">'+
-        '<div style="position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent-red);border-radius:var(--radius) 0 0 var(--radius);"></div>'+
-        '<div class="um-user-avatar" style="background:linear-gradient(135deg,rgba(239,73,60,.6),rgba(239,73,60,.9));">🔒</div>'+
-        '<div class="um-user-info">'+
-          '<div class="um-user-name">'+esc(u.name)+' <span style="font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(239,73,60,.15);color:var(--accent-red);text-transform:uppercase;letter-spacing:.08em;">Blocked</span></div>'+
-          '<div class="um-user-email">'+esc(u.email)+'</div>'+
-          '<div style="font-size:.72rem;color:var(--text-dim);margin-top:.2rem;">'+esc(reason)+'</div>'+
+      return '<div class="um-user-card" id="ub-card-'+u.id+'" style="position:relative;display:flex;align-items:center;justify-content:space-between;gap:.9rem;flex-wrap:wrap;padding:1.1rem 1.25rem;border-left:4px solid var(--accent-red);background:var(--navy-card);border-radius:var(--radius);margin-bottom:.75rem;box-shadow:0 2px 10px rgba(0,0,0,0.15);">'+
+        '<div style="display:flex;align-items:center;gap:.85rem;min-width:0;flex:1 1 200px;">'+
+          '<div class="um-user-avatar" style="background:linear-gradient(135deg,rgba(239,73,60,.7),rgba(239,73,60,.95));width:42px;height:42px;font-size:1.1rem;flex-shrink:0;box-shadow:0 2px 8px rgba(239,73,60,.3);">🔒</div>'+
+          '<div class="um-user-info" style="min-width:0;">'+
+            '<div class="um-user-name" style="font-size:.92rem;font-weight:700;display:flex;align-items:center;gap:.45rem;flex-wrap:wrap;">'+esc(u.name)+' <span style="font-size:.62rem;font-weight:700;padding:2px 8px;border-radius:10px;background:rgba(239,73,60,.15);color:var(--accent-red);text-transform:uppercase;letter-spacing:.08em;">Blocked</span></div>'+
+            '<div class="um-user-email" style="font-size:.76rem;color:var(--text-muted);margin-top:2px;">'+esc(u.email)+'</div>'+
+            '<div style="font-size:.74rem;color:var(--text-dim);margin-top:.25rem;background:var(--navy-hover);padding:3px 8px;border-radius:6px;display:inline-block;"><span style="color:var(--text-muted);font-weight:600;">Reason:</span> '+esc(reason)+'</div>'+
+          '</div>'+
         '</div>'+
-        '<button id="ub-btn-'+u.id+'" onclick="ubUnblockAgent(\''+u.id+'\',\''+esc(u.name)+'\')" style="padding:.38rem .95rem;background:rgba(46,197,111,.1);border:1px solid rgba(46,197,111,.3);color:#1a7a45;border-radius:6px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:DM Sans,sans-serif;flex-shrink:0;white-space:nowrap;">🔓 Unblock</button>'+
+        '<button id="ub-btn-'+u.id+'" onclick="ubUnblockAgent(\''+u.id+'\',\''+esc(u.name)+'\')" style="padding:.6rem 1.25rem;background:linear-gradient(135deg,#2EC56F,#22a358);color:#fff;border:none;border-radius:8px;font-size:.82rem;font-weight:700;cursor:pointer;font-family:DM Sans,sans-serif;flex-shrink:0;white-space:nowrap;min-height:42px;display:inline-flex;align-items:center;justify-content:center;gap:.4rem;box-shadow:0 3px 10px rgba(46,197,111,0.25);-webkit-tap-highlight-color:transparent;">🔓 Unblock</button>'+
       '</div>';
     }).join('');
   }catch(e){
     listEl.innerHTML='<div class="um-empty" style="color:var(--accent-red);">Could not load blocked agents: '+esc(e.message)+'</div>';
   }
+}
+
+// ── Unblock all from Unblock Agents page ──
+async function ubUnblockAllFromPage(){
+  await bbUnblockAll();
+  loadUnblockPage();
+  if(typeof checkAndUpdateBlockedAlert==='function') checkAndUpdateBlockedAlert();
 }
 
 // ── Unblock a single agent (from Unblock Agents page) ──
@@ -7272,7 +7422,22 @@ async function ubUnblockAgent(userId, userName){
       });
     }catch(le){ console.warn('Audit log write failed:',le.message); }
     var card=document.getElementById('ub-card-'+userId);
-    if(card){ card.style.transition='opacity .3s'; card.style.opacity='0'; setTimeout(function(){ card.remove(); var remaining=document.querySelectorAll('#ub-agent-list .um-user-card'); if(!remaining.length){ var listEl=document.getElementById('ub-agent-list'); if(listEl) listEl.innerHTML='<div style="text-align:center;padding:2.5rem 1rem;"><div style="font-size:2rem;margin-bottom:.75rem;">✅</div><div style="font-size:.95rem;font-weight:600;color:var(--text-primary);">No blocked agents</div><div style="font-size:.82rem;color:var(--text-muted);margin-top:.35rem;">Everyone is currently unblocked.</div></div>'; } }, 350); }
+    if(card){
+      card.style.transition='opacity .3s, transform .3s';
+      card.style.opacity='0';
+      card.style.transform='scale(0.96)';
+      setTimeout(function(){
+        card.remove();
+        var remaining=document.querySelectorAll('#ub-agent-list .um-user-card');
+        var allBtn=document.getElementById('ub-unblock-all-btn');
+        if(allBtn && remaining.length <= 1) allBtn.style.display='none';
+        if(!remaining.length){
+          var listEl=document.getElementById('ub-agent-list');
+          if(listEl) listEl.innerHTML='<div style="text-align:center;padding:2.5rem 1rem;"><div style="font-size:2rem;margin-bottom:.75rem;">✅</div><div style="font-size:.95rem;font-weight:600;color:var(--text-primary);">No blocked agents</div><div style="font-size:.82rem;color:var(--text-muted);margin-top:.35rem;">Everyone is currently unblocked.</div></div>';
+        }
+        if(typeof checkAndUpdateBlockedAlert==='function') checkAndUpdateBlockedAlert();
+      }, 350);
+    }
   }catch(e){
     if(btn){btn.textContent='🔓 Unblock';btn.disabled=false;}
     alert('Could not unblock '+userName+': '+e.message);
@@ -7944,17 +8109,35 @@ async function _mFetchFromCloud(cloudName, tag){
     return [];
   }
 }
-async function _mFetch(tag){
-  if(!CLOUDINARY_CLOUD||CLOUDINARY_CLOUD==='YOUR_CLOUD_NAME'){
-    var v=M_TAG_MAP[tag];
-    return v?DEMO_MOMENTS.filter(function(r){return(r.tags||[]).indexOf(v)>-1;}):DEMO_MOMENTS;
+async function _mFetchCustom(tag){
+  try{
+    var rows = await sbQuery('settings','key=eq.custom_team_moments&select=value');
+    if(!rows || !rows.length || !rows[0].value) return [];
+    var list = JSON.parse(rows[0].value);
+    if(!Array.isArray(list)) return [];
+    var targetTag = M_TAG_MAP[tag];
+    if(targetTag){
+      return list.filter(function(m){ return (m.tags||[]).indexOf(targetTag)>-1; });
+    }
+    return list;
+  }catch(e){
+    console.warn('Custom moments fetch error:', e.message);
+    return [];
   }
-  // Fetch from both clouds in parallel
-  var results=await Promise.all([
+}
+
+async function _mFetch(tag){
+  // Fetch custom moments from Supabase + both Cloudinary clouds in parallel
+  var results = await Promise.all([
+    _mFetchCustom(tag),
     _mFetchFromCloud(CLOUDINARY_CLOUD, tag),
     _mFetchFromCloud(CLOUDINARY_CLOUD2, tag)
   ]);
-  var merged=results[0].concat(results[1]);
+  var customMoments = results[0] || [];
+  var cloud1Moments = results[1] || [];
+  var cloud2Moments = results[2] || [];
+  var merged = customMoments.concat(cloud1Moments).concat(cloud2Moments);
+
   // If both failed, fall back to demo
   if(!merged.length){
     var vf=M_TAG_MAP[tag];
@@ -8039,8 +8222,168 @@ function _mRenderGrid(resources){
   window._momentsPidMap=window._momentsPidMap||{};
   resources.forEach(function(r){window._momentsPidMap[r.public_id.replace(/[^a-z0-9]/gi,'_')]=r.public_id;});
 }
-async function _mLoadTab(tag){var grid=document.getElementById('moments-grid');if(!grid)return;grid.innerHTML='<div class="moments-loading"><div class="moments-spinner"></div><span>Loading moments...</span></div>';await mLoadHidden();if(!window._momentsCache[tag])window._momentsCache[tag]=await _mFetch(tag);_mRenderGrid(window._momentsCache[tag]);}
+async function _mLoadTab(tag){
+  var btnWrap = document.getElementById('moments-admin-btn-wrap');
+  if(btnWrap) btnWrap.style.display = (typeof isAdminUser==='function' && isAdminUser()) ? 'block' : 'none';
+  var grid=document.getElementById('moments-grid');
+  if(!grid)return;
+  grid.innerHTML='<div class="moments-loading"><div class="moments-spinner"></div><span>Loading moments...</span></div>';
+  await mLoadHidden();
+  if(!window._momentsCache[tag])window._momentsCache[tag]=await _mFetch(tag);
+  _mRenderGrid(window._momentsCache[tag]);
+}
 function switchMomentsTab(tag,btn){_mActiveTab=tag;document.querySelectorAll('.mtab').forEach(function(t){t.classList.remove('active');});if(btn)btn.classList.add('active');_mLoadTab(tag);}
+
+// ── Admin: Upload Team Moment ──
+function mOpenUploadModal(){
+  if(typeof isAdminUser==='function' && !isAdminUser()){
+    alert('Only administrators can upload team moments.');
+    return;
+  }
+  var overlay = document.getElementById('moments-upload-overlay');
+  var fileInput = document.getElementById('m-file-input');
+  var caption = document.getElementById('m-caption');
+  var msg = document.getElementById('m-upload-msg');
+  var previewWrap = document.getElementById('m-preview-wrap');
+  if(fileInput) fileInput.value = '';
+  if(caption) caption.value = '';
+  if(msg){ msg.textContent = ''; msg.style.display = 'none'; }
+  if(previewWrap){
+    previewWrap.innerHTML = '<div style="font-size:1.9rem;margin-bottom:.25rem;">&#128444;&#65039;</div>' +
+      '<div style="font-size:.82rem;font-weight:600;color:var(--text-primary);">Click to choose a photo</div>' +
+      '<div style="font-size:.72rem;color:var(--text-dim);margin-top:.2rem;">PNG, JPG, WebP (auto-optimized)</div>';
+  }
+  window._mPendingBlob = null;
+  if(overlay) overlay.style.display = 'flex';
+}
+
+function mCloseUploadModal(e){
+  if(!e || e.target === document.getElementById('moments-upload-overlay')){
+    var overlay = document.getElementById('moments-upload-overlay');
+    if(overlay) overlay.style.display = 'none';
+    window._mPendingBlob = null;
+  }
+}
+
+function mHandleFile(input){
+  var file = input.files && input.files[0];
+  var msg = document.getElementById('m-upload-msg');
+  if(!file) return;
+  if(msg) msg.style.display = 'none';
+
+  if(file.size > 15 * 1024 * 1024){
+    if(msg){ msg.textContent='Image is too large (max 15MB).'; msg.style.display='block'; }
+    input.value = '';
+    return;
+  }
+
+  var reader = new FileReader();
+  reader.onload = function(e){
+    var img = new Image();
+    img.onload = function(){
+      var maxDim = 1200;
+      var w = img.width, h = img.height;
+      if(w > maxDim || h > maxDim){
+        if(w > h){
+          h = Math.round(h * (maxDim / w));
+          w = maxDim;
+        } else {
+          w = Math.round(w * (maxDim / h));
+          h = maxDim;
+        }
+      }
+      var canvas = document.createElement('canvas');
+      canvas.width = w; canvas.height = h;
+      var ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, w, h);
+      canvas.toBlob(function(blob){
+        if(!blob){
+          if(msg){ msg.textContent='Could not process photo.'; msg.style.display='block'; }
+          return;
+        }
+        window._mPendingBlob = blob;
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+        var previewWrap = document.getElementById('m-preview-wrap');
+        if(previewWrap){
+          previewWrap.innerHTML = '<img src="' + dataUrl + '" style="max-height:180px;max-width:100%;border-radius:6px;object-fit:contain;margin-bottom:.3rem;"/>' +
+            '<div style="font-size:.72rem;color:var(--accent-green);font-weight:600;">✓ Ready (' + Math.round(blob.size / 1024) + ' KB)</div>';
+        }
+      }, 'image/jpeg', 0.85);
+    };
+    img.onerror = function(){
+      if(msg){ msg.textContent='Invalid image file.'; msg.style.display='block'; }
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+async function mSaveMoment(){
+  var btn = document.getElementById('m-save-btn');
+  var msg = document.getElementById('m-upload-msg');
+  if(!window._mPendingBlob){
+    if(msg){ msg.textContent='Please select a photo to upload.'; msg.style.display='block'; }
+    return;
+  }
+  btn.disabled = true; btn.textContent = 'Uploading photo…';
+  if(msg) msg.style.display = 'none';
+
+  try{
+    var cat = (document.getElementById('m-category')||{}).value || 'funfriday';
+    var tagKey = M_TAG_MAP[cat] || cat;
+    var caption = (document.getElementById('m-caption')||{}).value || '';
+    caption = caption.trim() || M_LABELS[cat] || 'Team Moment';
+
+    // 1. Upload to Supabase Storage
+    var timestamp = Date.now();
+    var filename = 'moment_' + timestamp + '_' + Math.random().toString(36).slice(2,7) + '.jpg';
+    var uploadUrl = SUPABASE_URL + '/storage/v1/object/profiles/moments/' + filename;
+    var r = await fetch(uploadUrl, {
+      method: 'POST',
+      headers: Object.assign(sbHeaders(), { 'Content-Type': 'image/jpeg', 'x-upsert': 'true' }),
+      body: window._mPendingBlob
+    });
+    if(!r.ok){
+      var errText = await r.text();
+      throw new Error('Upload failed: ' + (errText || r.statusText));
+    }
+    var publicUrl = SUPABASE_URL + '/storage/v1/object/public/profiles/moments/' + filename;
+
+    // 2. Save metadata to Supabase settings table under 'custom_team_moments'
+    btn.textContent = 'Saving details…';
+    var ex = await sbQuery('settings', 'key=eq.custom_team_moments&select=value');
+    var currentList = [];
+    if(ex && ex.length && ex[0].value){
+      try{ currentList = JSON.parse(ex[0].value); }catch(e){}
+    }
+    var newMoment = {
+      public_id: 'cust__' + timestamp,
+      secure_url: publicUrl,
+      created_at: new Date().toISOString(),
+      context: { custom: { caption: caption } },
+      tags: [tagKey],
+      author: currentUser ? currentUser.name : 'Admin'
+    };
+    currentList.unshift(newMoment);
+    var jsonVal = JSON.stringify(currentList);
+    if(ex && ex.length){
+      await sbUpdate('settings', 'key', 'custom_team_moments', { value: jsonVal });
+    } else {
+      await sbInsert('settings', { key: 'custom_team_moments', value: jsonVal });
+    }
+
+    // 3. Clear cache and reload tab
+    window._momentsCache = {};
+    window._mPendingBlob = null;
+    var overlay = document.getElementById('moments-upload-overlay');
+    if(overlay) overlay.style.display = 'none';
+    await _mLoadTab(_mActiveTab);
+
+  }catch(e){
+    if(msg){ msg.textContent='Error: ' + e.message; msg.style.display='block'; }
+  }
+  btn.disabled = false; btn.textContent = 'Upload Moment';
+}
 function toggleMomentLike(safe){var was=_mliked[safe]||false;_mliked[safe]=!was;_mlikes[safe]=Math.max(0,(_mlikes[safe]||0)+(was?-1:1));var b=document.getElementById('lbtn_'+safe);var c=document.getElementById('lcnt_'+safe);if(b)b.classList.toggle('liked',!was);if(c)c.textContent=_mlikes[safe];}
 function openMomentLightbox(safe){
   var pid=(window._momentsPidMap&&window._momentsPidMap[safe])||safe;
@@ -8074,10 +8417,11 @@ function submitComment(){var input=document.getElementById('comment-input');var 
 //  Agent can self-unblock with the admin-set unblock PIN.
 // ═══════════════════════════════════════════════════════════════
 var _BB_PIN_KEY = 'break_unblock_pin'; // settings table key
+var _BB_ENABLED_KEY = 'break_block_enabled';
 
 // ── Count this user's over-limit breaks for the current month ──
 // ── Check after every over-limit break end ──
-async function bbCheckAfterBreak(){
+async function bbCheckAfterBreak(type, overBy, elapsed){
   if(!currentUser || isAdminUser()) return; // admins immune
   // Check if break block system is enabled
   try{
@@ -8103,32 +8447,98 @@ async function bbCheckAfterBreak(){
       timestamp: new Date().toISOString()
     });
   }catch(e){ console.warn('Audit log write failed:',e.message); }
-  bbShowModal();
+
+  var violation = {
+    type: type,
+    allowed: (type && BREAK_LIMITS[type]) ? BREAK_LIMITS[type] + ' mins' : '45 mins',
+    duration: _bbFmtMinSec(elapsed)
+  };
+  bbShowModal(violation);
 }
 
 // ── Show block modal ──
-function bbShowModal(){
+async function bbShowModal(violation){
   var existing = document.getElementById('bb-modal-overlay');
   if(existing) existing.remove();
+
+  var breakName = (violation && violation.type && BREAK_LABELS[violation.type]) ? BREAK_LABELS[violation.type] : ((violation && violation.type) ? violation.type : 'Break Policy');
+  var allowedTime = (violation && violation.allowed) ? violation.allowed : ((violation && violation.type && BREAK_LIMITS[violation.type]) ? BREAK_LIMITS[violation.type] + ' mins' : 'Policy Max');
+  var durationTime = (violation && violation.duration) ? violation.duration : 'Exceeded';
+
   var el = document.createElement('div');
   el.id = 'bb-modal-overlay';
-  el.style.cssText = 'position:fixed;inset:0;background:rgba(7,13,45,.78);backdrop-filter:blur(5px);z-index:9998;display:flex;align-items:center;justify-content:center;';
+  el.style.cssText = 'position:fixed;inset:0;background:rgba(7,13,45,.82);backdrop-filter:blur(8px);z-index:9998;display:flex;align-items:center;justify-content:center;padding:1.25rem;animation:fadeIn .2s ease;';
   el.innerHTML =
-    '<div style="background:var(--navy-card);border:1px solid var(--navy-border);border-radius:var(--radius);max-width:420px;width:90%;padding:2rem 2rem 1.5rem;text-align:center;box-shadow:0 24px 60px rgba(7,13,45,.4);">'+
-      '<div style="width:56px;height:56px;border-radius:50%;background:rgba(239,73,60,.12);border:1px solid rgba(239,73,60,.3);display:flex;align-items:center;justify-content:center;margin:0 auto 1.25rem;">'+
-        '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#EF493C" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>'+
+    '<div style="background:var(--navy-card);border:1px solid var(--navy-border);border-radius:18px;max-width:420px;width:100%;padding:2.2rem 2rem 1.6rem;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,.45);animation:fadeUp .25s ease;position:relative;">'+
+      // Coral glowing shield icon
+      '<div style="width:68px;height:68px;margin:0 auto 1.15rem;display:flex;align-items:center;justify-content:center;position:relative;">'+
+        '<div style="position:absolute;inset:0;border-radius:50%;background:radial-gradient(circle,rgba(239,73,60,.35) 0%,rgba(239,73,60,0) 70%);filter:blur(8px);"></div>'+
+        '<svg width="52" height="52" viewBox="0 0 24 24" fill="none" style="position:relative;z-index:1;">'+
+          '<defs>'+
+            '<linearGradient id="bbShieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">'+
+              '<stop offset="0%" stop-color="#FF7A68"/>'+
+              '<stop offset="100%" stop-color="#EF493C"/>'+
+            '</linearGradient>'+
+          '</defs>'+
+          '<path d="M12 2L4 6v6c0 5.25 3.5 10.15 8 11.25 4.5-1.1 8-6 8-11.25V6l-8-4z" stroke="url(#bbShieldGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="rgba(239,73,60,.12)"/>'+
+          '<path d="M12 2v20.25" stroke="url(#bbShieldGrad)" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>'+
+          '<path d="M4 11h16" stroke="url(#bbShieldGrad)" stroke-width="1.6" stroke-linecap="round" opacity="0.6"/>'+
+        '</svg>'+
       '</div>'+
-      '<div style="font-family:\'Cormorant Garamond\',serif;font-size:1.3rem;font-weight:600;color:var(--text-primary);margin-bottom:.25rem;">Account Blocked</div>'+
-      '<div style="font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);margin-bottom:1.25rem;">Break limit exceeded</div>'+
-      '<div style="background:rgba(239,73,60,.06);border:1px solid rgba(239,73,60,.15);border-radius:var(--radius-sm);padding:1rem 1.2rem;text-align:left;margin-bottom:1.25rem;">'+
-        '<p style="font-size:.875rem;color:var(--text-primary);line-height:1.7;margin:0 0 .65rem;">Break limit exceeded. Account blocked. Contact your administrator.</p>'+
-        '<p style="font-size:.875rem;color:var(--text-primary);line-height:1.7;margin:0;">Please ask your administrator to unlock your account to regain access.</p>'+
+      // Title & Subtitle
+      '<div style="font-family:\'DM Sans\',-apple-system,sans-serif;font-size:1.35rem;font-weight:700;color:var(--text-primary);margin-bottom:.35rem;letter-spacing:-0.01em;">Break Policy Alert</div>'+
+      '<div style="font-size:.84rem;color:var(--text-muted);margin-bottom:1.4rem;">Session locked due to break overage</div>'+
+      // 3-Column Stats Grid + Reach floor incharge notice
+      '<div style="background:var(--navy-hover);border:1px solid var(--navy-border);border-radius:var(--radius-sm);overflow:hidden;margin-bottom:1.4rem;">'+
+        '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--navy-border);padding:.85rem .5rem;">'+
+          '<div style="text-align:center;border-right:1px solid var(--navy-border);padding:0 .3rem;">'+
+            '<div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin-bottom:.3rem;">Break</div>'+
+            '<div id="bb-hud-break" style="font-size:.92rem;font-weight:600;color:var(--text-primary);">'+esc(breakName)+'</div>'+
+          '</div>'+
+          '<div style="text-align:center;border-right:1px solid var(--navy-border);padding:0 .3rem;">'+
+            '<div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin-bottom:.3rem;">Allowed</div>'+
+            '<div id="bb-hud-allowed" style="font-size:.92rem;font-weight:600;color:var(--text-primary);">'+esc(allowedTime)+'</div>'+
+          '</div>'+
+          '<div style="text-align:center;padding:0 .3rem;">'+
+            '<div style="font-size:.68rem;text-transform:uppercase;letter-spacing:.08em;color:var(--text-dim);margin-bottom:.3rem;">Duration</div>'+
+            '<div id="bb-hud-duration" style="font-size:.92rem;font-weight:600;color:var(--accent-red);display:inline-flex;align-items:center;justify-content:center;gap:.3rem;">'+
+              '<span style="width:6px;height:6px;border-radius:50%;background:var(--accent-red);display:inline-block;"></span>'+
+              '<span>'+esc(durationTime)+'</span>'+
+            '</div>'+
+          '</div>'+
+        '</div>'+
+        '<div style="padding:.75rem 1rem;font-size:.8rem;color:var(--text-muted);text-align:center;display:flex;align-items:center;justify-content:center;gap:.45rem;">'+
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="opacity:0.75;flex-shrink:0;"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>'+
+          '<span>Reach floor incharge to restore access</span>'+
+        '</div>'+
       '</div>'+
-      '<div style="border-top:1px solid var(--navy-border);padding-top:1rem;margin-top:.4rem;">'+
-        '<button id="bb-goto-login-btn" onclick="bbGoToLogin()" style="font-size:.8rem;color:var(--text-muted);background:none;border:none;cursor:pointer;font-family:DM Sans,sans-serif;">Sign in as a different user</button>'+
+      // Bottom link
+      '<div>'+
+        '<button id="bb-goto-login-btn" onclick="bbGoToLogin()" style="font-size:.82rem;color:var(--text-muted);background:none;border:none;cursor:pointer;font-family:\'DM Sans\',sans-serif;transition:color .2s;padding:.4rem .8rem;text-decoration:underline;text-underline-offset:3px;">Sign in as a different user</button>'+
       '</div>'+
     '</div>';
+
   document.body.appendChild(el);
+
+  // If from login without active violation info, attempt quick fetch of latest over-limit break
+  if(!violation && currentUser && currentUser.id){
+    try {
+      var latest = await sbQuery('breaks', 'user_id=eq.'+currentUser.id+'&over_limit=eq.true&order=created_at.desc&limit=1');
+      if(latest && latest.length){
+        var b = latest[0];
+        var bName = (b.break_type && BREAK_LABELS[b.break_type]) ? BREAK_LABELS[b.break_type] : (b.break_type || 'Break');
+        var bAllowed = (b.break_type && BREAK_LIMITS[b.break_type]) ? BREAK_LIMITS[b.break_type] + ' mins' : 'Policy Max';
+        var bDuration = b.duration_seconds ? _bbFmtMinSec(b.duration_seconds) : 'Exceeded';
+        var elBreak = document.getElementById('bb-hud-break');
+        var elAllowed = document.getElementById('bb-hud-allowed');
+        var elDuration = document.getElementById('bb-hud-duration');
+        if(elBreak) elBreak.textContent = bName;
+        if(elAllowed) elAllowed.textContent = bAllowed;
+        if(elDuration) elDuration.innerHTML = '<span style="width:6px;height:6px;border-radius:50%;background:var(--accent-red);display:inline-block;"></span><span>'+bDuration+'</span>';
+      }
+    } catch(e){}
+  }
+
   // Force logout session
   _inactStopAll();
   if(_loginClockInterval) clearInterval(_loginClockInterval);
@@ -8136,16 +8546,41 @@ function bbShowModal(){
   clearSession();
 }
 
+function _bbFmtMinSec(s){
+  if(!s || isNaN(s)) return 'Exceeded';
+  var m = Math.floor(s/60);
+  var sc = s % 60;
+  return (m > 0 ? m + 'm ' : '') + sc + 's';
+}
+
 // bbSubmitPin and _bbSilentUnblock removed — click-pattern self-unblock permanently disabled
 
 async function bbGoToLogin(){
   var el = document.getElementById('bb-modal-overlay');
+  if(typeof inactStopWatching==='function') inactStopWatching();
   document.body.classList.remove('logged-in');
+  try{
+    document.querySelectorAll('.dock-chat-window').forEach(function(w){ w.remove(); });
+    var popup = document.getElementById('chat-contacts-popup');
+    if(popup) popup.classList.add('dock-hidden');
+    _dockWindows = {};
+    _chatUnreadMap = {};
+    _chatLastMsgMap = {};
+    _dockContactsOpen = false;
+    if(_chatPollInterval){ clearInterval(_chatPollInterval); _chatPollInterval=null; }
+    var icon = document.getElementById('chat-dock-icon');
+    if(icon) icon.classList.remove('visible');
+    var restore = document.getElementById('chat-restore-btn');
+    if(restore) restore.style.display='none';
+  }catch(e){}
+  if(window._dashAutoRefreshInterval){ clearInterval(window._dashAutoRefreshInterval); window._dashAutoRefreshInterval=null; }
+  if(window._breakStatInterval){ clearInterval(window._breakStatInterval); window._breakStatInterval=null; }
   liStartWipe('bb-goto-login-btn');
   await liWaitForCover(); // ensure overlay is fully covering before swapping views
   if(el) el.remove();
   document.getElementById('dashboard-view').classList.remove('active');
   document.getElementById('login-view').classList.add('active');
+  if(window._liMeshStart) window._liMeshStart();
   var bb=document.getElementById('break-bar');if(bb)bb.style.display='none';
   var tbw=document.getElementById('tb-break-wrap');if(tbw)tbw.style.display='none';if(typeof tbBreakClose==='function')tbBreakClose();
   var ab=document.getElementById('attendance-badge');if(ab)ab.style.display='none';
@@ -8176,6 +8611,7 @@ async function bbAdminUnblock(userId, userName){
     }catch(le){ console.warn('Audit log write failed:',le.message); }
     loadUsersPage();
     bbLoadBlockedList();
+    if(typeof checkAndUpdateBlockedAlert==='function') checkAndUpdateBlockedAlert();
   }catch(e){ alert('Could not unblock: '+e.message); }
 }
 
@@ -8230,6 +8666,7 @@ async function bbUnblockAll(){
     }
     // Refresh users page if open
     if(document.getElementById('page-users') && document.getElementById('page-users').classList.contains('active')) loadUsersPage();
+    if(typeof checkAndUpdateBlockedAlert==='function') checkAndUpdateBlockedAlert();
   }catch(e){
     if(btn){ btn.textContent='Unblock All'; btn.disabled=false; }
     if(statusEl){ statusEl.textContent='Error: ' + (e.message||'Could not unblock agents.'); statusEl.style.color='var(--accent-red)'; statusEl.style.display='block'; }
@@ -8421,7 +8858,7 @@ function tbBreakPick(type){
             duration_seconds:elapsed,over_limit:overBy>0,over_by_seconds:overBy
           });
         }
-      }).then(function(){ showBreakToast(type,overBy,elapsed); if(overBy>0) bbCheckAfterBreak(); })
+      }).then(function(){ showBreakToast(type,overBy,elapsed); if(overBy>0) bbCheckAfterBreak(type,overBy,elapsed); })
         .catch(function(e){ console.warn('Break end save failed:',e.message); });
     return;
   }
@@ -8601,7 +9038,7 @@ async function toggleBreak(type){
     } catch(e){ console.warn('Break save failed:', e.message); }
 
     showBreakToast(type, overBy, elapsed);
-    if(overBy > 0) bbCheckAfterBreak();
+    if(overBy > 0) bbCheckAfterBreak(type, overBy, elapsed);
   }
 }
 
@@ -8962,6 +9399,7 @@ async function loadReport(){
     } else if(type === 'blocklog'){
       // Block / Unblock audit log — admin only
       var blFilters = 'timestamp=gte.'+from+'T00:00:00&timestamp=lte.'+to+'T23:59:59&order=timestamp.desc&select=id,action,target_user_name,target_user_email,actor_user_name,reason,timestamp';
+      if(agent) blFilters += '&target_user_id=eq.'+encodeURIComponent(agent);
       var blRows = await sbQuery('block_audit_log', blFilters);
       _reportData = blRows || [];
       if(!_reportData.length){ output.innerHTML='<div style="color:var(--text-dim);padding:2rem;text-align:center;">No block/unblock events found for selected period.</div>'; return; }
@@ -12704,7 +13142,7 @@ var _liveDashData = { users:[], att:[], onBreakSet:new Set(), onBreakDetails:{} 
 
 async function loadLiveDashboard(){
   try{
-    var users=await sbQuery('users','select=id,name,role,presence,last_seen&order=name.asc');
+    var users=await sbQuery('users','select=id,name,role,presence,last_seen,is_blocked,block_reason&order=name.asc');
     // Filter out syslevel
     users=(users||[]).filter(function(u){return u.role!=='syslevel';});
     var total=users.length;
@@ -12739,9 +13177,53 @@ async function loadLiveDashboard(){
     attDeduped.forEach(function(a){window._liveAttMap[a.user_id]=a;});
 
     renderWhosActive(users,attDeduped,onBreakSet);
+
+    // Update blocked agents alert & navigation badges
+    var blockedUsers = (users||[]).filter(function(u){ return u.is_blocked && u.block_reason !== 'Relieved from duty'; });
+    updateHomeBlockedAlert(blockedUsers);
   }catch(e){
     console.warn('Dashboard load failed:',e.message);
   }
+}
+
+// ── 1-Click Home Alert & Badge Manager ──
+function updateHomeBlockedAlert(blockedList){
+  var canSee = (typeof isAdminUser==='function' && isAdminUser()) || (currentUser && currentUser.canUnblock);
+  var banner = document.getElementById('home-blocked-alert');
+  var bTitle = document.getElementById('hba-title');
+  var bDesc = document.getElementById('hba-desc');
+  var sBadge = document.getElementById('sidebar-unblock-badge');
+  var mBadge = document.getElementById('mob-unblock-badge');
+  var mDot = document.getElementById('mob-more-dot');
+  var hmBadge = document.getElementById('hm-unblock-badge');
+
+  if(!canSee || !blockedList || !blockedList.length){
+    if(banner) banner.style.display = 'none';
+    if(sBadge) sBadge.style.display = 'none';
+    if(mBadge) mBadge.style.display = 'none';
+    if(mDot) mDot.style.display = 'none';
+    if(hmBadge) hmBadge.style.display = 'none';
+    return;
+  }
+
+  var count = blockedList.length;
+  var names = blockedList.slice(0, 2).map(function(u){ return u.name; }).join(', ');
+  if(bTitle) bTitle.textContent = count + ' Agent' + (count > 1 ? 's' : '') + ' Locked Out';
+  if(bDesc) bDesc.textContent = names + (count > 2 ? ' and ' + (count - 2) + ' more' : '') + ' locked out due to break limit violation.';
+  if(banner) banner.style.display = 'flex';
+
+  if(sBadge){ sBadge.textContent = count; sBadge.style.display = 'inline-block'; }
+  if(mBadge){ mBadge.textContent = count; mBadge.style.display = 'inline-block'; }
+  if(mDot){ mDot.style.display = 'block'; }
+  if(hmBadge){ hmBadge.textContent = count; hmBadge.style.display = 'inline-block'; }
+}
+
+async function checkAndUpdateBlockedAlert(){
+  try{
+    var rows = await sbQuery('users','is_blocked=eq.true&select=id,name,block_reason');
+    if(rows) rows = rows.filter(function(u){ return u.block_reason !== 'Relieved from duty'; });
+    updateHomeBlockedAlert(rows || []);
+  }catch(e){}
 }
 
 // ── Break stat — refreshes independently every 4 minutes ──
@@ -13711,6 +14193,7 @@ function pplCloseModal(e){
 function pplOpenEdit(id){
   _pplEditId = id;
   _pplUploadedUrl = null;
+  window._pplPendingBlob = null;
   var p = id ? _pplData.find(function(x){return x.id===id;}) : null;
   var isNew = !p;
   var isAdmin = isAdminUser();
@@ -13730,7 +14213,7 @@ function pplOpenEdit(id){
   '</div>'+
   '<div class="ppl-edit-body">';
 
-  // Photo section — admin can set URL, agents see contact message
+  // Photo section — Admin can upload directly or paste URL; normal agents see contact message to prevent inappropriate uploads
   html += '<div class="ppl-edit-section">Photo</div>'+
     '<div class="ppl-photo-upload">'+
       '<div id="ppl-photo-preview-wrap">'+previewHTML+'</div>'+
@@ -13738,32 +14221,34 @@ function pplOpenEdit(id){
 
   if(isAdmin || isNew){
     html +=
-        '<label class="ppl-edit-label" style="margin-bottom:.35rem;display:block;">Photo URL (Cloudinary)</label>'+
-        '<input id="pf-photo-url" class="ppl-edit-input" style="font-size:.78rem;" '+
-          'value="'+(p&&p.photo_url?p.photo_url:'')+'" '+
-          'placeholder="https://res.cloudinary.com/dvp62lqmv/image/upload/k7team/name.jpg" '+
-          'oninput="pplPreviewUrl(this.value)"/>'+
-        '<div style="font-size:.7rem;color:var(--text-dim);margin-top:.3rem;">'+
-          'Paste Cloudinary URL · or leave blank to auto-generate from name'+
+        '<div style="display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;">'+
+          '<button type="button" onclick="document.getElementById(\'pf-photo-file\').click()" style="padding:.42rem .95rem;background:rgba(239,73,60,.12);border:1px solid rgba(239,73,60,.35);color:var(--gold);border-radius:8px;font-size:.78rem;font-weight:600;cursor:pointer;font-family:\'DM Sans\',sans-serif;display:inline-flex;align-items:center;gap:.35rem;">'+
+            '📷 Choose Photo'+
+          '</button>'+
+          '<input type="file" id="pf-photo-file" accept="image/png,image/jpeg,image/webp,image/jpg" style="display:none;" onchange="pplHandlePhoto(this)"/>'+
+          '<span id="pf-photo-filename" style="font-size:.74rem;color:var(--text-muted);"></span>'+
+        '</div>'+
+        '<div style="font-size:.7rem;color:var(--text-dim);margin-top:.4rem;line-height:1.4;">'+
+          'Admin direct upload · Auto-crops square &amp; stores permanently.&nbsp;'+
+          '<a href="javascript:void(0)" onclick="var r=document.getElementById(\'pf-url-row\');if(r)r.style.display=r.style.display===\'none\'?\'block\':\'none\';" style="color:var(--text-muted);text-decoration:underline;">Or paste image URL</a>'+
+        '</div>'+
+        '<div id="pf-url-row" style="display:none;margin-top:.45rem;">'+
+          '<input id="pf-photo-url" class="ppl-edit-input" style="font-size:.76rem;" value="'+(p&&p.photo_url?esc(p.photo_url):'')+'" placeholder="https://..." oninput="pplPreviewUrl(this.value)"/>'+
         '</div>';
   } else {
     var mailLink = 'mailto:diwanchowthry@k7computing.com?subject=Profile Photo Update - '+(p?encodeURIComponent(p.name):'')+
       '&body=Hi Diwan,%0A%0APlease update my profile photo.%0A%0ARegards,%0A'+(p?encodeURIComponent(p.name):'');
     html +=
         '<div>'+
-          '<button onclick="document.getElementById(\'ppl-photo-msg\').style.display=\'block\';this.style.display=\'none\'" '+
-            'style="font-size:.75rem;color:var(--text-muted);background:none;border:1px solid var(--navy-border);border-radius:20px;padding:.25rem .75rem;cursor:pointer;font-family:\'DM Sans\',sans-serif;">'+
-            '🖼 Change photo'+
-          '</button>'+
-          '<div id="ppl-photo-msg" style="display:none;margin-top:.6rem;font-size:.76rem;color:var(--text-muted);line-height:1.6;">'+
-            'To update your photo, send it to your admin.&nbsp;'+
-            '<a href="'+mailLink+'" style="color:var(--gold);font-weight:600;text-decoration:none;">📧 Email admin</a>'+
+          '<div style="font-size:.76rem;color:var(--text-muted);line-height:1.5;">'+
+            'Profile photos are managed directly by administrators to maintain team quality.'+
           '</div>'+
+          '<a href="'+mailLink+'" style="color:var(--gold);font-weight:600;font-size:.74rem;text-decoration:none;display:inline-block;margin-top:.35rem;">📧 Email admin to request photo update</a>'+
         '</div>';
   }
 
   html +=
-        '<div id="ppl-upload-msg" style="font-size:.72rem;color:var(--accent-red);margin-top:.2rem;display:none;"></div>'+
+        '<div id="ppl-upload-msg" style="font-size:.72rem;color:var(--accent-red);margin-top:.3rem;display:none;"></div>'+
       '</div>'+
     '</div>';
 
@@ -13834,11 +14319,11 @@ function pplOpenEdit(id){
 function pplCloseEdit(e){
   if(!e||e.target===document.getElementById('ppl-edit-overlay')){
     document.getElementById('ppl-edit-overlay').style.display='none';
-    _pplEditId=null; _pplUploadedUrl=null;
+    _pplEditId=null; _pplUploadedUrl=null; window._pplPendingBlob=null;
   }
 }
 
-// ── Photo upload ──
+// ── Photo upload & processing ──
 function pplPreviewUrl(url){
   var wrap = document.getElementById('ppl-photo-preview-wrap');
   if(!wrap) return;
@@ -13858,44 +14343,67 @@ function pplPreviewUrl(url){
 }
 
 function pplHandlePhoto(input){
-  var file = input.files[0];
+  var file = input.files && input.files[0];
   var msg = document.getElementById('ppl-upload-msg');
+  var fnEl = document.getElementById('pf-photo-filename');
   if(!file) return;
-  if(file.size > 102400){ // 100KB
-    msg.textContent='Image too large. Max 100KB. Please resize and try again.';
-    msg.style.display='block';
-    input.value='';
+  if(msg) msg.style.display = 'none';
+
+  if(file.size > 12 * 1024 * 1024){ // 12MB raw limit before compression
+    if(msg){ msg.textContent='Image is too large (max 12MB). Please select a smaller photo.'; msg.style.display='block'; }
+    input.value = '';
     return;
   }
-  msg.style.display='none';
-  // Preview immediately
+
   var reader = new FileReader();
   reader.onload = function(e){
-    var wrap = document.getElementById('ppl-photo-preview-wrap');
-    if(wrap) wrap.innerHTML='<div class="ppl-photo-preview"><img src="'+e.target.result+'"/></div>';
-    _pplUploadedUrl = '__local__'; // flag — will upload on save
-    // Store file reference
-    window._pplPendingFile = file;
+    var img = new Image();
+    img.onload = function(){
+      // Client-side canvas center-crop to 400x400 square JPEG (~40-60KB)
+      var canvas = document.createElement('canvas');
+      var size = 400;
+      canvas.width = size;
+      canvas.height = size;
+      var ctx = canvas.getContext('2d');
+      var w = img.width, h = img.height;
+      var min = Math.min(w, h);
+      var sx = (w - min) / 2, sy = (h - min) / 2;
+      ctx.drawImage(img, sx, sy, min, min, 0, 0, size, size);
+
+      canvas.toBlob(function(blob){
+        if(!blob){
+          if(msg){ msg.textContent = 'Could not process photo.'; msg.style.display = 'block'; }
+          return;
+        }
+        window._pplPendingBlob = blob;
+        var dataUrl = canvas.toDataURL('image/jpeg', 0.88);
+        var wrap = document.getElementById('ppl-photo-preview-wrap');
+        if(wrap) wrap.innerHTML = '<div class="ppl-photo-preview"><img src="' + dataUrl + '"/></div>';
+        if(fnEl) fnEl.textContent = '✓ Ready (' + Math.round(blob.size / 1024) + ' KB)';
+        var urlInput = document.getElementById('pf-photo-url');
+        if(urlInput) urlInput.value = '';
+      }, 'image/jpeg', 0.88);
+    };
+    img.onerror = function(){
+      if(msg){ msg.textContent = 'Invalid image file. Please choose a valid photo.'; msg.style.display = 'block'; }
+    };
+    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
 
-async function pplUploadPhoto(file, userId){
-  var ext = file.name.split('.').pop().toLowerCase()||'jpg';
-  var path = 'avatars/'+userId+'.'+ext;
-  var uploadUrl = SUPABASE_URL+'/storage/v1/object/'+path;
-  // Try upsert (overwrite if exists)
-  var r = await fetch(uploadUrl,{
-    method:'POST',
-    headers:Object.assign(sbHeaders(),{'Content-Type':file.type,'x-upsert':'true'}),
-    body:file
+async function pplUploadPhoto(blob, filename){
+  var uploadUrl = SUPABASE_URL + '/storage/v1/object/profiles/avatars/' + filename;
+  var r = await fetch(uploadUrl, {
+    method: 'POST',
+    headers: Object.assign(sbHeaders(), { 'Content-Type': 'image/jpeg', 'x-upsert': 'true' }),
+    body: blob
   });
   if(!r.ok){
-    // Try PATCH instead
-    r = await fetch(uploadUrl,{method:'PUT',headers:Object.assign(sbHeaders(),{'Content-Type':file.type}),body:file});
+    var errText = await r.text();
+    throw new Error('Photo upload failed: ' + (errText || r.statusText));
   }
-  // Return public URL
-  return SUPABASE_URL+'/storage/v1/object/public/profiles/'+path;
+  return SUPABASE_URL + '/storage/v1/object/public/profiles/avatars/' + filename + '?t=' + Date.now();
 }
 
 async function pplSaveProfile(){
@@ -13941,9 +14449,20 @@ async function pplSaveProfile(){
 
     if(!data.name && isNew){ msg.textContent='Name is required.'; msg.style.display='block'; btn.disabled=false; btn.textContent='Save Profile'; return; }
 
-    // Read photo URL from input field (Cloudinary URL)
-    var photoUrlInput = (document.getElementById('pf-photo-url')||{}).value||'';
-    if(photoUrlInput.trim()) data.photo_url = photoUrlInput.trim();
+    // Direct photo upload by Admin takes priority
+    if(window._pplPendingBlob){
+      btn.textContent='Uploading photo…';
+      var personIdentifier = (p && p.id) ? p.id : ('k7_' + (data.user_id || (data.name||'agent').toLowerCase().replace(/[^a-z0-9]/g,'_')) + '_' + Date.now());
+      var filename = personIdentifier + '.jpg';
+      var uploadedUrl = await pplUploadPhoto(window._pplPendingBlob, filename);
+      data.photo_url = uploadedUrl;
+    } else {
+      // Manual URL fallback if entered
+      var photoUrlInput = (document.getElementById('pf-photo-url')||{}).value||'';
+      if(photoUrlInput.trim()){
+        data.photo_url = photoUrlInput.trim();
+      }
+    }
 
     if(isNew){
       await sbInsert('people', data);
@@ -13972,6 +14491,7 @@ async function pplSaveProfile(){
       }
     }
 
+    window._pplPendingBlob = null;
     document.getElementById('ppl-edit-overlay').style.display='none';
     _pplEditId=null; _pplUploadedUrl=null;
     await pplLoad(); // refresh grid
@@ -14884,6 +15404,7 @@ function dockToggleEmoji(userId){
         }
       }
       function onInputFocus(){
+        if(window._insertingEmoji) return;
         picker.style.display='none';
         document.removeEventListener('mousedown', outsideClick);
         var inp=document.getElementById('dock-input-'+userId);
@@ -14915,6 +15436,7 @@ function dockRenderEmojiCat(userId,cat){
 function dockInsertEmoji(userId,emoji){
   var inp=document.getElementById('dock-input-'+userId);
   if(inp){
+    window._insertingEmoji = true;
     // Insert at cursor position if possible, otherwise append
     var start=inp.selectionStart, end=inp.selectionEnd;
     var val=inp.value;
@@ -14924,6 +15446,7 @@ function dockInsertEmoji(userId,emoji){
     // Trigger height auto-resize
     inp.style.height='auto';
     inp.style.height=Math.min(inp.scrollHeight,60)+'px';
+    setTimeout(function(){ window._insertingEmoji = false; }, 80);
   }
   // ── Picker stays open — do NOT close it ──
 }
@@ -17801,8 +18324,9 @@ window.addEventListener('DOMContentLoaded',function(){ setTimeout(function(){ ES
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19V5a2 2 0 012-2h9l5 5v11a2 2 0 01-2 2H6a2 2 0 01-2-2z"/><path d="M14 3v6h6M8 17v-4M12 17v-7M16 17v-2"/></svg>
       Reports
     </button>
-    <button class="mob-nav-item" id="mob-nav-more" onclick="toggleMobMore(this)">
+    <button class="mob-nav-item" id="mob-nav-more" onclick="toggleMobMore(this)" style="position:relative;">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+      <span id="mob-more-dot" style="display:none;position:absolute;top:4px;right:calc(50% - 14px);width:7px;height:7px;border-radius:50%;background:#EF493C;box-shadow:0 0 6px rgba(239,73,60,0.6);"></span>
       More
     </button>
   </nav>
@@ -17847,9 +18371,10 @@ window.addEventListener('DOMContentLoaded',function(){ setTimeout(function(){ ES
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
       Quiz Builder
     </div>
-    <div class="mob-nav-more-item" id="mob-unblock-item" style="display:none;" onclick="mobNav('unblock-agents',null);closeMobMore()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 019.9-1"/></svg>
-      Unblock Agents
+    <div class="mob-nav-more-item" id="mob-unblock-item" style="display:none;background:rgba(239,73,60,0.06);border-left:3px solid var(--accent-red);" onclick="mobNav('unblock-agents',null);closeMobMore()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-red)" stroke-width="1.8"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 019.9-1"/></svg>
+      <span style="color:var(--text-primary);font-weight:600;">Unblock Agents</span>
+      <span id="mob-unblock-badge" style="display:none;margin-left:auto;background:#EF493C;color:#fff;font-size:.65rem;font-weight:700;padding:2px 7px;border-radius:10px;">0</span>
     </div>
   </div>
 
@@ -18592,6 +19117,7 @@ async function aboutLoadItems(){
 
   // Default items shown if DB has nothing
   var wnDefaults = [
+    'Mobile 1-Click Unblock & Alerts — Instant unblock banner and navigation for mobile devices',
     'Cloud Security Console Simulation added — enterprise endpoint security training',
     'Security & Stability Patches — core portal hardening, session security & vulnerability fixes',
     'KB Search — global search with shared agent comments',
@@ -18713,7 +19239,7 @@ function aboutCheckUpdate(){
 
   setTimeout(function(){
     btn.className = 'about-update-check-btn up-to-date';
-    btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> You\'re up to date \u2014 v5.2.0';
+    btn.innerHTML = '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg> You\'re up to date \u2014 ' + (typeof APP_VERSION!=='undefined'?APP_VERSION:'v8.5.0');
     // Reset after 5 seconds
     setTimeout(function(){
       btn.className = 'about-update-check-btn';
@@ -18839,28 +19365,66 @@ function pplCloseLightbox(){
 </script>
 
 <style>
-  /* ── Ambient Theme Canvas ── */
+  /* ── Ambient Theme Canvas (Fixed Atmosphere Layer) ── */
   #ambient-canvas{
-    position:fixed;inset:0;pointer-events:none;z-index:2;
-    opacity:0;transition:opacity 1.8s ease;
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 50;
+    opacity: 0;
+    transition: opacity 1.2s ease;
   }
-  #ambient-canvas.active{ opacity:1; }
+  #ambient-canvas.active{ opacity: 1; }
 
   /* Ambient theme picker buttons */
+  #cd-amb-grid{
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(78px, 1fr));
+    gap: .5rem;
+  }
   .amb-btn{
-    display:flex;flex-direction:column;align-items:center;gap:.35rem;
-    padding:.6rem .4rem;border-radius:10px;border:1.5px solid var(--navy-border);
-    background:var(--navy-hover);cursor:pointer;transition:all .18s;
-    font-family:'DM Sans',sans-serif;font-size:.72rem;color:var(--text-muted);font-weight:500;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .28rem;
+    padding: .55rem .35rem;
+    border-radius: 9px;
+    border: 1.5px solid var(--navy-border);
+    background: var(--navy-card);
+    cursor: pointer;
+    transition: all .18s ease;
+    font-family: 'DM Sans', sans-serif;
+    font-size: .68rem;
+    color: var(--text-muted);
+    font-weight: 500;
   }
-  .amb-btn:hover{ background:var(--navy-mid);color:var(--text-primary); }
+  .amb-btn:hover{
+    background: var(--navy-hover);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+    border-color: rgba(239,73,60,.35);
+  }
   .amb-btn.active{
-    border-color:rgba(76,118,168,.6);
-    background:rgba(76,118,168,.12);
-    color:var(--text-primary);font-weight:700;
+    border-color: #EF493C;
+    background: rgba(239,73,60,.12);
+    color: var(--text-primary);
+    font-weight: 700;
+    box-shadow: 0 0 10px rgba(239,73,60,.2);
   }
-  .amb-btn.off.active{ border-color:rgba(239,73,60,.4);background:rgba(239,73,60,.08);color:var(--accent-red); }
-  .amb-btn-icon{ font-size:1.4rem;line-height:1; }
+  .amb-btn.off.active{
+    border-color: rgba(239,73,60,.5);
+    background: rgba(239,73,60,.12);
+    color: var(--accent-red);
+  }
+  body.dark .amb-btn.active{
+    border-color: #ff8a6a;
+    background: rgba(239,73,60,.18);
+    color: #F8FAFC;
+    box-shadow: 0 0 12px rgba(239,73,60,.25);
+  }
+  .amb-btn-icon{ font-size: 1.25rem; line-height: 1; }
 
 </style>
 
@@ -19140,7 +19704,12 @@ function ambStartPoll(){
 // ── Apply a theme ──
 function ambApply(theme){
   var canvas = document.getElementById('ambient-canvas');
-  if(!canvas) return;
+  if(!canvas){
+    canvas = document.createElement('canvas');
+    canvas.id = 'ambient-canvas';
+    var dash = document.getElementById('dashboard-view') || document.body;
+    dash.insertBefore(canvas, dash.firstChild);
+  }
 
   // Stop any running animation immediately
   if(_ambRAF){ cancelAnimationFrame(_ambRAF); _ambRAF=null; }
@@ -19148,11 +19717,11 @@ function ambApply(theme){
   window._ambMoon = null;
   window._ambThunder = null;
 
-  _ambCurrent = theme;
+  _ambCurrent = theme || 'off';
 
   if(!theme || theme==='off'){
     canvas.classList.remove('active');
-    canvas.style.opacity = '';   // clear inline so CSS transition takes over → fades to 0
+    canvas.style.opacity = '0';
     // Clear canvas pixels so nothing lingers
     var ctx = canvas.getContext('2d');
     if(ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -19750,44 +20319,73 @@ function ambLoop(theme, canvas){
   _ambRAF = requestAnimationFrame(function(){ ambLoop(theme, canvas); });
 }
 
-// ── Control Deck: render the theme picker grid ──
+// ── Control Deck: render the theme picker grid & dropdown ──
 function cdAmbRender(){
-  var sel=document.getElementById('cd-amb-select');
-  var status=document.getElementById('cd-amb-status');
+  var sel = document.getElementById('cd-amb-select');
+  var status = document.getElementById('cd-amb-status');
+  var grid = document.getElementById('cd-amb-grid');
+
   if(sel){
-    sel.innerHTML=_ambThemes.map(function(t){
+    sel.innerHTML = _ambThemes.map(function(t){
       return '<option value="'+t.id+'"'+(t.id===_ambCurrent?' selected':'')+'>'+t.icon+' '+t.label+'</option>';
     }).join('');
-    sel.value=_ambCurrent;
+    sel.value = _ambCurrent;
   }
+
   if(status){
-    var cur=_ambThemes.find(function(t){return t.id===_ambCurrent;});
-    status.textContent=cur&&cur.id!=='off'?cur.icon+' '+cur.label+' active':'';
+    var cur = _ambThemes.find(function(t){return t.id===_ambCurrent;});
+    if(cur && cur.id !== 'off'){
+      status.innerHTML = '<span style="color:var(--accent-green);font-weight:700;">● Active: '+cur.icon+' '+cur.label+'</span>';
+    } else {
+      status.innerHTML = '<span style="color:var(--text-dim);">● Off</span>';
+    }
+  }
+
+  if(grid){
+    grid.innerHTML = _ambThemes.map(function(t){
+      var isActive = t.id === _ambCurrent;
+      var isOff = t.id === 'off';
+      var cls = 'amb-btn' + (isOff ? ' off' : '') + (isActive ? ' active' : '');
+      return '<button type="button" class="'+cls+'" onclick="cdAmbSet(\''+t.id+'\')" title="'+t.label+'">'+
+        '<span class="amb-btn-icon">'+t.icon+'</span>'+
+        '<span style="max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">'+t.label+'</span>'+
+      '</button>';
+    }).join('');
   }
 }
 
 async function cdAmbLoadAndRender(){
-  // Render options/schedules picker instantly, so dropdown options load immediately
+  // Ensure canvas exists in DOM
+  var canvas = document.getElementById('ambient-canvas');
+  if(!canvas){
+    canvas = document.createElement('canvas');
+    canvas.id = 'ambient-canvas';
+    var dash = document.getElementById('dashboard-view') || document.body;
+    dash.insertBefore(canvas, dash.firstChild);
+  }
+
+  // Render options/schedules picker instantly, so dropdown & buttons load immediately
   cdAmbRender();
   cdAmbSchedRenderPicker();
 
   // Sync sliders to current values immediately
-  var oslider=document.getElementById('cd-amb-opacity');
+  var oslider = document.getElementById('cd-amb-opacity');
   if(oslider){ oslider.value=Math.round(_ambOpacity*100); var ov=document.getElementById('cd-amb-opacity-val'); if(ov) ov.textContent=Math.round(_ambOpacity*100)+'%'; }
-  var sslider=document.getElementById('cd-amb-speed');
+  var sslider = document.getElementById('cd-amb-speed');
   if(sslider){ sslider.value=Math.round(_ambSpeed*100); var sv=document.getElementById('cd-amb-speed-val'); if(sv) sv.textContent=_ambSpeed.toFixed(1)+'×'; }
-  var dslider=document.getElementById('cd-amb-density');
+  var dslider = document.getElementById('cd-amb-density');
   if(dslider){ dslider.value=Math.round(_ambDensity*100); var dv=document.getElementById('cd-amb-density-val'); if(dv) dv.textContent=_ambDensity.toFixed(1)+'×'; }
 
   // Load schedules list asynchronously
   cdAmbSchedLoad();
 
-  // Load actual active theme from database asynchronously
+  // Load actual active theme and controls from database
   try{
+    await ambLoadControls();
     var rows = await sbQuery('settings','key=eq.'+_ambKey+'&select=value');
     var theme = (rows&&rows.length) ? (rows[0].value||'off') : 'off';
-    ambApply(theme); // ambApply now sets _ambCurrent itself
-    cdAmbRender();   // Update selection to match active database setting
+    ambApply(theme);
+    cdAmbRender();
   }catch(e){}
 }
 
@@ -19804,80 +20402,98 @@ async function cdAmbSet(theme){
     var existing = await sbQuery('settings','key=eq.'+_ambKey+'&select=key');
     if(existing&&existing.length){ await sbUpdate('settings','key',_ambKey,{value:theme}); }
     else{ await sbInsert('settings',{key:_ambKey,value:theme}); }
-    if(msg){ msg.textContent='✅ Theme set to '+(theme==='off'?'Off':theme)+'. All agents will see it within 30s.'; msg.style.color='var(--accent-green)'; msg.style.display='block'; setTimeout(function(){msg.style.display='none';},3500); }
+    if(msg){
+      var tName = (theme==='off' ? 'Off' : (_ambThemes.find(function(x){return x.id===theme;})||{label:theme}).label);
+      msg.textContent='✅ Theme set to '+tName+'. All agents will see it within 30s.';
+      msg.style.color='var(--accent-green)';
+      msg.style.display='block';
+      setTimeout(function(){msg.style.display='none';},3500);
+    }
   }catch(e){
-    if(msg){ msg.textContent='Applied locally, but database sync failed: '+e.message; msg.style.color='var(--accent-red)'; msg.style.display='block'; setTimeout(function(){msg.style.display='none';},4000); }
+    if(msg){
+      msg.textContent='Applied locally, but database sync failed: '+e.message;
+      msg.style.color='var(--accent-red)';
+      msg.style.display='block';
+      setTimeout(function(){msg.style.display='none';},4000);
+    }
   }
 }
 
 // ── Opacity / Speed / Density controls ──
 function ambSetOpacity(val){
   _ambOpacity = val/100;
-  var canvas=document.getElementById('ambient-canvas');
-  if(canvas) canvas.style.opacity=_ambOpacity;
-  var el=document.getElementById('cd-amb-opacity-val');
-  if(el) el.textContent=val+'%';
+  var canvas = document.getElementById('ambient-canvas');
+  if(canvas && _ambCurrent !== 'off') canvas.style.opacity = _ambOpacity;
+  var el = document.getElementById('cd-amb-opacity-val');
+  if(el) el.textContent = val+'%';
   ambSaveControls();
 }
+
 function ambSetSpeed(val){
   _ambSpeed = val/100;
-  var el=document.getElementById('cd-amb-speed-val');
-  if(el) el.textContent=(val/100).toFixed(1)+'×';
+  var el = document.getElementById('cd-amb-speed-val');
+  if(el) el.textContent = (val/100).toFixed(1)+'×';
   // Respawn particles so speed takes effect immediately
-  var canvas=document.getElementById('ambient-canvas');
-  if(canvas&&_ambCurrent!=='off'){
-    if(_ambRAF){cancelAnimationFrame(_ambRAF);_ambRAF=null;}
-    _ambParticles=[];
-    window._ambMoon=null;
-    ambSpawn(_ambCurrent,canvas);
-    ambLoop(_ambCurrent,canvas);
+  var canvas = document.getElementById('ambient-canvas');
+  if(canvas && _ambCurrent !== 'off'){
+    if(_ambRAF){ cancelAnimationFrame(_ambRAF); _ambRAF=null; }
+    _ambParticles = [];
+    window._ambMoon = null;
+    window._ambThunder = null;
+    ambSpawn(_ambCurrent, canvas);
+    ambLoop(_ambCurrent, canvas);
   }
   ambSaveControls();
 }
+
 function ambSetDensity(val){
   _ambDensity = val/100;
-  var el=document.getElementById('cd-amb-density-val');
-  if(el) el.textContent=(val/100).toFixed(1)+'×';
+  var el = document.getElementById('cd-amb-density-val');
+  if(el) el.textContent = (val/100).toFixed(1)+'×';
   // Respawn with new count
-  var canvas=document.getElementById('ambient-canvas');
-  if(canvas&&_ambCurrent!=='off'){
-    if(_ambRAF){cancelAnimationFrame(_ambRAF);_ambRAF=null;}
-    _ambParticles=[];
-    window._ambMoon=null;
-    ambSpawn(_ambCurrent,canvas);
-    ambLoop(_ambCurrent,canvas);
+  var canvas = document.getElementById('ambient-canvas');
+  if(canvas && _ambCurrent !== 'off'){
+    if(_ambRAF){ cancelAnimationFrame(_ambRAF); _ambRAF=null; }
+    _ambParticles = [];
+    window._ambMoon = null;
+    window._ambThunder = null;
+    ambSpawn(_ambCurrent, canvas);
+    ambLoop(_ambCurrent, canvas);
   }
   ambSaveControls();
 }
+
 async function ambSaveControls(){
   try{
-    var val=JSON.stringify({opacity:_ambOpacity,speed:_ambSpeed,density:_ambDensity});
-    var ex=await sbQuery('settings','key=eq.'+_ambCtrlKey+'&select=key');
+    var val = JSON.stringify({opacity:_ambOpacity, speed:_ambSpeed, density:_ambDensity});
+    var ex = await sbQuery('settings','key=eq.'+_ambCtrlKey+'&select=key');
     if(ex&&ex.length) await sbUpdate('settings','key',_ambCtrlKey,{value:val});
     else await sbInsert('settings',{key:_ambCtrlKey,value:val});
   }catch(e){}
 }
+
 async function ambLoadControls(){
   try{
-    var rows=await sbQuery('settings','key=eq.'+_ambCtrlKey+'&select=value');
+    var rows = await sbQuery('settings','key=eq.'+_ambCtrlKey+'&select=value');
     if(!rows||!rows.length) return;
-    var ctrl=JSON.parse(rows[0].value||'{}');
-    if(ctrl.opacity!=null) _ambOpacity=ctrl.opacity;
-    if(ctrl.speed!=null)   _ambSpeed=ctrl.speed;
-    if(ctrl.density!=null) _ambDensity=ctrl.density;
+    var ctrl = JSON.parse(rows[0].value||'{}');
+    if(ctrl.opacity!=null) _ambOpacity = ctrl.opacity;
+    if(ctrl.speed!=null)   _ambSpeed   = ctrl.speed;
+    if(ctrl.density!=null) _ambDensity = ctrl.density;
     // Apply to canvas
-    var canvas=document.getElementById('ambient-canvas');
-    if(canvas) canvas.style.opacity=_ambOpacity;
+    var canvas = document.getElementById('ambient-canvas');
+    if(canvas && _ambCurrent !== 'off') canvas.style.opacity = _ambOpacity;
     // Sync sliders if CD is open
-    var oslider=document.getElementById('cd-amb-opacity');
+    var oslider = document.getElementById('cd-amb-opacity');
     if(oslider){ oslider.value=Math.round(_ambOpacity*100); var ov=document.getElementById('cd-amb-opacity-val'); if(ov) ov.textContent=Math.round(_ambOpacity*100)+'%'; }
-    var sslider=document.getElementById('cd-amb-speed');
+    var sslider = document.getElementById('cd-amb-speed');
     if(sslider){ sslider.value=Math.round(_ambSpeed*100); var sv=document.getElementById('cd-amb-speed-val'); if(sv) sv.textContent=_ambSpeed.toFixed(1)+'×'; }
-    var dslider=document.getElementById('cd-amb-density');
+    var dslider = document.getElementById('cd-amb-density');
     if(dslider){ dslider.value=Math.round(_ambDensity*100); var dv=document.getElementById('cd-amb-density-val'); if(dv) dv.textContent=_ambDensity.toFixed(1)+'×'; }
   }catch(e){}
 }
 
+// ══════════════════════════════════════════════════════════
 //  Stored in settings table: ambient_schedules
 //  Value: JSON array of { id, theme, start, end, days }
 //  days: array of 0-6 (0=Sun ... 6=Sat)
@@ -19914,8 +20530,20 @@ async function ambSchedTick(){
       if(end > 1440 && hhmm < start) nowAdj += 1440;
       if(nowAdj >= start && nowAdj < end){ matched = s; break; }
     }
-    var target = matched ? matched.theme : 'off';
-    if(target !== _ambCurrent){ ambApply(target); }
+    if(matched){
+      if(matched.theme !== _ambCurrent){
+        ambApply(matched.theme);
+        cdAmbRender();
+      }
+    } else {
+      // If no schedule matches, defer to whatever manual theme is in settings
+      var themeRows = await sbQuery('settings','key=eq.'+_ambKey+'&select=value');
+      var fallbackTheme = (themeRows && themeRows.length) ? (themeRows[0].value || 'off') : 'off';
+      if(fallbackTheme !== _ambCurrent){
+        ambApply(fallbackTheme);
+        cdAmbRender();
+      }
+    }
   }catch(e){}
 }
 
