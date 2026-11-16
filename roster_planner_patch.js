@@ -33,7 +33,7 @@ var RP_DEFAULT_SHIFTS = [
   { code:'S3',  label:'Afternoon',      time:'13:00 – 22:00', bg:'#2A9D8F', fg:'#FFFFFF', kind:'work'  },
   { code:'N',   label:'Night',          time:'22:00 – 07:00', bg:'#1F2937', fg:'#FFFFFF', kind:'night' },
   { code:'WO',  label:'Week off',       time:'',              bg:'#D1D9E4', fg:'#374151', kind:'off'   },
-  { code:'WFH', label:'Work from home', time:'as rostered',   bg:'#8B6BD1', fg:'#FFFFFF', kind:'work'  },
+  { code:'WFH', label:'Work from home', time:'',              bg:'#8B6BD1', fg:'#FFFFFF', kind:'work'  },
   { code:'HL',  label:'Half day',       time:'',              bg:'#E65100', fg:'#FFFFFF', kind:'half'  },
   { code:'L',   label:'Leave',          time:'',              bg:'#EF493C', fg:'#FFFFFF', kind:'leave' },
   { code:'CO',  label:'Comp off',       time:'',              bg:'#B91C1C', fg:'#FFFFFF', kind:'leave' }
@@ -54,6 +54,9 @@ var RP = {
   key: null,         // currently open planner month 'YYYY-MM'
   team: null,        // team being planned (code)
   viewTeam: null,    // team whose released roster the Roster page shows
+  rosterView: null,  // 'my' | 'team' on the Roster page
+  archiveOpen: false,
+  lastRows: null,    // rows last handed to the roster page (DB or sheet)
   brush: null,       // selected shift code ('' = eraser)
   dirty: {},         // agent_name → true (unsaved)
   saveTimer: null,
@@ -733,39 +736,178 @@ function rpExportExcel() {
 // ─────────────────────────────────────────────────────────
 function rpDecorateRosterPage() {
   var ctrl = document.querySelector('#page-roster .roster-controls');
-  // team tag / switcher
-  if (ctrl && typeof tmTeams === 'function') {
+  if (!ctrl) return;
+  // Sync button is not needed: the page refreshes from the DB every time it opens
+  var sync = document.getElementById('roster-sync-btn'); if (sync) sync.style.display = 'none';
+
+  // ── team segmented control (self-contained styles so it never renders bare) ──
+  if (typeof tmTeams === 'function') {
     var old = document.getElementById('rp-view-team'); if (old) old.remove();
     var vt = RP.viewTeam || rpMyTeam();
     var teams = rpTeamsList();
-    var wrap = document.createElement('div'); wrap.id = 'rp-view-team'; wrap.className = 'rp-view-team';
+    var wrap = document.createElement('div'); wrap.id = 'rp-view-team';
+    wrap.style.cssText = 'display:inline-flex;align-items:center;gap:0;background:var(--navy-card);border:1px solid var(--navy-border);border-radius:10px;padding:3px;margin-right:.4rem;';
     if (rpCanPlan() && teams.length > 1) {
-      wrap.innerHTML = '<span class="rp-view-lbl">Team</span>' + teams.map(function (t) {
-        return '<button class="rp-view-btn' + (t.code === vt ? ' active' : '') + '" style="' + (t.code === vt ? 'background:' + t.color + ';border-color:' + t.color + ';color:#fff' : '') + '" onclick="rpViewTeam(\'' + rpEsc(t.code) + '\')">' + rpEsc(t.name) + '</button>';
+      wrap.innerHTML = teams.map(function (t) {
+        var on = t.code === vt;
+        return '<button onclick="rpViewTeam(\'' + rpEsc(t.code) + '\')" style="height:34px;padding:0 .9rem;border:none;border-radius:8px;cursor:pointer;font-family:\'DM Sans\',sans-serif;font-size:.78rem;font-weight:600;white-space:nowrap;transition:all .15s;' +
+          (on ? 'background:' + t.color + ';color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18);' : 'background:transparent;color:var(--text-muted);') + '">' + rpEsc(t.name) + '</button>';
       }).join('');
     } else {
       var t0 = teams.find(function (t) { return t.code === vt; });
-      if (t0) wrap.innerHTML = '<span class="rp-view-tag" style="background:' + t0.color + '">' + rpEsc(t0.name) + '</span><span class="rp-view-sub">' + rpEsc(t0.company || '') + '</span>';
+      if (t0) wrap.innerHTML = '<span style="display:inline-flex;align-items:center;gap:.5rem;padding:0 .8rem;height:34px;font-size:.78rem;font-weight:600;color:var(--text-primary);"><span style="width:9px;height:9px;border-radius:2px;background:' + t0.color + '"></span>' + rpEsc(t0.name) + '</span>';
     }
     ctrl.insertBefore(wrap, ctrl.firstChild);
   }
-  if (ctrl && rpCanPlan() && !document.getElementById('rp-plan-btn')) {
+
+  // ── Plan roster button for planners ──
+  if (rpCanPlan() && !document.getElementById('rp-plan-btn')) {
     var b = document.createElement('button');
     b.id = 'rp-plan-btn'; b.className = 'roster-refresh-btn'; b.style.background = 'linear-gradient(135deg,#C9352B,#EF493C)'; b.style.color = '#fff';
     b.innerHTML = '✏️ Plan roster';
     b.onclick = function () { showPage('rosterplan', document.getElementById('sidebar-rosterplan')); };
     ctrl.appendChild(b);
   }
+
+  // ── "My roster" view button inside the existing Full Month / Week View toggle ──
+  var tog = document.getElementById('roster-view-toggle');
+  if (tog && !document.getElementById('rvt-my')) {
+    var mb = document.createElement('button'); mb.className = 'roster-vt-btn'; mb.id = 'rvt-my'; mb.textContent = '🙋 My roster';
+    mb.onclick = function () { rpSetRosterView('my'); };
+    tog.insertBefore(mb, tog.firstChild);
+  }
+  if (!RP.rosterView) RP.rosterView = rpCanPlan() ? 'team' : 'my';
+  rpApplyRosterView();
+
+  // ── compact shift legend (one quiet line; WFH/leave already in the main legend) ──
   var lg = document.querySelector('#page-roster .roster-legend');
   if (lg) {
-    var old = document.getElementById('rp-shift-legend'); if (old) old.remove();
-    var work = RP_SETTINGS.shifts.filter(function (s) { return s.kind === 'work' || s.kind === 'night'; });
+    var oldL = document.getElementById('rp-shift-legend'); if (oldL) oldL.remove();
+    var work = RP_SETTINGS.shifts.filter(function (s) { return (s.kind === 'work' || s.kind === 'night') && s.code.toUpperCase().indexOf('WFH') === -1; });
     if (work.length) {
-      var span = document.createElement('span'); span.id = 'rp-shift-legend'; span.style.cssText = 'display:inline-flex;gap:.6rem;flex-wrap:wrap;margin-left:.5rem;padding-left:.6rem;border-left:1px solid var(--navy-border);';
-      span.innerHTML = work.map(function (s) { return '<span style="display:inline-flex;align-items:center;gap:.3rem;"><span style="display:inline-block;min-width:22px;padding:0 4px;border-radius:4px;font-size:.62rem;font-weight:700;text-align:center;' + rpChipStyle(s.code) + '">' + rpEsc(s.code) + '</span><span style="font-size:.72rem;color:var(--text-muted);">' + rpEsc(s.label + (s.time ? ' ' + s.time : '')) + '</span></span>'; }).join('');
-      lg.appendChild(span);
+      var div = document.createElement('div'); div.id = 'rp-shift-legend';
+      div.style.cssText = 'display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;font-size:.7rem;color:var(--text-dim);margin:.1rem 0 .4rem;';
+      div.innerHTML = '<span style="letter-spacing:.1em;text-transform:uppercase;font-weight:700;font-size:.6rem;">Shifts</span>' + work.map(function (s) {
+        return '<span style="display:inline-flex;align-items:center;gap:.3rem;"><span style="display:inline-block;min-width:20px;padding:0 4px;border-radius:4px;font-size:.6rem;font-weight:700;text-align:center;line-height:16px;' + rpChipStyle(s.code) + '">' + rpEsc(s.code) + '</span>' + rpEsc(s.label) + (s.time ? ' <span style="opacity:.75">' + rpEsc(s.time) + '</span>' : '') + '</span>';
+      }).join('');
+      lg.parentNode.insertBefore(div, lg.nextSibling);
     }
   }
+  rpTrimMonthTabs();
+}
+
+// Month tabs: previous + current month, plus a newly released later month (badge "New"); the rest behind "Archive"
+function rpTrimMonthTabs() {
+  var c = document.getElementById('roster-month-tabs'); if (!c) return;
+  var btns = Array.from(c.querySelectorAll('.roster-month-btn'));
+  if (!btns.length) return;
+  var now = new Date(), cur = now.getMonth(), year = now.getFullYear();
+  var hidden = 0;
+  btns.forEach(function (b) {
+    var key = (b.id || '').replace('rmb-', ''); var mi = RP_MONTHS_SHORT.indexOf(key);
+    var cfg = window.ROSTER_MONTHS && window.ROSTER_MONTHS[key];
+    var cfgYear = cfg && (cfg.label.match(/(\d{4})/) || [])[1]; cfgYear = cfgYear ? +cfgYear : year;
+    var rel = (cfgYear - year) * 12 + (mi - cur);          // months from now
+    var isNew = rel > 0 && cfg && cfg.dbKey;              // a released future month
+    var keep = rel === 0 || rel === -1 || isNew;
+    var badge = b.querySelector('.rp-new'); if (badge) badge.remove();
+    if (isNew) { var sp = document.createElement('span'); sp.className = 'rp-new'; sp.textContent = 'New'; sp.style.cssText = 'margin-left:.4rem;font-size:.58rem;font-weight:800;letter-spacing:.06em;padding:1px 6px;border-radius:8px;background:#2EC56F;color:#06301a;vertical-align:middle;'; b.appendChild(sp); }
+    if (!keep && !RP.archiveOpen) { b.style.display = 'none'; hidden++; } else b.style.display = '';
+  });
+  var ab = document.getElementById('rp-archive-btn');
+  var archivable = btns.filter(function (b) { var key = (b.id || '').replace('rmb-', ''); var mi = RP_MONTHS_SHORT.indexOf(key); return mi < cur - 1 || (mi > cur && !(window.ROSTER_MONTHS[key] && window.ROSTER_MONTHS[key].dbKey)); }).length;
+  if (archivable) {
+    if (!ab) { ab = document.createElement('button'); ab.id = 'rp-archive-btn'; ab.className = 'roster-month-btn'; ab.style.borderStyle = 'dashed'; ab.onclick = function () { RP.archiveOpen = !RP.archiveOpen; rpTrimMonthTabs(); }; c.appendChild(ab); }
+    ab.textContent = RP.archiveOpen ? 'Hide archive' : '🗂 Archive (' + archivable + ')';
+  } else if (ab) ab.remove();
+}
+
+// ── Roster page view: 'my' (calendar of my shifts) or 'team' (the existing grid) ──
+function rpSetRosterView(v) { RP.rosterView = v; rpApplyRosterView(); if (v === 'team' && typeof window.setRosterViewMode === 'function') window.setRosterViewMode(window._rosterViewMode || 'month'); }
+function rpApplyRosterView() {
+  var my = RP.rosterView === 'my';
+  var grid = document.getElementById('roster-table-wrap'), lg = document.querySelector('#page-roster .roster-legend'), sl = document.getElementById('rp-shift-legend'), nav = document.getElementById('roster-week-nav'), srch = document.getElementById('roster-search');
+  var card = document.getElementById('rp-my-roster');
+  if (grid) grid.style.display = my ? 'none' : '';
+  if (lg) lg.style.display = my ? 'none' : '';
+  if (sl) sl.style.display = my ? 'none' : '';
+  if (srch) srch.style.display = my ? 'none' : '';
+  if (nav && my) nav.style.display = 'none';
+  if (card) card.style.display = my ? '' : 'none';
+  ['rvt-my', 'rvt-month', 'rvt-week'].forEach(function (id) { var b = document.getElementById(id); if (!b) return; if (id === 'rvt-my') b.classList.toggle('active', my); else if (my) b.classList.remove('active'); });
+  if (!my) { var bm = document.getElementById('rvt-month'), bw = document.getElementById('rvt-week'); var mode = window._rosterViewMode || 'month'; if (bm) bm.classList.toggle('active', mode === 'month'); if (bw) bw.classList.toggle('active', mode === 'week'); }
+  if (my && RP.lastRows) rpRenderMyRoster(RP.lastRows);
+}
+function rpFindMyRow(rows) {
+  if (!currentUser || !rows) return null;
+  var me = String(currentUser.name || '').toLowerCase().trim(); var first = me.split(' ')[0];
+  var agentRows = (typeof rosterAgentRows === 'function') ? rosterAgentRows(rows) : rows.slice(3);
+  return agentRows.find(function (r) { var n = String(r[1] || '').toLowerCase().trim(); return n === me || n.split(' ')[0] === first || n.indexOf(first) > -1 || me.indexOf(n.split(' ')[0]) > -1; }) || null;
+}
+function rpStatusOf(code, wknd) {
+  if (typeof parseRosterStatus === 'function') return parseRosterStatus(code, wknd);
+  var k = rpKind(code); return { type: k === 'work' || k === 'night' ? 'present' : k === 'off' ? 'off' : k === 'leave' ? 'leave' : k === 'half' ? 'half' : 'empty', label: code || '—' };
+}
+function rpRenderMyRoster(rows) {
+  var page = document.getElementById('page-roster'); if (!page) return;
+  var card = document.getElementById('rp-my-roster');
+  if (!card) { card = document.createElement('div'); card.id = 'rp-my-roster'; var anchor = document.querySelector('#page-roster .roster-legend') || document.getElementById('roster-table-wrap'); anchor.parentNode.insertBefore(card, anchor); }
+  if (RP.rosterView !== 'my') { card.style.display = 'none'; return; }
+  card.style.display = '';
+  var hdr = rows.find(function (r) { return r.some(function (c) { return /[A-Za-z]+\s*-\s*\d{4}/.test(c); }); });
+  var dateRow = rows.find(function (r) { return String(r[1] || '').trim().toUpperCase() === 'DATE'; });
+  var mi = hdr && typeof getMonthIndex === 'function' ? getMonthIndex(hdr.find(function (c) { return /[A-Za-z]+\s*-\s*\d{4}/.test(c); }) || '') : null;
+  var today = new Date();
+  var month = mi && mi.month !== undefined ? mi.month : (window._rosterTodayM !== undefined ? window._rosterTodayM : today.getMonth());
+  var year = mi && mi.year ? mi.year : (window._rosterTodayY || today.getFullYear());
+  var myRow = rpFindMyRow(rows);
+  var teamName = rpTeamName(RP.viewTeam || rpMyTeam());
+  if (!dateRow || !myRow) {
+    card.innerHTML = '<div class="rp-my-card"><div class="rp-my-head"><div><div class="rp-my-title">My roster · ' + RP_MONTHS_SHORT[month] + ' ' + year + '</div><div class="rp-my-sub">' + rpEsc(teamName) + '</div></div></div>' +
+      '<div class="rp-my-empty">' + (dateRow ? 'You are not on this month\'s roster yet. Ask your TL to add you.' : 'No roster for this month yet.') + '</div></div>';
+    return;
+  }
+  var n = rpDaysIn(year, month + 1), isCur = today.getFullYear() === year && today.getMonth() === month;
+  var codes = {}; dateRow.forEach(function (d, i) { if (i < 2) return; var num = Number(d); if (num > 0) codes[num] = String(myRow[i] || '').trim(); });
+  var stats = { work: 0, off: 0, leave: 0, wfh: 0 };
+  var cells = [];
+  var firstDow = (new Date(year, month, 1).getDay() + 6) % 7; // Monday first
+  for (var i = 0; i < firstDow; i++) cells.push('<div class="rp-my-cell pad"></div>');
+  for (var d = 1; d <= n; d++) {
+    var dow = new Date(year, month, d).getDay(), wk = dow === 0 || dow === 6;
+    var code = codes[d] || '';
+    var st = rpStatusOf(code, wk);
+    if (st.type === 'present') stats.work++; else if (st.type === 'wfh') { stats.wfh++; stats.work++; } else if (st.type === 'half') stats.work++; else if (st.type === 'leave') stats.leave++; else if (st.type === 'off') stats.off++;
+    var def = rpShift(code);
+    var chipStyle = def ? rpChipStyle(code) : (st.type === 'off' ? 'background:#D1D9E4;color:#374151;' : st.type === 'leave' ? 'background:#EF493C;color:#fff;' : st.type === 'wfh' ? 'background:#8B6BD1;color:#fff;' : st.type === 'half' ? 'background:#E65100;color:#fff;' : st.type === 'present' ? 'background:#4C76A8;color:#fff;' : '');
+    var label = st.type === 'off' ? 'Off' : st.type === 'leave' ? 'Leave' : (code || '—');
+    var sub = def ? (def.kind === 'off' ? '' : (def.time || def.label)) : (st.type === 'wfh' ? 'Work from home' : st.type === 'half' ? 'Half day' : '');
+    cells.push('<div class="rp-my-cell' + (wk ? ' wk' : '') + (isCur && d === today.getDate() ? ' today' : '') + (!code ? ' none' : '') + '">' +
+      '<span class="rp-my-num">' + d + '</span>' +
+      (code || wk ? '<span class="rp-my-chip" style="' + chipStyle + '"><b>' + rpEsc(label) + '</b>' + (sub ? '<small>' + rpEsc(sub) + '</small>' : '') + '</span>' : '<span class="rp-my-chip empty">—</span>') +
+      '</div>');
+  }
+  // who is on with me today
+  var withMe = '';
+  if (isCur) {
+    var tc = codes[today.getDate()] || ''; var tst = rpStatusOf(tc, (today.getDay() === 0 || today.getDay() === 6));
+    var ti = dateRow.findIndex(function (c, i) { return i >= 2 && Number(c) === today.getDate(); });
+    if (ti > 0 && (tst.type === 'present' || tst.type === 'wfh' || tst.type === 'half')) {
+      var mates = (typeof rosterAgentRows === 'function' ? rosterAgentRows(rows) : []).filter(function (r) { return r !== myRow && String(r[ti] || '').trim().toUpperCase() === tc.toUpperCase(); }).map(function (r) { return String(r[1] || '').trim(); });
+      withMe = '<div class="rp-my-today"><div class="rp-my-today-l">Today · ' + RP_DOW[today.getDay()] + ' ' + today.getDate() + '</div><div class="rp-my-today-v"><span class="rp-my-chip inline" style="' + (rpShift(tc) ? rpChipStyle(tc) : 'background:#4C76A8;color:#fff;') + '"><b>' + rpEsc(tc) + '</b></span>' + (rpShift(tc) && rpShift(tc).time ? '<span>' + rpEsc(rpShift(tc).time) + '</span>' : '') + '</div>' +
+        '<div class="rp-my-today-m">' + (mates.length ? 'On with you: ' + rpEsc(mates.slice(0, 8).join(', ')) + (mates.length > 8 ? ' +' + (mates.length - 8) + ' more' : '') : 'Nobody else on this shift today') + '</div></div>';
+    } else {
+      withMe = '<div class="rp-my-today"><div class="rp-my-today-l">Today · ' + RP_DOW[today.getDay()] + ' ' + today.getDate() + '</div><div class="rp-my-today-v"><b>' + (tst.type === 'off' ? 'Week off' : tst.type === 'leave' ? 'On leave' : rpEsc(tc || '—')) + '</b></div></div>';
+    }
+  }
+  card.innerHTML = '<div class="rp-my-card">' +
+    '<div class="rp-my-head"><div><div class="rp-my-title">My roster · ' + RP_MONTHS_LONG[month] + ' ' + year + '</div><div class="rp-my-sub">' + rpEsc(currentUser.name) + ' · ' + rpEsc(teamName) + '</div></div>' +
+    '<div class="rp-my-stats"><span><b>' + stats.work + '</b>working</span><span><b>' + stats.off + '</b>week off</span><span><b>' + stats.leave + '</b>leave</span>' + (stats.wfh ? '<span><b>' + stats.wfh + '</b>WFH</span>' : '') + '</div></div>' +
+    withMe +
+    '<div class="rp-my-dows">' + ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map(function (x, i) { return '<div' + (i > 4 ? ' class="wk"' : '') + '>' + x + '</div>'; }).join('') + '</div>' +
+    '<div class="rp-my-grid">' + cells.join('') + '</div>' +
+    '<div class="rp-my-foot">Tap <b>Full Month</b> above to see the whole team.</div>' +
+    '</div>';
 }
 
 // Privileged viewer switches which team's released roster the Roster page shows
@@ -884,10 +1026,37 @@ async function rpCdSave() {
       };
     }
 
-    // 5. The per-month settings loader can overwrite customUrl with a sheet link — re-apply ours after it
+    // 5. The per-month settings loader runs when the Roster page opens — refresh DB months there, then re-apply ours after it
     if (typeof window.loadRosterMonthSettings === 'function') {
       var _lrms = window.loadRosterMonthSettings;
-      window.loadRosterMonthSettings = async function () { var r = await _lrms.apply(this, arguments); rpPublishToPipeline(); return r; };
+      window.loadRosterMonthSettings = async function () { var r = await _lrms.apply(this, arguments); try { await rpTeamsLoad(); await rpLoadAll(true); if (!RP.viewTeam) RP.viewTeam = rpMyTeam(); } catch (e) { } rpPublishToPipeline(); return r; };
+    }
+    // 5b. After tabs are built / month switched: trim tabs, and feed the My-roster calendar
+    if (typeof window.switchRosterMonth === 'function') {
+      var _srm = window.switchRosterMonth;
+      window.switchRosterMonth = function () { var r = _srm.apply(this, arguments); setTimeout(rpTrimMonthTabs, 50); return r; };
+    }
+    if (typeof window._processRosterRows === 'function') {
+      var _prr = window._processRosterRows;
+      window._processRosterRows = function (rows) { var r = _prr.apply(this, arguments); RP.lastRows = rows; try { rpRenderMyRoster(rows); rpTrimMonthTabs(); } catch (e) { console.warn('[Roster] my-roster', e); } return r; };
+    }
+    if (typeof window.setRosterViewMode === 'function') {
+      var _svm = window.setRosterViewMode;
+      window.setRosterViewMode = function (mode) { RP.rosterView = 'team'; var r = _svm.apply(this, arguments); rpApplyRosterView(); return r; };
+    }
+    // 5c. Codes defined in Control Deck are shown exactly as defined (label = code), typed by their kind
+    if (typeof window.parseRosterStatus === 'function') {
+      var _prs = window.parseRosterStatus;
+      window.parseRosterStatus = function (raw, isWknd) {
+        var def = rpShift(String(raw || '').trim());
+        if (def) {
+          var isWfh = def.code.toUpperCase().indexOf('WFH') > -1;
+          var type = isWfh ? 'wfh' : def.kind === 'off' ? 'off' : def.kind === 'leave' ? 'leave' : def.kind === 'half' ? 'half' : 'present';
+          var cls = { present: 'rc-p', wfh: 'rc-w', half: 'rc-h', leave: 'rc-a', off: 'rc-o' }[type];
+          return { type: type, label: type === 'off' ? 'Off' : type === 'leave' ? 'Leave' : def.code, cls: cls };
+        }
+        return _prs.apply(this, arguments);
+      };
     }
 
     // 6. Any fetch() of a db:// url (e.g. the pre-fetch of adjacent months) must not hit the network
