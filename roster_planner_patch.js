@@ -787,8 +787,8 @@ function rpDecorateRosterPage() {
     if (work.length) {
       var div = document.createElement('div'); div.id = 'rp-shift-legend';
       div.style.cssText = 'display:flex;align-items:center;gap:.9rem;flex-wrap:wrap;font-size:.7rem;color:var(--text-dim);margin:.1rem 0 .4rem;';
-      div.innerHTML = '<span style="letter-spacing:.1em;text-transform:uppercase;font-weight:700;font-size:.6rem;">Shifts</span>' + work.map(function (s) {
-        return '<span style="display:inline-flex;align-items:center;gap:.3rem;"><span style="display:inline-block;min-width:20px;padding:0 4px;border-radius:4px;font-size:.6rem;font-weight:700;text-align:center;line-height:16px;' + rpChipStyle(s.code) + '">' + rpEsc(s.code) + '</span>' + rpEsc(s.label) + (s.time ? ' <span style="opacity:.75">' + rpEsc(s.time) + '</span>' : '') + '</span>';
+      div.innerHTML = '<span style="letter-spacing:.1em;text-transform:uppercase;font-weight:700;font-size:.6rem;margin-right:.6rem;">Shifts</span>' + work.map(function (s) {
+        return '<span style="display:inline-flex;align-items:center;gap:.35rem;margin-right:1.1rem;white-space:nowrap;"><span style="display:inline-block;min-width:22px;padding:0 5px;border-radius:4px;font-size:.6rem;font-weight:700;text-align:center;line-height:16px;' + rpChipStyle(s.code) + '">' + rpEsc(s.code) + '</span><span>' + rpEsc(s.label) + (s.time ? ' <span style="opacity:.7;margin-left:.2rem;">' + rpEsc(s.time) + '</span>' : '') + '</span></span>';
       }).join('');
       lg.parentNode.insertBefore(div, lg.nextSibling);
     }
