@@ -1,0 +1,29 @@
+/* ═══════════════════════════════════════════════════
+   K7TeamCore — Teams Module Styles
+═══════════════════════════════════════════════════ */
+.tm-chip { display:inline-flex; align-items:center; justify-content:center; padding:.2rem .55rem; border-radius:10px; font-size:.62rem; font-weight:700; letter-spacing:.06em; line-height:1; }
+.tm-chip-sm { padding:.12rem .4rem; font-size:.58rem; }
+
+/* People page */
+.tm-tabs { display:flex; gap:.45rem; flex-wrap:wrap; align-items:center; margin:0 0 1rem; }
+.tm-tab { display:inline-flex; align-items:center; gap:.5rem; height:38px; padding:0 .95rem; border-radius:19px; border:1px solid var(--navy-border); background:var(--navy-card); color:var(--text-muted); font-family:'DM Sans',sans-serif; font-size:.8rem; font-weight:600; cursor:pointer; transition:all .15s; }
+.tm-tab:hover { color:var(--text-primary); border-color:var(--gold-dim); }
+.tm-tab-dot { width:9px; height:9px; border-radius:50%; flex-shrink:0; }
+.tm-tab.active .tm-tab-dot { background:rgba(255,255,255,.85) !important; }
+.tm-tab-n { font-size:.68rem; opacity:.75; }
+/* quiet team line on each card (option B): small colour square + muted text, no chip, no motion */
+.tm-card-tag { display:flex; align-items:center; justify-content:center; gap:.4rem; margin:.15rem 0 .1rem; font-size:.72rem; color:var(--text-muted); }
+.tm-card-sq { width:7px; height:7px; border-radius:2px; flex-shrink:0; }
+.tm-card-team { white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%; }
+
+/* Manage Users */
+.tm-um-wrap { display:flex; align-items:center; gap:.45rem; margin-top:.4rem; }
+.tm-um-lbl { font-size:.62rem; letter-spacing:.1em; text-transform:uppercase; color:var(--text-dim); font-weight:700; }
+.tm-select, .tm-cd-select { height:30px; padding:0 .5rem; border:2px solid var(--navy-border); border-radius:6px; background:var(--navy-hover); color:var(--text-primary); font-family:'DM Sans',sans-serif; font-size:.74rem; font-weight:600; outline:none; cursor:pointer; max-width:240px; }
+
+/* Control deck */
+.tm-cd-row { display:flex; align-items:center; gap:.35rem; }
+.tm-cd-inp { height:32px; padding:0 .5rem; border:1px solid var(--navy-border); border-radius:6px; background:var(--navy-hover); color:var(--text-primary); font-family:'DM Sans',sans-serif; font-size:.78rem; outline:none; min-width:0; }
+.tm-cd-inp[readonly] { opacity:.7; }
+.tm-cd-color { width:32px; height:32px; border:1px solid var(--navy-border); border-radius:6px; padding:0; background:none; cursor:pointer; }
+.tm-cd-active { font-size:.7rem; color:var(--text-muted); display:inline-flex; align-items:center; gap:.25rem; white-space:nowrap; }
